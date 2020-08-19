@@ -1,0 +1,21 @@
+Mine
+	ID: 278347699017
+	Name: Dmytro
+	Pass: qwe@#$asd
+
+https://us-east-1.signin.aws.amazon.com/oauth?SignatureVersion=4&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJMOATPLHVSJ563XQ&X-Amz-Date=2020-08-17T18%3A07%3A01.071Z&X-Amz-Signature=6a8347be75ba1e55e6a9d149657c0753ec794ad17c3b7e04901afb402d4177a4&X-Amz-SignedHeaders=host&client_id=arn%3Aaws%3Aiam%3A%3A015428540659%3Auser%2Fhomepage&code_challenge=8f7pUHt561-XYjbhYIXHCB9OyBha1nxxEULGsUL8RHA&code_challenge_method=SHA-256&redirect_uri=https%3A%2F%2Fconsole.aws.amazon.com%2Fconsole%2Fhome%3Fstate%3DhashArgs%2523%26isauthcode%3Dtrue&response_type=code&state=hashArgs%23
+
+24MvscsQC7csM1twN05qJXDUw7eFOMzJNlkGoHwo
+
+NGOR7ACEoQUSntq6pDDgkyUfvHFQkllh3cZ5bsrBk7g=
+
+AKIAUBTWQ2NEUDAGPXFG
+
+mail: dmytroHolovach0526@outlook.com
+
+Saint
+Brainsshare@gmail.com
+Brainfood93
+
+
+44.231.184.111
