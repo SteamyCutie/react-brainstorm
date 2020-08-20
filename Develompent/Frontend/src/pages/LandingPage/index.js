@@ -6,11 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
 import hero9 from '../../assets/images/hero-bg/hero-5.jpg';
+import { Header } from '../../layout-components';
 
 const LandingPage = () => {
   return (
     <Fragment>
       <div className="hero-wrapper bg-composed-wrapper bg-premium-dark min-vh-100">
+        <Header />
         <div className="flex-grow-1 w-100 d-flex align-items-center">
           <div
             className="bg-composed-wrapper--image opacity-5"
@@ -48,7 +50,7 @@ const LandingPage = () => {
                       <div className="divider border-2 border-light my-5 border-light opacity-2 mx-auto rounded-circle w-50" />
                       <div>
                         <Button
-                          to="/DashboardDefault"
+                          to="/upcomingSessions"
                           component={Link}
                           size="large"
                           color="primary"

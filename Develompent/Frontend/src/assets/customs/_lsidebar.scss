@@ -1,0 +1,64 @@
+.MuiButton-label {
+  width: 100%;
+  display: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+  font-size: 15px;
+  font-weight: normal;
+  padding: 0.4rem;
+}
+
+.MuiSvgIcon-root {
+  fill: currentColor;
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  font-size: 1.5rem;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  flex-shrink: 0;
+  user-select: none;
+  margin-right: 0.1em;
+}
+
+body .active-item {
+  background-color: #5383ff;
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+body .app-sidebar-item {
+  display: block;
+  padding: 2px 0 1px 0 !important;
+}
+
+.logo-class {
+  background: transparent !important;
+}
+
+.header-class {
+  box-shadow: none !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  z-index: 10 !important;
+}
+
+.text-white-50 {
+  color: #000000 !important;
+}
+
+.header-mobile-class {
+  z-index: 100 !important;
+}
+
+.content-class {
+  padding-top: 97px !important;
+}
+
+.hearder-search-class {
+  width: 40% !important;
+}
+
+.user-header-class {
+  padding-right: 0px !important;
+}
+

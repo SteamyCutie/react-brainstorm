@@ -18,14 +18,14 @@ const LeftSidebar = props => {
   return (
     <Fragment>
       <div className={clsx('app-wrapper', contentBackground)}>
-        <Header />
+        <Header className="header-class" />
         <div
           className={clsx('app-main', {
             'app-main-sidebar-static': !sidebarFixed
           })}>
           <Sidebar />
           <div
-            className={clsx('app-content', {
+            className={clsx('app-content content-class', {
               'app-content-sidebar-collapsed': sidebarToggle,
               'app-content-sidebar-fixed': sidebarFixed,
               'app-content-footer-fixed': footerFixed

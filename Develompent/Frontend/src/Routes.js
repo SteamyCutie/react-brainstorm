@@ -91,28 +91,18 @@ const Routes = () => {
 
             <Route
               path={[
-                '/DashboardDefault',
-                '/Buttons',
-                '/Dropdowns',
-                '/NavigationMenus',
-                '/ProgressBars',
-                '/Pagination',
-                '/Scrollable',
-                '/Badges',
-                '/Icons',
-                '/UtilitiesHelpers',
-                '/Cards3',
-                '/Accordions',
-                '/Modals',
-                '/Notifications',
-                '/Popovers',
-                '/Tabs',
-                '/RegularTables1',
-                '/RegularTables4',
-                '/FormsControls',
-                '/ApexCharts',
-                '/Maps',
-                '/ListGroups'
+                '/upcomingSessions',
+                '/profile',
+                '/setAvailability',
+                '/wallet',
+                '/mySharePage',
+                '/scheduleLiveForum',
+                '/payment',
+                '/trending',
+                '/subscriptions',
+                '/library',
+                '/history',
+                '/recommended'
               ]}>
               <LeftSidebar>
                 <Switch location={location} key={location.pathname}>
@@ -123,36 +113,26 @@ const Routes = () => {
                     variants={pageVariants}
                     transition={pageTransition}>
                     <Route
-                      path="/DashboardDefault"
+                      path="/upcomingSessions"
                       component={DashboardDefault}
                     />
-                    <Route path="/Buttons" component={Buttons} />
-                    <Route path="/Dropdowns" component={Dropdowns} />
+                    <Route path="/profile" component={Buttons} />
+                    <Route path="/setAvailability" component={Dropdowns} />
                     <Route
-                      path="/NavigationMenus"
+                      path="/wallet"
                       component={NavigationMenus}
                     />
-                    <Route path="/ProgressBars" component={ProgressBars} />
-                    <Route path="/Pagination" component={Pagination} />
-                    <Route path="/Scrollable" component={Scrollable} />
-                    <Route path="/Badges" component={Badges} />
-                    <Route path="/Icons" component={Icons} />
+                    <Route path="/mySharePage" component={ProgressBars} />
+                    <Route path="/scheduleLiveForum" component={Pagination} />
+                    <Route path="/payment" component={Scrollable} />
+                    <Route path="/trending" component={Badges} />
+                    <Route path="/subscriptions" component={Icons} />
                     <Route
-                      path="/UtilitiesHelpers"
+                      path="/library"
                       component={UtilitiesHelpers}
                     />
-                    <Route path="/Cards3" component={Cards3} />
-                    <Route path="/Accordions" component={Accordions} />
-                    <Route path="/Modals" component={Modals} />
-                    <Route path="/Notifications" component={Notifications} />
-                    <Route path="/Popovers" component={Popovers} />
-                    <Route path="/Tabs" component={Tabs} />
-                    <Route path="/RegularTables1" component={RegularTables1} />
-                    <Route path="/RegularTables4" component={RegularTables4} />
-                    <Route path="/FormsControls" component={FormsControls} />
-                    <Route path="/ApexCharts" component={ApexCharts} />
-                    <Route path="/Maps" component={Maps} />
-                    <Route path="/ListGroups" component={ListGroups} />
+                    <Route path="/history" component={Cards3} />
+                    <Route path="/recommended" component={Maps} />
                   </motion.div>
                 </Switch>
               </LeftSidebar>
