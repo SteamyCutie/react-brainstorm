@@ -1,0 +1,170 @@
+body {
+    background-color: white !important;
+}
+
+.landingpage-header {
+    margin-left: 0px !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+}
+
+.fix-position {
+    max-width: none !important;
+}
+
+.logo-image {
+    margin-right: 60px;
+}
+
+.navbar-search {
+    border: solid #ACACAC !important;
+    border-radius: 5px !important;
+    border-width: 1px !important;
+    
+    margin-top: 5px;
+    height: 48px !important;
+    font-size: 18px !important;
+}
+
+.search-bar {
+    width: 70% !important;
+    min-width: 400px !important;
+}
+
+.material-icons {
+    font-size: 30px !important;
+    font-weight: 10 !important;
+    height: 48px !important;
+}
+
+.input-group-text {
+    padding: 0px 0px 0px 5px !important;
+    color: white !important;
+}
+
+.btn-search {
+    background-color: #04B5FA !important;
+    border-color: #04B5FA !important;
+    width: 78px !important;
+}
+
+.btn-landingpage {
+    border-color: #04B5FA !important;
+    height: 48px;
+    margin-top: 5px;
+    padding-top: 15px !important;
+    font-size: 15px !important;
+}
+
+.btn-custom {
+    color: #04B5FA !important;
+}
+
+.btn-custom:hover {
+    background-color: #04B5FA !important;
+    color: white !important;
+}
+
+.white-background {
+    background-color: white !important;
+    border-color: white !important;
+}
+
+.main-navbar {
+    height: 94px;
+    padding-top: 20px;
+    padding-left: 30px;
+}
+
+.share-knowledge {
+    /* height: 600px; */
+    width: 100%;
+    background-color: #F1F8FE;
+}
+
+.discover {
+    height: 910px;
+    width: 100%;
+    background-color: #F1F8FE;
+}
+
+.brains-share {
+    height: 500px;
+    width: 100%;
+    background-color: white;
+    align-items: center;
+}
+
+.featured-mentors {
+    height: 400px;
+    width: 100%;
+    background-color: white;
+}
+
+.get-fast-results {
+    height: 500px;
+    width: 100%;
+    background-color: #F1F8FE;
+}
+
+.img-share-knowledge {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.img-mentor-active {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    width: 60%;
+    /* height: 100%; */
+}
+
+.share-knowledge-desc {
+    padding-top: 20%;
+    padding-left: 20%;
+    align-items: center;
+}
+
+.share-knowledge-desc h5{
+    /* font-family: "Nunito Sans"; */
+    line-height: 30px;
+    color: #333333;
+}
+
+.btn-find-mentor {
+    width: 146px;
+    height: 50px;
+    font-size: 16px !important;
+    font-weight: bold;
+    background-color: #04B5FA !important;
+    border: #04B5FA !important;
+}
+
+.desc-title {
+    padding-top: 50px;
+    font-weight: bold;
+    font-size: 60px;
+    /* font-family: "Nunito Sans"; */
+    line-height: 65px;
+    color: #333333;
+}
+
+.desc-title-works {
+    padding-top: 50px;
+    font-weight: bold;
+    font-size: 40px;
+    /* font-family: "Nunito Sans"; */
+    line-height: 65px;
+    color: #333333;
+}
+
+.center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.img-brains-works {
+    padding: 10px 50px 10px 50px;
+}
