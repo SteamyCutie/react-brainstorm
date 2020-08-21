@@ -1,19 +1,6 @@
-# Changelog for Carolina React Admin Dashboard with Material-UI Free
+# Changelog
+All notable changes to this project will be documented in this file.
 
-All notable changes for Carolina React Admin Dashboard with Material-UI Free will be documented in this file and online inside the documentation or product presentation page on uifort.com
+## [1.0.0] - 2019-01-07
 
-### This project was released on 15 February 2020 and was last updated on 15 February 2020
-
-----------------------------------------------
-
-## [1.0.0] - Released on 15 February 2020
-
-### Dependencies updates
-- nothing as this is the initial release.
-### Added
-- nothing as this is the initial release.
-### Changed
-- nothing as this is the initial release.
-### Fixed
-- nothing as this is the initial release.
-----------------------------------------------
+- Initial release.

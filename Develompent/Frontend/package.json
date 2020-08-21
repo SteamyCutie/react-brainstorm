@@ -1,78 +1,39 @@
 {
-  "name": "carolina-react-admin-dashboard-material-ui-free",
+  "name": "shards-dashboard-lite-react",
   "version": "1.0.0",
-  "title": "Carolina React Admin Dashboard with Material-UI Free",
-  "homepage": "https://demo.uifort.com/carolina-react-admin-dashboard-material-ui-free",
-  "description": "This free React admin template is powered by Material-UI components framework and features a clean and fresh design following Google&#39;s Material Design specifications.",
-  "author": {
-    "name": "UiFort.com",
-    "url": "https://uifort.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/uifort/carolina-react-admin-dashboard-material-ui-free"
-  },
+  "private": true,
+  "homepage": "./",
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.2.27",
-    "@fortawesome/free-brands-svg-icons": "5.12.1",
-    "@fortawesome/free-regular-svg-icons": "5.12.1",
-    "@fortawesome/free-solid-svg-icons": "5.12.1",
-    "@fortawesome/react-fontawesome": "0.1.8",
-    "@material-ui/core": "4.9.2",
-    "@material-ui/icons": "4.5.1",
-    "@material-ui/lab": "4.0.0-alpha.42",
-    "apexcharts": "3.15.6",
-    "clsx": "1.1.0",
-    "framer-motion": "1.8.4",
-    "google-map-react": "1.1.6",
-    "hamburgers": "1.1.3",
-    "leaflet": "1.6.0",
-    "pe7-icon": "1.0.4",
-    "react": "16.12.0",
-    "react-apexcharts": "1.3.6",
-    "react-copy-to-clipboard": "^5.0.2",
-    "react-dom": "16.12.0",
-    "react-flag-kit": "0.3.1",
-    "react-ionicons": "3.1.4",
-    "react-leaflet": "2.6.1",
-    "react-perfect-scrollbar": "1.5.8",
-    "react-redux": "7.2.0",
-    "react-router": "5.1.2",
-    "react-router-dom": "5.1.2",
-    "react-scripts": "^3.4.3",
-    "redux": "4.0.5"
+    "camelize": "^1.0.0",
+    "chart.js": "^2.7.3",
+    "classnames": "^2.2.6",
+    "cross-env": "^5.2.0",
+    "dateformat": "^3.0.3",
+    "flux": "^3.1.3",
+    "lodash.find": "^4.6.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-ga": "^2.5.6",
+    "react-quill": "^1.3.3",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1",
+    "shards-react": "^1.0.0",
+    "shortid": "^2.2.14"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:prod": "cross-env REACT_APP_BASENAME=/demo/shards-dashboard-lite-react REACT_APP_GAID=UA-115105611-1 npm run build",
+    "build": "cross-env REACT_APP_BASENAME=/demo/shards-dashboard-lite-react react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "format": "./node_modules/.bin/eslint --fix --ignore-path .gitignore ."
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "eslint": "6.8.0",
-    "eslint-plugin-prettier": "3.1.2",
-    "eslint-plugin-react": "7.18.3",
-    "eslint-plugin-unused-imports": "0.1.2",
-    "node-sass": "^4.14.1",
-    "prettier": "1.19.1",
-    "prettier-eslint": "9.0.1",
-    "prettier-eslint-cli": "5.0.0",
-    "sass-vars-to-js-loader": "2.1.1"
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
