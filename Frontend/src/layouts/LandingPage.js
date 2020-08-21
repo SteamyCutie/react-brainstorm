@@ -6,8 +6,6 @@ import MainNavbar from "../components/layout/LandingNavbar/MainNavbar";
 // import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 
-import "../assets/landingpage.css";
-
 const LandingPageLayout = ({ children, noNavbar, noFooter }) => (
   <Container fluid>
     <Row>

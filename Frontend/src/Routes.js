@@ -27,38 +27,33 @@ export default [
     component: LandingPage
   },
   {
-    path: "/blog-overview",
+    path: "/upcomingSession",
     layout: DefaultLayout,
     component: BlogOverview
   },
   {
-    path: "/user-profile-lite",
+    path: "/profile",
     layout: DefaultLayout,
     component: UserProfileLite
   },
   {
-    path: "/add-new-post",
+    path: "/setAvailability",
     layout: DefaultLayout,
     component: AddNewPost
   },
   {
-    path: "/errors",
+    path: "/wallet",
     layout: DefaultLayout,
     component: Errors
   },
   {
-    path: "/components-overview",
+    path: "/mySharePage",
     layout: DefaultLayout,
     component: ComponentsOverview
   },
   {
-    path: "/tables",
+    path: "/scheduleLiveForum",
     layout: DefaultLayout,
     component: Tables
-  },
-  {
-    path: "/blog-posts",
-    layout: DefaultLayout,
-    component: BlogPosts
   }
 ];
