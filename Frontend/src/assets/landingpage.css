@@ -310,6 +310,7 @@ body {
 
 .main-sidebar-class {
     /* width: 14% !important; */
+    box-shadow: 0.125rem 0 0.625rem rgba(90,97,105,.12);
     min-width: 260px;
 }
 
@@ -373,4 +374,164 @@ body {
         margin-left: 16.6666667%;
         width: 83.3333333 !important;
     }
+}
+
+.main-content-container-class {
+    background-color: #F9F9F9;
+}
+
+.small-card-class {
+    border-radius: 1px;
+}
+
+.no-box-shadow {
+    box-shadow: none;
+}
+
+.small-card-value-class {
+    font-size: 30px;
+    font-weight: bolder;
+}
+
+.small-card-value-class h6 {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.small-card-value-class span {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.small-card-label-class {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.small-card-content-class {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.data-table-div-class {
+    border-radius: 5px;
+    box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.12);
+    padding-bottom: 0px !important;
+}
+
+.data-table-div-class header {
+    padding-left: 16px;
+}
+
+.badge-pending-class {
+    background-color: #E3E3E3;
+    color: #999999;
+    font-size: 16px;
+    position: initial;
+    padding: 7px 8px;
+    font-weight: normal;
+    width: 90px;
+    height: 38px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.badge-confirmed-class {
+    background-color: #43D3A6;
+    color: #FFFFFF;
+    font-size: 16px;
+    position: initial;
+    padding: 7px 8px;
+    font-weight: normal;
+    width: 90px;
+    height: 38px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.badge-failed-class {
+    background-color: #F9364D;
+    color: #FFFFFF;
+    font-size: 16px;
+    position: initial;
+    padding: 7px 8px;
+    font-weight: normal;
+    width: 90px;
+    height: 38px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.data-table-header-class {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.data-table-header-class h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 0px;
+}
+
+.data-table-header-class .input-group {
+    width: 25%;
+    min-width: 200px;
+}
+
+.wallet-page-header-class {
+    display: flex;
+    justify-content: space-between;
+}
+
+.wallet-page-header-class h3 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.wallet-page-header-class button {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #04B5FA;
+    border-color: transparent;
+}
+
+.wallet-page-header-class button:hover {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #04B5FA;
+    border-color: transparent;
+}
+
+.wallet-page-header-class button:focus {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #04B5FA;
+    border-color: transparent;
+}
+
+.wallet-page-header-class button:target {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #04B5FA;
+    border-color: transparent;
+}
+
+.wallet-page-header-class button:focus-visible {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #04B5FA;
+    border-color: transparent;
 }

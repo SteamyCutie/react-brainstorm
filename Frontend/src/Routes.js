@@ -9,6 +9,7 @@ import BlogOverview from "./views/BlogOverview";
 import UserProfileLite from "./views/UserProfileLite";
 import AddNewPost from "./views/AddNewPost";
 import Errors from "./views/Errors";
+import Wallet from "./views/Wallet";
 import ComponentsOverview from "./views/ComponentsOverview";
 import Tables from "./views/Tables";
 import BlogPosts from "./views/BlogPosts";
@@ -44,7 +45,7 @@ export default [
   {
     path: "/wallet",
     layout: DefaultLayout,
-    component: Errors
+    component: Wallet
   },
   {
     path: "/mySharePage",
