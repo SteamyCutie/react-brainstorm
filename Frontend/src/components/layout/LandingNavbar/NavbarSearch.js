@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../assets/landingpage.css"
+
 import {
   Form,
   InputGroup,

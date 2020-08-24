@@ -9,7 +9,6 @@ import NavbarDropdown from "./NavbarDropdown";
 // import NavbarNav from "./NavbarNav/NavbarNav";
 // import NavbarToggle from "./NavbarToggle";
 
-import "../../../assets/landingpage.css";
 import projectLogo from '../../../images/logo.svg'
 
 const MainNavbar = ({ layout, stickyTop }) => {

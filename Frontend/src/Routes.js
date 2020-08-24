@@ -9,6 +9,7 @@ import BlogOverview from "./views/BlogOverview";
 import UserProfileLite from "./views/UserProfileLite";
 import AddNewPost from "./views/AddNewPost";
 import Errors from "./views/Errors";
+import Wallet from "./views/Wallet";
 import ComponentsOverview from "./views/ComponentsOverview";
 import Tables from "./views/Tables";
 import BlogPosts from "./views/BlogPosts";
@@ -22,38 +23,33 @@ export default [
     component: LandingPage
   },
   {
-    path: "/upcoming-session",
+    path: "/upcomingSession",
     layout: DefaultLayout,
     component: BlogOverview
   },
   {
-    path: "/user-profile-lite",
+    path: "/profile",
     layout: DefaultLayout,
     component: UserProfileLite
   },
   {
-    path: "/add-new-post",
+    path: "/setAvailability",
     layout: DefaultLayout,
     component: AddNewPost
   },
   {
-    path: "/errors",
+    path: "/wallet",
     layout: DefaultLayout,
-    component: Errors
+    component: Wallet
   },
   {
-    path: "/components-overview",
+    path: "/mySharePage",
     layout: DefaultLayout,
     component: ComponentsOverview
   },
   {
-    path: "/tables",
+    path: "/scheduleLiveForum",
     layout: DefaultLayout,
     component: Tables
-  },
-  {
-    path: "/blog-posts",
-    layout: DefaultLayout,
-    component: BlogPosts
   }
 ];
