@@ -30,17 +30,20 @@ const FeaturedMentors = ({carouselDatas}) => (
               <Col lg={6}><img src={StarIcon} alt="star-icon"/>{data.score}</Col>
             </Row>
             <Row className="carousel-component-body-teach-class">
-              <Col lg={2}>Teaches: </Col>
+              <Col lg={2} className="tag-title">Teaches: </Col>
               {data.teaches.map((teach, idk) => (
-                <p key={idk} className="carousel-component-body-teach-list-class">{teach}</p>
+                <p key={idk} className="brainsshare-tag">{teach}</p>
               ))
               }
             </Row>
             <div className="carousel-component-body-desc-class">
               <p>{data.description.slice(0,214)}...</p>
-              <a>Read more</a>
+              <a className="read-more">Read more</a>
             </div>
-            <div className="carousel-component-body-play-class"><img src={PlayIcon} alt="play-icon"/>Video presentation</div>
+            <div className="carousel-component-body-play-class">
+              <img src={PlayIcon} alt="play-icon"/>
+              Video presentation
+              </div>
           </div>
           <div className="carousel-component-footer-class">
             <Row className="center-class">

@@ -28,8 +28,8 @@ const Discover = () => (
               <h1 className="desc-title-discover">Algebra for begginers</h1>
             </Row>
             <Row>
-              <h5 className="discover-tag">Algebra</h5>
-              <h5 className="discover-tag">Mathematics</h5>
+              <h5 className="brainsshare-tag">Algebra</h5>
+              <h5 className="brainsshare-tag">Mathematics</h5>
             </Row>
             <Row>
               <h4 className="discover-detail-content">
@@ -66,8 +66,8 @@ const Discover = () => (
               <h1 className="desc-title-discover">Linear Programming</h1>
             </Row>
             <Row>
-              <h5 className="discover-tag">Java</h5>
-              <h5 className="discover-tag">Programming</h5>
+              <h5 className="brainsshare-tag">Java</h5>
+              <h5 className="brainsshare-tag">Programming</h5>
             </Row>
             <Row>
               <h4 className="discover-detail-content">
@@ -104,8 +104,8 @@ const Discover = () => (
               <h1 className="desc-title-discover">Street art</h1>
             </Row>
             <Row>
-              <h5 className="discover-tag">Art</h5>
-              <h5 className="discover-tag">Graphics</h5>
+              <h5 className="brainsshare-tag">Art</h5>
+              <h5 className="brainsshare-tag">Graphics</h5>
             </Row>
             <Row>
               <h4 className="discover-detail-content">

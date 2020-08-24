@@ -9,9 +9,9 @@ import facebookIcon from "../../images/icon-facebook.svg"
 import youtubeIcon from "../../images/icon-youtube.svg"
 
 const MainFooter = ({ contained, menuItems, copyright }) => (
-  <footer className="main-footer d-flex p-2 px-3 bg-white">
+  <footer className="main-footer p-2 px-3 bg-white">
     {/* <Container fluid={contained}> */}
-      <Row>
+      <Row className="footer-main-part">
         <Col>
           <img
             className="footer-logo"
@@ -45,7 +45,7 @@ const MainFooter = ({ contained, menuItems, copyright }) => (
           <img src={youtubeIcon} className="footer-icon" />
         </Col>
       </Row>
-      <Row xl="12">
+      <Row className="copy-right-txt center">
         Copyright © 2020 Brainshare
       </Row>
     {/* </Container> */}

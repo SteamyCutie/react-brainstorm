@@ -186,13 +186,15 @@ body {
 }
 
 .carousel-component-body-header-class img {
-    padding-bottom: 5px;
+    padding-bottom: 3px;
+    padding-right: 5px;
 }
 
 .carousel-component-body-teach-class {
     font-size: 16px;
     font-weight: bold;
     color: #333333;
+    height: 30px;
 }
 
 .carousel-component-body-teach-list-class {
@@ -207,6 +209,8 @@ body {
 .carousel-component-body-desc-class {
     font-size: 16px;
     color: #333333;
+    padding-bottom: 10px;
+    line-height: 18px;
 }
 
 .carousel-component-body-desc-class p {
@@ -221,6 +225,12 @@ body {
     color: #04B5FA;
     font-size: 16px;
     font-weight: bold;
+    padding-top: 5px;
+}
+
+.carousel-component-body-play-class img {
+    padding-bottom: 3px;
+    padding-right: 10px;
 }
 
 .carousel-component-footer-instant-class {
@@ -233,6 +243,20 @@ body {
     border-radius: 6px !important;
     margin-bottom: 10px;
     width: 146px;
+}
+
+.carousel-component-footer-instant-class img {
+    padding-bottom: 3px;
+    padding-right: 10px;
+}
+
+.carousel-component-footer-book-class img {
+    padding-bottom: 3px;
+    padding-right: 10px;
+}
+
+.read-more {
+    text-decoration: underline !important;
 }
 
 .carousel-component-footer-book-class {
@@ -468,13 +492,19 @@ body {
     color: #333333;
 }
 
-.discover-tag {
+.brainsshare-tag {
     height: 25px;
     font-size: 14px;
     font-weight: 600;
     color: #04B5FA;
     background-color: #D9F2FE;
     border-radius: 100px;
+    padding: 0px 10px;
+    margin-right: 10px;
+}
+
+.tag-title {
+    /* width: 100%; */
     padding: 0px 10px;
     margin-right: 10px;
 }
@@ -536,6 +566,7 @@ body {
 
 .main-footer {
     height: 146px !important;
+    margin-top: 50px;
 }
 
 .footer-link {
@@ -544,7 +575,13 @@ body {
 }
 
 .footer-logo {
-    padding: 0px 20px;
+    padding-left: 20px;
+    padding-right: 70px;
+}
+
+.footer-main-part {
+    width: 100%;
+    padding-bottom: 20px;
 }
 
 .desc-content-discover {
@@ -563,6 +600,14 @@ body {
     /* font-family: "Nunito Sans"; */
     line-height: 40px;
     color: #333333;
+}
+
+.copy-right-txt {
+    width: 100%;
+    font-size: 14px;
+    color: #333333;
+    text-align: center;
+    padding-bottom: 20px;
 }
 
 @media (max-width: 1250px) {
