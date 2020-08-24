@@ -16,13 +16,21 @@ class CustomDataTable extends React.Component {
       customStyles: {
         headRow: {
           style: {
-            minHeight: '35px', // override the row height
+            minHeight: '35px',
           }
         },
         headCells: {
           style: {
             fontSize: "14px",
             fontWeight: "Bold",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+          },
+        },
+        cells: {
+          style: {
+            paddingLeft: "20px",
+            paddingRight: "20px",
           },
         },
       }
@@ -81,6 +89,7 @@ class CustomDataTable extends React.Component {
             // fixedHeaderScrollHeight="300px"
             customStyles={customStyles}
             // theme="solarized"
+            className="data-table-class"
           />
         </div>
     );

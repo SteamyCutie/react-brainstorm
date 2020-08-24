@@ -249,7 +249,7 @@ body {
     padding: .25rem .375rem;
     font-size: .5rem;
     left: 50%;
-    top: 10% !important;
+    top: -20% !important;
 }
 
 .badge-danger {
@@ -378,6 +378,7 @@ body {
 
 .main-content-container-class {
     background-color: #F9F9F9;
+    min-height: calc(100vh - 9.9rem) !important;
 }
 
 .small-card-class {
@@ -420,10 +421,13 @@ body {
     border-radius: 5px;
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.12);
     padding-bottom: 0px !important;
+    height: 100%;
+    background-color: white;
 }
 
 .data-table-div-class header {
-    padding-left: 16px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .badge-pending-class {
@@ -534,4 +538,118 @@ body {
     color: #FFFFFF;
     background-color: #04B5FA;
     border-color: transparent;
+}
+
+.wallet-data-table-class {
+    min-height: calc(100vh - 24rem);
+}
+
+.data-table-class {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0,0,0,.12);
+}
+
+.badge-class {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+}
+
+.notification-class {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-search-input-class {
+    margin-left: 24px !important;
+    max-width: 40rem;
+}
+
+.header-search-input-class input {
+    margin-top: 0px !important;
+}
+
+.header-search-button-class {
+    background-color: #04B5FA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 13px 28px;
+    height: 48px;
+}
+
+.header-search-button-class:focus {
+    background-color: #04B5FA;
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    height: 48px;
+    border-radius: 5px;
+}
+
+.header-search-button-class:active {
+    background-color: #04B5FA;
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    height: 48px;
+    border-radius: 5px;
+}
+
+.header-search-button-class:hover {
+    background-color: #04B5FA;
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    height: 48px;
+    border-radius: 5px;
+}
+
+.small-card-class .card-body {
+    padding: 23px !important;
+}
+
+.main-nav-bar-class {
+    box-shadow: none !important;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0,0,0,.12);
+}
+
+.sub-main-nav-bar-class {
+    box-shadow: none !important;
+    height: 50px;
+    padding: 0px 24px;
+    top: 94px;
+    z-index: 1019;
+}
+
+.sub-main-nav-bar-class nav {
+    height: 50px !important;
+}
+
+.sub-main-nav-bar-div-class {
+    align-items: center;
+}
+
+.margin-right-class {
+    margin-right: 10px;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.margin-double-right-class {
+    margin-right: 70px;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+body {
+    background-color: #F9F9F9 !important;
+}
+
+.main-content>.main-content-container.container-fluid {
+    min-height: calc(100vh - 9.9rem);
 }

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
 import MainNavbar from "../components/layout/MainNavbar/MainNavbar";
+import SubMainNavbar from "../components/layout/MainNavbar/SubMainNavbar";
 import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 
@@ -18,6 +19,7 @@ const DefaultLayout = ({ children, noNavbar, noFooter }) => (
         tag="main"
       >
         {!noNavbar && <MainNavbar />}
+        <SubMainNavbar />
         {children}
         {!noFooter && <MainFooter />}
       </Col>

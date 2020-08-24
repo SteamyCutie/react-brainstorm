@@ -15,7 +15,7 @@ const Wallet = ({ smallCards, tHistory, columns }) => (
 
     <Row>
       {smallCards.map((card, idx) => (
-        <Col className="col-lg mb-4" key={idx} lg="2" md="4" sm="4">
+        <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
           <SmallCard
             id={idx}
             label={card.label}
@@ -25,8 +25,8 @@ const Wallet = ({ smallCards, tHistory, columns }) => (
       ))}
     </Row>
 
-    <Row>
-      <Col lg="12" md="12" sm="12" className="mb-4">
+    <Row className="wallet-data-table-class">
+      <Col lg="12" md="12" sm="12">
         <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
       </Col>
     </Row>
