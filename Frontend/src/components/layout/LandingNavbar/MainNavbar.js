@@ -38,9 +38,11 @@ const MainNavbar = ({ layout, stickyTop }) => {
             <Button theme="light" className="mb-2 btn-landingpage white-background">
               Sign up
             </Button>
-            <Button outline theme="primary" className="mb-2 btn-landingpage btn-custom" onClick={() => history.push('/Products')}>
-              Sign in
-            </Button>
+            <Link to="/wallet">
+              <Button outline theme="primary" className="mb-2 btn-landingpage btn-custom">
+                Sign in
+              </Button>
+            </Link>
           </div>
           <div className="btn-dropdown-header">
             <NavbarDropdown />

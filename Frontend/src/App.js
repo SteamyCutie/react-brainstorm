@@ -6,7 +6,7 @@ import withTracker from "./withTracker";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
-import "../src/assets/landingpage.css";
+import "../src/assets/mentorWallet.css";
 
 
 export default () => (
