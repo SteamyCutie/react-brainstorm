@@ -9,6 +9,8 @@ import {
   Button
 } from "shards-react";
 
+import SearchIcon from '../../../images/SearchIcon.svg'
+
 export default () => (
   <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
     <InputGroup seamless className="ml-3 search-bar">
@@ -19,7 +21,7 @@ export default () => (
       <InputGroupAddon type="append">
         <Button className="navbar-search btn-search">
           <InputGroupText>
-            <i className="material-icons">search</i>
+            <img src={SearchIcon}/>
           </InputGroupText>
         </Button>
       </InputGroupAddon>
