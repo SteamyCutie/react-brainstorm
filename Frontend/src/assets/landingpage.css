@@ -6,6 +6,7 @@ body {
     margin-left: 0px !important;
     max-width: 100% !important;
     flex: 0 0 100% !important;
+    background-color: white;
 }
 
 .fix-position {
@@ -215,7 +216,7 @@ body {
 }
 
 .carousel-component-body-desc-class p {
-    margin-bottom: 0px;
+    margin-bottom: 10px;
     font-weight: 400;
 }
 
@@ -258,6 +259,7 @@ body {
 }
 
 .read-more {
+    margin-top: 25px !important;
     text-decoration: underline !important;
 }
 

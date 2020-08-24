@@ -1,112 +1,6 @@
 body {
-    background-color: white !important;
+    background-color: #F9F9F9 !important;
 }
-
-.landingpage-header {
-    margin-left: 0px !important;
-    max-width: 100% !important;
-    flex: 0 0 100% !important;
-}
-
-.fix-position {
-    max-width: none !important;
-}
-
-.logo-image {
-    margin-right: 60px;
-}
-
-.navbar-search {
-    border: solid #E3E3E3 !important;
-    border-radius: 5px !important;
-    border-width: 1px !important;
-    margin-top: 5px;
-    margin-left: 20px;
-    height: 48px !important;
-    font-size: 18px !important;
-}
-
-.search-bar {
-    width: 70% !important;
-    min-width: 400px !important;
-}
-
-
-/* .material-icons {
-    font-size: 30px !important;
-    font-weight: 10 !important;
-    height: 48px !important;
-} */
-
-.input-group-text {
-    padding: 0px 0px 0px 5px !important;
-    color: white !important;
-}
-
-.btn-search {
-    background-color: #04B5FA !important;
-    border-color: #04B5FA !important;
-    width: 78px !important;
-}
-
-.btn-landingpage {
-    border-color: #04B5FA !important;
-    height: 48px;
-    margin-top: 5px;
-    padding-top: 15px !important;
-    font-size: 15px !important;
-}
-
-.btn-custom {
-    color: #04B5FA !important;
-}
-
-.btn-custom:hover {
-    background-color: #04B5FA !important;
-    color: white !important;
-}
-
-.white-background {
-    background-color: white !important;
-    border-color: white !important;
-}
-
-.main-navbar {
-    height: 94px;
-    padding-top: 20px;
-    padding-left: 30px;
-}
-
-.share-knowledge {
-    height: 600px;
-    width: 100%;
-    background-color: #F1F8FE;
-}
-
-.discover {
-    height: 910px;
-    width: 100%;
-    background-color: #F1F8FE;
-}
-
-.brains-share {
-    height: 500px;
-    width: 100%;
-    background-color: white;
-}
-
-.featured-mentors {
-    height: 400px;
-    width: 100%;
-    background-color: white;
-}
-
-.get-fast-results {
-    height: 500px;
-    width: 100%;
-    background-color: #F1F8FE;
-}
-
 
 /* fallback */
 
@@ -646,10 +540,6 @@ body {
     margin-right: 70px;
     font-size: 16px;
     font-weight: normal;
-}
-
-body {
-    background-color: #F9F9F9 !important;
 }
 
 .main-content>.main-content-container.container-fluid {
