@@ -1,9 +1,9 @@
 import React from "react";
 import { ButtonGroup, Button, Row, Col } from "shards-react";
 
-import FindMentorImage from '../../images/FindMentor.svg'
-import VideoSessionImage from '../../images/VideoSession.svg'
-import BookSessionImage from '../../images/BookSession.svg'
+import FindMentorImage from '../../images/User.svg'
+import VideoSessionImage from '../../images/Book.svg'
+import BookSessionImage from '../../images/Video.svg'
 import "../../assets/landingpage.css"
 
 const BrainsshareWorks = () => (
@@ -17,62 +17,72 @@ const BrainsshareWorks = () => (
       <div className="center">
         <Row className="brains-works-part">
           <Col>
-            <Row className="center">
-              <img
-                src={FindMentorImage}
-                placeholder="Mentor Active Image"
-              />
-            </Row>
-            <Row className="center">
+            <div className="center blue-background-one-class animation-one-class">
+              <div className="center blue-background-two-class">
+                <img
+                  src={FindMentorImage}
+                  placeholder="Mentor Active Image"
+                />
+              </div>
+            </div>
+            <div className="blue-dotline-class animation-two-class"> 
+            </div>
+            <div className="center animation-one-class">
               <h3 className="brains-works-title">
                 Find a mentor
               </h3>
-            </Row>
-            <Row className="center">
+            </div>
+            <div className="center animation-one-class">
               <h5 className="brains-works-content">
                 Lorem ipsum dolor sit amet, sapien ac tempor
               </h5>
-            </Row>
+            </div>
           </Col>
         </Row>
         <Row className="brains-works-part">
          <Col>
-            <Row className="center">
-              <img
-                src={BookSessionImage}
-                placeholder="Mentor Active Image"
-              />
-            </Row>
-            <Row className="center">
+           <div className="center blue-background-one-class animation-three-class">
+              <div className="center blue-background-two-class">
+                <img
+                  src={BookSessionImage}
+                  placeholder="Mentor Active Image"
+                />
+              </div>
+            </div>
+            <div className="blue-dotline-class animation-four-class"> 
+            </div>
+            <div className="center animation-three-class">
               <h3 className="brains-works-title">
                 Book a session
               </h3>
-            </Row>
-            <Row className="center">
+            </div>
+            <div className="center animation-three-class">
               <h5 className="brains-works-content">
                 Lorem ipsum dolor sit amet, sapien ac tempor
               </h5>
-            </Row>
+            </div>
           </Col>
         </Row>  
         <Row className="brains-works-part">
           <Col>
-            <Row className="center">
-              <img
-                src={VideoSessionImage}
-                placeholder="Mentor Active Image"
-              />
-            </Row>
-            <Row className="center">
+            <div className="center blue-background-one-class animation-five-class">
+              <div className="center blue-background-two-class">
+                <img
+                  src={VideoSessionImage}
+                  placeholder="Mentor Active Image"
+                />
+              </div>
+            </div>
+            <div className="center animation-five-class">
               <h3 className="brains-works-title">
                 Video Session
               </h3>
-            </Row>
-            <Row className="center">
+            </div>
+            <div className="center animation-five-class">
               <h5 className="brains-works-content">
                 Lorem ipsum dolor sit amet, sapien ac tempor
               </h5>
-            </Row>
+            </div>
           </Col>
         </Row>
       </div>

@@ -569,3 +569,76 @@ body {
     .btn-group-header { display: none !important; }
     .btn-dropdown-header { display: inline-block !important; }
 }
+
+.blue-background-one-class {
+    background-color: white;
+    width: 127px;
+    height: 108px;
+    padding: 3px;
+    margin: auto;
+    border-radius: 15px;
+    border: dotted;
+    border-width: 3px;
+    border-color: #04B5FA;
+    position: relative;
+    z-index: 100;
+}
+
+.blue-background-two-class {
+    width: 100%;
+    height: 100%;
+    background-color: #04B5FA;
+    border-radius: 10px;
+}
+
+.blue-dotline-class {
+    width: 81%;
+    height: 1px;
+    border-color: #04B5FA;
+    border-width: 3px 0px 0px 0px;
+    border-style: dotted;
+    position: absolute;
+    top: 54px;
+    left: 50%;
+}
+
+.animation-one-class {
+    animation-delay: 0ms;
+    animation-duration: 1.5s;
+    animation-name: 'example';
+}
+
+.animation-two-class {
+    animation-delay: 0ms;
+    animation-duration: 2.5s;
+    animation-name: 'example';
+}
+
+.animation-three-class {
+    animation-delay: 0ms;
+    animation-duration: 4s;
+    animation-name: 'example';
+}
+
+.animation-four-class {
+    animation-delay: 0ms;
+    animation-duration: 5s;
+    animation-name: 'example';
+}
+
+.animation-five-class {
+    animation-delay: 0ms;
+    animation-duration: 6.5s;
+    animation-name: 'example';
+}
+
+@keyframes example {
+    0%   {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+@keyframes example {
+    0%   {opacity: 0;}
+    50%  {opacity: 0;}
+    100% {opacity: 1;}
+}
