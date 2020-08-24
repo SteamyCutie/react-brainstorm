@@ -14,7 +14,7 @@ const WalletHeader = ({ title, subtitle, className, ...attrs }) => {
   return (
     <Col xs="12" sm="12" className="wallet-page-header-class">
       <h3>{title}</h3>
-      <Button>Add payment method</Button>
+      <Button className="btn-add-payment">Add payment method</Button>
     </Col>
   )
 };

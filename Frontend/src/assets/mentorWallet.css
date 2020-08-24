@@ -396,7 +396,7 @@ body {
     color: #333333;
 }
 
-.wallet-page-header-class button {
+.btn-add-payment {
     font-size: 16px;
     font-weight: bold;
     color: #FFFFFF;
@@ -404,7 +404,7 @@ body {
     border-color: transparent;
 }
 
-.wallet-page-header-class button:hover {
+.btn-add-payment:hover {
     font-size: 16px;
     font-weight: bold;
     color: #FFFFFF;
@@ -412,7 +412,7 @@ body {
     border-color: transparent;
 }
 
-.wallet-page-header-class button:focus {
+.btn-add-payment:focus {
     font-size: 16px;
     font-weight: bold;
     color: #FFFFFF;
@@ -420,7 +420,7 @@ body {
     border-color: transparent;
 }
 
-.wallet-page-header-class button:target {
+.btn-add-payment:target {
     font-size: 16px;
     font-weight: bold;
     color: #FFFFFF;
@@ -428,7 +428,7 @@ body {
     border-color: transparent;
 }
 
-.wallet-page-header-class button:focus-visible {
+.btn-add-payment:focus-visible {
     font-size: 16px;
     font-weight: bold;
     color: #FFFFFF;
