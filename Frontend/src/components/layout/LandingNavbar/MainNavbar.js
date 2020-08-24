@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Container, Navbar, Button } from "shards-react";
-
+import { Container, Navbar, Button, DropdownToggle, DropdownMenu, DropdownItem, Dropdown } from "shards-react";
+import { BrowserRouter, Route, Link } from "react-router-dom";
+import { createBrowserHistory as history} from 'history';
 import NavbarSearch from "./NavbarSearch";
-import NavbarNav from "./NavbarNav/NavbarNav";
+import NavbarDropdown from "./NavbarDropdown";
+// import NavbarNav from "./NavbarNav/NavbarNav";
 // import NavbarToggle from "./NavbarToggle";
 
 import "../../../assets/landingpage.css";
@@ -27,19 +29,23 @@ const MainNavbar = ({ layout, stickyTop }) => {
             className="logo-image"
           />
           <NavbarSearch />
-          <Button theme="light" className="mb-2 mr-3 btn-landingpage white-background">
-            Become a mentor
-          </Button>
-          <Button theme="light" className="mb-2 mr-3 btn-landingpage white-background">
-            Find a mentor
-          </Button>
-          <Button theme="light" className="mb-2 mr-3 btn-landingpage white-background">
-            Sign up
-          </Button>
-          <Button outline theme="primary" className="mb-2 mr-3 btn-landingpage btn-custom">
-            Sign in
-          </Button>
-          {/* <NavbarNav /> */}
+          <div className="btn-group-header">
+            <Button theme="light" className="mb-2 btn-landingpage white-background">
+              Become a mentor
+            </Button>
+            <Button theme="light" className="mb-2 btn-landingpage white-background">
+              Find a mentor
+            </Button>
+            <Button theme="light" className="mb-2 btn-landingpage white-background">
+              Sign up
+            </Button>
+            <Button outline theme="primary" className="mb-2 btn-landingpage btn-custom" onClick={() => history.push('/Products')}>
+              Sign in
+            </Button>
+          </div>
+          <div className="btn-dropdown-header">
+            <NavbarDropdown />
+          </div>
         </Navbar>
       </Container>
     </div>
