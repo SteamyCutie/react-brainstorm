@@ -1,7 +1,8 @@
 import React from "react";
-import { ButtonGroup, Button } from "shards-react";
+import { ButtonGroup, Button, Row, Col } from "shards-react";
 
-import MentorActive from '../../images/Mentor_ active session full screen 1.jpg'
+import MentorActiveImage from '../../images/Mentor_ active session full screen 1.jpg'
+import "../../assets/landingpage.css"
 
 const ShareKnowledge = () => (
   <div className="share-knowledge">

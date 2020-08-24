@@ -26,8 +26,8 @@ const FeaturedMentors = ({carouselDatas}) => (
           </div>
           <div className="carousel-component-body-class">
             <Row className="carousel-component-body-header-class">
-              <Col lg={6}>{data.name}</Col>
-              <Col lg={6}><img src={StarIcon} alt="star-icon"/>{data.score}</Col>
+              <div className="carousel-component-body-header-class-name">{data.name}</div>
+              <div><img src={StarIcon} alt="star-icon"/>{data.score}</div>
             </Row>
             <Row className="carousel-component-body-teach-class">
               <Col lg={2} className="tag-title">Teaches: </Col>
