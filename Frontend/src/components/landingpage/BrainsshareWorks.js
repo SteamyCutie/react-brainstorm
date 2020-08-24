@@ -15,36 +15,65 @@ const BrainsshareWorks = () => (
     </Col>
     <Col>
       <div className="center">
-        <Row className="img-brains-works">
+        <Row className="brains-works-part">
           <Col>
-          <img
-            className="img-brains-works"
-            src={FindMentorImage}
-            placeholder="Mentor Active Image"
-          />
-          </Col>
-          <Col>
-          <div>
-            <h3>Find a mentor</h3>
-          </div>
+            <Row className="center">
+              <img
+                src={FindMentorImage}
+                placeholder="Mentor Active Image"
+              />
+            </Row>
+            <Row className="center">
+              <h3 className="brains-works-title">
+                Find a mentor
+              </h3>
+            </Row>
+            <Row className="center">
+              <h5 className="brains-works-content">
+                Lorem ipsum dolor sit amet, sapien ac tempor
+              </h5>
+            </Row>
           </Col>
         </Row>
-        <Row className="img-brains-works">
-          <img
-            className="img-brains-works"
-            src={BookSessionImage}
-            placeholder="Mentor Active Image"
-          />
-          <h3>Book a session</h3>
-        </Row>
-        <Row className="img-brains-works">
-          <img
-            className="img-brains-works"
-            src={VideoSessionImage}
-            placeholder="Mentor Active Image"
-          />
-          <br />
-          <h3>Video session</h3>
+        <Row className="brains-works-part">
+         <Col>
+            <Row className="center">
+              <img
+                src={BookSessionImage}
+                placeholder="Mentor Active Image"
+              />
+            </Row>
+            <Row className="center">
+              <h3 className="brains-works-title">
+                Book a session
+              </h3>
+            </Row>
+            <Row className="center">
+              <h5 className="brains-works-content">
+                Lorem ipsum dolor sit amet, sapien ac tempor
+              </h5>
+            </Row>
+          </Col>
+        </Row>  
+        <Row className="brains-works-part">
+          <Col>
+            <Row className="center">
+              <img
+                src={VideoSessionImage}
+                placeholder="Mentor Active Image"
+              />
+            </Row>
+            <Row className="center">
+              <h3 className="brains-works-title">
+                Video Session
+              </h3>
+            </Row>
+            <Row className="center">
+              <h5 className="brains-works-content">
+                Lorem ipsum dolor sit amet, sapien ac tempor
+              </h5>
+            </Row>
+          </Col>
         </Row>
       </div>
     </Col>

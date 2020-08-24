@@ -19,15 +19,10 @@ export default [
     path: "/",
     exact: true,
     layout: LandingPageLayout,
-    component: () => <Redirect to="/LandingPage" />
-  },
-  {
-    path: "/LandingPage",
-    layout: LandingPageLayout,
     component: LandingPage
   },
   {
-    path: "/blog-overview",
+    path: "/upcoming-session",
     layout: DefaultLayout,
     component: BlogOverview
   },

@@ -7,7 +7,7 @@ import "../../assets/landingpage.css"
 const ShareKnowledge = () => (
   <div className="share-knowledge">
     <Row>
-      <Col xl="5" sm="12">
+      <Col xl="5">
         <div className="share-knowledge-desc">
           <h1 className="desc-title">Share your knowledge</h1>
           <h5>Language learning and Private Lessons online</h5>
@@ -16,7 +16,7 @@ const ShareKnowledge = () => (
           </Button>
         </div>
       </Col>
-      <Col xl="7" sm="12" className="img-share-knowledge">
+      <Col xl="7" className="img-share-knowledge">
         <img
           className="img-mentor-active"
           src={MentorActiveImage}
