@@ -17,10 +17,11 @@ body {
 }
 
 .navbar-search {
-    border: solid #ACACAC !important;
+    border: solid #E3E3E3 !important;
     border-radius: 5px !important;
     border-width: 1px !important;
     margin-top: 5px;
+    margin-left: 20px;
     height: 48px !important;
     font-size: 18px !important;
 }
@@ -238,6 +239,7 @@ body {
 
 .sidebar-item-font {
     font-size: 16px;
+    color: #999999 !important;
 }
 
 .p-0 {

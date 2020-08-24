@@ -34,12 +34,12 @@ class NavbarDropdown extends React.Component {
         toggle={() => this.toggle("dropdown1")}
         addonType="append"
         >
-        <DropdownToggle caret>Go to ...</DropdownToggle>
+        <DropdownToggle caret className="btn-dropdown-toogle">Go to ...</DropdownToggle>
         <DropdownMenu small right>
-            <DropdownItem>Become a mentor</DropdownItem>
-            <DropdownItem>Find a mentor</DropdownItem>
-            <DropdownItem>Sign up</DropdownItem>
-            <DropdownItem>Sign in</DropdownItem>
+            <DropdownItem className="btn-dropdown-item">Become a mentor</DropdownItem>
+            <DropdownItem className="btn-dropdown-item">Find a mentor</DropdownItem>
+            <DropdownItem className="btn-dropdown-item">Sign up</DropdownItem>
+            <DropdownItem className="btn-dropdown-item">Sign in</DropdownItem>
         </DropdownMenu>
         </Dropdown>
       </div>
