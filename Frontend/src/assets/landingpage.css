@@ -32,12 +32,6 @@ body {
     max-width: 500px;
 }
 
-.material-icons {
-    font-size: 30px !important;
-    font-weight: 10 !important;
-    height: 50px !important;
-}
-
 .input-group-text {
     padding: 0px 0px 0px 5px !important;
     color: white !important;
@@ -392,30 +386,6 @@ body {
     outline-color: #04B5FA;
 }
 
-.dropdown-toggle {
-    height: 48px;
-    font-size: 16px !important;
-    padding: 13px 21.5px !important;
-    background-color: #04B5FA !important;
-    border-color: #04B5FA !important;
-    margin-top: 5px;
-}
-
-.dropdown-item {
-    font-size: 16px !important;
-}
-
-.dropdown-item:active {
-    border: none !important;
-    outline: none !important;
-}
-
-/* .dropdown-item:hover {
-    border: none !important;
-    outline: none !important;
-    color: red;
-} */
-
 .get-fast-results {
     padding-left: 8%;
     padding-right: 8%;
@@ -654,43 +624,38 @@ body {
     left: 50%;
 }
 
-.animation-one-class {
-    animation-delay: 0ms;
-    animation-duration: 1.5s;
-    animation-name: 'example';
+.animation-class {
+    animation-name: 'anialpha';
 }
 
-.animation-two-class {
-    animation-delay: 0ms;
-    animation-duration: 2.5s;
-    animation-name: 'example';
+.ltor {
+    animation-name: 'ltor';
 }
 
-.animation-three-class {
-    animation-delay: 0ms;
-    animation-duration: 4s;
-    animation-name: 'example';
+.rtol {
+    animation-name: 'rtol';
 }
 
-.animation-four-class {
-    animation-delay: 0ms;
-    animation-duration: 5s;
-    animation-name: 'example';
+.bigger {
+    animation-name: 'bigger';
 }
 
-.animation-five-class {
-    animation-delay: 0ms;
-    animation-duration: 6.5s;
-    animation-name: 'example';
-}
-
-@keyframes example {
+@keyframes anialpha {
     0%   {opacity: 0;}
     100% {opacity: 1;}
 }
 
-@keyframes example {
-    0%   {opacity: 0;}
-    50%  {opacity: 0;}
-    100% {opacity: 1;}
+@keyframes ltor {
+    from {transform:translateX(-500px);}
+    to {transform:translateX(0px);}
+}
+
+@keyframes rtol {
+    from {transform:translateX(1500px);}
+    to {transform:translateX(0px);}
+}
+
+@keyframes bigger {
+    from {transform:scale(0, 0);}
+    to {transform:scale(1, 1);}
 }

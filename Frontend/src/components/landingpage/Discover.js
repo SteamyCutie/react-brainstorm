@@ -1,5 +1,7 @@
 import React from "react";
 import { ButtonGroup, Button, Col, Row } from "shards-react";
+import ScrollAnimation from 'react-animate-on-scroll';
+import "animate.css/animate.min.css";
 
 import "../../assets/landingpage.css"
 
@@ -37,11 +39,17 @@ const Discover = () => (
               </h4>
             </Row>
             <Row>
+              <ScrollAnimation animateIn='animation-class'
+                delay={0}
+                duration={2}
+                initiallyVisible={false}
+                animateOnce={true}>
               <img
                 className="img-discover-detail-content"
                 src={DiscoverImage1}
                 placeholder="Mentor Active Image"
-              />
+                />
+              </ScrollAnimation>
             </Row>
             <Row>
               <img
@@ -75,11 +83,17 @@ const Discover = () => (
               </h4>
             </Row>
             <Row>
-              <img
-                className="img-discover-detail-content"
-                src={DiscoverImage2}
-                placeholder="Mentor Active Image"
-              />
+              <ScrollAnimation animateIn='animation-class'
+                delay={2000}
+                duration={2}
+                initiallyVisible={false}
+                animateOnce={true}>
+                <img
+                  className="img-discover-detail-content"
+                  src={DiscoverImage2}
+                  placeholder="Mentor Active Image"
+                />
+              </ScrollAnimation>
             </Row>
             <Row>
               <img
@@ -113,11 +127,17 @@ const Discover = () => (
               </h4>
             </Row>
             <Row>
-              <img
-                className="img-discover-detail-content"
-                src={DiscoverImage3}
-                placeholder="Mentor Active Image"
-              />
+              <ScrollAnimation animateIn='animation-class'
+                delay={4000}
+                duration={2}
+                initiallyVisible={false}
+                animateOnce={true}>
+                <img
+                  className="img-discover-detail-content"
+                  src={DiscoverImage3}
+                  placeholder="Mentor Active Image"
+                />
+              </ScrollAnimation>
             </Row>
             <Row>
               <img
