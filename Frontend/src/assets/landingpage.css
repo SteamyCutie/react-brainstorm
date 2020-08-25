@@ -6,6 +6,7 @@ body {
     margin-left: 0px !important;
     max-width: 100% !important;
     flex: 0 0 100% !important;
+    background-color: white;
 }
 
 .fix-position {
@@ -14,6 +15,7 @@ body {
 
 .logo-image {
     margin-right: 60px;
+    margin-left: 30px;
 }
 
 .navbar-search {
@@ -187,6 +189,7 @@ body {
 
 .carousel-component-body-header-class-name {
     padding-right: 20px;
+    padding-left: 10px;
 }
 
 .carousel-component-body-teach-class {
@@ -213,7 +216,7 @@ body {
 }
 
 .carousel-component-body-desc-class p {
-    margin-bottom: 0px;
+    margin-bottom: 10px;
     font-weight: 400;
 }
 
@@ -256,6 +259,7 @@ body {
 }
 
 .read-more {
+    margin-top: 25px !important;
     text-decoration: underline !important;
 }
 
@@ -385,6 +389,30 @@ body {
     border-color: #04B5FA;
     outline-color: #04B5FA;
 }
+
+.btn-dropdown-toogle {
+    height: 48px;
+    font-size: 16px !important;
+    padding: 13px 21.5px !important;
+    background-color: #04B5FA !important;
+    border-color: #04B5FA !important;
+    margin-top: 5px;
+}
+
+.btn-dropdown-item {
+    font-size: 16px !important;
+}
+
+.btn-dropdown-item:active {
+    border: none !important;
+    outline: none !important;
+}
+
+/* .dropdown-item:hover {
+    border: none !important;
+    outline: none !important;
+    color: red;
+} */
 
 .get-fast-results {
     padding-left: 8%;

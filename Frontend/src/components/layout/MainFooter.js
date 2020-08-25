@@ -40,9 +40,9 @@ const MainFooter = ({ contained, menuItems, copyright }) => (
           <Row><a className="footer-link" href="#">Privacy Policy</a></Row>
         </Col>
         <Col className="external-site-icon">
-          <img src={facebookIcon} className="footer-icon" />
-          <img src={twitterIcon} className="footer-icon" />
-          <img src={youtubeIcon} className="footer-icon" />
+          <a href="http://www.facebook.com"><img src={facebookIcon} className="footer-icon" /></a>
+          <a href="http://www.twitter.com"><img src={twitterIcon} className="footer-icon" /></a>
+          <a href="http://www.youtube.com"><img src={youtubeIcon} className="footer-icon" /></a>
         </Col>
       </Row>
       <Row className="copy-right-txt center">
