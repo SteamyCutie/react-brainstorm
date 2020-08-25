@@ -12,6 +12,7 @@ const ShareKnowledge = () => (
       delay={2000}
       duration={2}
       initiallyVisible={false}
+      className="img-get-fast-results"
       animateOnce={true}>
       <div className="get-fast-results-desc">
         <h1 className="desc-title-fast-results">Get fast results with professional online mentor.</h1>
