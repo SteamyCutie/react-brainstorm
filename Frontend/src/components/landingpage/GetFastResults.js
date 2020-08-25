@@ -9,7 +9,7 @@ import "../../assets/landingpage.css"
 const ShareKnowledge = () => (
   <div className="get-fast-results">
     <ScrollAnimation animateIn='ltor'
-      delay={0}
+      delay={2000}
       duration={2}
       initiallyVisible={false}
       animateOnce={true}>
@@ -22,8 +22,9 @@ const ShareKnowledge = () => (
     </ScrollAnimation>
     <div className="img-get-fast-results-wrap">
       <ScrollAnimation animateIn='bigger'
-        delay={0}
+        delay={2000}
         duration={2}
+        className="img-get-fast-results"
         initiallyVisible={false}
         animateOnce={true}>
         <img
