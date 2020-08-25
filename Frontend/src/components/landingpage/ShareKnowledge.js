@@ -11,7 +11,7 @@ const ShareKnowledge = () => (
     <Row>
       <Col xl="5">
         <ScrollAnimation animateIn='ltor'
-          delay={2000}
+          delay={1000}
           duration={2}
           initiallyVisible={false}
           animateOnce={true}>
@@ -27,7 +27,7 @@ const ShareKnowledge = () => (
       <Col xl="7" className="img-share-knowledge">
         <ScrollAnimation animateIn='rtol'
           delay={0}
-          duration={4}
+          duration={3}
           initiallyVisible={false}
           animateOnce={true}>
           <img

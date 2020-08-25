@@ -27,7 +27,7 @@ const MainNavbar = ({ layout, stickyTop }) => {
           />
           <NavbarSearch />
           <div className="btn-group-header">
-            <Button theme="light" className="mb-2 btn-landingpage white-background">
+            <Button theme="light" className="mb-2 white-background btn-landingpage" style={{boxShadow: "none !important" }}>
               Become a mentor
             </Button>
             <Button theme="light" className="mb-2 btn-landingpage white-background">

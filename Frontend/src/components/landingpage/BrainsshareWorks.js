@@ -3,8 +3,8 @@ import { ButtonGroup, Button, Row, Col } from "shards-react";
 import ScrollAnimation from 'react-animate-on-scroll';
 
 import FindMentorImage from '../../images/User.svg'
-import VideoSessionImage from '../../images/Book.svg'
-import BookSessionImage from '../../images/Video.svg'
+import VideoSessionImage from '../../images/Video.svg'
+import BookSessionImage from '../../images/Book.svg'
 import "../../assets/landingpage.css"
 import "animate.css/animate.min.css";
 
@@ -21,7 +21,7 @@ const BrainsshareWorks = () => (
             <Col>
               <ScrollAnimation animateIn='animation-class'
                 delay={0}
-                duration={1.5}
+                duration={1}
                 initiallyVisible={false}
                 animateOnce={true}>
                 <div className="center blue-background-one-class">
@@ -34,8 +34,8 @@ const BrainsshareWorks = () => (
                 </div>
               </ScrollAnimation>
               <ScrollAnimation animateIn='animation-class'
-                delay={1500}
-                duration={1}
+                delay={1000}
+                duration={0.5}
                 initiallyVisible={false}
                 animateOnce={true}>
                 <div className="blue-dotline-class"> 
@@ -43,7 +43,7 @@ const BrainsshareWorks = () => (
               </ScrollAnimation>
               <ScrollAnimation animateIn='animation-class'
                 delay={0}
-                duration={1.5}
+                duration={1}
                 initiallyVisible={false}
                 animateOnce={true}>
                 <div className="center">
@@ -62,8 +62,8 @@ const BrainsshareWorks = () => (
           <Row className="brains-works-part">
             <Col>
               <ScrollAnimation animateIn='animation-class'
-                delay={2500}
-                duration={1.5}
+                delay={1500}
+                duration={1}
                 initiallyVisible={false}
                 animateOnce={true}>
                 <div className="center blue-background-one-class">
@@ -76,16 +76,16 @@ const BrainsshareWorks = () => (
                 </div>
               </ScrollAnimation>
               <ScrollAnimation animateIn='animation-class'
-                delay={4000}
-                duration={1}
+                delay={2500}
+                duration={0.5}
                 initiallyVisible={false}
                 animateOnce={true}>
                 <div className="blue-dotline-class"> 
                 </div>
               </ScrollAnimation>
               <ScrollAnimation animateIn='animation-class'
-                delay={2500}
-                duration={1.5}
+                delay={1500}
+                duration={1}
                 initiallyVisible={false}
                 animateOnce={true}>
                 <div className="center">
@@ -104,8 +104,8 @@ const BrainsshareWorks = () => (
           <Row className="brains-works-part">
             <Col>
               <ScrollAnimation animateIn='animation-class'
-                delay={5000}
-                duration={1.5}
+                delay={3000}
+                duration={1}
                 initiallyVisible={false}
                 animateOnce={true}>
                 <div className="center blue-background-one-class">

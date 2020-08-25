@@ -54,16 +54,21 @@ body {
     border-color: #04B5FA !important;
     height: 48px;
     margin-top: 5px;
-    padding: 13px 21.5px !important;
+    margin-left: 21.5px;
+    margin-right: 21.5px;
+    padding: 13px 0px !important;
     font-size: 15px !important;
+    border-radius: 0px !important;
 }
 
 .btn-landingpage:hover {
     box-shadow: none !important;
+    border-bottom-width: 2px !important;
+    border-bottom-color: #04B5FA !important;
 }
 
-.btn-landingpage:active {
-    box-shadow: inset none !important;
+.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle .btn-landingpage:active{
+    box-shadow: none !important;
 }
 
 .btn-landingpage:focus {
@@ -72,6 +77,9 @@ body {
 
 .btn-custom {
     color: #04B5FA !important;
+    padding-left: 21.5px !important;
+    padding-right: 21.5px !important;
+    border-radius: 0.25rem !important;
 }
 
 .btn-custom:hover {
@@ -156,8 +164,38 @@ body {
 
 .carousel-component-online-class {
     position: absolute;
-    left: -10px;
-    top: -10px;
+    left: -5px;
+    top: -5px;
+    background-color: #43D3A6;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+}
+
+.carousel-component-online-class::before {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 13px;
+    height: 13px;
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 0 0 3px 3px #43D3A6;
+    -webkit-animation: '_2xVphYaP' 1s linear infinite;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    animation-name: '_2xVphYaP';
+    content: "";
+}
+
+@keyframes _2xVphYaP {
+    from {transform:scale(1, 1);}
+    to {transform:scale(2, 2);}
 }
 
 .carousel-component-body-class {
@@ -169,14 +207,14 @@ body {
     width: 146px;
     color: #333333;
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 600;
     width: 146px;
     height: 100%;
 }
 
 .carousel-component-body-header-class {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 600;
     padding: 8px 0px;
     padding-top: 0px;
     color: #333333;
@@ -194,7 +232,7 @@ body {
 
 .carousel-component-body-teach-class {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     color: #333333;
     height: 30px;
 }
@@ -221,13 +259,13 @@ body {
 }
 
 .carousel-component-body-desc-class a {
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .carousel-component-body-play-class {
     color: #04B5FA;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     padding-top: 5px;
 }
 
@@ -310,6 +348,11 @@ body {
 
 .awssld__next {
     outline: none !important;
+}
+
+.awssld__next:hover {
+    color: #04B5FA;
+    stroke: #04B5FA;
 }
 
 .awssld__prev {
@@ -499,7 +542,7 @@ body {
 .brainsshare-tag {
     height: 25px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 400;
     color: #04B5FA;
     background-color: #D9F2FE;
     border-radius: 100px;
@@ -686,4 +729,9 @@ body {
 @keyframes bigger {
     from {transform:scale(0, 0);}
     to {transform:scale(1, 1);}
+}
+
+.awssld__timer {
+    opacity: 0;
+    pointer-events: none; /* prevent events (mouse clicking etc.) */
 }
