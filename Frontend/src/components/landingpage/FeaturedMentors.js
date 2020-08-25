@@ -18,7 +18,7 @@ const AutoplaySlider = withAutoplay(AwesomeSlider);
 const FeaturedMentors = ({carouselDatas}) => (
   <div className="featured-mentors">
     <h1>Featured mentors</h1>
-    <AutoplaySlider cssModule={AwesomeSliderStyles} bullets={false} play={false} cancelOnInteraction={false} interval={3000} showTimer={false}>
+    <AutoplaySlider cssModule={AwesomeSliderStyles} bullets={false} play={true} cancelOnInteraction={false} interval={3000} showTimer={false}>
       {carouselDatas.map((data, idx) => (
         <div className="carousel-component" key={idx}>
           <div style={{position: "relative"}}>
