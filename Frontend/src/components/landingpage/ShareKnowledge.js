@@ -28,6 +28,7 @@ const ShareKnowledge = () => (
         <ScrollAnimation animateIn='rtol'
           delay={0}
           duration={3}
+          className="center"
           initiallyVisible={false}
           animateOnce={true}>
           <img
