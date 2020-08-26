@@ -478,6 +478,52 @@ body {
     padding-right: 10px;
 }
 
+.small-card-payment {
+    border-radius: 7px;
+    max-width: 360px;
+    min-width: 360px;
+    max-height: 80px;
+    min-height: 80px;
+    padding: 10px 10px;
+    margin-right: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
+
+    display: flex;
+}
+
+.small-card-payment-logo {
+    padding-top: 10px;
+    padding-left: 10px;
+    margin: 2px 5px;
+    /* margin-left: 10px; */
+    width: 50px;
+    /* height: 50px; */
+}
+
+.small-card-payment-title {
+    color: #333333;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    text-align: left;
+}
+
+.small-card-payment-expiredate {
+    color: #333333;
+    font-size: 14px !important;
+    text-align: left;
+    font-style: italic;
+}
+
+.small-card-payment-desc {
+    color: #333333;
+    padding-left: 10px;
+    display: grid;
+    justify-content: left;
+    align-items: left;
+    width: 226px;
+}
+
 .data-table-div-class {
     border-radius: 5px;
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.12);

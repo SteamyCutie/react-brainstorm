@@ -7,7 +7,7 @@ import SmallCardPayment from "../components/common/SmallCardPayment";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 
-const WalletStu = ({ smallCards, tHistory, columns }) => (
+const WalletStu = ({ paymentCard, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     <Row noGutters className="page-header py-4">
       <Col xs="12" sm="12" className="page-title">
@@ -17,11 +17,11 @@ const WalletStu = ({ smallCards, tHistory, columns }) => (
 
     <Row>
       <div className="card-container">
-      {smallCards.map((card, idx) => (
+      {paymentCard.map((card, idx) => (
           <SmallCardPayment
             id={idx}
             title={card.title}
-            content={card.content}
+            expireDate={card.expireDate}
             image={card.image}
           />
       ))}
@@ -37,24 +37,24 @@ const WalletStu = ({ smallCards, tHistory, columns }) => (
 );
 
 WalletStu.propTypes = {
-  smallCards: PropTypes.array,
+  paymentCard: PropTypes.array,
   tHistory: PropTypes.array,
   columns: PropTypes.array,
 };
 
 WalletStu.defaultProps = {
-  smallCards: [
+  paymentCard: [
     {
-      value: "$231.45",
-      label: "Available Balance",
+      title: "Mastercard ending in 2715",
+      image: require("../images/Mastercard-logo.png"),
+      expireDate: "8/23",
+      isPrimary: true
     },
     {
-      value: "$154.90",
-      label: "Pending Balance",
-    },
-    {
-      value: "$1320.10",
-      label: "Life time Earnings",
+      title: "Visa ending in 9372",
+      image: require("../images/VisaCard-logo.png"),
+      expireDate: "02/21",
+      isPrimary: false
     }
   ],
   tHistory: [

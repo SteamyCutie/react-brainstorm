@@ -9,7 +9,7 @@ import { Badge } from "shards-react";
 
 const Subscriptions = ({ smallCards, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
-    <Row noGutters className="page-header py-4">
+    {/* <Row noGutters className="page-header py-4">
       <Col xs="12" sm="12" className="page-title">
         <h3>Supscriptions</h3>
       </Col>
@@ -25,9 +25,9 @@ const Subscriptions = ({ smallCards, tHistory, columns }) => (
           />
         </Col>
       ))}
-    </Row>
+    </Row> */}
 
-    <Row className="wallet-data-table-class">
+    <Row className="wallet-data-table-class py-4">
       <Col lg="12" md="12" sm="12">
         <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
       </Col>
