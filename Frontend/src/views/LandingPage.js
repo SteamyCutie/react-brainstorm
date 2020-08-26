@@ -6,26 +6,36 @@ import Discover from "../components/landingpage/Discover"
 import FeaturedMentors from "../components/landingpage/FeaturedMentors"
 import GetFastResults from "../components/landingpage/GetFastResults"
 import ShareKnowledge from "../components/landingpage/ShareKnowledge"
+import SignIn from "../components/landingpage/SignIn"
 
 
-const AddNewPost = () => (
-  <Container fluid className="main-content-container pb-4">
-    <Row>
-      <ShareKnowledge />
-    </Row>
-    <Row>
-      <BrainsshareWorks />
-    </Row>
-    <Row>
-      <Discover />
-    </Row>
-    <Row>
-      <FeaturedMentors />
-    </Row>
-    <Row>
-      <GetFastResults />
-    </Row>
-  </Container>
-);
+export default class landingpage extends React.Component{
+  constructor(props) {
+    super(props);
+  }
 
-export default AddNewPost;
+
+  render() {
+    
+    return (
+      <Container fluid className="main-content-container pb-4">
+        <Row>
+          <ShareKnowledge />
+        </Row>
+        <Row>
+          <BrainsshareWorks />
+        </Row>
+        <Row>
+          <Discover />
+        </Row>
+        <Row>
+          <FeaturedMentors />
+        </Row>
+        <Row>
+          <GetFastResults />
+        </Row>
+      </Container>
+    );
+  }
+}
+

@@ -8,37 +8,30 @@ import "animate.css/animate.min.css";
 
 const ShareKnowledge = () => (
   <div className="share-knowledge">
-    <Row>
-      <Col xl="5">
-        <ScrollAnimation animateIn='ltor'
-          delay={1000}
-          duration={2}
-          initiallyVisible={false}
-          animateOnce={true}>
-          <div className="share-knowledge-desc">
+    <ScrollAnimation animateIn='animation-class'
+      delay={1000}
+      duration={2}
+      initiallyVisible={false}
+      animateOnce={true}>
+      <Row>
+        <Col xl="5">
+          <div className="share-knowledge-desc share-animation-ltor">
             <h1 className="desc-title">Share your knowledge</h1>
             <h5>Language learning and Private Lessons online</h5>
             <Button theme="primary" className="mb-2 mr-3 btn-find-mentor">
               Find a mentor
             </Button>
           </div>
-        </ScrollAnimation>
-      </Col>
-      <Col xl="7" className="img-share-knowledge">
-        <ScrollAnimation animateIn='rtol'
-          delay={0}
-          duration={3}
-          className="center"
-          initiallyVisible={false}
-          animateOnce={true}>
+        </Col>
+        <Col xl="7" className="img-share-knowledge share-animation-rtol">
           <img
             className="img-mentor-active"
             src={MentorActiveImage}
             placeholder="Mentor Active Image"
           />
-        </ScrollAnimation>
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+    </ScrollAnimation>
   </div>
 );
 

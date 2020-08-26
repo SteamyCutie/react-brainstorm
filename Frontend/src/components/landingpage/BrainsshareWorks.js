@@ -16,120 +16,84 @@ const BrainsshareWorks = () => (
       </div>
     </Col>
     <Col>
+      <ScrollAnimation animateIn='animation-class'
+        delay={0}
+        duration={4}
+        initiallyVisible={false}
+        animateOnce={true}>
         <div className="center">
           <Row className="brains-works-part">
             <Col>
-              <ScrollAnimation animateIn='animation-class'
-                delay={0}
-                duration={1}
-                initiallyVisible={false}
-                animateOnce={true}>
-                <div className="center blue-background-one-class">
-                  <div className="center blue-background-two-class">
-                    <img
-                      src={FindMentorImage}
-                      placeholder="Mentor Active Image"
-                    />
-                  </div>
+              <div className="center blue-background-one-class animation-one-class dis-none">
+                <div className="center blue-background-two-class">
+                  <img
+                    src={FindMentorImage}
+                    placeholder="Mentor Active Image"
+                  />
                 </div>
-              </ScrollAnimation>
-              <ScrollAnimation animateIn='animation-class'
-                delay={1000}
-                duration={0.5}
-                initiallyVisible={false}
-                animateOnce={true}>
-                <div className="blue-dotline-class"> 
-                </div>
-              </ScrollAnimation>
-              <ScrollAnimation animateIn='animation-class'
-                delay={0}
-                duration={1}
-                initiallyVisible={false}
-                animateOnce={true}>
-                <div className="center">
-                  <h3 className="brains-works-title">
-                    Find a mentor
-                  </h3>
-                </div>
-                <div className="center">
-                  <h5 className="brains-works-content">
-                    Lorem ipsum dolor sit amet, sapien ac tempor
-                  </h5>
-                </div>
-              </ScrollAnimation>
+              </div>
+              <div className="center animation-one-class dis-none">
+                <h3 className="brains-works-title">
+                  Find a mentor
+                </h3>
+              </div>
+              <div className="center animation-one-class dis-none">
+                <h5 className="brains-works-content">
+                  Lorem ipsum dolor sit amet, sapien ac tempor
+                </h5>
+              </div>
+              <div className="blue-dotline-class animation-two-class dis-none"> 
+              </div>
             </Col>
           </Row>
           <Row className="brains-works-part">
             <Col>
-              <ScrollAnimation animateIn='animation-class'
-                delay={1500}
-                duration={1}
-                initiallyVisible={false}
-                animateOnce={true}>
-                <div className="center blue-background-one-class">
-                  <div className="center blue-background-two-class">
-                    <img
-                      src={BookSessionImage}
-                      placeholder="Mentor Active Image"
-                    />
-                  </div>
+              <div className="center blue-background-one-class animation-three-class dis-none">
+                <div className="center blue-background-two-class">
+                  <img
+                    src={BookSessionImage}
+                    placeholder="Mentor Active Image"
+                  />
                 </div>
-              </ScrollAnimation>
-              <ScrollAnimation animateIn='animation-class'
-                delay={2500}
-                duration={0.5}
-                initiallyVisible={false}
-                animateOnce={true}>
-                <div className="blue-dotline-class"> 
-                </div>
-              </ScrollAnimation>
-              <ScrollAnimation animateIn='animation-class'
-                delay={1500}
-                duration={1}
-                initiallyVisible={false}
-                animateOnce={true}>
-                <div className="center">
-                  <h3 className="brains-works-title">
-                    Book a session
-                  </h3>
-                </div>
-                <div className="center">
-                  <h5 className="brains-works-content">
-                    Lorem ipsum dolor sit amet, sapien ac tempor
-                  </h5>
-                </div>
-              </ScrollAnimation>
+              </div>
+              <div className="center animation-three-class dis-none">
+                <h3 className="brains-works-title">
+                  Book a session
+                </h3>
+              </div>
+              <div className="center animation-three-class dis-none">
+                <h5 className="brains-works-content">
+                  Lorem ipsum dolor sit amet, sapien ac tempor
+                </h5>
+              </div>
+              <div className="blue-dotline-class animation-four-class dis-none"> 
+              </div>
             </Col>
           </Row>  
           <Row className="brains-works-part">
             <Col>
-              <ScrollAnimation animateIn='animation-class'
-                delay={3000}
-                duration={1}
-                initiallyVisible={false}
-                animateOnce={true}>
-                <div className="center blue-background-one-class">
-                  <div className="center blue-background-two-class">
-                    <img
-                      src={VideoSessionImage}
-                      placeholder="Mentor Active Image"
-                    />
-                  </div>
+              <div className="center blue-background-one-class animation-five-class dis-none">
+                <div className="center blue-background-two-class">
+                  <img
+                    src={VideoSessionImage}
+                    placeholder="Mentor Active Image"
+                  />
                 </div>
-                <div className="center">
-                  <h3 className="brains-works-title">
-                    Video Session
-                  </h3>
-                </div>
-                <div className="center">
-                  <h5 className="brains-works-content">
-                    Lorem ipsum dolor sit amet, sapien ac tempor
-                  </h5>
-                </div>
-              </ScrollAnimation>
+              </div>
+              <div className="center animation-five-class dis-none">
+                <h3 className="brains-works-title">
+                  Video Session
+                </h3>
+              </div>
+              <div className="center animation-five-class dis-none">
+                <h5 className="brains-works-content">
+                  Lorem ipsum dolor sit amet, sapien ac tempor
+                </h5>
+              </div>
             </Col>
           </Row>
         </div>
+      </ScrollAnimation>
     </Col>
   </div>
 );
