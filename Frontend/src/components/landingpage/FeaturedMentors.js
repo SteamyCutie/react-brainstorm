@@ -4,6 +4,7 @@ import CarouselComponent from "./CarouselComponent";
 import AwesomeSlider from 'react-awesome-slider';
 import AwesomeSliderStyles from 'react-awesome-slider/src/styles';
 import PropTypes from "prop-types";
+import withAutoplay from 'react-awesome-slider/dist/autoplay';
 
 import "../../assets/landingpage.css"
 import StarIcon from "../../images/star_icon.svg";
@@ -12,16 +13,21 @@ import Online from "../../images/Online.svg";
 import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
 
+const AutoplaySlider = withAutoplay(AwesomeSlider);
+
 const FeaturedMentors = ({carouselDatas}) => (
   <div className="featured-mentors">
     <h1>Featured mentors</h1>
-    <AwesomeSlider cssModule={AwesomeSliderStyles} bullets={false}>
+    <AutoplaySlider cssModule={AwesomeSliderStyles} bullets={false} play={true} cancelOnInteraction={false} interval={3000} showTimer={false}>
       {carouselDatas.map((data, idx) => (
         <div className="carousel-component" key={idx}>
           <div style={{position: "relative"}}>
             <img src={data.image} alt={data.name} className="carousel-component-img-class" />
-            {
+            {/* {
               data.online && <img src={Online} alt="Online" className="carousel-component-online-class" />
+            } */}
+            {
+              data.online && <div className="carousel-component-online-class"></div>
             }
           </div>
           <div className="carousel-component-body-class">
@@ -69,11 +75,7 @@ const FeaturedMentors = ({carouselDatas}) => (
       {/* {carouselDatas.map((data, idx) => (
           <CarouselComponent data="111" key={idx} />
       ))} */}
-      {/* <div><h1>1</h1></div>
-      <div><h1>2</h1></div>
-      <div><h1>3</h1></div>
-      <div><h1>4</h1></div> */}
-    </AwesomeSlider>
+    </AutoplaySlider>
   </div>
 );
 

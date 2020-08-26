@@ -41,7 +41,7 @@ const Discover = () => (
                 className="img-discover-detail-content"
                 src={DiscoverImage1}
                 placeholder="Mentor Active Image"
-              />
+                />
             </Row>
             <Row>
               <img

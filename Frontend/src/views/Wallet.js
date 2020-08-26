@@ -7,6 +7,7 @@ import SmallCard from "./../components/common/SmallCard";
 import CustomDataTable from "./../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 
+
 const Wallet = ({ smallCards, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     <Row noGutters className="page-header py-4">

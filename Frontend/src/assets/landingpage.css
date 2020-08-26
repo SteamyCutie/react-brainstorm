@@ -54,16 +54,21 @@ body {
     border-color: #04B5FA !important;
     height: 48px;
     margin-top: 5px;
-    padding: 13px 21.5px !important;
+    margin-left: 21.5px;
+    margin-right: 21.5px;
+    padding: 13px 0px !important;
     font-size: 15px !important;
+    border-radius: 0px !important;
 }
 
 .btn-landingpage:hover {
     box-shadow: none !important;
+    border-bottom-width: 2px !important;
+    border-bottom-color: #04B5FA !important;
 }
 
-.btn-landingpage:active {
-    box-shadow: inset none !important;
+.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle .btn-landingpage:active{
+    box-shadow: none !important;
 }
 
 .btn-landingpage:focus {
@@ -72,6 +77,9 @@ body {
 
 .btn-custom {
     color: #04B5FA !important;
+    padding-left: 21.5px !important;
+    padding-right: 21.5px !important;
+    border-radius: 0.25rem !important;
 }
 
 .btn-custom:hover {
@@ -156,8 +164,38 @@ body {
 
 .carousel-component-online-class {
     position: absolute;
-    left: -10px;
-    top: -10px;
+    left: -5px;
+    top: -5px;
+    background-color: #43D3A6;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+}
+
+.carousel-component-online-class::before {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 13px;
+    height: 13px;
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 0 0 3px 3px #43D3A6;
+    -webkit-animation: '_2xVphYaP' 1s linear infinite;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    animation-name: '_2xVphYaP';
+    content: "";
+}
+
+@keyframes _2xVphYaP {
+    from {transform:scale(1, 1);}
+    to {transform:scale(2, 2);}
 }
 
 .carousel-component-body-class {
@@ -169,14 +207,14 @@ body {
     width: 146px;
     color: #333333;
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 600;
     width: 146px;
     height: 100%;
 }
 
 .carousel-component-body-header-class {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 600;
     padding: 8px 0px;
     padding-top: 0px;
     color: #333333;
@@ -194,7 +232,7 @@ body {
 
 .carousel-component-body-teach-class {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     color: #333333;
     height: 30px;
 }
@@ -221,13 +259,13 @@ body {
 }
 
 .carousel-component-body-desc-class a {
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .carousel-component-body-play-class {
     color: #04B5FA;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     padding-top: 5px;
 }
 
@@ -285,6 +323,7 @@ body {
     display: flex;
     justify-content: center;
     padding: 0;
+    opacity: 0;
 }
 
 .img-mentor-active {
@@ -298,6 +337,7 @@ body {
     padding-top: 10%;
     padding-left: 20%;
     align-items: center;
+    opacity: 0;
 }
 
 .awssld__content {
@@ -310,6 +350,11 @@ body {
 
 .awssld__next {
     outline: none !important;
+}
+
+.awssld__next:hover {
+    color: #04B5FA;
+    stroke: #04B5FA;
 }
 
 .awssld__prev {
@@ -499,7 +544,7 @@ body {
 .brainsshare-tag {
     height: 25px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 400;
     color: #04B5FA;
     background-color: #D9F2FE;
     border-radius: 100px;
@@ -652,43 +697,325 @@ body {
     left: 50%;
 }
 
-.animation-one-class {
-    animation-delay: 0ms;
-    animation-duration: 1.5s;
-    animation-name: 'example';
+.animation-class {
 }
 
-.animation-two-class {
-    animation-delay: 0ms;
-    animation-duration: 2.5s;
-    animation-name: 'example';
+.dis-none {
+    opacity: 0;
 }
 
-.animation-three-class {
-    animation-delay: 0ms;
-    animation-duration: 4s;
-    animation-name: 'example';
+.animation-class .animation-one-class {
+    animation-name: 'anialpha';
+    animation-duration: 1000ms;
+    animation-delay: 0s;
+    animation-fill-mode: forwards;
 }
 
-.animation-four-class {
-    animation-delay: 0ms;
-    animation-duration: 5s;
-    animation-name: 'example';
+.animation-class .animation-two-class {
+    animation-name: 'anialpha';
+    animation-duration: 500ms;
+    animation-delay: 1000ms;
+    animation-fill-mode: forwards;
 }
 
-.animation-five-class {
-    animation-delay: 0ms;
-    animation-duration: 6.5s;
-    animation-name: 'example';
+.animation-class .animation-three-class {
+    animation-name: 'anialpha';
+    animation-duration: 1000ms;
+    animation-delay: 1500ms;
+    animation-fill-mode: forwards;
 }
 
-@keyframes example {
+.animation-class .animation-four-class {
+    animation-name: 'anialpha';
+    animation-duration: 500ms;
+    animation-delay: 2500ms;
+    animation-fill-mode: forwards;
+}
+
+.animation-class .animation-five-class {
+    animation-name: 'anialpha';
+    animation-duration: 1000ms;
+    animation-delay: 3000ms;
+    animation-fill-mode: forwards;
+}
+
+.animation-class .share-animation-ltor {
+    animation-name: 'ltor';
+    animation-delay: 1000ms;
+    animation-duration: 2000ms;
+    animation-fill-mode: forwards;
+}
+
+.animation-class .share-animation-rtol {
+    animation-name: 'rtol';
+    animation-delay: 0ms;
+    animation-duration: 3000ms;
+    animation-fill-mode: forwards;
+}
+
+.ltor {
+    animation-name: 'ltor';
+}
+
+.rtol {
+    animation-name: 'rtol';
+}
+
+.bigger {
+    animation-name: 'bigger';
+}
+
+@keyframes anialpha {
     0%   {opacity: 0;}
     100% {opacity: 1;}
 }
 
-@keyframes example {
-    0%   {opacity: 0;}
-    50%  {opacity: 0;}
-    100% {opacity: 1;}
+@keyframes ltor {
+    from {transform:translateX(-500px);opacity: 1;}
+    to {transform:translateX(0px);opacity: 1;}
+}
+
+@keyframes rtol {
+    from {transform:translateX(1500px);opacity: 1;}
+    to {transform:translateX(0px);opacity: 1;}
+}
+
+@keyframes bigger {
+    from {transform:scale(0, 0);}
+    to {transform:scale(1, 1);}
+}
+
+.awssld__timer {
+    opacity: 0;
+    pointer-events: none; /* prevent events (mouse clicking etc.) */
+}
+
+.modal-content-class {
+    align-items: center;
+    justify-content: center;
+    display: block;
+    padding: 0px !important;
+    width: 65%;
+}
+
+.modal-class {
+    height: 100%;
+    margin: auto !important;
+    display: flex;
+}
+
+.modal-class .modal-content {
+    min-height: 50%;
+    margin: auto;
+    align-items: center;
+}
+
+.content-center {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.full-width-class {
+    width: 100%;
+}
+
+.middle-width-class {
+    width: 50%;
+}
+
+.block-content-class {
+    display: block;
+}
+
+.modal-header-class {
+    margin: 40px 0px;
+    font-size: 25px !important;
+    line-height: 25px;
+    font-weight: 700;
+    color: #333333;
+}
+
+.modal-input-group-class {
+}
+
+.modal-input-group-class label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.modal-input-group-class input {
+    font-size: 16px;
+    line-height: 30px;
+    color: #999999;
+    border: 1px solid #E3E3E3;
+    font-weight: 400;
+    box-shadow: none;
+    margin-bottom: 20px;
+}
+
+.modal-input-group-class input:hover {
+    box-shadow: none;
+    border: 1px solid #E3E3E3 !important;
+}
+
+.modal-input-group-class input:focus {
+    box-shadow: none;
+    border: 1px solid #E3E3E3 !important;
+}
+
+.modal-input-group-class input:active {
+    box-shadow: none;
+    border: 1px solid #E3E3E3 !important;
+}
+
+.forgot-class {
+    float: right;
+}
+
+.button-text-group-class {
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden-underline {
+    text-decoration: none;
+}
+
+.hidden-underline:hover {
+    text-decoration: none;
+}
+
+.button-text-group-class button {
+    margin: 10px;
+    display: flex;
+    margin: auto;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #04B5FA;
+    border-color: #04B5FA;
+    padding: 15px 50px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-text-group-class button:hover {
+    margin: 10px;
+    display: flex;
+    margin: auto;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #04B5FA;
+    border-color: #04B5FA;
+    box-shadow: none;
+    padding: 15px 50px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-text-group-class button:active {
+    margin: 10px;
+    display: flex;
+    margin: auto;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #04B5FA !important;
+    border-color: #04B5FA !important;
+    box-shadow: none;
+    padding: 15px 50px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-text-group-class p {
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    font-weight: 400;
+}
+
+.button-text-group-class a {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.button-text-group-class a:hover {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.seperation-line-class {
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 15px;
+    justify-content: space-between;
+}
+
+.seperation-line-class hr {
+    width: 40%;
+    margin: auto;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-top: 1px solid #969696;
+    /* margin-top: 0px; */
+    /* margin-bottom: 0px; */
+}
+
+.sign-with-facebook {
+    width: 100%;
+    background-color: #1976F2 !important;
+    border-color: #1976F2 !important;
+    margin-bottom: 15px;
+    border-radius: 5px !important;
+    font-size: 16px !important;
+    padding: 15px !important;
+    position: relative;
+}
+
+.sign-with-facebook img {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.sign-with-google {
+    width: 100%;
+    background-color: #4285F4 !important;
+    border-color: #4285F4 !important;
+    margin-bottom: 40px;
+    border-radius: 5px !important;
+    font-size: 16px !important;
+    padding: 15px !important;
+    position: relative;
+}
+
+.sign-with-google img {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.close-button-class {
+    background: transparent !important;
+    position: absolute;
+    border: none !important;
+    right: 10px;
+    top: 10px
+}
+
+.close-button-class:hover {
+    box-shadow: none !important;
 }
