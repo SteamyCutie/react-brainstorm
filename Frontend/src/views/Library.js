@@ -10,7 +10,9 @@ import { Badge } from "shards-react";
 const Library = ({ smallCards, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     <Row noGutters className="page-header py-4">
-      <WalletHeader title="Library" className="text-sm-left mb-3" />
+      <Col xs="12" sm="12" className="page-title">
+        <h3>Library</h3>
+      </Col>
     </Row>
 
     <Row>

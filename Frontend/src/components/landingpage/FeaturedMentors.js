@@ -66,13 +66,6 @@ const FeaturedMentors = ({carouselDatas}) => (
           </div>
         </div>
       ))}
-      {/* {carouselDatas.map((data, idx) => (
-          <CarouselComponent data="111" key={idx} />
-      ))} */}
-      {/* <div><h1>1</h1></div>
-      <div><h1>2</h1></div>
-      <div><h1>3</h1></div>
-      <div><h1>4</h1></div> */}
     </AwesomeSlider>
   </div>
 );
@@ -112,7 +105,7 @@ FeaturedMentors.defaultProps = {
     {
       name: "Malcom Wiliam",
       score: 5.0,
-      image: require("../../images/Rectangle_K.jpg"),
+      image: require("../../images/Rectangle_K.png"),
       teaches: [
         "Physics",
         "Mathematics",

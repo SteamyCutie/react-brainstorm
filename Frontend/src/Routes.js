@@ -15,7 +15,7 @@ import Tables from "./views/Tables";
 import BlogPosts from "./views/BlogPosts";
 import LandingPage from "./views/LandingPage";
 import UpcommingSessionStu from "./views/UpcommingSessionStu";
-import Payment from "./views/Payment";
+import WalletStu from "./views/WalletStu";
 import Trending from "./views/Trending";
 import Subscriptions from "./views/Subscriptions";
 import Library from "./views/Library";
@@ -66,7 +66,7 @@ export default [
   {
     path: "/payment",
     layout: DefaultLayout,
-    component: Payment
+    component: WalletStu
   },
   {
     path: "/trending",

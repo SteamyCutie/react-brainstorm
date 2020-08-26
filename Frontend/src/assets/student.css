@@ -276,41 +276,206 @@ body {
     background-color: #F9F9F9;
     min-height: calc(100vh - 9.9rem) !important;
 }
+.card-container {
+    padding-left: 15px; 
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+}
 
-.small-card-class {
-    border-radius: 1px;
+.small-card2 {
+    border-radius: 7px;
+    max-width: 175px;
+    min-width: 175px;
+    max-height: 80px;
+    min-height: 80px;
+    border: 1px #04B5FA solid;
+    background-color: white;
+    padding: 10px 10px;
+    margin-right: 20px;
+    box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
+}
+
+.small-card2-icon {
+    padding-top: 10px;
+    padding-left: 25px;
+}
+
+.small-card2-desc {
+    color: #333333;
+    padding-left: 25px;
+    display: grid;
+    justify-content: left;
+    align-items: left;
+}
+
+.small-card2-title {
+    color: #333333;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-align: left;
+}
+
+.small-card2-content {
+    color: #333333;
+    font-size: 14px !important;
+    text-align: left;
+    font-style: italic;
+}
+
+.no-padding {
+    padding: 0px !important;
+}
+
+.no-margin {
+    margin: 0px !important;
 }
 
 .no-box-shadow {
     box-shadow: none;
 }
 
-.small-card-value-class {
-    font-size: 30px;
-    font-weight: bolder;
-}
-
-.small-card-value-class h6 {
-    justify-content: center;
-    align-items: center;
+.mentor-detail-card {
+    width: 100%;
+    min-height: 250px;
+    margin-bottom: 15px;
+    
+    box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
+    background-color: white;
+    box-shadow: 0 0.15rem 0.3rem #E5E5E5;
+    border-radius: 10px;
+    /* justify-content: center; */
+    /* align-items: center; */
     display: flex;
+    padding: 22px;
 }
 
-.small-card-value-class span {
-    justify-content: center;
-    align-items: center;
-    display: flex;
+.mentor-detail-avatar {
+    max-width: 206px;
+    min-width: 206px;
+    max-height: 206px;
+    min-height: 206px;
 }
 
-.small-card-label-class {
+.mentor-detail-avatar-img {
+    width: 206px;
+    height: 206px;
+    border-radius: 10px;
+}
+
+.mentor-detail-avatar-status {
+    position: absolute;
+    left: -10px;
+    top: -10px;
+}
+
+.mentor-detail-desc {
+    /* width: 464px; */
+    padding: 0px 30px;
+}
+
+.metor-detail-name-score {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 0px;
+    padding-top: 0px;
+    color: #333333;
+}
+
+.mentor-detail-name {
+    padding-right: 20px;
+    padding-left: 10px;
+}
+
+.mentor-detail-score {
+    padding-bottom: 3px;
+    padding-right: 5px;
+}
+
+.mentor-detail-subject-tag {
     font-size: 16px;
-    font-weight: normal;
+    font-weight: bold;
+    color: #333333;
+    height: 30px;
 }
 
-.small-card-content-class {
-    display: grid;
-    justify-content: center;
-    align-items: center;
+.mentor-detail-subject-title {
+    color: #333333;
+    font-weight: bold;
+    font-size: 16px;
+    width: 64px;
+    margin-right: 20px;
+}
+
+.mentor-detail-myself {
+    font-size: 16px;
+    color: #333333;
+    padding-bottom: 10px;
+    line-height: 18px;
+}
+
+.mentor-detail-myself p {
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+
+.mentor-detail-myself a {
+    font-weight: bold;
+}
+
+.mentor-detail-video {
+    color: #04B5FA;
+    font-size: 16px;
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+.mentor-detail-video img {
+    padding-bottom: 3px;
+    padding-right: 10px;
+}
+
+.mentor-deatail-rate-buttons {
+    width: 146px;
+    color: #333333;
+    font-size: 20px;
+    font-weight: bold;
+    width: 146px;
+    height: 100%;
+    padding-right: 15px;
+}
+
+.btn-mentor-detail-instant {
+    color: #FFFFFF !important;
+    background-color: #04B5FA !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
+    border-color: #04B5FA !important;
+    border-width: 2.5px !important;
+    border-radius: 6px !important;
+    margin-bottom: 10px;
+    width: 146px;
+}
+
+.btn-mentor-detail-instant img {
+    padding-bottom: 3px;
+    padding-right: 10px;
+}
+
+.btn-mentor-detail-book {
+    color: #04B5FA !important;
+    background-color: #FFFFFF !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
+    border-color: #04B5FA !important;
+    border-width: 1px !important;
+    border-radius: 6px !important;
+    width: 146px;
+}
+
+.btn-mentor-detail-book img {
+    padding-bottom: 3px;
+    padding-right: 10px;
 }
 
 .data-table-div-class {
@@ -385,55 +550,15 @@ body {
     min-width: 200px;
 }
 
-.wallet-page-header-class {
+.page-title {
     display: flex;
     justify-content: space-between;
 }
 
-.wallet-page-header-class h3 {
+.page-title h3 {
     font-size: 30px;
     font-weight: bold;
     color: #333333;
-}
-
-.wallet-page-header-class button {
-    font-size: 16px;
-    font-weight: bold;
-    color: #FFFFFF;
-    background-color: #04B5FA;
-    border-color: transparent;
-}
-
-.wallet-page-header-class button:hover {
-    font-size: 16px;
-    font-weight: bold;
-    color: #FFFFFF;
-    background-color: #04B5FA;
-    border-color: transparent;
-}
-
-.wallet-page-header-class button:focus {
-    font-size: 16px;
-    font-weight: bold;
-    color: #FFFFFF;
-    background-color: #04B5FA;
-    border-color: transparent;
-}
-
-.wallet-page-header-class button:target {
-    font-size: 16px;
-    font-weight: bold;
-    color: #FFFFFF;
-    background-color: #04B5FA;
-    border-color: transparent;
-}
-
-.wallet-page-header-class button:focus-visible {
-    font-size: 16px;
-    font-weight: bold;
-    color: #FFFFFF;
-    background-color: #04B5FA;
-    border-color: transparent;
 }
 
 .wallet-data-table-class {
