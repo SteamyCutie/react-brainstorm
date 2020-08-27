@@ -1,21 +1,17 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-// Layout Types
 import { DefaultLayout, LandingPageLayout } from "./layouts";
 
-// Route Views
-import UpcomingSession from "./views/UpcomingSession";
+import MentorSession from "./views/MentorSession";
 import Profile from "./views/Profile";
 import SetAvailability from "./views/SetAvailability";
-import Errors from "./views/Errors";
-import Wallet from "./views/Wallet";
+import MentorWallet from "./views/MentorWallet";
 import MySharePage from "./views/MySharePage";
 import ScheduleLiveForum from "./views/ScheduleLiveForum";
-import BlogPosts from "./views/BlogPosts";
 import LandingPage from "./views/LandingPage";
-import UpcommingSessionStu from "./views/UpcommingSessionStu";
-import WalletStu from "./views/WalletStu";
+import StudentSession from "./views/StudentSession";
+import StudentWallet from "./views/StudentWallet";
 import Trending from "./views/Trending";
 import Subscriptions from "./views/Subscriptions";
 import SpecificSubscription from "./views/SpecificSubscription";
@@ -32,7 +28,7 @@ export default [
   {
     path: "/mentorSession",
     layout: DefaultLayout,
-    component: UpcomingSession
+    component: MentorSession
   },
   {
     path: "/profile",
@@ -47,7 +43,7 @@ export default [
   {
     path: "/mentorWallet",
     layout: DefaultLayout,
-    component: Wallet
+    component: MentorWallet
   },
   {
     path: "/mySharePage",
@@ -62,12 +58,12 @@ export default [
   {
     path: "/studentSession",
     layout: DefaultLayout,
-    component: UpcommingSessionStu
+    component: StudentSession
   },
   {
     path: "/studentWallet",
     layout: DefaultLayout,
-    component: WalletStu
+    component: StudentWallet
   },
   {
     path: "/trending",

@@ -10,7 +10,7 @@ import NewDraft from "./../components/blog/NewDraft";
 import Discussions from "./../components/blog/Discussions";
 import TopReferrals from "./../components/common/TopReferrals";
 
-const UpcomingSession = ({ smallStats }) => (
+const MentorSession = ({ smallStats }) => (
   <Container fluid className="main-content-container px-4">
     {/* <Row noGutters className="page-header py-4">
       <PageTitle title="Blog Overview" subtitle="Dashboard" className="text-sm-left mb-3" />
@@ -58,11 +58,11 @@ const UpcomingSession = ({ smallStats }) => (
   </Container>
 );
 
-UpcomingSession.propTypes = {
+MentorSession.propTypes = {
   smallStats: PropTypes.array
 };
 
-UpcomingSession.defaultProps = {
+MentorSession.defaultProps = {
   smallStats: [
     {
       label: "Posts",
@@ -160,4 +160,4 @@ UpcomingSession.defaultProps = {
   ]
 };
 
-export default UpcomingSession;
+export default MentorSession;

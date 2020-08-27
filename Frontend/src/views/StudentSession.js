@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
-import WalletHeader from "./../components/common/WalletHeader";
-import SmallCard from "./../components/common/SmallCard";
-import CustomDataTable from "./../components/common/CustomDataTable";
+import WalletHeader from "../components/common/WalletHeader";
+import SmallCard from "../components/common/SmallCard";
+import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 
-const UpcommingSessionStu = ({ smallCards, tHistory, columns }) => (
+const StudentSession = ({ smallCards, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     {/* <Row noGutters className="page-header py-4">
       <Col xs="12" sm="12" className="page-title">
@@ -35,13 +35,13 @@ const UpcommingSessionStu = ({ smallCards, tHistory, columns }) => (
   </Container>
 );
 
-UpcommingSessionStu.propTypes = {
+StudentSession.propTypes = {
   smallCards: PropTypes.array,
   tHistory: PropTypes.array,
   columns: PropTypes.array,
 };
 
-UpcommingSessionStu.defaultProps = {
+StudentSession.defaultProps = {
   smallCards: [
     {
       value: "$231.45",
@@ -165,4 +165,4 @@ UpcommingSessionStu.defaultProps = {
   ]
 };
 
-export default UpcommingSessionStu;
+export default StudentSession;

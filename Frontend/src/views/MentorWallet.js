@@ -3,30 +3,27 @@ import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
 import WalletHeader from "../components/common/WalletHeader";
-import SmallCardPayment from "../components/common/SmallCardPayment";
+import SmallCard from "../components/common/SmallCard";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 
-const WalletStu = ({ paymentCard, tHistory, columns }) => (
+
+const MentorWallet = ({ smallCards, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     <Row noGutters className="page-header py-4">
-      <Col xs="12" sm="12" className="page-title">
-        <h3>Wallet</h3>
-      </Col>
+      <WalletHeader title="Wallet" className="text-sm-left mb-3" />
     </Row>
 
     <Row>
-      <div className="card-container">
-      {paymentCard.map((card, idx) => (
-          <SmallCardPayment
+      {smallCards.map((card, idx) => (
+        <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
+          <SmallCard
             id={idx}
-            title={card.title}
-            expireDate={card.expireDate}
-            image={card.image}
-            isPrimary={card.isPrimary}
+            label={card.label}
+            value={card.value}
           />
+        </Col>
       ))}
-      </div>
     </Row>
 
     <Row className="wallet-data-table-class">
@@ -37,25 +34,25 @@ const WalletStu = ({ paymentCard, tHistory, columns }) => (
   </Container>
 );
 
-WalletStu.propTypes = {
-  paymentCard: PropTypes.array,
+MentorWallet.propTypes = {
+  smallCards: PropTypes.array,
   tHistory: PropTypes.array,
   columns: PropTypes.array,
 };
 
-WalletStu.defaultProps = {
-  paymentCard: [
+MentorWallet.defaultProps = {
+  smallCards: [
     {
-      title: "Mastercard ending in 2715",
-      image: require("../images/Mastercard-logo.png"),
-      expireDate: "8/23",
-      isPrimary: true
+      value: "$231.45",
+      label: "Available Balance",
     },
     {
-      title: "Visa ending in 9372",
-      image: require("../images/VisaCard-logo.png"),
-      expireDate: "02/21",
-      isPrimary: false
+      value: "$154.90",
+      label: "Pending Balance",
+    },
+    {
+      value: "$1320.10",
+      label: "Life time Earnings",
     }
   ],
   tHistory: [
@@ -167,4 +164,4 @@ WalletStu.defaultProps = {
   ]
 };
 
-export default WalletStu;
+export default MentorWallet;
