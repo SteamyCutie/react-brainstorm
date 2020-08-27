@@ -1,28 +1,56 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
+import { Link } from "react-router-dom";
 
-import WalletHeader from "./../components/common/WalletHeader";
-import SmallCard from "./../components/common/SmallCard";
-import SubscriptionTable from "./../components/common/SubscriptionTable";
-import { Badge } from "shards-react";
+import MentorVideo from "../components/common/MentorVideo";
 
-const Subscriptions = ({ subscriptionList, columns }) => (
-  <Container fluid className="main-content-container px-4 main-content-container-class">
-    <Row className="wallet-data-table-class py-4">
-      <Col lg="12" md="12" sm="12">
-        <SubscriptionTable data={subscriptionList} header={columns}/>
-      </Col>
-    </Row>
+import MentorAvatar from "../images/Rectangle_Kianna_big.png"
+import SubscriperImg from "../images/Users.svg"
+
+const SpecificSubscription = ({ subscriptionList, columns }) => (
+  <Container fluid className="main-content-container px-4 pb-4 main-content-container-class">
+    <Card small className="specific-subsciption-card">
+      <CardBody>
+        <Row>
+          <Link to="/subscriptions" className="hidden-underline">
+            <Button className="btn-back-scriptions">
+              Back
+            </Button>
+          </Link>
+        </Row>
+        <Row>
+          <Col xl="3" className="subscription-mentor-detail">
+            <div>
+              <h2>Kianna Press</h2>
+              <img src={MentorAvatar} />
+              <div style={{display: "flex", padding: "20px 0px"}}>
+                <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
+                <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
+                <h6 className="no-margin"style={{fontWeight: "bold"}}>24</h6>
+              </div>
+              <Button className="btn-subscription-unsubscribe">
+                Unsubscribe
+              </Button>
+            </div>
+          </Col>
+          <Col xl="9" lg="12" className="subscription-mentor-videos">
+            <MentorVideo />
+            <MentorVideo />
+            <MentorVideo />
+          </Col>
+        </Row>
+      </CardBody>
+    </Card>    
   </Container>
 );
 
-Subscriptions.propTypes = {
+SpecificSubscription.propTypes = {
   subscriptionList: PropTypes.array,
   columns: PropTypes.array,
 };
 
-Subscriptions.defaultProps = {
+SpecificSubscription.defaultProps = {
   subscriptionList: [
     {
       id: 1,
@@ -69,7 +97,7 @@ Subscriptions.defaultProps = {
       style: {
         fontSize: "16px",
       },
-      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><a href="/subscription-specific" class="scription-to-specific">{row.mentorName}</a></div>,
+      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><a href="#" class="scription-to-specific">{row.mentorName}</a></div>,
     },
     {
       name: 'Subscription page name',
@@ -107,4 +135,4 @@ Subscriptions.defaultProps = {
   ]
 };
 
-export default Subscriptions;
+export default SpecificSubscription;
