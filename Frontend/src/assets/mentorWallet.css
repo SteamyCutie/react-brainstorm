@@ -397,15 +397,15 @@ body {
 
 .btn-add-payment {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 500;
     color: #FFFFFF;
     background-color: #04B5FA;
-    border-color: transparent;
+    border-color:  #04B5FA !important;
 }
 
 .btn-add-payment:hover {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 500;
     color: #FFFFFF;
     background-color: #04B5FA !important;
     border-color:  #04B5FA !important;
@@ -413,7 +413,7 @@ body {
 
 .btn-add-payment:focus {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 500;
     color: #FFFFFF;
     background-color: #04B5FA !important;
     border-color:  #04B5FA !important;
@@ -421,7 +421,7 @@ body {
 
 .btn-add-payment:active {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 500;
     color: #FFFFFF;
     background-color: #04B5FA !important;
     border-color:  #04B5FA !important;
