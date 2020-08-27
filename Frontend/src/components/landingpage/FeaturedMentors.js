@@ -114,7 +114,7 @@ FeaturedMentors.defaultProps = {
     {
       name: "Malcom Wiliam",
       score: 5.0,
-      image: require("../../images/Rectangle_K.jpg"),
+      image: require("../../images/Rectangle_K.png"),
       teaches: [
         "Physics",
         "Mathematics",
