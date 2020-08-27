@@ -18,6 +18,7 @@ import UpcommingSessionStu from "./views/UpcommingSessionStu";
 import WalletStu from "./views/WalletStu";
 import Trending from "./views/Trending";
 import Subscriptions from "./views/Subscriptions";
+import SpecificSubscription from "./views/SpecificSubscription";
 import Library from "./views/Library";
 import Recommended from "./views/Recommended";
 
@@ -77,6 +78,11 @@ export default [
     path: "/subscriptions",
     layout: DefaultLayout,
     component: Subscriptions
+  },
+  {
+    path: "/subscription-specific", /* specific must be user id on this system */
+    layout: DefaultLayout,
+    component: SpecificSubscription
   },
   {
     path: "/library",

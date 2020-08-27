@@ -9,7 +9,7 @@ import { Badge } from "shards-react";
 
 const UpcommingSessionStu = ({ smallCards, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
-    <Row noGutters className="page-header py-4">
+    {/* <Row noGutters className="page-header py-4">
       <Col xs="12" sm="12" className="page-title">
         <h3>Wallet</h3>
       </Col>
@@ -31,7 +31,7 @@ const UpcommingSessionStu = ({ smallCards, tHistory, columns }) => (
       <Col lg="12" md="12" sm="12">
         <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
       </Col>
-    </Row>
+    </Row> */}
   </Container>
 );
 

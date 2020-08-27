@@ -23,6 +23,7 @@ const WalletStu = ({ paymentCard, tHistory, columns }) => (
             title={card.title}
             expireDate={card.expireDate}
             image={card.image}
+            isPrimary={card.isPrimary}
           />
       ))}
       </div>
