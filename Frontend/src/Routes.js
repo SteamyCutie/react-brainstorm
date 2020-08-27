@@ -5,8 +5,8 @@ import { Redirect } from "react-router-dom";
 import { DefaultLayout, LandingPageLayout } from "./layouts";
 
 // Route Views
-import BlogOverview from "./views/BlogOverview";
-import UserProfileLite from "./views/UserProfileLite";
+import UpcomingSession from "./views/UpcomingSession";
+import Profile from "./views/Profile";
 import SetAvailability from "./views/SetAvailability";
 import Errors from "./views/Errors";
 import Wallet from "./views/Wallet";
@@ -30,14 +30,14 @@ export default [
     component: LandingPage
   },
   {
-    path: "/upcomingSession",
+    path: "/mentorSession",
     layout: DefaultLayout,
-    component: BlogOverview
+    component: UpcomingSession
   },
   {
     path: "/profile",
     layout: DefaultLayout,
-    component: UserProfileLite
+    component: Profile
   },
   {
     path: "/setAvailability",
@@ -45,7 +45,7 @@ export default [
     component: SetAvailability
   },
   {
-    path: "/wallet",
+    path: "/mentorWallet",
     layout: DefaultLayout,
     component: Wallet
   },
@@ -60,12 +60,12 @@ export default [
     component: ScheduleLiveForum
   },
   {
-    path: "/upcomingSession-stu",
+    path: "/studentSession",
     layout: DefaultLayout,
     component: UpcommingSessionStu
   },
   {
-    path: "/payment",
+    path: "/studentWallet",
     layout: DefaultLayout,
     component: WalletStu
   },

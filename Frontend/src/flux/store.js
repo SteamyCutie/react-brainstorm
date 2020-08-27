@@ -7,8 +7,8 @@ import getSidebarNavItems from "../data/sidebar-nav-items";
 let _store = {
   menuVisible: false,
   userType: true,
-  mentorUrl: "/upcomingSession",
-  studentUrl: "/upcomingSession",
+  mentorUrl: "/mentorSession",
+  studentUrl: "/studentSession",
   navItems: getSidebarNavItems()
 };
 

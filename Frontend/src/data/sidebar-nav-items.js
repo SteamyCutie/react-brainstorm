@@ -2,7 +2,7 @@ export default function() {
   return [
     {
       title: "Upcoming Session",
-      to: "/upcomingSession",
+      to: "/mentorSession",
       htmlBefore: '<svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H17C18.1046 21 19 20.1046 19 19V5C19 3.89543 18.1046 3 17 3Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 1V5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 1V5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 9H19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       htmlAfter: "",
       filter: true
@@ -22,7 +22,7 @@ export default function() {
     {
       title: "Wallet",
       htmlBefore: '<svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 1H3C1.89543 1 1 1.89543 1 3V15C1 16.1046 1.89543 17 3 17H21C22.1046 17 23 16.1046 23 15V3C23 1.89543 22.1046 1 21 1Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 7H23" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      to: "/wallet",
+      to: "/mentorWallet",
       filter: true,
     },
     {
@@ -38,15 +38,15 @@ export default function() {
       filter: true,
     },
     {
-      title: "Upcoming Session - stu",
-      to: "/upcomingSession-stu",
+      title: "Upcoming Session",
+      to: "/studentSession",
       htmlBefore: '<svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H17C18.1046 21 19 20.1046 19 19V5C19 3.89543 18.1046 3 17 3Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 1V5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 1V5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 9H19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       htmlAfter: "",
       filter: false,
     },
     {
-      title: "Wallet - stu",
-      to: "/payment",
+      title: "Wallet",
+      to: "/studentWallet",
       htmlBefore: '<svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 1H3C1.89543 1 1 1.89543 1 3V15C1 16.1046 1.89543 17 3 17H21C22.1046 17 23 16.1046 23 15V3C23 1.89543 22.1046 1 21 1Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 7H23" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       htmlAfter: "",
       filter: false,

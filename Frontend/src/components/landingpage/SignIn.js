@@ -50,7 +50,7 @@ export default class SignIn extends React.Component {
               />
             </div>
             <div className="content-center block-content-class button-text-group-class">
-              <Link to="/wallet" className="hidden-underline">
+              <Link to="/mentorSession" className="hidden-underline">
                 <Button>Sign in</Button>
               </Link>
               <p>Don't have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign up</a></p>
