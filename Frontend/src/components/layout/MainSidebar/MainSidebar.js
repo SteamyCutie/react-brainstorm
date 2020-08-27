@@ -38,7 +38,9 @@ class MainSidebar extends React.Component {
     });
   }
 
+  
   render() {
+    const { filterType } = this.props;
     const classes = classNames(
       "main-sidebar",
       "px-0",
@@ -55,22 +57,20 @@ class MainSidebar extends React.Component {
         // md={{ size: 3 }}
       >
         <SidebarMainNavbar hideLogoText={this.props.hideLogoText} />
-        {/* <SidebarSearch /> */}
-        <SidebarNavItems />
+        <SidebarNavItems filterType={filterType}/>
       </Col>
     );
   }
 }
 
 MainSidebar.propTypes = {
-  /**
-   * Whether to hide the logo text, or not.
-   */
-  hideLogoText: PropTypes.bool
+  hideLogoText: PropTypes.bool,
+  filterType: PropTypes.bool
 };
 
 MainSidebar.defaultProps = {
-  hideLogoText: false
+  hideLogoText: false,
+  filterType: true,
 };
 
 export default MainSidebar;

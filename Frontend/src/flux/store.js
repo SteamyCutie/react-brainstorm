@@ -6,6 +6,9 @@ import getSidebarNavItems from "../data/sidebar-nav-items";
 
 let _store = {
   menuVisible: false,
+  userType: true,
+  mentorUrl: "/upcomingSession",
+  studentUrl: "/upcomingSession",
   navItems: getSidebarNavItems()
 };
 
@@ -24,6 +27,15 @@ class Store extends EventEmitter {
       case Constants.TOGGLE_SIDEBAR:
         this.toggleSidebar();
         break;
+      case Constants.TOGGLE_USER_TYPE:
+        this.setUserType();
+        break;
+      case Constants.MENTOR_URL:
+        this.setMentorHistory(payload);
+        break;
+      case Constants.STUDENT_URL:
+        this.setStudentHistory(payload);
+        break;
       default:
     }
   }
@@ -37,8 +49,35 @@ class Store extends EventEmitter {
     return _store.menuVisible;
   }
 
+  getMentorHistory() {
+    return _store.mentorUrl;
+  }
+
+  setMentorHistory(url) {
+    _store.mentorUrl = url;
+    this.emit(Constants.CHANGE);
+  }
+  
+  getStudentHistory() {
+    return _store.studentUrl;
+  }
+  
+  setStudentHistory(url) {
+    _store.studentUrl = url;
+    this.emit(Constants.CHANGE);
+  }
+
   getSidebarItems() {
     return _store.navItems;
+  }
+
+  getUserType() {
+    return _store.userType;
+  }
+
+  setUserType() {
+    _store.userType = !_store.userType;
+    this.emit(Constants.CHANGE);
   }
 
   addChangeListener(callback) {

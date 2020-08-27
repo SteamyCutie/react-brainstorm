@@ -7,40 +7,74 @@ import SubMainNavbar from "../components/layout/MainNavbar/SubMainNavbar";
 import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 
-const DefaultLayout = ({ children, noNavbar, noFooter }) => (
-  <Container fluid>
-    <Row>
-      <MainSidebar />
-      <Col
-        className="main-content p-0 main-content-class"
-        // lg={{ size: 10, offset: 2 }}
-        // md={{ size: 9, offset: 3 }}
-        // sm="12"
-        tag="main"
-      >
-        {!noNavbar && <MainNavbar />}
-        <SubMainNavbar />
-        {children}
-        {!noFooter && <MainFooter />}
-      </Col>
-    </Row>
-  </Container>
-);
 
-DefaultLayout.propTypes = {
-  /**
-   * Whether to display the navbar, or not.
-   */
-  noNavbar: PropTypes.bool,
-  /**
-   * Whether to display the footer, or not.
-   */
-  noFooter: PropTypes.bool
-};
+import { Store } from "../flux";
+import { Dispatcher, Constants } from "../flux";
+    
+export default class DefaultLayout extends React.Component {
+  constructor(props) {
+    super(props);
 
-DefaultLayout.defaultProps = {
-  noNavbar: false,
-  noFooter: true
-};
+    this.state = {
+      noNavbar: false,
+      filterType: Store.getUserType(),
+      mentorUrl: Store.getMentorHistory(),
+      studentUrl: Store.getStudentHistory(),
+      noFooter: true
+    }
 
-export default DefaultLayout;
+    this.handleClick = this.handleClick.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
+
+  componentWillMount() {
+    Store.addChangeListener(this.onChange);
+  }
+
+  componentWillUnmount() {
+    Store.removeChangeListener(this.onChange);
+  }
+
+  onChange() {
+    this.setState({
+      ...this.state,
+      filterType: Store.getUserType(),
+      mentorUrl: Store.getMentorHistory(),
+      studentUrl: Store.getStudentHistory(),
+    });
+  }
+
+  handleClick() {
+    Dispatcher.dispatch({
+      actionType: Constants.TOGGLE_USER_TYPE,
+    });
+
+    const { filterType, mentorUrl, studentUrl } = this.state;
+
+    if ( !filterType ) this.props.history.push(mentorUrl);
+    else this.props.history.push(studentUrl);
+  }
+
+  render() {
+
+    const { children } = this.props;
+    const { noFooter, noNavbar, filterType } = this.state;
+
+    return (
+      <Container fluid>
+        <Row>
+          <MainSidebar filterType={filterType}/>
+          <Col
+            className="main-content p-0 main-content-class"
+            tag="main"
+          >
+            {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} />}
+            {filterType && <SubMainNavbar/>}
+            {children}
+            {!noFooter && <MainFooter />}
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+}

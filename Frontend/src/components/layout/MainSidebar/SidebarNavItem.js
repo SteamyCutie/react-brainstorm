@@ -3,9 +3,10 @@ import PropTypes from "prop-types";
 import { NavLink as RouteNavLink } from "react-router-dom";
 import { NavItem, NavLink } from "shards-react";
 
-const SidebarNavItem = ({ item }) => (
+const SidebarNavItem = ({ item, filterType }) => (
   <NavItem>
-    <NavLink tag={RouteNavLink} to={item.to} className="main-sidebar-item-icon-class">
+    {
+      filterType === item.filter && <NavLink tag={RouteNavLink} to={item.to} className="main-sidebar-item-icon-class">
       {item.htmlBefore && (
         <div
           className="d-inline-block item-icon-wrapper"
@@ -20,14 +21,14 @@ const SidebarNavItem = ({ item }) => (
         />
       )}
     </NavLink>
+    }
+    
   </NavItem>
 );
 
 SidebarNavItem.propTypes = {
-  /**
-   * The item object.
-   */
-  item: PropTypes.object
+  item: PropTypes.object,
+  filterType: PropTypes.bool
 };
 
 export default SidebarNavItem;

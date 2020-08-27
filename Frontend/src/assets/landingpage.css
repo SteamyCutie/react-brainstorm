@@ -1019,3 +1019,58 @@ body {
     background-color: #000000 !important;
     opacity: 0.3 !important;
 }
+
+.toggle-button-class {
+    text-transform: capitalize !important;
+    color: #ACACAC !important;
+    border-color: #ACACAC !important;
+    outline: none !important;
+    z-index: 1 !important;
+    height: 48px !important;
+    margin-top: 5px !important;
+    margin-right: auto !important;
+}
+
+.toggle-button-class.Mui-selected {
+    background-color: #04B5FA !important;
+    pointer-events: none !important; 
+    border-color: #04B5FA !important;
+    border-radius: 5px !important;
+    color: #FFFFFF !important;
+    text-transform: capitalize !important;
+    outline: none !important;
+    z-index: 2 !important;
+}
+
+.toggle-button-class:hover {
+    text-transform: capitalize !important;
+    color: #ACACAC !important;
+    background-color: #FFFFFF !important;
+    border-color: #ACACAC !important;
+    outline: none !important;
+    z-index: 1 !important;
+    margin-right: auto !important;
+}
+
+.mentor-toggle-class {
+    border-right: none !important;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-right: 0px !important;
+}
+
+.student-toggle-class {
+    border-left: none !important;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-left: 0px !important;
+}
+
+.mentor-toggle-class.Mui-selected {
+    margin-right: -3px !important;
+}
+
+.student-toggle-class.Mui-selected {
+    margin-left: -3px !important;
+}
+

@@ -32,9 +32,9 @@ import CustomFileUpload from "../components/components-overview/CustomFileUpload
 import DropdownInputGroups from "../components/components-overview/DropdownInputGroups";
 import CustomSelect from "../components/components-overview/CustomSelect";
 
-const ComponentsOverview = () => (
+const MySharePage = () => (
   <div>
-    <Container fluid className="px-0">
+    {/* <Container fluid className="px-0">
       <Alert className="mb-0">
         <i className="fa fa-info mx-2"></i> How you doin'? I'm just a friendly, good-looking notification message and I come in all the colors you can see below. Pretty cool, huh?
       </Alert>
@@ -80,20 +80,17 @@ const ComponentsOverview = () => (
               </ListGroupItem>
 
               <ListGroupItem className="p-3">
-                {/* Normal Buttons */}
                 <strong className="text-muted d-block my-2">
                   Normal Buttons
                 </strong>
                 <NormalButtons />
 
-                {/* Normal Outline Buttons */}
                 <strong className="text-muted d-block my-2">
                   Normal Outline Buttons
                 </strong>
                 <NormalOutlineButtons />
               </ListGroupItem>
 
-              {/* Forms & Form Validation */}
               <ListGroupItem className="p-3">
                 <Row>
                   <Forms />
@@ -103,7 +100,6 @@ const ComponentsOverview = () => (
             </ListGroup>
           </Card>
 
-          {/* Complete Form Example */}
           <Card small>
             <CardHeader className="border-bottom">
               <h6 className="m-0">Form Example</h6>
@@ -113,7 +109,6 @@ const ComponentsOverview = () => (
         </Col>
 
         <Col lg="4" className="mb-4">
-          {/* Sliders & Progress Bars */}
           <Card small className="mb-4">
             <CardHeader className="border-bottom">
               <h6 className="m-0">Sliders & Progress Bars</h6>
@@ -124,7 +119,6 @@ const ComponentsOverview = () => (
             </ListGroup>
           </Card>
 
-          {/* Groups */}
           <Card small className="mb-4">
             <CardHeader className="border-bottom">
               <h6 className="m-0">Groups</h6>
@@ -153,7 +147,6 @@ const ComponentsOverview = () => (
           </Card>
 
           <Card small>
-            {/* Files & Dropdowns */}
             <CardHeader className="border-bottom">
               <h6 className="m-0">Files & Dropdowns</h6>
             </CardHeader>
@@ -179,8 +172,8 @@ const ComponentsOverview = () => (
           </Card>
         </Col>
       </Row>
-    </Container>
+    </Container> */}
   </div>
 );
 
-export default ComponentsOverview;
+export default MySharePage;

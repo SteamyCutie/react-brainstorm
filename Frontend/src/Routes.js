@@ -7,11 +7,11 @@ import { DefaultLayout, LandingPageLayout } from "./layouts";
 // Route Views
 import BlogOverview from "./views/BlogOverview";
 import UserProfileLite from "./views/UserProfileLite";
-import AddNewPost from "./views/AddNewPost";
+import SetAvailability from "./views/SetAvailability";
 import Errors from "./views/Errors";
 import Wallet from "./views/Wallet";
-import ComponentsOverview from "./views/ComponentsOverview";
-import Tables from "./views/Tables";
+import MySharePage from "./views/MySharePage";
+import ScheduleLiveForum from "./views/ScheduleLiveForum";
 import BlogPosts from "./views/BlogPosts";
 import LandingPage from "./views/LandingPage";
 import UpcommingSessionStu from "./views/UpcommingSessionStu";
@@ -41,7 +41,7 @@ export default [
   {
     path: "/setAvailability",
     layout: DefaultLayout,
-    component: AddNewPost
+    component: SetAvailability
   },
   {
     path: "/wallet",
@@ -51,12 +51,12 @@ export default [
   {
     path: "/mySharePage",
     layout: DefaultLayout,
-    component: ComponentsOverview
+    component: MySharePage
   },
   {
     path: "/scheduleLiveForum",
     layout: DefaultLayout,
-    component: Tables
+    component: ScheduleLiveForum
   },
   {
     path: "/upcomingSession-stu",
