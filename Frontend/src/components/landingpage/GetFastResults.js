@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonGroup, Button, Row, Col } from "shards-react";
+import { Button } from "shards-react";
 import ScrollAnimation from 'react-animate-on-scroll';
 import "animate.css/animate.min.css";
 
@@ -31,7 +31,7 @@ const ShareKnowledge = () => (
         <img
           className="img-get-fast-results"
           src={MentorActiveImage}
-          placeholder="Mentor Active Image"
+          alt="fast result"
         />
       </ScrollAnimation>
     </div>

@@ -17,7 +17,7 @@ class SmallCard2 extends React.Component {
         <CardBody className="no-padding">
           <Row>
             <Col xl="3" sm="3" className="small-card2-icon">
-                <img src={image} />
+                <img src={image} alt="category icon"/>
             </Col>
             <Col xl="9" sm="9" className="small-card2-desc">
                 <h4 className="small-card2-title no-margin">{title}</h4>

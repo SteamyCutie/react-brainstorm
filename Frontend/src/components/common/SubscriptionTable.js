@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Card, CardHeader, CardBody, Button } from "shards-react";
+import { Button } from "shards-react";
 import DataTable, { createTheme } from "react-data-table-component";
 
 class SubscriptionTable extends React.Component {
@@ -64,8 +64,8 @@ class SubscriptionTable extends React.Component {
   }
 
   render() {
-    const { title, data, header } = this.props;
-    const { noHeader, subHeader, subHeaderAlign, fixedHeader, customStyles } = this.state;
+    const { data, header } = this.props;
+    const { noHeader, subHeader, subHeaderAlign, customStyles } = this.state;
     return (
         <div className="p-0 pb-3 data-table-div-class">
           <DataTable

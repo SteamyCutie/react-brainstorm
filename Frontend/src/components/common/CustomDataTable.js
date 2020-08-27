@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Card, CardHeader, CardBody, Button } from "shards-react";
 import DataTable, { createTheme } from "react-data-table-component";
 import CustomSearchInput from "./CustomSearchInput";
 
@@ -66,7 +65,7 @@ class CustomDataTable extends React.Component {
 
   render() {
     const { title, data, header } = this.props;
-    const { noHeader, subHeader, subHeaderAlign, fixedHeader, customStyles } = this.state;
+    const { noHeader, subHeader, subHeaderAlign, customStyles } = this.state;
     return (
         <div className="p-0 pb-3 data-table-div-class">
           <DataTable
@@ -80,15 +79,11 @@ class CustomDataTable extends React.Component {
                 <div style={{ display: 'flex', alignItems: 'center' }} className="data-table-header-class">
                   <h2>{title}</h2>
                   <CustomSearchInput />
-                  {/* <Input id="outlined-basic" label="Search" variant="outlined" size="small" style={{ margin: '5px' }} /> */}
                 </div>
               )
             }
             subHeaderAlign={subHeaderAlign}
-            // fixedHeader={fixedHeader}
-            // fixedHeaderScrollHeight="300px"
             customStyles={customStyles}
-            // theme="solarized"
             className="data-table-class"
           />
         </div>

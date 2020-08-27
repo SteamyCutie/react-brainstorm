@@ -63,7 +63,7 @@ body {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
-    -webkit-font-feature-settings: 'liga';
+    --webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
 
@@ -79,7 +79,7 @@ body {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
-    -webkit-font-feature-settings: 'liga';
+    --webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
 
@@ -95,7 +95,7 @@ body {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
-    -webkit-font-feature-settings: 'liga';
+    --webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
 
@@ -111,7 +111,7 @@ body {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
-    -webkit-font-feature-settings: 'liga';
+    --webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
 
@@ -127,7 +127,7 @@ body {
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
-    -webkit-font-feature-settings: 'liga';
+    --webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
 
@@ -208,11 +208,6 @@ body {
     /* width: 14% !important; */
     box-shadow: 0.125rem 0 0.625rem rgba(90,97,105,.12);
     min-width: 260px;
-}
-
-.main-content-class {
-    /* width: 86% !important; */
-    /* margin-left: 14%; */
 }
 
 .main-sidebar-item-icon-class svg{

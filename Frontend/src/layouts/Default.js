@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
 import MainNavbar from "../components/layout/MainNavbar/MainNavbar";

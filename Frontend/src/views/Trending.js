@@ -2,13 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
-import WalletHeader from "./../components/common/WalletHeader";
 import SmallCard2 from "./../components/common/SmallCard2";
 import MentorDetailCard from "./../components/common/MentorDetailCard"
-import CustomDataTable from "./../components/common/CustomDataTable";
-import { Badge } from "shards-react";
 
-const Trending = ({ smallCards, tHistory, columns, mentorData }) => (
+const Trending = ({ smallCards, mentorData }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     <Row noGutters className="page-header py-4">
       <Col xs="12" sm="12" className="page-title">

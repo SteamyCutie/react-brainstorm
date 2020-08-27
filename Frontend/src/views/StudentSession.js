@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col } from "shards-react";
+import { Container } from "shards-react";
 
-import WalletHeader from "../components/common/WalletHeader";
-import SmallCard from "../components/common/SmallCard";
-import CustomDataTable from "../components/common/CustomDataTable";
+// import WalletHeader from "../components/common/WalletHeader";
+// import SmallCard from "../components/common/SmallCard";
+// import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 
 const StudentSession = ({ smallCards, tHistory, columns }) => (

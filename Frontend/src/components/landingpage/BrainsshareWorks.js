@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonGroup, Button, Row, Col } from "shards-react";
+import { Row, Col } from "shards-react";
 import ScrollAnimation from 'react-animate-on-scroll';
 
 import FindMentorImage from '../../images/User.svg'

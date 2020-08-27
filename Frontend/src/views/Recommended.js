@@ -2,11 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
-import WalletHeader from "./../components/common/WalletHeader";
-import SmallCard2 from "./../components/common/SmallCard2";
 import MentorDetailCard from "./../components/common/MentorDetailCard"
-import CustomDataTable from "./../components/common/CustomDataTable";
-import { Badge } from "shards-react";
 
 const Recommended = ({ smallCards, tHistory, columns, mentorData }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, ModalBody, ModalHeader, FormInput } from "shards-react";
+import { Button, Modal, ModalBody, FormInput } from "shards-react";
 import "../../assets/landingpage.css"
 
 import Facebook from '../../images/Facebook.svg'

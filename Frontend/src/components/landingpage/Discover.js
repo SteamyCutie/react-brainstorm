@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonGroup, Button, Col, Row } from "shards-react";
+import { Button, Col, Row } from "shards-react";
 
 import "../../assets/landingpage.css"
 
@@ -41,6 +41,7 @@ const Discover = () => (
                 className="img-discover-detail-content"
                 src={DiscoverImage1}
                 placeholder="Mentor Active Image"
+                alt="category"
                 />
             </Row>
             <Row>
@@ -48,6 +49,7 @@ const Discover = () => (
                 className="img-discover-detail-content-avatar"
                 src={DiscoverImageAvatar1}
                 placeholder="Mentor Active Image"
+                alt="avatar"
               />
               <h3 className="discover-detail-content">
                 Kianna Press
@@ -79,6 +81,7 @@ const Discover = () => (
                 className="img-discover-detail-content"
                 src={DiscoverImage2}
                 placeholder="Mentor Active Image"
+                alt="category"
               />
             </Row>
             <Row>
@@ -86,6 +89,7 @@ const Discover = () => (
                 className="img-discover-detail-content-avatar"
                 src={DiscoverImageAvatar2}
                 placeholder="Mentor Active Image"
+                alt="avatar"
               />
               <h3 className="discover-detail-content">
                 Leo Passaquindici Arcand
@@ -117,6 +121,7 @@ const Discover = () => (
                 className="img-discover-detail-content"
                 src={DiscoverImage3}
                 placeholder="Mentor Active Image"
+                alt="category"
               />
             </Row>
             <Row>
@@ -124,6 +129,7 @@ const Discover = () => (
                 className="img-discover-detail-content-avatar"
                 src={DiscoverImageAvatar3}
                 placeholder="Mentor Active Image"
+                alt="avatar"
               />
               <h3 className="discover-detail-content">
                 Lindsey Donin

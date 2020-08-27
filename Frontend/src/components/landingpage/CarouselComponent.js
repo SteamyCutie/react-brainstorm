@@ -1,5 +1,4 @@
 import React from "react";
-import { ButtonGroup, Button } from "shards-react";
 import PropTypes from "prop-types";
 
 import "../../assets/landingpage.css"

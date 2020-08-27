@@ -181,7 +181,7 @@ body {
     background-color: transparent;
     border-radius: 50%;
     box-shadow: 0 0 3px 3px #43D3A6;
-    -webkit-animation: '_2xVphYaP' 1s linear infinite;
+    --webkit-animation: '_2xVphYaP' 1s linear infinite;
     animation-duration: 2s;
     animation-timing-function: linear;
     animation-delay: 0s;
@@ -393,10 +393,6 @@ body {
     align-items: center;
     display: flex;
     justify-content: center;
-}
-
-.img-brains-works {
-    /* padding: 10px 50px 10px 50px; */
 }
 
 .btn-dropdown-header {
@@ -691,9 +687,6 @@ body {
     left: 50%;
 }
 
-.animation-class {
-}
-
 .dis-none {
     opacity: 0;
 }
@@ -829,9 +822,6 @@ body {
     line-height: 25px;
     font-weight: 700;
     color: #333333;
-}
-
-.modal-input-group-class {
 }
 
 .modal-input-group-class label {

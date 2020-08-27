@@ -4,10 +4,7 @@ import { Container, Row, Col } from "shards-react";
 
 import { Link } from "react-router-dom";
 
-import WalletHeader from "./../components/common/WalletHeader";
-import SmallCard from "./../components/common/SmallCard";
 import SubscriptionTable from "./../components/common/SubscriptionTable";
-import { Badge } from "shards-react";
 
 const Subscriptions = ({ subscriptionList, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
@@ -71,7 +68,7 @@ Subscriptions.defaultProps = {
       style: {
         fontSize: "16px",
       },
-      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><Link to="/subscription-specific" class="scription-to-specific">{row.mentorName}</Link></div>,
+      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to="/subscription-specific" class="scription-to-specific">{row.mentorName}</Link></div>,
     },
     {
       name: 'Subscription page name',

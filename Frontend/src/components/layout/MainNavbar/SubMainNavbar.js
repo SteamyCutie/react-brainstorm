@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Container, Navbar, NavbarBrand } from "shards-react";
+import { Container, Navbar } from "shards-react";
 
 const SubMainNavbar = ({ layout, stickyTop }) => {
   const classes = classNames(

@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonGroup, Button, Row, Col } from "shards-react";
+import { Button, Row, Col } from "shards-react";
 import ScrollAnimation from 'react-animate-on-scroll';
 
 import MentorActiveImage from '../../images/Mentor_ active session full screen 1.jpg'

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
 import MainNavbar from "../components/layout/LandingNavbar/MainNavbar";
-// import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 
 const LandingPageLayout = ({ children, noNavbar, noFooter }) => (

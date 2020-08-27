@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Container, Navbar, Button, DropdownToggle, DropdownMenu, DropdownItem, Dropdown } from "shards-react";
-import { BrowserRouter, Route, Link } from "react-router-dom";
-import { createBrowserHistory as history} from 'history';
+import { Container, Navbar, Button } from "shards-react";
 import NavbarSearch from "./NavbarSearch";
 import NavbarDropdown from "./NavbarDropdown";
 import SignIn from "../../landingpage/SignIn";

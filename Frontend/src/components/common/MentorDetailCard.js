@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonGroup, Button, Row, Col } from "shards-react";
+import { Button, Row, } from "shards-react";
 
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
