@@ -25,7 +25,7 @@ export default class SignUp extends React.Component {
     const { open } = this.props;
     return (
       <div>
-        <Modal open={open} toggle={() => this.toggle()} className="modal-class">
+        <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Sign up</h1>
@@ -67,7 +67,7 @@ export default class SignUp extends React.Component {
             </div>
             <div className="content-center block-content-class button-text-group-class">
               <Button>Sign up</Button>
-              <p>Already have an account? <a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
+              <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />

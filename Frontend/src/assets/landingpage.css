@@ -808,6 +808,7 @@ body {
     min-height: 50%;
     margin: auto;
     align-items: center;
+    box-shadow: none !important;
 }
 
 .content-center {
@@ -1018,4 +1019,9 @@ body {
 
 .close-button-class:hover {
     box-shadow: none !important;
+}
+
+.backdrop-class.show {
+    background-color: #000000 !important;
+    opacity: 0.3 !important;
 }
