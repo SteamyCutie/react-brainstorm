@@ -151,6 +151,13 @@ class ToolBar extends React.Component {
     this.props.onView('month');
   }
 
+  goToToday = () => {
+    let mDate = this.props.date;
+    let today = new Date();
+    this.props.onNavigate('prev', today);
+    this.getCalendarEvents(today);
+  }
+
   getCalendarEvents = (date) => {
     const {project} = this;
     const startDate = moment(date).add(-1, 'month').toDate();
@@ -244,7 +251,7 @@ class ToolBar extends React.Component {
     return (
       <div className="toolbar-class">
         <div className="toolbar-status">
-          <Button className="today-icon-class">Today</Button>
+          <Button className="today-icon-class" onClick={this.goToToday}>Today</Button>
           <label className="toolbar-month-class">{this.props.label}</label>
           <Button onClick={this.goToBack} className="back-icon-class">
             <img src={BackIcon} alt="BackIcon" />
