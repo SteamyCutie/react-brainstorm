@@ -272,6 +272,10 @@ body {
     min-height: calc(100vh - 9.9rem) !important;
 }
 
+.modal.show {
+    z-index: 9000;
+}
+
 .small-card-class {
     border-radius: 1px;
 }

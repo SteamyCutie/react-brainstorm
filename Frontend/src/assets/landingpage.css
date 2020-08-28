@@ -1008,6 +1008,7 @@ body {
 .backdrop-class.show {
     background-color: #000000 !important;
     opacity: 0.3 !important;
+    z-index: 8000;
 }
 
 .toggle-button-class {

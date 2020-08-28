@@ -650,12 +650,12 @@ body {
 
 .btn-subscription-unsubscribe:hover {
     border-color: #04B5FA;
-    box-shadow: none;
+    /* box-shadow: none; */
 }
 
 .btn-subscription-unsubscribe:focus {
     border-color: #04B5FA;
-    box-shadow: none;
+    /* box-shadow: none; */
 }
 
 .btn-subscription-unsubscribe:active {
@@ -767,6 +767,33 @@ body {
 .review-score {
     display: flex;
     float: right;
+}
+
+.subscribe-modal {
+    align-items: center;
+    justify-content: center;
+    display: block;
+    padding: 0px !important;
+    width: 70%;
+}
+
+.subscribe-card-container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.btn-unsubscribe-subscribe {
+    color: #FFFFFF !important;
+    background-color: #04B5FA !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
+    border-color: #04B5FA !important;
+    border-width: 2.5px !important;
+    border-radius: 6px !important;
+    margin-bottom: 50px;
+    text-align: center;
+    width: 146px;
+    height: 50px;
 }
 
 .data-table-div-class {
