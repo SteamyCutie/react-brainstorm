@@ -17,6 +17,7 @@ import Subscriptions from "./views/Subscriptions";
 import SpecificSubscription from "./views/SpecificSubscription";
 import Unsubscribe from "./views/Unsubscribe";
 import Library from "./views/Library";
+import History from "./views/History";
 import Recommended from "./views/Recommended";
 
 export default [
@@ -94,7 +95,7 @@ export default [
   {
     path: "/history",
     layout: DefaultLayout,
-    component: Library
+    component: History
   },
   {
     path: "/recommended",

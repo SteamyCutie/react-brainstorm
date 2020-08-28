@@ -1,165 +1,170 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
+import { Link } from "react-router-dom";
+import SmallCard3 from "../components/common/SmallCard3"
 
-import SmallCard from "./../components/common/SmallCard";
-import CustomDataTable from "./../components/common/CustomDataTable";
-import { Badge } from "shards-react";
+import MentorVideo from "../components/common/MentorVideo";
 
-const History = ({ smallCards, tHistory, columns }) => (
-  <Container fluid className="main-content-container px-4 main-content-container-class">
+import MentorAvatar from "../images/Rectangle_Kianna_big.png"
+import SubscriperImg from "../images/Users.svg"
+
+const History = ({ subscriptionList, columns }) => (
+  <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
     <Row noGutters className="page-header py-4">
       <Col xs="12" sm="12" className="page-title">
         <h3>History</h3>
       </Col>
     </Row>
-
-    <Row>
-      {smallCards.map((card, idx) => (
-        <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
-          <SmallCard
-            id={idx}
-            label={card.label}
-            value={card.value}
-          />
-        </Col>
-      ))}
-    </Row>
-
-    <Row className="wallet-data-table-class">
-      <Col lg="12" md="12" sm="12">
-        <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
-      </Col>
-    </Row>
+    <Card small className="history-card">
+      <CardHeader className="history-card-header">
+        <h5 className="history-card-header-title no-margin">Filter by:</h5>
+        <div className="filter-items-group">
+          <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+            Date:
+          </label>
+          <FormSelect style={{height: "30px", width: "180px", marginRight: "10px"}}>
+            <option>Augut 10 - August 16</option>
+            <option>...</option>
+          </FormSelect>
+          <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+            Sessions:
+          </label>
+          <FormSelect style={{height: "30px", width: "80px", marginRight: "10px"}}>
+            <option>All</option>
+            <option>...</option>
+          </FormSelect>
+          <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+            Category:
+          </label>
+          <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}}>
+            <option>Select category</option>
+            <option>...</option>
+          </FormSelect>
+          <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+            Mentor:
+          </label>
+          <FormSelect style={{height: "30px", width: "120px", marginRight: "10px"}}>
+            <option>Select mentor</option>
+            <option>...</option>
+          </FormSelect>
+        </div>
+      </CardHeader>
+      <CardBody>
+        <Row>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCard3 />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCard3 />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCard3 />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCard3 />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCard3 />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCard3 />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCard3 />
+          </Col>
+        </Row>
+      </CardBody>
+    </Card>    
   </Container>
 );
 
 History.propTypes = {
-  smallCards: PropTypes.array,
-  tHistory: PropTypes.array,
+  subscriptionList: PropTypes.array,
   columns: PropTypes.array,
 };
 
 History.defaultProps = {
-  smallCards: [
-    {
-      value: "$231.45",
-      label: "Available Balance",
-    },
-    {
-      value: "$154.90",
-      label: "Pending Balance",
-    },
-    {
-      value: "$1320.10",
-      label: "Life time Earnings",
-    }
-  ],
-  tHistory: [
+  subscriptionList: [
     {
       id: 1,
-      lId: "3526AGTD364",
-      lDate: "08/09/20",
-      sName: "Leo Septimus",
-      conferenceTime: 85,
-      amount: 75,
-      status: 0,
+      avatar: require("../images/avatar1.jpg"),
+      mentorName: "Kianna Press",
+      pageName: "Algebra 101",
+      planFee: 49.99,
+      status: true,
+      edit: true
     },
     {
       id: 2,
-      lId: "843EAGSR392",
-      lDate: "08/08/20",
-      sName: "Dulce Dorwart",
-      conferenceTime: 122,
-      amount: 114,
-      status: 1,
+      avatar: require("../images/avatar2.jpg"),
+      mentorName: "Cristofer Septimus",
+      pageName: "Video editing",
+      planFee: 29.50,
+      status: true,
+      edit: true
     },
     {
       id: 3,
-      lId: "0493RSYSR748",
-      lDate: "08/07/20",
-      sName: "Zain Rosser",
-      conferenceTime: 64,
-      amount: 71,
-      status: 2,
+      avatar: require("../images/avatar3.jpg"),
+      mentorName: "Martin Geidt",
+      pageName: "Finance",
+      planFee: "29.50",
+      status: true,
+      edit: true
     },
     {
       id: 4,
-      lId: "843EAGSR392",
-      lDate: "08/08/20",
-      sName: "Tiana Westervelt",
-      conferenceTime: 122,
-      amount: 114,
-      status: 1,
-    },
-    {
-      id: 5,
-      lId: "843EAGSR392",
-      lDate: "08/08/20",
-      sName: "Charlie Baptista",
-      conferenceTime: 122,
-      amount: 103,
-      status: 1,
-    },
-    {
-      id: 6,
-      lId: "843EAGSR392",
-      lDate: "08/08/20",
-      sName: "Rayna Carder",
-      conferenceTime: 41,
-      amount: 31,
-      status: 1,
+      avatar: require("../images/avatar4.jpg"),
+      mentorName: "Kaiya Torff",
+      pageName: "Programming",
+      planFee: 32.40,
+      status: false,
+      edit: false
     }
   ],
   columns: [
     {
-      name: 'Lesson ID',
-      selector: 'lId',
+      name: 'Mentor',
+      selector: 'mentorName',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><a href="#" class="scription-to-specific">{row.mentorName}</a></div>,
+    },
+    {
+      name: 'Subscription page name',
+      selector: 'pageName',
       sortable: false,
       style: {
         fontSize: "16px",
       },
     },
     {
-      name: 'Date',
-      selector: 'lDate',
+      name: 'Subscription plan fee',
+      selector: 'planFee',
       sortable: false,
       style: {
         fontSize: "16px",
       },
-    },
-    {
-      name: 'Student name',
-      selector: 'sName',
-      sortable: true,
-      style: {
-        fontSize: "16px",
-      },
-    },
-    {
-      name: 'Conference time',
-      selector: 'conferenceTime',
-      sortable: false,
-      style: {
-        fontSize: "16px",
-      },
-      format: row => `${Math.floor(row.conferenceTime / 60) > 9 ? Math.floor(row.conferenceTime / 60) : Math.floor(row.conferenceTime / 60) === 0 ? 0 : "0" + Math.floor(row.conferenceTime / 60)}h ${(row.conferenceTime % 60) > 9 ? (row.conferenceTime % 60) : (row.conferenceTime % 60) === 0 ? 0 : "0" + (row.conferenceTime % 60)}min`,
-    },
-    {
-      name: 'Amount',
-      selector: 'amount',
-      sortable: false,
-      style: {
-        fontSize: "16px",
-      },
-      format: row => `$${row.amount}`,
+      format: row => `$${row.planFee}`,
     },
     {
       name: 'Status',
       selector: 'status',
       sortable: false,
-      right: false,
-      cell: row => <Badge className={row.status === 0 ? "badge-pending-class" : row.status === 1 ? "badge-confirmed-class" : "badge-failed-class"}>{row.status === 0 ? "Pending" : row.status === 1 ? "Confirmed" : "Failed"}</Badge>,
+      style: {
+        fontSize: "16px",
+      },
+      cell: row => <div>{row.status === true ? "Active" : "Inactive"}</div>,
+    },
+    {
+      name: 'Edit',
+      selector: 'edit',
+      sortable: false,
+      center: true,
+      cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? "Unsubscribe" : "Resubscribe"}</div>,
     }
   ]
 };
