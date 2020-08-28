@@ -635,6 +635,10 @@ body {
     box-shadow: none;
 }
 
+.page-basic-margin {
+    margin-bottom: 20px;
+}
+
 .btn-subscription-unsubscribe {
     color: #04B5FA !important;
     background-color: white !important;

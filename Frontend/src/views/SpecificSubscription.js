@@ -9,7 +9,7 @@ import MentorAvatar from "../images/Rectangle_Kianna_big.png"
 import SubscriperImg from "../images/Users.svg"
 
 const SpecificSubscription = ({ subscriptionList, columns }) => (
-  <Container fluid className="main-content-container px-4 pb-4 main-content-container-class">
+  <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
     <Card small className="specific-subsciption-card">
       <CardBody>
         <Row>
