@@ -270,6 +270,7 @@ body {
 .main-content-container-class {
     background-color: #F9F9F9;
     min-height: calc(100vh - 9.9rem) !important;
+    padding-bottom: 0px !important;
 }
 .card-container {
     padding-left: 15px; 
@@ -380,11 +381,14 @@ body {
 .mentor-detail-name {
     padding-right: 20px;
     padding-left: 10px;
+    font-weight: bold;
 }
 
 .mentor-detail-score {
     padding-bottom: 3px;
     padding-right: 5px;
+    /* width: 17.5px; */
+    /* height: 16.5px; */
 }
 
 .mentor-detail-subject-tag {
@@ -398,8 +402,8 @@ body {
     color: #333333;
     font-weight: bold;
     font-size: 16px;
-    width: 64px;
-    margin-right: 20px;
+    width: 90px;
+    /* margin-right: 20px; */
 }
 
 .mentor-detail-myself {
@@ -581,8 +585,10 @@ body {
 .subscription-edit-unsubscribe {
     width: 90px;
     height: 30px;
-    padding-left: 8px;
-    padding-top: 5px;
+    min-width: 90px;
+    min-height: 30px;
+    padding: 5px 5px;
+    text-align: center;
     border-radius: 7px;
     color: #04B5FA;
     border: 1px #04B5FA solid;
@@ -591,8 +597,10 @@ body {
 .subscription-edit-resubscribe {
     width: 90px;
     height: 30px;
-    padding-left: 8px;
-    padding-top: 5px;
+    min-width: 90px;
+    min-height: 30px;
+    padding: 5px 5px;
+    text-align: center;
     border-radius: 7px;
     color: #999999;
     border: 1px #999999 solid;
@@ -609,7 +617,7 @@ body {
 }
 
 .specific-subsciption-card {
-    margin: 20px 0px;
+    margin-top: 20px;
 }
 
 .btn-back-scriptions {
@@ -709,6 +717,52 @@ body {
 
 .btn-video-desc-more:focus {
     box-shadow: none !important;
+}
+
+.subscription-mentor-desc {
+    width: 100%;
+    /* min-height: 250px; */
+    margin-bottom: 15px;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    padding: 22px;
+}
+
+.no-padding-left {
+    padding-left: 0px !important;
+}
+
+.subscription-review {
+    width: 100%;
+    padding-left: 30px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+}
+
+.review-text {
+    font-size: 16px;
+    color: #333333;
+    font-weight: 400;
+    margin-top: 70px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #E0E0E0
+}
+
+.subscription-review-desc {
+    padding-bottom: 10px;
+    /* display: flex; */
+}
+
+.subscription-review-avatar {
+    width: 62px;
+    height: 62px;
+    margin-right: 10px;
+}
+
+.review-score {
+    display: flex;
+    float: right;
 }
 
 .data-table-div-class {

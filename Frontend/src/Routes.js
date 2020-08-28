@@ -15,6 +15,7 @@ import StudentWallet from "./views/StudentWallet";
 import Trending from "./views/Trending";
 import Subscriptions from "./views/Subscriptions";
 import SpecificSubscription from "./views/SpecificSubscription";
+import Unsubscribe from "./views/Unsubscribe";
 import Library from "./views/Library";
 import Recommended from "./views/Recommended";
 
@@ -79,6 +80,11 @@ export default [
     path: "/subscription-specific", /* specific must be user id on this system */
     layout: DefaultLayout,
     component: SpecificSubscription
+  },
+  {
+    path: "/unsubscribe-specific", /* specific must be user id on this system */
+    layout: DefaultLayout,
+    component: Unsubscribe
   },
   {
     path: "/library",
