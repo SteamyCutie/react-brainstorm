@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Container } from "shards-react";
+import { Container, Row, Col, Badge, Button } from "shards-react";
+import { Calendar, momentLocalizer, globalizeLocalizer  } from 'react-big-calendar'
+import moment from 'moment';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 
 // import PageTitle from "./../components/common/PageTitle";
 // import SmallStats from "./../components/common/SmallStats";
@@ -9,155 +12,232 @@ import { Container } from "shards-react";
 // import NewDraft from "./../components/blog/NewDraft";
 // import Discussions from "./../components/blog/Discussions";
 // import TopReferrals from "./../components/common/TopReferrals";
+import WalletHeader from "../components/common/WalletHeader";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const MentorSession = ({ smallStats }) => (
-  <Container fluid className="main-content-container px-4">
-    {/* <Row noGutters className="page-header py-4">
-      <PageTitle title="Blog Overview" subtitle="Dashboard" className="text-sm-left mb-3" />
-    </Row>
+import BackIcon from "../images/Back_icon.svg"
+import NextIcon from "../images/Next_icon.svg"
 
-    <Row>
-      {smallStats.map((stats, idx) => (
-        <Col className="col-lg mb-4" key={idx} {...stats.attrs}>
-          <SmallStats
-            id={`small-stats-${idx}`}
-            variation="1"
-            chartData={stats.datasets}
-            chartLabels={stats.chartLabels}
-            label={stats.label}
-            value={stats.value}
-            percentage={stats.percentage}
-            increase={stats.increase}
-            decrease={stats.decrease}
+const localizer = momentLocalizer(moment);
+const myEventsList = {};
+const CURRENT_DATE = moment().toDate();
+
+
+
+export default class MentorSession extends React.Component {
+  constructor(props) {
+    super(props);
+    const now = new Date();
+    const events = [
+      {
+          id: 0,
+          title: 'All Day Event very long title',
+          allDay: true,
+          noOfPax: 123,
+          isBooked: true,
+          start: new Date(2020, 7, 1),
+          end: new Date(2020, 7, 2),
+      },
+      {
+          id: 1,
+          title: 'Long Event',
+          noOfPax: 101,
+          isBooked: true,
+          start: new Date(2020, 7, 7, 10, 0, 0),
+          end: new Date(2020, 7, 7, 11, 30, 0),
+      },
+      {
+        id: 2,
+        title: 'Long Event 2',
+        noOfPax: 10,
+        isBooked: true,
+        start: new Date(2020, 7, 7, 15, 0, 0),
+        end: new Date(2020, 7, 7, 16, 30, 0),
+    },
+    {
+          id: 3,
+          title: 'Right now Time Event',
+          noOfPax: 1,
+          isBooked: false,
+          start: now,
+          end: now,
+      },
+    ]
+    this.state = {
+      events
+    };
+  }
+
+  componentWillMount() {
+  }
+
+  MyDateCell = props => {
+    console.log(props);
+    return (
+      <div style={{backgroundColor: "white"}}>
+        A
+      </div>
+    );
+  };
+
+  render() {
+    return (
+      <Container fluid className="main-content-container px-4">
+        <Row noGutters className="page-header py-4">
+          <WalletHeader title="Upcoming Session" className="text-sm-left mb-3" flag={false}/>
+        </Row>
+        <Row className="calendar-class">
+          <Calendar
+            localizer={localizer}
+            events={this.state.events}
+            defaultDate={moment().toDate()}
+            startAccessor="start"
+            endAccessor="end"
+            style={{width: "100%"}}
+            components={{
+              toolbar: ToolBar,
+            }}
           />
-        </Col>
-      ))}
-    </Row>
+        </Row>
+      </Container>
+    );
+  }
+}
 
-    <Row>
-      <Col lg="8" md="12" sm="12" className="mb-4">
-        <UsersOverview />
-      </Col>
+class CustomEvent extends React.Component {
+  render() {
+    const bookedIcon = this.props.event.isBooked ? <Badge><i className="fa fa-bookmark"></i></Badge> : null ;
 
-      <Col lg="4" md="6" sm="12" className="mb-4">
-        <UsersByDevice />
-      </Col>
+    return (
+      <div style={{position: "relative"}}>
+        <strong>{moment(this.props.event.start).format('ha')}</strong> {this.props.event.title}
+        <span className="pull-right">
+          {bookedIcon}
+          <Badge>{this.props.event.noOfPax} <i className="fa fa-user"></i></Badge>
+        </span>
+      </div>
+    );
+  }
+}
 
-      <Col lg="4" md="6" sm="12" className="mb-4">
-        <NewDraft />
-      </Col>
+class ToolBar extends React.Component {
 
-      <Col lg="5" md="12" sm="12" className="mb-4">
-        <Discussions />
-      </Col>
+  constructor(props) {
+    super(props);
 
-      <Col lg="3" md="12" sm="12" className="mb-4">
-        <TopReferrals />
-      </Col>
-    </Row> */}
-  </Container>
-);
-
-MentorSession.propTypes = {
-  smallStats: PropTypes.array
-};
-
-MentorSession.defaultProps = {
-  smallStats: [
-    {
-      label: "Posts",
-      value: "2,390",
-      percentage: "4.7%",
-      increase: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "6", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(0, 184, 216, 0.1)",
-          borderColor: "rgb(0, 184, 216)",
-          data: [1, 2, 1, 3, 5, 4, 7]
-        }
-      ]
-    },
-    {
-      label: "Pages",
-      value: "182",
-      percentage: "12.4",
-      increase: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "6", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(23,198,113,0.1)",
-          borderColor: "rgb(23,198,113)",
-          data: [1, 2, 3, 3, 3, 4, 4]
-        }
-      ]
-    },
-    {
-      label: "Comments",
-      value: "8,147",
-      percentage: "3.8%",
-      increase: false,
-      decrease: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "4", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(255,180,0,0.1)",
-          borderColor: "rgb(255,180,0)",
-          data: [2, 3, 3, 3, 4, 3, 3]
-        }
-      ]
-    },
-    {
-      label: "New Customers",
-      value: "29",
-      percentage: "2.71%",
-      increase: false,
-      decrease: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "4", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(255,65,105,0.1)",
-          borderColor: "rgb(255,65,105)",
-          data: [1, 7, 1, 3, 1, 4, 8]
-        }
-      ]
-    },
-    {
-      label: "Subscribers",
-      value: "17,281",
-      percentage: "2.4%",
-      increase: false,
-      decrease: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "4", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgb(0,123,255,0.1)",
-          borderColor: "rgb(0,123,255)",
-          data: [3, 2, 3, 2, 4, 5, 4]
-        }
-      ]
+    this.state = {
+      alignment: "right",
+      monthLabel: moment(new Date()).endOf('month').format('MMMM YYYY'),
+      currentMonth: moment(new Date()).endOf('month').format('MMM'),
+      nextMonth: moment(new Date()).add(1, 'month').format('MMM')
     }
-  ]
-};
+  }
 
-export default MentorSession;
+  setAlignment(newAlignment) {
+    this.setState({
+      alignment: newAlignment,
+    });
+  }
+
+  goToDayView = () => {
+    this.props.onView('day');
+  }
+
+  goToWeekView = () => {
+    this.props.onView('week');
+  }
+
+  goToMonthView = () => {
+    this.props.onView('month');
+  }
+
+  getCalendarEvents = (date) => {
+    const {project} = this;
+    const startDate = moment(date).add(-1, 'month').toDate();
+    const endDate = moment(date).endOf('month').toDate();
+    const currentMonth = moment(date).endOf('month').format('MMMM YYYY');
+    const monthToday = moment(date).endOf('month').format('MMM');
+    let nextCurrentMonth = moment(date).add(1, 'month').format('MMM');
+    
+    this.setState({
+      monthLabel: currentMonth,
+      currentMonth: monthToday,
+      nextMonth: nextCurrentMonth
+    });
+    
+    if (project) {
+      project.getEvents(project.id, startDate, endDate, (err, res) => {
+        if (err) {
+          throw err;
+        }
+        this.setState({
+          events: res.body
+        });
+    
+      });
+    }
+  }
+
+  handleAlignment = (event, newAlignment) => {
+    this.setAlignment(newAlignment);
+  };
+
+  goToBack = () => {
+    let mDate = this.props.date;
+    let newDate = new Date(
+      mDate.getFullYear(),
+      mDate.getMonth() - 1,
+      1);
+    this.props.onNavigate('prev', newDate);
+    this.getCalendarEvents(newDate);
+  }
+
+  goToNext = () => {
+    let mDate = this.props.date;
+    let newDate = new Date(
+      mDate.getFullYear(),
+      mDate.getMonth() + 1,
+      1);
+    this.props.onNavigate('next', newDate);
+    this.getCalendarEvents(newDate);
+  
+  }
+
+  render() {
+    console.log(this.props, "HHHHHH");
+    const { alignment } = this.state;
+    return (
+      <div className="toolbar-class">
+        <div className="toolbar-status">
+          <Button className="today-icon-class">Today</Button>
+          <label className="toolbar-month-class">{this.state.monthLabel}</label>
+          <Button onClick={this.goToBack} className="back-icon-class">
+            <img src={BackIcon} alt="BackIcon" />
+          </Button>
+          <Button onClick={this.goToNext} className="next-icon-class">
+            <img src={NextIcon} alt="NextIcon" />
+          </Button>
+        </div>
+        <div className="toolbar-button-group-class">
+          <ToggleButtonGroup
+            value={alignment}
+            exclusive
+            onChange={(event, newAlignment) => this.handleAlignment(event, newAlignment)}
+            className="toolbar-button-group"
+            aria-label="text alignment"
+          >
+            <ToggleButton value="left" aria-label="left aligned" className="toolbar-day-button" onClick={this.goToDayView}>
+              Day
+            </ToggleButton>
+            <ToggleButton value="center" aria-label="right aligned" className="toolbar-week-button" onClick={this.goToWeekView}>
+              Week
+            </ToggleButton>
+            <ToggleButton value="right" aria-label="right aligned" className="toolbar-month-button" onClick={this.goToMonthView}>
+              Month
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      </div >
+    );
+  }
+}

@@ -11,7 +11,7 @@ import { Badge } from "shards-react";
 const MentorWallet = ({ smallCards, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     <Row noGutters className="page-header py-4">
-      <WalletHeader title="Wallet" className="text-sm-left mb-3" />
+      <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
     </Row>
 
     <Row>
