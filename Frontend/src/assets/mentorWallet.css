@@ -703,6 +703,7 @@ body {
     background-color: #04B5FA !important;
     outline: none !important;
     border-radius: 5px !important;
+    border-color: #04B5FA !important;
 }
 
 .toolbar-week-button {
@@ -727,6 +728,7 @@ body {
     background-color: #04B5FA !important;
     outline: none !important;
     border-radius: 5px !important;
+    border-color: #04B5FA !important;
 }
 
 .toolbar-month-button {
@@ -747,6 +749,7 @@ body {
     padding: 10px 30px !important;
     color: #FFFFFF !important;
     background-color: #04B5FA !important;
+    border-color: #04B5FA !important;
     outline: none !important;
     border-radius: 5px !important;
 }
