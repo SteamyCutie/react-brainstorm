@@ -184,23 +184,58 @@ class ToolBar extends React.Component {
 
   goToBack = () => {
     let mDate = this.props.date;
-    let newDate = new Date(
-      mDate.getFullYear(),
-      mDate.getMonth() - 1,
-      1);
-    this.props.onNavigate('prev', newDate);
-    this.getCalendarEvents(newDate);
+    if(this.props.view === "month") {
+      let newDate = new Date(
+        mDate.getFullYear(),
+        mDate.getMonth() - 1,
+        1);
+      this.props.onNavigate('prev', newDate);
+      this.getCalendarEvents(newDate);
+    }
+    else if(this.props.view === "week" ) {
+      let newDate = new Date(
+        mDate.getFullYear(),
+        mDate.getMonth(),
+        mDate.getDate() - 7);
+      this.props.onNavigate('prev', newDate);
+      this.getCalendarEvents(newDate);
+    }
+    else {
+      let newDate = new Date(
+        mDate.getFullYear(),
+        mDate.getMonth(),
+        mDate.getDate() - 1);
+      this.props.onNavigate('prev', newDate);
+      this.getCalendarEvents(newDate);
+    }
   }
 
   goToNext = () => {
     let mDate = this.props.date;
-    let newDate = new Date(
-      mDate.getFullYear(),
-      mDate.getMonth() + 1,
-      1);
-    this.props.onNavigate('next', newDate);
-    this.getCalendarEvents(newDate);
-  
+    if(this.props.view === "month") {
+      let newDate = new Date(
+        mDate.getFullYear(),
+        mDate.getMonth() + 1,
+        1);
+      this.props.onNavigate('prev', newDate);
+      this.getCalendarEvents(newDate);
+    }
+    else if(this.props.view === "week" ) {
+      let newDate = new Date(
+        mDate.getFullYear(),
+        mDate.getMonth(),
+        mDate.getDate() + 7);
+      this.props.onNavigate('prev', newDate);
+      this.getCalendarEvents(newDate);
+    }
+    else {
+      let newDate = new Date(
+        mDate.getFullYear(),
+        mDate.getMonth(),
+        mDate.getDate() + 1);
+      this.props.onNavigate('prev', newDate);
+      this.getCalendarEvents(newDate);
+    }
   }
 
   render() {
@@ -210,7 +245,7 @@ class ToolBar extends React.Component {
       <div className="toolbar-class">
         <div className="toolbar-status">
           <Button className="today-icon-class">Today</Button>
-          <label className="toolbar-month-class">{this.state.monthLabel}</label>
+          <label className="toolbar-month-class">{this.props.label}</label>
           <Button onClick={this.goToBack} className="back-icon-class">
             <img src={BackIcon} alt="BackIcon" />
           </Button>

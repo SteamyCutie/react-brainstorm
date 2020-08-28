@@ -666,6 +666,9 @@ body {
     font-weight: 500;
     color: #333333;
     padding: 30px;
+    width: 300px;
+    justify-content: center;
+    display: inline-flex;
 }
 
 .toolbar-class {
