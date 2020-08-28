@@ -270,6 +270,7 @@ body {
 .main-content-container-class {
     background-color: #F9F9F9;
     min-height: calc(100vh - 9.9rem) !important;
+    padding-bottom: 0px !important;
 }
 .card-container {
     padding-left: 15px; 
@@ -380,11 +381,14 @@ body {
 .mentor-detail-name {
     padding-right: 20px;
     padding-left: 10px;
+    font-weight: bold;
 }
 
 .mentor-detail-score {
     padding-bottom: 3px;
     padding-right: 5px;
+    /* width: 17.5px; */
+    /* height: 16.5px; */
 }
 
 .mentor-detail-subject-tag {
@@ -398,8 +402,8 @@ body {
     color: #333333;
     font-weight: bold;
     font-size: 16px;
-    width: 64px;
-    margin-right: 20px;
+    width: 90px;
+    /* margin-right: 20px; */
 }
 
 .mentor-detail-myself {
@@ -581,8 +585,10 @@ body {
 .subscription-edit-unsubscribe {
     width: 90px;
     height: 30px;
-    padding-left: 8px;
-    padding-top: 5px;
+    min-width: 90px;
+    min-height: 30px;
+    padding: 5px 5px;
+    text-align: center;
     border-radius: 7px;
     color: #04B5FA;
     border: 1px #04B5FA solid;
@@ -591,8 +597,10 @@ body {
 .subscription-edit-resubscribe {
     width: 90px;
     height: 30px;
-    padding-left: 8px;
-    padding-top: 5px;
+    min-width: 90px;
+    min-height: 30px;
+    padding: 5px 5px;
+    text-align: center;
     border-radius: 7px;
     color: #999999;
     border: 1px #999999 solid;
@@ -609,7 +617,7 @@ body {
 }
 
 .specific-subsciption-card {
-    margin: 20px 0px;
+    margin-top: 20px;
 }
 
 .btn-back-scriptions {
@@ -627,6 +635,10 @@ body {
     box-shadow: none;
 }
 
+.page-basic-margin {
+    margin-bottom: 20px;
+}
+
 .btn-subscription-unsubscribe {
     color: #04B5FA !important;
     background-color: white !important;
@@ -638,12 +650,12 @@ body {
 
 .btn-subscription-unsubscribe:hover {
     border-color: #04B5FA;
-    box-shadow: none;
+    /* box-shadow: none; */
 }
 
 .btn-subscription-unsubscribe:focus {
     border-color: #04B5FA;
-    box-shadow: none;
+    /* box-shadow: none; */
 }
 
 .btn-subscription-unsubscribe:active {
@@ -709,6 +721,183 @@ body {
 
 .btn-video-desc-more:focus {
     box-shadow: none !important;
+}
+
+.subscription-mentor-desc {
+    width: 100%;
+    /* min-height: 250px; */
+    margin-bottom: 15px;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    padding: 22px;
+}
+
+.no-padding-left {
+    padding-left: 0px !important;
+}
+
+.subscription-review {
+    width: 100%;
+    padding-left: 30px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+}
+
+.review-text {
+    font-size: 16px;
+    color: #333333;
+    font-weight: 400;
+    margin-top: 70px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #E0E0E0
+}
+
+.subscription-review-desc {
+    padding-bottom: 10px;
+    /* display: flex; */
+}
+
+.subscription-review-avatar {
+    width: 62px;
+    height: 62px;
+    margin-right: 10px;
+}
+
+.review-score {
+    display: flex;
+    float: right;
+}
+
+.subscribe-modal {
+    align-items: center;
+    justify-content: center;
+    display: block;
+    padding: 0px !important;
+    width: 70%;
+}
+
+.subscribe-card-container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.btn-unsubscribe-subscribe {
+    color: #FFFFFF !important;
+    background-color: #04B5FA !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
+    border-color: #04B5FA !important;
+    border-width: 2.5px !important;
+    border-radius: 6px !important;
+    margin-bottom: 50px;
+    text-align: center;
+    width: 146px;
+    height: 50px;
+}
+
+.library-card {
+    /* max-width: 80%; */
+}
+
+.library-card .MuiTab-wrapper {
+    text-transform: none;
+    font-size: 18px;
+    padding: 0px 20px;
+}
+
+.library-card .MuiTabs-indicator{
+    background-color: #04B5FA;
+}
+
+.library-card .MuiTab-textColorPrimary.Mui-selected {
+    color: #04B5FA;
+    font-weight: bold;
+    outline: none;
+}
+
+.library-tab {
+    /* border-bottom: 1px solid red; */
+    border-top-left-radius: 7px !important;
+    border-top-right-radius: 7px !important;
+    background-color: white !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #E3E3E3;
+}
+
+.library-saved-content {
+    width: 340px;
+    /* margin-right: 20px; */
+}
+
+.saved-content-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 7px;
+    margin-right: 10px;
+}
+
+.library-content-name {
+    font-size: 16px;
+    padding-top: 5px;
+    color: #333333;
+}
+
+.small-card3-desc {
+    padding-top: 5px;
+    height: 30px;
+    margin-bottom: 50px;
+}
+
+.small-card3 {
+    width: 345px;
+    height: 170px;
+    padding: 10px 15px;
+    margin: 10px 10px;
+    border-radius: 7px;
+    box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
+}
+
+.small-card3-avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 7px;
+    margin-right: 10px;
+}
+
+.small-card3-date-time {
+    position: absolute;
+    left: 40px;
+    bottom: 20px;
+}
+
+.small-card3-name {
+    font-size: 16px;
+    padding-top: 5px;
+    font-weight: bold;
+    color: #333333;
+}
+
+/* .history-card {
+    margin-top: 20px;
+} */
+
+.history-card-header {
+    border-bottom: 1px solid #E0E0E0;
+    /* display: flex; */
+}
+
+.history-card-header-title {
+    padding-left: 5px;
+    color: #333333;
+    font-size: 18px;
+    font-weight: 500;
+    float: left;
+}
+
+.filter-items-group {
+    float: right;
+    display: flex;
 }
 
 .data-table-div-class {

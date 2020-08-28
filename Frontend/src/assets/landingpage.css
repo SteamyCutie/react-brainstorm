@@ -539,7 +539,9 @@ body {
     background-color: #D9F2FE;
     border-radius: 100px;
     padding: 0px 10px;
+    padding-top: 2px;
     margin-right: 10px;
+    font-weight: 500;
 }
 
 .tag-title {
@@ -1008,6 +1010,7 @@ body {
 .backdrop-class.show {
     background-color: #000000 !important;
     opacity: 0.3 !important;
+    z-index: 8000;
 }
 
 .toggle-button-class {

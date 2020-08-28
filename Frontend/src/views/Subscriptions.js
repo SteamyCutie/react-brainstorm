@@ -30,7 +30,8 @@ Subscriptions.defaultProps = {
       pageName: "Algebra 101",
       planFee: 49.99,
       status: true,
-      edit: true
+      edit: true,
+      subscribe: true
     },
     {
       id: 2,
@@ -39,7 +40,8 @@ Subscriptions.defaultProps = {
       pageName: "Video editing",
       planFee: 29.50,
       status: true,
-      edit: true
+      edit: true,
+      subscribe: true
     },
     {
       id: 3,
@@ -48,7 +50,8 @@ Subscriptions.defaultProps = {
       pageName: "Finance",
       planFee: "29.50",
       status: true,
-      edit: true
+      edit: true,
+      subscribe: true
     },
     {
       id: 4,
@@ -57,7 +60,8 @@ Subscriptions.defaultProps = {
       pageName: "Programming",
       planFee: 32.40,
       status: false,
-      edit: false
+      edit: false,
+      subscribe: false
     }
   ],
   columns: [
@@ -68,7 +72,7 @@ Subscriptions.defaultProps = {
       style: {
         fontSize: "16px",
       },
-      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to="/subscription-specific" class="scription-to-specific">{row.mentorName}</Link></div>,
+      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to={row.subscribe ? "/subscription-specific" : "/unsubscribe-specific"} class="scription-to-specific">{row.mentorName}</Link></div>,
     },
     {
       name: 'Subscription page name',
