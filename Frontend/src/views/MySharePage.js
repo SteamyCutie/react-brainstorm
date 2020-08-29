@@ -1,179 +1,137 @@
 import React from "react";
-// import {
-//   Container,
-//   Row,
-//   Col,
-//   Card,
-//   CardHeader,
-//   ListGroup,
-//   ListGroupItem,
-//   Form,
-//   Alert
-// } from "shards-react";
+import PropTypes from "prop-types";
+import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
+import { Link } from "react-router-dom";
 
-// import PageTitle from "../components/common/PageTitle";
-// import Colors from "../components/components-overview/Colors";
-// import Checkboxes from "../components/components-overview/Checkboxes";
-// import RadioButtons from "../components/components-overview/RadioButtons";
-// import ToggleButtons from "../components/components-overview/ToggleButtons";
-// import SmallButtons from "../components/components-overview/SmallButtons";
-// import SmallOutlineButtons from "../components/components-overview/SmallOutlineButtons";
-// import NormalButtons from "../components/components-overview/NormalButtons";
-// import NormalOutlineButtons from "../components/components-overview/NormalOutlineButtons";
-// import Forms from "../components/components-overview/Forms";
-// import FormValidation from "../components/components-overview/FormValidation";
-// import CompleteFormExample from "../components/components-overview/CompleteFormExample";
-// import Sliders from "../components/components-overview/Sliders";
-// import ProgressBars from "../components/components-overview/ProgressBars";
-// import ButtonGroups from "../components/components-overview/ButtonGroups";
-// import InputGroups from "../components/components-overview/InputGroups";
-// import SeamlessInputGroups from "../components/components-overview/SeamlessInputGroups";
-// import CustomFileUpload from "../components/components-overview/CustomFileUpload";
-// import DropdownInputGroups from "../components/components-overview/DropdownInputGroups";
-// import CustomSelect from "../components/components-overview/CustomSelect";
+import MentorVideo from "../components/common/MentorVideo";
 
-const MySharePage = () => (
-  <div>
-    {/* <Container fluid className="px-0">
-      <Alert className="mb-0">
-        <i className="fa fa-info mx-2"></i> How you doin'? I'm just a friendly, good-looking notification message and I come in all the colors you can see below. Pretty cool, huh?
-      </Alert>
-    </Container>
-    <Container fluid className="main-content-container px-4">
-      <Row noGutters className="page-header py-4">
-        <PageTitle
-          sm="4"
-          title="Forms & Components"
-          subtitle="Overview"
-          className="text-sm-left"
-        />
-      </Row>
+import MentorAvatar from "../images/Rectangle_Rayna_big.png"
+import SubscriperImg from "../images/Users.svg"
+import LinkImg from "../images/Link.svg"
 
-      <Colors />
-
-      <Row>
-        <Col lg="8" className="mb-4">
-          <Card small className="mb-4">
-            <CardHeader className="border-bottom">
-              <h6 className="m-0">Form Inputs</h6>
-            </CardHeader>
-
-            <ListGroup flush>
-              <ListGroupItem className="p-0 px-3 pt-3">
-                <Row>
-                  <Checkboxes />
-                  <RadioButtons />
-                  <ToggleButtons />
-                </Row>
-              </ListGroupItem>
-
-              <ListGroupItem className="p-3">
-                <strong className="text-muted d-block my-2">
-                  Small Buttons
-                </strong>
-                <SmallButtons />
-
-                <strong className="text-muted d-block my-2">
-                  Small Outline Button
-                </strong>
-                <SmallOutlineButtons />
-              </ListGroupItem>
-
-              <ListGroupItem className="p-3">
-                <strong className="text-muted d-block my-2">
-                  Normal Buttons
-                </strong>
-                <NormalButtons />
-
-                <strong className="text-muted d-block my-2">
-                  Normal Outline Buttons
-                </strong>
-                <NormalOutlineButtons />
-              </ListGroupItem>
-
-              <ListGroupItem className="p-3">
-                <Row>
-                  <Forms />
-                  <FormValidation />
-                </Row>
-              </ListGroupItem>
-            </ListGroup>
-          </Card>
-
-          <Card small>
-            <CardHeader className="border-bottom">
-              <h6 className="m-0">Form Example</h6>
-            </CardHeader>
-            <CompleteFormExample />
-          </Card>
-        </Col>
-
-        <Col lg="4" className="mb-4">
-          <Card small className="mb-4">
-            <CardHeader className="border-bottom">
-              <h6 className="m-0">Sliders & Progress Bars</h6>
-            </CardHeader>
-            <ListGroup flush>
-              <ProgressBars />
-              <Sliders />
-            </ListGroup>
-          </Card>
-
-          <Card small className="mb-4">
-            <CardHeader className="border-bottom">
-              <h6 className="m-0">Groups</h6>
-            </CardHeader>
-
-            <ListGroup flush>
-              <ListGroupItem className="px-3">
-                <Form>
-                  <strong className="text-muted d-block mb-3">
-                    Button Groups
-                  </strong>
-                  <ButtonGroups />
-
-                  <strong className="text-muted d-block mb-2">
-                    Input Groups
-                  </strong>
-                  <InputGroups />
-
-                  <strong className="text-muted d-block mb-2">
-                    Seamless Input Groups
-                  </strong>
-                  <SeamlessInputGroups />
-                </Form>
-              </ListGroupItem>
-            </ListGroup>
-          </Card>
-
-          <Card small>
-            <CardHeader className="border-bottom">
-              <h6 className="m-0">Files & Dropdowns</h6>
-            </CardHeader>
-
-            <ListGroup flush>
-              <ListGroupItem className="px-3">
-                <strong className="text-muted d-block mb-2">
-                  Custom File Upload
-                </strong>
-                <CustomFileUpload />
-
-                <strong className="text-muted d-block mb-2">
-                  Dropdown Input Groups
-                </strong>
-                <DropdownInputGroups />
-
-                <strong className="text-muted d-block mb-2">
-                  Custom Select
-                </strong>
-                <CustomSelect />
-              </ListGroupItem>
-            </ListGroup>
-          </Card>
-        </Col>
-      </Row>
-    </Container> */}
-  </div>
+const MySharePage = ({ subscriptionList, columns }) => (
+  <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
+    <Row noGutters className="page-header py-4">
+      <Col className="page-title">
+        <h3>My share page</h3>
+      </Col>
+    </Row>
+    <Card small className="share-page-card">
+      <CardBody>
+        <Row>
+          <Col xl="3" className="subscription-mentor-detail">
+            <div>
+              <img src={MentorAvatar} />
+              <div style={{display: "flex", padding: "20px 0px"}}>
+                <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
+                <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
+                <h6 className="no-margin"style={{fontWeight: "bold"}}>24</h6>
+              </div>
+            </div>
+          </Col>
+          <Col xl="9" lg="12" className="subscription-mentor-videos">
+            <h6 className="profile-link-url">
+              <img src={LinkImg} alt="link" className="profile-link-image" />
+              www.brainsshare.com/kiannapress
+            </h6>
+            <MentorVideo />
+            <MentorVideo />
+            <MentorVideo />
+          </Col>
+        </Row>
+      </CardBody>
+    </Card>    
+  </Container>
 );
+
+MySharePage.propTypes = {
+  subscriptionList: PropTypes.array,
+  columns: PropTypes.array,
+};
+
+MySharePage.defaultProps = {
+  subscriptionList: [
+    {
+      id: 1,
+      avatar: require("../images/avatar1.jpg"),
+      mentorName: "Kianna Press",
+      pageName: "Algebra 101",
+      planFee: 49.99,
+      status: true,
+      edit: true
+    },
+    {
+      id: 2,
+      avatar: require("../images/avatar2.jpg"),
+      mentorName: "Cristofer Septimus",
+      pageName: "Video editing",
+      planFee: 29.50,
+      status: true,
+      edit: true
+    },
+    {
+      id: 3,
+      avatar: require("../images/avatar3.jpg"),
+      mentorName: "Martin Geidt",
+      pageName: "Finance",
+      planFee: "29.50",
+      status: true,
+      edit: true
+    },
+    {
+      id: 4,
+      avatar: require("../images/avatar4.jpg"),
+      mentorName: "Kaiya Torff",
+      pageName: "Programming",
+      planFee: 32.40,
+      status: false,
+      edit: false
+    }
+  ],
+  columns: [
+    {
+      name: 'Mentor',
+      selector: 'mentorName',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><a href="#" class="scription-to-specific">{row.mentorName}</a></div>,
+    },
+    {
+      name: 'Subscription page name',
+      selector: 'pageName',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+    },
+    {
+      name: 'Subscription plan fee',
+      selector: 'planFee',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+      format: row => `$${row.planFee}`,
+    },
+    {
+      name: 'Status',
+      selector: 'status',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+      cell: row => <div>{row.status === true ? "Active" : "Inactive"}</div>,
+    },
+    {
+      name: 'Edit',
+      selector: 'edit',
+      sortable: false,
+      center: true,
+      cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? "Unsubscribe" : "Resubscribe"}</div>,
+    }
+  ]
+};
 
 export default MySharePage;

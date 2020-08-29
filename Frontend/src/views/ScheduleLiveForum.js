@@ -1,154 +1,138 @@
 import React from "react";
-import { Container } from "shards-react";
+import PropTypes from "prop-types";
+import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
+import { Link } from "react-router-dom";
+import SmallCardForum from "../components/common/SmallCardForum"
 
-// import PageTitle from "../components/common/PageTitle";
+import MentorVideo from "../components/common/MentorVideo";
 
-const ScheduleLiveForum = () => (
-  <Container fluid className="main-content-container px-4">
-    {/* <Row noGutters className="page-header py-4">
-      <PageTitle sm="4" title="Add New Post" subtitle="Blog Posts" className="text-sm-left" />
-    </Row>
+import MentorAvatar from "../images/Rectangle_Kianna_big.png"
+import SubscriperImg from "../images/Users.svg"
 
-    <Row>
-      <Col>
-        <Card small className="mb-4">
-          <CardHeader className="border-bottom">
-            <h6 className="m-0">Active Users</h6>
-          </CardHeader>
-          <CardBody className="p-0 pb-3">
-            <table className="table mb-0">
-              <thead className="bg-light">
-                <tr>
-                  <th scope="col" className="border-0">
-                    #
-                  </th>
-                  <th scope="col" className="border-0">
-                    First Name
-                  </th>
-                  <th scope="col" className="border-0">
-                    Last Name
-                  </th>
-                  <th scope="col" className="border-0">
-                    Country
-                  </th>
-                  <th scope="col" className="border-0">
-                    City
-                  </th>
-                  <th scope="col" className="border-0">
-                    Phone
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Ali</td>
-                  <td>Kerry</td>
-                  <td>Russian Federation</td>
-                  <td>Gdańsk</td>
-                  <td>107-0339</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Clark</td>
-                  <td>Angela</td>
-                  <td>Estonia</td>
-                  <td>Borghetto di Vara</td>
-                  <td>1-660-850-1647</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Jerry</td>
-                  <td>Nathan</td>
-                  <td>Cyprus</td>
-                  <td>Braunau am Inn</td>
-                  <td>214-4225</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Colt</td>
-                  <td>Angela</td>
-                  <td>Liberia</td>
-                  <td>Bad Hersfeld</td>
-                  <td>1-848-473-7416</td>
-                </tr>
-              </tbody>
-            </table>
-          </CardBody>
-        </Card>
-      </Col>
-    </Row>
-
-    <Row>
-      <Col>
-        <Card small className="mb-4 overflow-hidden">
-          <CardHeader className="bg-dark">
-            <h6 className="m-0 text-white">Active Users</h6>
-          </CardHeader>
-          <CardBody className="bg-dark p-0 pb-3">
-            <table className="table table-dark mb-0">
-              <thead className="thead-dark">
-                <tr>
-                  <th scope="col" className="border-0">
-                    #
-                  </th>
-                  <th scope="col" className="border-0">
-                    First Name
-                  </th>
-                  <th scope="col" className="border-0">
-                    Last Name
-                  </th>
-                  <th scope="col" className="border-0">
-                    Country
-                  </th>
-                  <th scope="col" className="border-0">
-                    City
-                  </th>
-                  <th scope="col" className="border-0">
-                    Phone
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Ali</td>
-                  <td>Kerry</td>
-                  <td>Russian Federation</td>
-                  <td>Gdańsk</td>
-                  <td>107-0339</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Clark</td>
-                  <td>Angela</td>
-                  <td>Estonia</td>
-                  <td>Borghetto di Vara</td>
-                  <td>1-660-850-1647</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Jerry</td>
-                  <td>Nathan</td>
-                  <td>Cyprus</td>
-                  <td>Braunau am Inn</td>
-                  <td>214-4225</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Colt</td>
-                  <td>Angela</td>
-                  <td>Liberia</td>
-                  <td>Bad Hersfeld</td>
-                  <td>1-848-473-7416</td>
-                </tr>
-              </tbody>
-            </table>
-          </CardBody>
-        </Card>
-      </Col>
-    </Row> */}
+const ScheduleLiveForum = ({ subscriptionList, columns }) => (
+  <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
+    <Card small className="schedule-forum-card">
+      <CardHeader className="live-forum-header">
+        <h5 className="live-forum-header-title no-margin">Schedule live forum</h5>
+        <Button className="live-forum-header-button">Create live forum</Button>
+      </CardHeader>
+      <CardBody>
+        <Row>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCardForum />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCardForum />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCardForum />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCardForum />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCardForum />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCardForum />
+          </Col>
+          <Col xl="4" lg="4" sm="6">
+            <SmallCardForum />
+          </Col>
+        </Row>
+      </CardBody>
+    </Card>    
   </Container>
 );
+
+ScheduleLiveForum.propTypes = {
+  subscriptionList: PropTypes.array,
+  columns: PropTypes.array,
+};
+
+ScheduleLiveForum.defaultProps = {
+  subscriptionList: [
+    {
+      id: 1,
+      avatar: require("../images/avatar1.jpg"),
+      mentorName: "Kianna Press",
+      pageName: "Algebra 101",
+      planFee: 49.99,
+      status: true,
+      edit: true
+    },
+    {
+      id: 2,
+      avatar: require("../images/avatar2.jpg"),
+      mentorName: "Cristofer Septimus",
+      pageName: "Video editing",
+      planFee: 29.50,
+      status: true,
+      edit: true
+    },
+    {
+      id: 3,
+      avatar: require("../images/avatar3.jpg"),
+      mentorName: "Martin Geidt",
+      pageName: "Finance",
+      planFee: "29.50",
+      status: true,
+      edit: true
+    },
+    {
+      id: 4,
+      avatar: require("../images/avatar4.jpg"),
+      mentorName: "Kaiya Torff",
+      pageName: "Programming",
+      planFee: 32.40,
+      status: false,
+      edit: false
+    }
+  ],
+  columns: [
+    {
+      name: 'Mentor',
+      selector: 'mentorName',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><a href="#" class="scription-to-specific">{row.mentorName}</a></div>,
+    },
+    {
+      name: 'Subscription page name',
+      selector: 'pageName',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+    },
+    {
+      name: 'Subscription plan fee',
+      selector: 'planFee',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+      format: row => `$${row.planFee}`,
+    },
+    {
+      name: 'Status',
+      selector: 'status',
+      sortable: false,
+      style: {
+        fontSize: "16px",
+      },
+      cell: row => <div>{row.status === true ? "Active" : "Inactive"}</div>,
+    },
+    {
+      name: 'Edit',
+      selector: 'edit',
+      sortable: false,
+      center: true,
+      cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? "Unsubscribe" : "Resubscribe"}</div>,
+    }
+  ]
+};
 
 export default ScheduleLiveForum;

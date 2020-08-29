@@ -900,6 +900,141 @@ body {
     display: flex;
 }
 
+.share-page-card {
+    padding-top: 20px;
+}
+
+.profile-link {
+    /* display: flex; */
+    /* align-items: flex-end; */
+}
+
+.profile-link-url {
+    font-size: 16px;
+    color: #04B5FA;
+    font-weight: 500;
+    text-decoration: underline;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    text-align: right;
+    width: 100%;
+}
+
+.profile-link-image {
+    padding-right: 10px;
+}
+
+.schedule-forum-card {
+    margin-top: 20px;
+}
+
+.live-forum-header {
+    padding: 0px 30px !important;
+    padding-top: 20px !important;
+}
+
+.live-forum-header-title {
+    padding-top: 10px;
+    font-size: 30px;
+    font-weight: 700 !important;
+    color: #333333;
+    float: left;
+}
+
+.live-forum-header-button {
+    float: right;
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    padding: 14px 10px !important;
+    background-color: #04B5FA;
+    border-color:  #04B5FA !important;
+}
+
+.live-forum-header-button:hover {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: #04B5FA !important;
+    border-color:  #04B5FA !important;
+}
+
+.live-forum-header-button:focus {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: #04B5FA !important;
+    border-color:  #04B5FA !important;
+}
+
+.live-forum-header-button:active {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: #04B5FA !important;
+    border-color:  #04B5FA !important;
+}
+
+.small-card-forum-desc {
+    padding-top: 5px;
+    height: 30px;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.small-card-forum {
+    width: 345px;
+    height: 206px;
+    padding: 10px 15px;
+    margin: 10px 10px;
+    border-radius: 7px;
+    box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
+}
+
+.small-card-forum-avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 7px;
+    margin-right: 10px;
+}
+
+.small-card-forum-date-time {
+    display: flex;
+}
+
+.small-card-forum-name {
+    font-size: 16px;
+    padding-top: 5px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.forum-titile {
+    color: #333333;
+    font-size: 20px;
+    font-weight: bold;
+    width: 90%;
+}
+
+.forum-invited-student {
+    margin-top: 30px;
+    display: flex;
+}
+
+.forum-student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 15px;
+    margin-right: -15px;
+}
+
+.forum-student-number {
+    padding-left: 30px;
+    font-size: 16px;
+    color: #333333;
+    padding-top: 10px;
+}
+
 .data-table-div-class {
     border-radius: 5px;
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.12);

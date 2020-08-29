@@ -23,11 +23,11 @@ export default class App extends React.Component{
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
-          <div style={{zIndex: 99999, bottom: "0px", right: "0px", position: "fixed"}}>
+          {/* <div style={{zIndex: 99999, bottom: "0px", right: "0px", position: "fixed"}}>
             <video controls loop>
               <source src={Video} type="video/mp4" />
             </video>
-          </div>
+          </div> */}
           {routes.map((route, index) => {
             return (
               <Route
