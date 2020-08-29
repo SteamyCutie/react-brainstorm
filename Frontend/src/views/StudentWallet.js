@@ -1,17 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col } from "shards-react";
+import { Container, Row, Col, Button } from "shards-react";
 
 import SmallCardPayment from "../components/common/SmallCardPayment";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 
+// export default class StudentWallet extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+
+//     }
+//   }
+  
+// }
 const StudentWallet = ({ paymentCard, tHistory, columns }) => (
   <Container fluid className="main-content-container px-4 main-content-container-class">
     <Row noGutters className="page-header py-4">
-      <Col xs="12" sm="12" className="page-title">
+      <Col className="page-title">
         <h3>Wallet</h3>
       </Col>
+      <Button className="btn-add-payment">Add new card</Button>
     </Row>
 
     <Row>
