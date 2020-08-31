@@ -84,9 +84,33 @@ class AvailableTimes extends React.Component {
           },
         ]
      }
+
+     this.handleAdd = this.handleAdd.bind(this);
+     this.handleDelete = this.handleDelete.bind(this);
     }
 
   componentDidMount() {
+  }
+
+  handleAdd() {
+    const {availableTimeList} = this.state;
+    let timeList = availableTimeList;
+    timeList.push([0, 0]);
+
+    this.setState({
+      availableTimeList: timeList,
+    });
+  }
+
+  handleDelete(idx) {
+    const {availableTimeList} = this.state;
+    let timeList = availableTimeList;
+    timeList.splice(idx, 1);
+
+
+    this.setState({
+      availableTimeList: timeList,
+    });
   }
 
   render() {
@@ -123,12 +147,16 @@ class AvailableTimes extends React.Component {
                 </FormSelect>
               </Col>
               <Col style={{marginTop: "10px", marginBottom: "10px"}}>
-                <Button className="btn-available-time-add-delete no-padding">
+              {this.state.availableTimeList.length !== 1 && 
+                <Button className="btn-available-time-add-delete no-padding"
+                  onClick={() => this.handleDelete(idx)}>
                   <img src={DeleteButtonImage} alt="Delete" />
-                </Button>
-                <Button className="btn-available-time-add-delete no-padding">
+                </Button>}
+              {this.state.availableTimeList.length - 1 === idx && 
+                <Button className="btn-available-time-add-delete no-padding"
+                  onClick={() => this.handleAdd()}>
                   <img src={AddButtonImage} alt="Add" />
-                </Button>
+                </Button>}
               </Col>
             </Row>
           )
