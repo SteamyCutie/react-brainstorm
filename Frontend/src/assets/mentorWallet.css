@@ -930,6 +930,7 @@
     font-weight: 400;
     outline: none;
     border: none;
+    margin-bottom: 0px;
   }
   
   .toolbar-select-label select:active {
