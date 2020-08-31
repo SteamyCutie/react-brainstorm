@@ -1,4 +1,4 @@
-body {
+  body {
     background-color: #F9F9F9 !important;
   }
   
@@ -806,14 +806,43 @@ body {
     /* border-width: 2px;
     border-color: #E0E0E0;
     border-style: solid; */
+    border-bottom: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
   }
   
+  .monthHeader-again {
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    background-color: #FFFFFF;
+    font-family: inherit;
+    /* border-width: 2px;
+    border-color: #E0E0E0;
+    border-style: solid; */
+    border-bottom: 1px solid #e0e0e0;
+    border-left: 0px solid #e0e0e0;
+  }
+
   .rbc-header {
     padding: 0px;
     border-left-color: #E0E0E0 !important;
+    border-bottom-width: 0px;
+    border-left-width: 0px !important;
     /* border-bottom: 2px solid #E0E0E0; */
   }
   
+  .rbc-time-header-content {
+      border-left-width: 0px;
+  }
+
+  .rbc-time-header {
+      border-right-width: 0px !important;
+  }
+  
+  .rbc-time-view {
+      background-color: #FFFFFF;
+  }
   .rbc-month-view {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -915,3 +944,61 @@ body {
     box-shadow: none;
   }
   
+  .rbc-allday-cell {
+      display: none;
+  }
+
+  .week-header {
+    background-color: #FFFFFF;
+    color: #333333;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .week-event {
+    width: 90%;
+    border-width: 0px;
+    border-color: #04B5FA;
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 5px 5px #DCDCDC;
+    height: 90%;
+    margin: auto !important;
+  }
+
+  .rbc-event {
+    padding: 0px;
+    background-color: #FFFFFF;
+    color: #333333;
+    border-width: 0px !important;
+    width: 100% !important;
+    /* height: auto !important; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rbc-events-container {
+      margin-right: 0px !important;
+  }
+
+  .rbc-event-label {
+      display: none;
+  }
+
+  .week-event-time{
+      font-size: 10px;
+      font-weight: 400;
+      color: #333333;
+      padding: 5px;
+      padding-bottom: 0px;
+  }
+
+  .week-event-content {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px;
+  }

@@ -33,19 +33,22 @@ const ColoredDateCellWrapper = ( {date} ) => props => {
   }
 
   const checkBorderRadius = () => {
-    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    let cPos = props.value.getDay();
-    let day = lastDay.getDate();
-    let month = lastDay.getMonth();
-    let year = lastDay.getFullYear();
-    let sDay = props.range[6].getDate();
-    let sMonth = props.range[6].getMonth();
-    let sYear = props.range[6].getFullYear();
-    if(sMonth > month || (sMonth < month && sYear !== year) || (sMonth === month && sDay === day)) {
-      if(cPos === 0) return -1;
-      else if(cPos === 6) return 1;
+    if(props.range.length === 7) {
+      let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      let cPos = props.value.getDay();
+      let day = lastDay.getDate();
+      let month = lastDay.getMonth();
+      let year = lastDay.getFullYear();
+      let sDay = props.range[6].getDate();
+      let sMonth = props.range[6].getMonth();
+      let sYear = props.range[6].getFullYear();
+      if(sMonth > month || (sMonth < month && sYear !== year) || (sMonth === month && sDay === day)) {
+        if(cPos === 0) return -1;
+        else if(cPos === 6) return 1;
+      }
+      else return 0;
     }
-    else return 0;
+    return 0;
   }
 
   const checkBorderWidth = () => {
@@ -83,49 +86,41 @@ export default class MentorSession extends React.Component {
           allDay: false,
           noOfPax: 123,
           isBooked: true,
-          start: new Date(2020, 7, 1, 2, 0, 0),
-          end: new Date(2020, 7, 1, 3, 30, 0),
+          start: new Date(2020, 7, 21, 2, 0, 0),
+          end: new Date(2020, 7, 21, 3, 30, 0),
         },
         {
-          id: 5,
+          id: 4,
           title: 'All Day Event very long title 2',
           allDay: false,
           noOfPax: 123,
           isBooked: true,
-          start: new Date(2020, 7, 1, 4, 0, 0),
-          end: new Date(2020, 7, 1, 4, 30, 0),
+          start: new Date(2020, 7, 21, 4, 0, 0),
+          end: new Date(2020, 7, 21, 6, 30, 0),
         },
         {
           id: 1,
           title: 'Long Event',
           noOfPax: 101,
           isBooked: true,
-          start: new Date(2020, 7, 7, 10, 0, 0),
-          end: new Date(2020, 7, 7, 11, 30, 0),
+          start: new Date(2020, 7, 27, 10, 0, 0),
+          end: new Date(2020, 7, 27, 11, 20, 0),
         },
         {
           id: 2,
           title: 'Long Event 2',
           noOfPax: 10,
           isBooked: true,
-          start: new Date(2020, 7, 7, 15, 0, 0),
-          end: new Date(2020, 7, 7, 16, 30, 0),
+          start: new Date(2020, 7, 27, 15, 0, 0),
+          end: new Date(2020, 7, 27, 16, 25, 0),
         },
         {
           id: 3,
           title: 'Long Event 3',
           noOfPax: 10,
           isBooked: true,
-          start: new Date(2020, 7, 7, 17, 0, 0),
-          end: new Date(2020, 7, 7, 18, 30, 0),
-        },
-        {
-          id: 4,
-          title: 'Right now Time Event',
-          noOfPax: 1,
-          isBooked: false,
-          start: now,
-          end: now,
+          start: new Date(2020, 7, 27, 17, 0, 0),
+          end: new Date(2020, 7, 27, 18, 28, 0),
         },
       ],
       currentDate: new Date(),
@@ -162,11 +157,10 @@ export default class MentorSession extends React.Component {
             startAccessor="start"
             endAccessor="end"
             style={{width: "100%", borderRadius: "10px"}}
+            allDayAccessor={true}
             components={{
               toolbar: ToolBar({
                 setCurrentDate: this.setCurrentDate,
-                view: this.state.view,
-                setView: this.setView,
               }),
               dateCellWrapper: ColoredDateCellWrapper({
                 date: this.state.currentDate,
@@ -177,6 +171,10 @@ export default class MentorSession extends React.Component {
                 }),
                 header: CustomMonthHeader,
                 event: CustomMonthEvent,
+              },
+              week: {
+                header: CustomWeekHeader,
+                event: CustomWeekEvent,
               }
             }}
           />
@@ -195,39 +193,28 @@ class CustomMonthEvent extends React.Component {
     const bookedIcon = this.props.event.isBooked ? <Badge><i className="fa fa-bookmark"></i></Badge> : null ;
     return (
       <div style={{position: "relative"}} className="Hello">
-        {/* <strong>{moment(this.props.event.start).format('ha')}</strong> {this.props.event.title}
-        <span className="pull-right">
-          {bookedIcon}
-          <Badge>{this.props.event.noOfPax} <i className="fa fa-user"></i></Badge>
-        </span> */}
         Hello World!
       </div>
     );
   }
 }
 
-const ToolBar = ({setCurrentDate, view, setView}) => props => {
+const ToolBar = ({setCurrentDate}) => props => {
   const [alignment, setAlignment] = React.useState("right");
-  const [monthLabel, setMonthLabel] = React.useState(moment(new Date()).endOf('month').format('MMMM YYYY'));
-  const [currentMonth, setCurrentMonth] = React.useState(moment(new Date()).endOf('month').format('MMM'));
-  const [nextMonth, setNextMonth] = React.useState(moment(new Date()).add(1, 'month').format('MMM'));
-  
+
   const goToDayView = () => {
-    // setView("day");
     props.onView("day");
-    // setAlignment("left");
+    setAlignment("left");
   }
 
   const goToWeekView = () => {
-    // setView("week");
     props.onView("week");
-    // setAlignment("center");
+    setAlignment("center");
   }
 
   const goToMonthView = () => {
-    // setView("month");
     props.onView("month");
-    // setAlignment("right");
+    setAlignment("right");
   }
 
   const goToToday = () => {
@@ -237,30 +224,7 @@ const ToolBar = ({setCurrentDate, view, setView}) => props => {
   }
 
   const getCalendarEvents = (date) => {
-    // const {project} = this;
-    // const startDate = moment(date).add(-1, 'month').toDate();
-    // const endDate = moment(date).endOf('month').toDate();
-    const currentMonth = moment(date).endOf('month').format('MMMM YYYY');
-    const monthToday = moment(date).endOf('month').format('MMM');
-    let nextCurrentMonth = moment(date).add(1, 'month').format('MMM');
-    
-    setCurrentDate(date);
-
-    setMonthLabel(currentMonth);
-    setCurrentMonth(monthToday);
-    setNextMonth(nextCurrentMonth);
-    
-    // if (project) {
-    //   project.getEvents(project.id, startDate, endDate, (err, res) => {
-    //     if (err) {
-    //       throw err;
-    //     }
-    //     this.setState({
-    //       events: res.body
-    //     });
-    
-    //   });
-    // }
+    // setCurrentDate(date);
   }
 
   const handleAlignment = (event, newAlignment) => {
@@ -336,12 +300,12 @@ const ToolBar = ({setCurrentDate, view, setView}) => props => {
     <div>
       <div className="toolbar-class">
         <div className="toolbar-status">
-          <Button className="today-icon-class" onClick={goToToday}>Today</Button>
+          <Button className="today-icon-class" onClick={() => goToToday()}>Today</Button>
           <label className="toolbar-month-class">{props.label}</label>
-          <Button onClick={goToBack} className="back-icon-class">
+          <Button onClick={() => goToBack()} className="back-icon-class">
             <img src={BackIcon} alt="BackIcon" />
           </Button>
-          <Button onClick={goToNext} className="next-icon-class">
+          <Button onClick={() => goToNext()} className="next-icon-class">
             <img src={NextIcon} alt="NextIcon" />
           </Button>
         </div>
@@ -353,13 +317,13 @@ const ToolBar = ({setCurrentDate, view, setView}) => props => {
             className="toolbar-button-group"
             aria-label="text alignment"
           >
-            <ToggleButton value="left" aria-label="left aligned" className="toolbar-day-button" onClick={goToDayView}>
+            <ToggleButton value="left" aria-label="left aligned" className="toolbar-day-button" onClick={() => goToDayView()}>
               Day
             </ToggleButton>
-            <ToggleButton value="center" aria-label="right aligned" className="toolbar-week-button" onClick={goToWeekView}>
+            <ToggleButton value="center" aria-label="right aligned" className="toolbar-week-button" onClick={() => goToWeekView()}>
               Week
             </ToggleButton>
-            <ToggleButton value="right" aria-label="right aligned" className="toolbar-month-button" onClick={goToMonthView}>
+            <ToggleButton value="right" aria-label="right aligned" className="toolbar-month-button" onClick={() => goToMonthView()}>
               Month
             </ToggleButton>
           </ToggleButtonGroup>
@@ -441,7 +405,70 @@ class CustomMonthHeader extends React.Component {
     let d = this.props.date;
     let dayName = days[d.getDay()];
     return (
-      <div className="monthHeader">{dayName}</div>
+      <div {...this.props.date.getDay() === 0 ? {className:"monthHeader-again"} : {className:"monthHeader"} }>{dayName}</div>
     );
   }
+}
+
+const CustomWeekHeader = props => {
+
+  const checkLabel = () => {
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let dayName = days[props.date.getDay()];
+    let month = props.date.getMonth() + 1;
+    let monthName = month < 10 ? `0${month}` : month;
+    let date = props.date.getDate();
+    let dateName = date < 10 ? `0${date}` : date;
+    let totalName = `${dayName} ${monthName}/${dateName}`;
+    return totalName;
+  }
+
+  return (
+    <div className="week-header">
+      {checkLabel()}
+    </div>
+  );
+}
+
+const CustomWeekEvent = props => {
+
+  const checkWeekEventTime = () => {
+    let hours = props.event.start.getHours();
+    let startType = "am";
+    let startHour = "";
+    let startMinute = "";
+    let endHour = "";
+    let endMinute = "";
+    let endType = "am";
+    if(hours >= 12) {
+      startType = "pm";
+      hours = hours % 12;
+    }
+    if(hours < 10) startHour = `0${hours}`;
+    else startHour = `${hours}`;
+    let minutes = props.event.start.getMinutes();
+    if(minutes < 10) startMinute = `0${minutes}`;
+    else startMinute = `${minutes}`;
+
+    hours = props.event.end.getHours();
+    minutes = props.event.end.getMinutes();
+    if(hours >= 12) {
+      endType = "pm";
+      hours = hours % 12;
+    }
+    if(hours < 10) endHour = `0${hours}`;
+    else endHour = `${hours}`;
+    if(minutes < 10) endMinute = `0${minutes}`;
+    else endMinute = `${minutes}`;
+
+    let result = `${startHour}:${startMinute} ${startType} -${endHour}:${endMinute} ${endType}`;
+    return result;
+  }
+
+  return (
+    <div className="week-event">
+      <div className="week-event-time">{checkWeekEventTime()}</div>
+      <div className="week-event-content">{props.event.title}</div>
+    </div>
+  );
 }
