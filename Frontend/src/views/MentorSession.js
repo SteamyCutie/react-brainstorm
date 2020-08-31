@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col, Badge, Button } from "shards-react";
+import { Container, Row, Col, Badge, Button, FormSelect } from "shards-react";
 import { Calendar, momentLocalizer, globalizeLocalizer  } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import TimeGrid from 'react-big-calendar/lib/TimeGrid'
 
 // import PageTitle from "./../components/common/PageTitle";
 // import SmallStats from "./../components/common/SmallStats";
@@ -19,66 +20,128 @@ import BackIcon from "../images/Back_icon.svg"
 import NextIcon from "../images/Next_icon.svg"
 
 const localizer = momentLocalizer(moment);
-const myEventsList = {};
-const CURRENT_DATE = moment().toDate();
 
+const ColoredDateCellWrapper = ( {date} ) => props => {
 
+  const checkInMonth = (currentValue, setValue) => {
+    let setMonth = setValue.getMonth();
+    let currentMonth = currentValue.getMonth();
+    let today = new Date();
+    if (today.getFullYear() === setValue.getFullYear() && today.getMonth() === setValue.getMonth() && today.getDate() === setValue.getDate()) return 0;
+    else if (setMonth !== currentMonth) return -1;
+    else return 1;
+  }
+
+  const checkBorderRadius = () => {
+    if(props.range.length === 7) {
+      let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      let cPos = props.value.getDay();
+      let day = lastDay.getDate();
+      let month = lastDay.getMonth();
+      let year = lastDay.getFullYear();
+      let sDay = props.range[6].getDate();
+      let sMonth = props.range[6].getMonth();
+      let sYear = props.range[6].getFullYear();
+      if(sMonth > month || (sMonth < month && sYear !== year) || (sMonth === month && sDay === day)) {
+        if(cPos === 0) return -1;
+        else if(cPos === 6) return 1;
+      }
+      else return 0;
+    }
+    return 0;
+  }
+
+  const checkBorderWidth = () => {
+    let cPos = props.value.getDay();
+    if(cPos === 0) return -1;
+    else if(cPos === 6) return 1;
+    else return 0;
+  }
+
+  return (
+    React.cloneElement(React.Children.only(props.children), {
+      style: {
+        ...props.children.style,
+        backgroundColor: checkInMonth(date, props.value) === 1 ? "#FFFFFF" : checkInMonth(date, props.value) === -1 ? "#E6E6E6" : "#04B5FA22",
+        borderBottomLeftRadius: checkBorderRadius() === -1 ? "10px" : "0px",
+        borderBottomRightRadius: checkBorderRadius() === 1 ? "10px" : "0px",
+        borderColor: "#E0E0E0",
+        borderWidth: "1px",
+        // borderLeftWidth: checkBorderWidth() === -1 ? "0px" : "1px",
+        // borderRightWidth: checkBorderWidth() === 1 ? "0px" : "1px",
+      },
+    })
+  );
+}
 
 export default class MentorSession extends React.Component {
   constructor(props) {
     super(props);
     const now = new Date();
-    const events = [
-      {
+    this.state = {
+      events: [
+        {
           id: 0,
           title: 'All Day Event very long title',
-          allDay: true,
+          allDay: false,
           noOfPax: 123,
           isBooked: true,
-          start: new Date(2020, 7, 1),
-          end: new Date(2020, 7, 2),
-      },
-      {
+          start: new Date(2020, 7, 21, 2, 0, 0),
+          end: new Date(2020, 7, 21, 3, 30, 0),
+        },
+        {
+          id: 4,
+          title: 'All Day Event very long title 2',
+          allDay: false,
+          noOfPax: 123,
+          isBooked: true,
+          start: new Date(2020, 7, 21, 4, 0, 0),
+          end: new Date(2020, 7, 21, 6, 30, 0),
+        },
+        {
           id: 1,
           title: 'Long Event',
           noOfPax: 101,
           isBooked: true,
-          start: new Date(2020, 7, 7, 10, 0, 0),
-          end: new Date(2020, 7, 7, 11, 30, 0),
-      },
-      {
-        id: 2,
-        title: 'Long Event 2',
-        noOfPax: 10,
-        isBooked: true,
-        start: new Date(2020, 7, 7, 15, 0, 0),
-        end: new Date(2020, 7, 7, 16, 30, 0),
-    },
-    {
+          start: new Date(2020, 7, 27, 10, 0, 0),
+          end: new Date(2020, 7, 27, 11, 20, 0),
+        },
+        {
+          id: 2,
+          title: 'Long Event 2',
+          noOfPax: 10,
+          isBooked: true,
+          start: new Date(2020, 7, 27, 15, 0, 0),
+          end: new Date(2020, 7, 27, 16, 25, 0),
+        },
+        {
           id: 3,
-          title: 'Right now Time Event',
-          noOfPax: 1,
-          isBooked: false,
-          start: now,
-          end: now,
-      },
-    ]
-    this.state = {
-      events
+          title: 'Long Event 3',
+          noOfPax: 10,
+          isBooked: true,
+          start: new Date(2020, 7, 27, 17, 0, 0),
+          end: new Date(2020, 7, 27, 18, 28, 0),
+        },
+      ],
+      currentDate: new Date(),
+      view: "month",
     };
+  }
+
+  setCurrentDate = (date) => {
+    this.setState({
+      currentDate: date
+    });
+  }
+
+  setView = (view) => {
+    this.setState({
+      view,
+    });
   }
 
   componentWillMount() {
   }
-
-  MyDateCell = props => {
-    console.log(props);
-    return (
-      <div style={{backgroundColor: "white"}}>
-        A
-      </div>
-    );
-  };
 
   render() {
     return (
@@ -93,9 +156,26 @@ export default class MentorSession extends React.Component {
             defaultDate={moment().toDate()}
             startAccessor="start"
             endAccessor="end"
-            style={{width: "100%"}}
+            style={{width: "100%", borderRadius: "10px"}}
+            allDayAccessor={true}
             components={{
-              toolbar: ToolBar,
+              toolbar: ToolBar({
+                setCurrentDate: this.setCurrentDate,
+              }),
+              dateCellWrapper: ColoredDateCellWrapper({
+                date: this.state.currentDate,
+              }),
+              month: {
+                dateHeader: CustomMonthDateHeader({
+                  events: this.state.events,
+                }),
+                header: CustomMonthHeader,
+                event: CustomMonthEvent,
+              },
+              week: {
+                header: CustomWeekHeader,
+                event: CustomWeekEvent,
+              }
             }}
           />
         </Row>
@@ -104,159 +184,128 @@ export default class MentorSession extends React.Component {
   }
 }
 
-class CustomEvent extends React.Component {
+class CustomMonthEvent extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
     const bookedIcon = this.props.event.isBooked ? <Badge><i className="fa fa-bookmark"></i></Badge> : null ;
-
     return (
-      <div style={{position: "relative"}}>
-        <strong>{moment(this.props.event.start).format('ha')}</strong> {this.props.event.title}
-        <span className="pull-right">
-          {bookedIcon}
-          <Badge>{this.props.event.noOfPax} <i className="fa fa-user"></i></Badge>
-        </span>
+      <div style={{position: "relative"}} className="Hello">
+        Hello World!
       </div>
     );
   }
 }
 
-class ToolBar extends React.Component {
+const ToolBar = ({setCurrentDate}) => props => {
+  const [alignment, setAlignment] = React.useState("right");
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      alignment: "right",
-      monthLabel: moment(new Date()).endOf('month').format('MMMM YYYY'),
-      currentMonth: moment(new Date()).endOf('month').format('MMM'),
-      nextMonth: moment(new Date()).add(1, 'month').format('MMM')
-    }
+  const goToDayView = () => {
+    props.onView("day");
+    setAlignment("left");
   }
 
-  setAlignment(newAlignment) {
-    this.setState({
-      alignment: newAlignment,
-    });
+  const goToWeekView = () => {
+    props.onView("week");
+    setAlignment("center");
   }
 
-  goToDayView = () => {
-    this.props.onView('day');
+  const goToMonthView = () => {
+    props.onView("month");
+    setAlignment("right");
   }
 
-  goToWeekView = () => {
-    this.props.onView('week');
-  }
-
-  goToMonthView = () => {
-    this.props.onView('month');
-  }
-
-  goToToday = () => {
-    let mDate = this.props.date;
+  const goToToday = () => {
     let today = new Date();
-    this.props.onNavigate('prev', today);
-    this.getCalendarEvents(today);
+    props.onNavigate("today", today);
+    getCalendarEvents(today);
   }
 
-  getCalendarEvents = (date) => {
-    const {project} = this;
-    const startDate = moment(date).add(-1, 'month').toDate();
-    const endDate = moment(date).endOf('month').toDate();
-    const currentMonth = moment(date).endOf('month').format('MMMM YYYY');
-    const monthToday = moment(date).endOf('month').format('MMM');
-    let nextCurrentMonth = moment(date).add(1, 'month').format('MMM');
-    
-    this.setState({
-      monthLabel: currentMonth,
-      currentMonth: monthToday,
-      nextMonth: nextCurrentMonth
-    });
-    
-    if (project) {
-      project.getEvents(project.id, startDate, endDate, (err, res) => {
-        if (err) {
-          throw err;
-        }
-        this.setState({
-          events: res.body
-        });
-    
-      });
-    }
+  const getCalendarEvents = (date) => {
+    // setCurrentDate(date);
   }
 
-  handleAlignment = (event, newAlignment) => {
-    this.setAlignment(newAlignment);
-  };
+  const handleAlignment = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  }
 
-  goToBack = () => {
-    let mDate = this.props.date;
-    if(this.props.view === "month") {
+  const goToBack = () => {
+    let mDate = props.date;
+    if(props.view === "month") {
       let newDate = new Date(
         mDate.getFullYear(),
         mDate.getMonth() - 1,
         1);
-      this.props.onNavigate('prev', newDate);
-      this.getCalendarEvents(newDate);
+      props.onNavigate('prev', newDate);
+      getCalendarEvents(newDate);
     }
-    else if(this.props.view === "week" ) {
+    else if(props.view === "week" ) {
       let newDate = new Date(
         mDate.getFullYear(),
         mDate.getMonth(),
         mDate.getDate() - 7);
-      this.props.onNavigate('prev', newDate);
-      this.getCalendarEvents(newDate);
+      props.onNavigate('prev', newDate);
+      getCalendarEvents(newDate);
     }
     else {
       let newDate = new Date(
         mDate.getFullYear(),
         mDate.getMonth(),
         mDate.getDate() - 1);
-      this.props.onNavigate('prev', newDate);
-      this.getCalendarEvents(newDate);
+      props.onNavigate('prev', newDate);
+      getCalendarEvents(newDate);
     }
   }
 
-  goToNext = () => {
-    let mDate = this.props.date;
-    if(this.props.view === "month") {
+  const goToNext = () => {
+    let mDate = props.date;
+    if(props.view === "month") {
       let newDate = new Date(
         mDate.getFullYear(),
         mDate.getMonth() + 1,
         1);
-      this.props.onNavigate('prev', newDate);
-      this.getCalendarEvents(newDate);
+      props.onNavigate('prev', newDate);
+      getCalendarEvents(newDate);
     }
-    else if(this.props.view === "week" ) {
+    else if(props.view === "week" ) {
       let newDate = new Date(
         mDate.getFullYear(),
         mDate.getMonth(),
         mDate.getDate() + 7);
-      this.props.onNavigate('prev', newDate);
-      this.getCalendarEvents(newDate);
+      props.onNavigate('prev', newDate);
+      getCalendarEvents(newDate);
     }
     else {
       let newDate = new Date(
         mDate.getFullYear(),
         mDate.getMonth(),
         mDate.getDate() + 1);
-      this.props.onNavigate('prev', newDate);
-      this.getCalendarEvents(newDate);
+      props.onNavigate('prev', newDate);
+      getCalendarEvents(newDate);
     }
   }
 
-  render() {
-    console.log(this.props, "HHHHHH");
-    const { alignment } = this.state;
-    return (
+  const getToday = () => {
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let dayName = days[props.date.getDay()];
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let monthName = months[props.date.getMonth()];
+    let date = props.date.getDate();
+    return `${dayName}, ${monthName} ${date}`;
+  }
+
+  return (
+    <div>
       <div className="toolbar-class">
         <div className="toolbar-status">
-          <Button className="today-icon-class" onClick={this.goToToday}>Today</Button>
-          <label className="toolbar-month-class">{this.props.label}</label>
-          <Button onClick={this.goToBack} className="back-icon-class">
+          <Button className="today-icon-class" onClick={() => goToToday()}>Today</Button>
+          <label className="toolbar-month-class">{props.label}</label>
+          <Button onClick={() => goToBack()} className="back-icon-class">
             <img src={BackIcon} alt="BackIcon" />
           </Button>
-          <Button onClick={this.goToNext} className="next-icon-class">
+          <Button onClick={() => goToNext()} className="next-icon-class">
             <img src={NextIcon} alt="NextIcon" />
           </Button>
         </div>
@@ -264,22 +313,162 @@ class ToolBar extends React.Component {
           <ToggleButtonGroup
             value={alignment}
             exclusive
-            onChange={(event, newAlignment) => this.handleAlignment(event, newAlignment)}
+            onChange={(event, newAlignment) => handleAlignment(event, newAlignment)}
             className="toolbar-button-group"
             aria-label="text alignment"
           >
-            <ToggleButton value="left" aria-label="left aligned" className="toolbar-day-button" onClick={this.goToDayView}>
+            <ToggleButton value="left" aria-label="left aligned" className="toolbar-day-button" onClick={() => goToDayView()}>
               Day
             </ToggleButton>
-            <ToggleButton value="center" aria-label="right aligned" className="toolbar-week-button" onClick={this.goToWeekView}>
+            <ToggleButton value="center" aria-label="right aligned" className="toolbar-week-button" onClick={() => goToWeekView()}>
               Week
             </ToggleButton>
-            <ToggleButton value="right" aria-label="right aligned" className="toolbar-month-button" onClick={this.goToMonthView}>
+            <ToggleButton value="right" aria-label="right aligned" className="toolbar-month-button" onClick={() => goToMonthView()}>
               Month
             </ToggleButton>
           </ToggleButtonGroup>
         </div>
       </div >
+      <div className="headerbar-class">
+        <div className="headerbar-status center">{getToday()}</div>
+        <div className="headerbar-select-group">
+          <div className="toolbar-select-label">
+            <label className="">Sessions:</label>
+            <FormSelect className="profile-detail-input">
+              <option>All</option>
+              <option>...</option>
+            </FormSelect>
+          </div>
+          <div className="toolbar-select-label">
+            <label className="">Category: </label>
+            <FormSelect className="profile-detail-input">
+              <option>select category</option>
+              <option>...</option>
+            </FormSelect>
+          </div>
+          <div className="toolbar-select-label">
+            <label className="">Student: </label>
+            <FormSelect className="profile-detail-input">
+              <option>select student</option>
+              <option>...</option>
+            </FormSelect>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+const CustomMonthDateHeader = ({events}) => props => {
+
+  const consoleFunction = () => {
+    return true;
+  }
+
+  const calcRecordCound = () => {
+    let count = 0;
+    events.forEach(event => {
+      if(event.start.getFullYear() === props.date.getFullYear() && event.start.getMonth() === props.date.getMonth() && event.start.getDate() === props.date.getDate()) count++;
+    });
+    return count;
+  }
+
+  const consoleFunction2 = (date, view, e) => {
+    const { onDrillDown, drilldownView } = props;
+    // onDrillDown(date, view, drilldownView);
+    // props.onView(view);
+  }
+
+  return (
+    <div>
+      <div className="month-date-header">
+        {consoleFunction() && props.date.getDate()}
+      </div>
+      <div className="month-date">
+        {calcRecordCound() > 0 && <a className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
+          {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`}
+        </a>}
+      </div>
+    </div>
+  );
+}
+
+
+class CustomMonthHeader extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let d = this.props.date;
+    let dayName = days[d.getDay()];
+    return (
+      <div {...this.props.date.getDay() === 0 ? {className:"monthHeader-again"} : {className:"monthHeader"} }>{dayName}</div>
     );
   }
+}
+
+const CustomWeekHeader = props => {
+
+  const checkLabel = () => {
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let dayName = days[props.date.getDay()];
+    let month = props.date.getMonth() + 1;
+    let monthName = month < 10 ? `0${month}` : month;
+    let date = props.date.getDate();
+    let dateName = date < 10 ? `0${date}` : date;
+    let totalName = `${dayName} ${monthName}/${dateName}`;
+    return totalName;
+  }
+
+  return (
+    <div className="week-header">
+      {checkLabel()}
+    </div>
+  );
+}
+
+const CustomWeekEvent = props => {
+
+  const checkWeekEventTime = () => {
+    let hours = props.event.start.getHours();
+    let startType = "am";
+    let startHour = "";
+    let startMinute = "";
+    let endHour = "";
+    let endMinute = "";
+    let endType = "am";
+    if(hours >= 12) {
+      startType = "pm";
+      hours = hours % 12;
+    }
+    if(hours < 10) startHour = `0${hours}`;
+    else startHour = `${hours}`;
+    let minutes = props.event.start.getMinutes();
+    if(minutes < 10) startMinute = `0${minutes}`;
+    else startMinute = `${minutes}`;
+
+    hours = props.event.end.getHours();
+    minutes = props.event.end.getMinutes();
+    if(hours >= 12) {
+      endType = "pm";
+      hours = hours % 12;
+    }
+    if(hours < 10) endHour = `0${hours}`;
+    else endHour = `${hours}`;
+    if(minutes < 10) endMinute = `0${minutes}`;
+    else endMinute = `${minutes}`;
+
+    let result = `${startHour}:${startMinute} ${startType} -${endHour}:${endMinute} ${endType}`;
+    return result;
+  }
+
+  return (
+    <div className="week-event">
+      <div className="week-event-time">{checkWeekEventTime()}</div>
+      <div className="week-event-content">{props.event.title}</div>
+    </div>
+  );
 }
