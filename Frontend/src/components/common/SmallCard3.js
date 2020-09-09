@@ -42,15 +42,23 @@ class SmallCard3 extends React.Component {
               </div>
             </div>
           </div>
-          <NavItem tag={Dropdown} caret toggle={this.toggleActions}>
-            <DropdownToggle caret tag={NavLink} className="text-nowrap px-3" style={{width: '100px', height: '50px', float: 'right', marginTop: '-80px'}}>
-              <img
-                className="user-avatar mr-2"
-                src={MoreButtonImage}
-                alt="User Avatar"
-              />{" "}
-            </DropdownToggle>
-            <Collapse tag={DropdownMenu} right small open={this.state.visible} style={{position: 'absolute', top: '30px'}}>
+          <NavItem className="dropdown notifications notification-class">
+            <NavLink
+              className="nav-link-icon text-center"
+              onClick={this.toggleActions}
+            >
+              <div className="nav-link-icon__wrapper">
+                <img
+                  className="user-avatar mr-2"
+                  src={MoreButtonImage}
+                  alt="User Avatar"
+                />{" "}
+              </div>
+            </NavLink>
+            <Collapse
+              open={this.state.visible}
+              className="dropdown-menu dropdown-menu-small"
+            >
               <DropdownItem  onClick={() => this.edit()}>
                 Edit
               </DropdownItem>

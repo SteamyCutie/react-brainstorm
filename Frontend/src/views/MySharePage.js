@@ -68,8 +68,8 @@ export default class MySharePage extends React.Component {
               </Col>
               <Col xl="9" lg="12" className="subscription-mentor-videos">
                 <h6 className="profile-link-url">
-                  <a href="#" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
-                  www.brainsshare.com/kiannapress
+                  <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
+                  <a href="javascript:void(0)">www.brainsshare.com/kiannapress</a>
                 </h6>
                 {this.state.infoList.map((item, idx) => 
                   <MentorVideo key={idx} item={item} />

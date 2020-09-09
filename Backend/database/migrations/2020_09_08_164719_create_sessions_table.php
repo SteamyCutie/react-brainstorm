@@ -17,6 +17,7 @@ class CreateSessionsTable extends Migration
             $table->id();
             $table->bigInteger("user_id")->unsigned();
             $table->string('title');
+            $table->string('description');
             $table->timestamp('from')->nullable();
             $table->timestamp('to')->nullable();
             $table->string('invited_id')->nullable();

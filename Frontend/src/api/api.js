@@ -101,4 +101,26 @@ export const getforums = (param) => {
     });
 };
 
+export const createforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/createforum', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
+export const gettags = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/gettags', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
 //Backend Apis
