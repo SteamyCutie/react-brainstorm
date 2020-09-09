@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
 import "../../assets/landingpage.css"
 import { Link } from "react-router-dom";
+import { signin } from '../../api/api';
 
 import Facebook from '../../images/Facebook.svg'
 import Google from '../../images/Google.svg'
@@ -10,6 +11,7 @@ import Close from '../../images/Close.svg'
 export default class SignIn extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {email: "", password: ""};
   }
 
   toggle() {
@@ -20,6 +22,29 @@ export default class SignIn extends React.Component {
   toggle_modal() {
     const { toggle_modal } = this.props;
     toggle_modal();
+  }
+
+  onChangeEmail = (e) => {
+    this.setState({email: e.target.value});
+  }
+
+  onChangePassword = (e) => {
+    this.setState({password: e.target.value});
+  }
+
+  actionSignin = async() => {
+    try {
+      const result = await signin(this.state);
+      console.log(result, "+++");
+      if (result.data.result == "success") {
+        localStorage.setItem('email', result.data.data.email);
+        window.location.href = '/mentorSession';
+      } else {
+        alert(result.data.message);
+      }
+    } catch(err) {
+      alert(err);
+    };
   }
 
   render() {
@@ -35,7 +60,7 @@ export default class SignIn extends React.Component {
               <FormInput
                 type="email"
                 placeholder="youremail@gmail.com"
-                // onChange={() => {}}
+                onChange={(e) => this.onChangeEmail(e)}
                 autoComplete="email"
               />
             </div>
@@ -45,14 +70,12 @@ export default class SignIn extends React.Component {
               <FormInput
                 type="password"
                 placeholder="XXXXXX"
-                // onChange={() => {}}
+                onChange={(e) => this.onChangePassword(e)}
                 autoComplete="text"
               />
             </div>
             <div className="content-center block-content-class button-text-group-class">
-              <Link to="/mentorSession" className="hidden-underline">
-                <Button>Sign in</Button>
-              </Link>
+              <Button onClick={() => this.actionSignin()}>Sign in</Button>
               <p>Don't have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign up</a></p>
             </div>
             <div className="content-center seperation-line-class">

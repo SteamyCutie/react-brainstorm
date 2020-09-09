@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "shards-react";
+import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
 
 import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
@@ -10,9 +10,21 @@ import ReivewImage from "../../images/Review.jpg"
 class SmallCard3 extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {visible: false};
+    this.toggleActions = this.toggleActions.bind(this);
   }
 
   componentDidMount() {
+  }
+
+  toggleActions() {
+    this.setState({
+      visible: !this.state.visible
+    });
+  }
+
+  edit() {
+    console.log("Go a Way!");
   }
 
   render() {
@@ -30,9 +42,20 @@ class SmallCard3 extends React.Component {
               </div>
             </div>
           </div>
-          <Button className="btn-video-desc-more no-padding">
-            <img src={MoreButtonImage} />
-          </Button>
+          <NavItem tag={Dropdown} caret toggle={this.toggleActions}>
+            <DropdownToggle caret tag={NavLink} className="text-nowrap px-3" style={{width: '100px', height: '50px', float: 'right', marginTop: '-80px'}}>
+              <img
+                className="user-avatar mr-2"
+                src={MoreButtonImage}
+                alt="User Avatar"
+              />{" "}
+            </DropdownToggle>
+            <Collapse tag={DropdownMenu} right small open={this.state.visible} style={{position: 'absolute', top: '30px'}}>
+              <DropdownItem  onClick={() => this.edit()}>
+                Edit
+              </DropdownItem>
+            </Collapse>
+          </NavItem>
         </div>
         <div className="small-card3-date-time">
           <div style={{display: "flex", marginBottom: "5px"}}>
