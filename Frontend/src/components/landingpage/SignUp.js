@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
 import "../../assets/landingpage.css"
+import { signup } from '../../api/api';
 
 import Facebook from '../../images/Facebook.svg'
 import Google from '../../images/Google.svg'
@@ -9,6 +10,7 @@ import Close from '../../images/Close.svg'
 export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {name: "", email: "", password: "", confirmpassword: ""};
   }
 
   toggle() {
@@ -19,6 +21,36 @@ export default class SignUp extends React.Component {
   toggle_modal() {
     const { toggle_modal } = this.props;
     toggle_modal();
+  }
+
+  onChangeName = (e) => {
+    this.setState({name: e.target.value});
+  }
+
+  onChangeEmail = (e) => {
+    this.setState({email: e.target.value});
+  }
+
+  onChangePassword = (e) => {
+    this.setState({password: e.target.value});
+  }
+
+  onChangeConfirmPassword = (e) => {
+    this.setState({confirmpassword: e.target.value});
+  }
+
+  actionSignup = async() => {
+    try {
+      const result = await signup(this.state);
+      if (result.data.result == "success") {
+        localStorage.setItem('email', result.data.data.email);
+        window.location.href = '/profile';
+      } else {
+        alert("Failed");
+      }
+    } catch(err) {
+      alert(err);
+    };
   }
 
   render() {
@@ -34,7 +66,7 @@ export default class SignUp extends React.Component {
               <FormInput
                 type="text"
                 placeholder="Alfredo Aminoff"
-                // onChange={() => {}}
+                onChange={(e) => this.onChangeName(e)}
                 autoComplete="email"
               />
             </div>
@@ -43,7 +75,7 @@ export default class SignUp extends React.Component {
               <FormInput
                 type="email"
                 placeholder="youremail@gmail.com"
-                // onChange={() => {}}
+                onChange={(e) => this.onChangeEmail(e)}
                 autoComplete="email"
               />
             </div>
@@ -52,7 +84,7 @@ export default class SignUp extends React.Component {
               <FormInput
                 type="password"
                 placeholder="XXXXXXXX"
-                // onChange={() => {}}
+                onChange={(e) => this.onChangePassword(e)}
                 autoComplete="password"
               />
             </div>
@@ -61,12 +93,12 @@ export default class SignUp extends React.Component {
               <FormInput
                 type="password"
                 placeholder="XXXXXXXX"
-                // onChange={() => {}}
+                onChange={(e) => this.onChangeConfirmPassword(e)}
                 autoComplete="password"
               />
             </div>
             <div className="content-center block-content-class button-text-group-class">
-              <Button>Sign up</Button>
+              <Button onClick={() => this.actionSignup()}>Sign up</Button>
               <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
             </div>
             <div className="content-center seperation-line-class">
