@@ -11,11 +11,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(
-            User::class,
-            Media::class,
+        $this->call([
+            UserSeeder::class,
+            MediaSeeder::class,
             AvailableTimeListSeeder::class,
-            Wallet::class,
-        );
+            WalletSeeder::class,
+            TagSeeder::class,
+            SessionSeeder::class
+        ]);
     }
 }

@@ -33,7 +33,6 @@ class SessionController extends Controller
             $str_tags = $value['tags_id'];
             $tags_id = explode(',',$str_tags);
             $session_info[$key]['tags'] = $tags_id;
-            // var_dump($tags_id);
 
             foreach ($tags_id as $tag_key => $tag_value) {
                 $tags = Tag::select('name')->where('id', $tag_value)->first();
@@ -74,5 +73,103 @@ class SessionController extends Controller
             'result'=> 'success',
             'data'=> [],
         ]);
+    }
+
+    function getHistory(Request $request)
+    {
+        $result_res = null;
+        $email = $request['email'];
+        $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
+        $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '3')->get();
+
+        foreach ($session_infos as $session_key => $session_info)
+        {
+            $result_from = $session_info['from'];
+            $result_tag = $session_info['tags_id'];
+            $tags_id = explode(',',$result_tag);
+
+            $result_invited = $session_info['invited_id'];
+            $invited_id = explode(',', $result_invited);
+
+            foreach ($invited_id as $invited_key => $invited_value) {
+                if (trim($invited_value) == $user_id['id'])
+                {
+                    $result_res[$session_key] = $session_info;
+
+                    $result_res[$session_key]['day'] = date('d/m/y', strtotime($result_from));
+                    $result_res[$session_key]['time'] = date('h:i a', strtotime($result_from));
+
+                    foreach ($tags_id as $tag_key => $tag_value) {
+                        $tags = Tag::select('name')->where('id', $tag_value)->first();
+                        $tag_names[$tag_key] = $tags['name'];
+                    }
+                    $result_res[$session_key]['tag_name'] = $tag_names;
+                    $menter_name = User::select('name')->where('id', $session_info['user_id'])->first();
+                    $result_res[$session_key]['name'] = $menter_name['name'];
+                    $result_res[$session_key]['avatar'] = $user_id['avatar'];
+                }
+            }
+        }
+
+        if ($result_res == null) {
+            return response()->json([
+                'result'=> 'failed',
+                'message'=> 'Current User Does Not Exist',
+            ]);
+        } else {
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $result_res,
+            ]);
+        }
+    }
+
+    function getUpcomingSession(Request $request)
+    {
+        $result_res = null;
+        $email = $request['email'];
+        $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
+        $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
+
+        foreach ($session_infos as $session_key => $session_info)
+        {
+            $result_from = $session_info['from'];
+            $result_tag = $session_info['tags_id'];
+            $tags_id = explode(',',$result_tag);
+
+            $result_invited = $session_info['invited_id'];
+            $invited_id = explode(',', $result_invited);
+
+            foreach ($invited_id as $invited_key => $invited_value) {
+                if (trim($invited_value) == $user_id['id'])
+                {
+                    $result_res[$session_key] = $session_info;
+
+                    $result_res[$session_key]['day'] = date('d/m/y', strtotime($result_from));
+                    $result_res[$session_key]['time'] = date('h:i a', strtotime($result_from));
+
+                    foreach ($tags_id as $tag_key => $tag_value) {
+                        $tags = Tag::select('name')->where('id', $tag_value)->first();
+                        $tag_names[$tag_key] = $tags['name'];
+                    }
+                    $result_res[$session_key]['tag_name'] = $tag_names;
+                    $menter_name = User::select('name')->where('id', $session_info['user_id'])->first();
+                    $result_res[$session_key]['name'] = $menter_name['name'];
+                    $result_res[$session_key]['avatar'] = $user_id['avatar'];
+                }
+            }
+        }
+
+        if ($result_res == null) {
+            return response()->json([
+                'result'=> 'failed',
+                'message'=> 'Current User Does Not Exist',
+            ]);
+        } else {
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $result_res,
+            ]);
+        }
     }
 }

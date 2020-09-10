@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
+import { DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
 
 import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
@@ -24,21 +24,25 @@ class SmallCard3 extends React.Component {
   }
 
   edit() {
-    console.log("Go a Way!");
+
   }
 
   render() {
+    const {name, day, time, tag_name, avatar_url} = this.props.data
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
-          {/* <h6 className="video-upload-time no-margin">08/09/20 at 12:04pm</h6> */}
           <div style={{display: "flex", float: "left"}}>
             <img src={ReivewImage} className="small-card3-avatar" alt="avatar" />
+            {/* <img src={ReivewImage} className="small-card3-avatar" alt="avatar" /> */}
             <div>
-              <h6 className="small-card3-name">Kaylynn Curtis</h6>
+              <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
-                <p className="brainsshare-tag">Algebra</p>
-                <p className="brainsshare-tag">Mathematics</p>
+                {tag_name.map((tag, idx) => {
+                  return(
+                    <p className="brainsshare-tag" id={idx}>{tag}</p>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -69,13 +73,13 @@ class SmallCard3 extends React.Component {
           <div style={{display: "flex", marginBottom: "5px"}}>
             <img src={Calendar} alt="Calendar" />
             <h6 style={{fontSize: "16px", paddingLeft: "10px"}} className="no-margin">
-              08/14/20
+              {day}
             </h6>
           </div>
           <div style={{display: "flex", marginBottom: "5px"}}>
             <img src={Clock} alt="Clock" />
             <h6 style={{fontSize: "16px", paddingLeft: "10px"}} className="no-margin">
-              11:30 am
+              {time}
             </h6>
           </div>
         </div>
