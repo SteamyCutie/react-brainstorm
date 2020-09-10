@@ -89,6 +89,18 @@ export default class SignUp extends React.Component {
     }
   }
 
+  clearValidationErrors() {
+    this.setState({
+      validationError: {
+        name: '',
+        email: '',
+        password: '',
+        confirm: ''
+      },
+      signInError: ''
+    })
+  }
+
   showValidation() {
     var nameInput = document.getElementById("name");
     var emailInput = document.getElementById("email");
