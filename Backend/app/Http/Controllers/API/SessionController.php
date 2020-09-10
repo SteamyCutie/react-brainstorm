@@ -75,4 +75,100 @@ class SessionController extends Controller
             'data'=> [],
         ]);
     }
+
+    function getHistory(Request $request)
+    {
+        $result_res = null;
+        $email = $request['email'];
+        $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
+        $session_infos = Session::select('id', 'invited_id', 'from','tags_id')->where('status', '3')->get();
+        var_dump($user_id['id']);
+        foreach ($session_infos as $session_key => $session_info)
+        {
+            $result_from = $session_info['from'];
+            $result_tag = $session_info['tags_id'];
+            $tags_id = explode(',',$result_tag);
+
+            $result_invited = $session_info['invited_id'];
+            $invited_id = explode(',', $result_invited);
+
+            foreach ($invited_id as $invited_key => $invited_value) {
+                if (trim($invited_value) == $user_id['id'])
+                {
+                    $result_res[$session_key] = $session_info;
+
+                    $result_res[$session_key]['day'] = date('d/m/y', strtotime($result_from));
+                    $result_res[$session_key]['time'] = date('h:i a', strtotime($result_from));
+
+                    foreach ($tags_id as $tag_key => $tag_value) {
+                        $tags = Tag::select('name')->where('id', $tag_value)->first();
+                        $tag_names[$tag_key] = $tags['name'];
+                    }
+                    $result_res[$session_key]['tag_name'] = $tag_names;
+                    $result_res[$session_key]['name'] = $user_id['name'];
+                    $result_res[$session_key]['avatar'] = $user_id['avatar'];
+                }
+            }
+        }
+
+        if ($result_res == null) {
+            return response()->json([
+                'result'=> 'failed',
+                'message'=> 'Current User Does Not Exist',
+            ]);
+        } else {
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $result_res,
+            ]);
+        }
+    }
+
+    function getUpcomingSession(Request $request)
+    {
+        $result_res = null;
+        $email = $request['email'];
+        $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
+        $session_infos = Session::select('id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
+        var_dump($user_id['id']);
+        foreach ($session_infos as $session_key => $session_info)
+        {
+            $result_from = $session_info['from'];
+            $result_tag = $session_info['tags_id'];
+            $tags_id = explode(',',$result_tag);
+
+            $result_invited = $session_info['invited_id'];
+            $invited_id = explode(',', $result_invited);
+
+            foreach ($invited_id as $invited_key => $invited_value) {
+                if (trim($invited_value) == $user_id['id'])
+                {
+                    $result_res[$session_key] = $session_info;
+
+                    $result_res[$session_key]['day'] = date('d/m/y', strtotime($result_from));
+                    $result_res[$session_key]['time'] = date('h:i a', strtotime($result_from));
+
+                    foreach ($tags_id as $tag_key => $tag_value) {
+                        $tags = Tag::select('name')->where('id', $tag_value)->first();
+                        $tag_names[$tag_key] = $tags['name'];
+                    }
+                    $result_res[$session_key]['tag_name'] = $tag_names;
+                    $result_res[$session_key]['name'] = $user_id['name'];
+                    $result_res[$session_key]['avatar'] = $user_id['avatar'];
+                }
+            }
+        }
+
+        if ($result_res == null) {
+            return response()->json([
+                'result'=> 'failed',
+                'message'=> 'Current User Does Not Exist',
+            ]);
+        } else {
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $result_res,
+            ]);
+        }
+    }
 }
