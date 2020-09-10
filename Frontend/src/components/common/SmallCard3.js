@@ -28,13 +28,13 @@ class SmallCard3 extends React.Component {
   }
 
   render() {
-    const {name, day, time, tag_name, avatar_url} = this.props
+    const {name, day, time, tag_name, avatar_url} = this.props.data
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
           <div style={{display: "flex", float: "left"}}>
             <img src={ReivewImage} className="small-card3-avatar" alt="avatar" />
-            {/* <img src={avatar_url} className="small-card3-avatar" alt="avatar" /> */}
+            {/* <img src={ReivewImage} className="small-card3-avatar" alt="avatar" /> */}
             <div>
               <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
