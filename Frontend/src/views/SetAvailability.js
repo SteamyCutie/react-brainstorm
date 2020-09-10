@@ -75,8 +75,6 @@ class SetAvailability extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.state.currentUserId);
-
     this.getTimeListData();
   }
 
@@ -96,8 +94,6 @@ class SetAvailability extends React.Component {
 
     if (list[dayIdx].timeList.length === 1) {
       list[dayIdx].timeList.splice(idx, 1);
-      // list[dayIdx].timeList.push({from: 0, to: 0});
-
     } else {
       list[dayIdx].timeList.splice(idx, 1);
     }
@@ -113,7 +109,7 @@ class SetAvailability extends React.Component {
     let timeId = 0;
 
     for(var i = 0; i < timeList.length; i ++) {
-      if(e.target.value == timeList[i]['str']) {
+      if(e.target.value === timeList[i]['str']) {
         timeId = i;
         break;
       }
@@ -131,7 +127,7 @@ class SetAvailability extends React.Component {
     let timeId = 0;
 
     for(var i = 0; i < timeList.length; i ++) {
-      if(e.target.value == timeList[i]['str']) {
+      if(e.target.value === timeList[i]['str']) {
         timeId = i;
         break;
       }
@@ -147,7 +143,7 @@ class SetAvailability extends React.Component {
     try {
       const result = await setAvailableTimes({email: localStorage.getItem('email'), data: this.state.availableTimeList});
       console.log(result);
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.getTimeListData();
       } else {
         alert(result.data.message);
@@ -161,7 +157,7 @@ class SetAvailability extends React.Component {
     try {
       const result = await getAvailableTimes({email: localStorage.getItem('email')});
       
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         var availableTimeListTemp = [
           {
             dayOfWeek: "Sunday",
@@ -195,7 +191,7 @@ class SetAvailability extends React.Component {
 
         for(var i = 0; i < result.data.data.length; i ++) {
           for (var j = 0; j < availableTimeListTemp.length; j ++){
-            if(result.data.data[i].day_of_week == availableTimeListTemp[j].dayOfWeek) {
+            if(result.data.data[i].day_of_week === availableTimeListTemp[j].dayOfWeek) {
               availableTimeListTemp[j].timeList.push({from: result.data.data[i].fromTime, to: result.data.data[i].toTime});
             }
           }
@@ -248,7 +244,7 @@ class SetAvailability extends React.Component {
                                 <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
                                   {timeList.map((item, idx) => {
                                     return (
-                                      time.from == item.id
+                                      time.from === item.id
                                       ? <option selected>{item.str}</option>
                                       : <option >{item.str}</option>
                                     );
@@ -259,7 +255,7 @@ class SetAvailability extends React.Component {
                                 <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
                                   {timeList.map((item, idx) => {
                                     return (
-                                      time.to == item.id 
+                                      time.to === item.id 
                                       ? <option selected>{item.str}</option>
                                       : <option >{item.str}</option>
                                     );
@@ -284,7 +280,7 @@ class SetAvailability extends React.Component {
                         // : null
                         :<Row form>
                           <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
-                            <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
+                            <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
                               {timeList.map((item, idx) => {
                                 return (
                                   <option >{item.str}</option>
@@ -293,7 +289,7 @@ class SetAvailability extends React.Component {
                             </FormSelect>
                           </Col>
                           <Col md="5" className="available-time-group">
-                            <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
+                            <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
                               {timeList.map((item, idx) => {
                                 return (
                                   <option >{item.str}</option>

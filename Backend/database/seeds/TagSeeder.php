@@ -24,6 +24,9 @@ class TagSeeder extends Seeder
             ['id' => 10, 'name' => "Russian"],
             ['id' => 11, 'name' => "Coaching"],
             ['id' => 12, 'name' => "Travelling"],
+            ['id' => 13, 'name' => "Cooking"],
+            ['id' => 14, 'name' => "Copy Writing"],
+            ['id' => 15, 'name' => "Sales Writing"],
         ];
 
         foreach($items as $item)
