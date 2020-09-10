@@ -10,5 +10,5 @@ class Wallet extends Model
         'user_id', 'lesson_id', 'student_name', 'conference_name', 'amount', 'status'
     ];
 
-    protected $table = "wallet";
+    protected $table = "wallets";
 }
