@@ -18,6 +18,7 @@ export default class MainNavbar extends React.Component{
 
   constructor(props) {
     super(props);
+    this.signElement = React.createRef();
     this.state = {
       signInOpen: false,
       signUpOpen: false,
@@ -28,6 +29,9 @@ export default class MainNavbar extends React.Component{
     this.setState({
       signInOpen: !this.state.signInOpen
     });
+    if(!this.state.signInOpen) {
+      this.signElement.current.clearValidationErrors();
+    }
   }
 
   toggle_signup() {
@@ -49,7 +53,7 @@ export default class MainNavbar extends React.Component{
 
     return (
       <div className={classes}>
-        <SignIn open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()} />
+        <SignIn ref={this.signElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()} />
         <SignUp open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} />
         <Container className="p-0 fix-position">
           <Navbar type="light" className="align-items-stretch flex-md-nowrap p-0">
