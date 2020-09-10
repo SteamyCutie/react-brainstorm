@@ -158,6 +158,12 @@ export default class SignUp extends React.Component {
       }
     }
 
+    //Compare
+    if(this.state.confirmpassword && this.state.password && this.state.password !== this.state.confirmpassword) {
+      formIsValid = false;
+      errors["confirm"] = "The password is incorrect. Please try again";
+    }
+
     //Password
     if(!this.state.password) {
       formIsValid = false;
@@ -170,12 +176,6 @@ export default class SignUp extends React.Component {
       errors["confirm"] = "This field is required";
     }
 
-    //Compare
-    if(this.state.confirmpassword && this.state.password && this.state.password !== this.state.confirmpassword) {
-      formIsValid = false;
-      errors["confirm"] = "The password is incorrect. Please try again";
-    }
-    
     this.setState({validationError: errors}, () => {
       this.showValidation();
     });
