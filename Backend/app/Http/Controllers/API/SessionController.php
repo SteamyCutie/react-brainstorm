@@ -82,7 +82,7 @@ class SessionController extends Controller
         $email = $request['email'];
         $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
         $session_infos = Session::select('id', 'invited_id', 'from','tags_id')->where('status', '3')->get();
-        var_dump($user_id['id']);
+
         foreach ($session_infos as $session_key => $session_info)
         {
             $result_from = $session_info['from'];
@@ -130,7 +130,7 @@ class SessionController extends Controller
         $email = $request['email'];
         $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
         $session_infos = Session::select('id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
-        var_dump($user_id['id']);
+
         foreach ($session_infos as $session_key => $session_info)
         {
             $result_from = $session_info['from'];
