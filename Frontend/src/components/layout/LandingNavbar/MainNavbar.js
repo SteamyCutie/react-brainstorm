@@ -49,6 +49,12 @@ export default class MainNavbar extends React.Component{
       signInOpen: !this.state.signInOpen,
       signUpOpen: !this.state.signUpOpen
     });
+    if(!this.state.signInOpen) {
+      this.signInElement.current.clearValidationErrors();
+    }
+    if(!this.state.signUpOpen) {
+      this.signUpElement.current.clearValidationErrors();
+    }
   }
 
   render() {
