@@ -161,7 +161,7 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Full Name</label>
-                            <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} />
+                            <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.userInfo.fullname} />
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword">Date of birth</label>
@@ -184,24 +184,24 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Hourly price</label>
-                            <FormInput className="profile-detail-input no-margin" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} />
+                            <FormInput className="profile-detail-input no-margin" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.userInfo.hourly_price} />
                             <label className="profile-detail-comment">
                               You get 80% of your price. (0.00 $) Remaining 20% goes to admin. (0.00 $)
                             </label>
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword">Video url</label>
-                            <FormInput className="profile-detail-input" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} />
+                            <FormInput className="profile-detail-input" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.userInfo.video_url} />
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Subscription Page Name</label>
-                            <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} />
+                            <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.userInfo.sub_page_name} />
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Subscription plan fee</label>
-                            <FormInput className="profile-detail-input no-margin" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} />
+                            <FormInput className="profile-detail-input no-margin" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.userInfo.sub_plan_fee} />
                             <label className="profile-detail-comment">
                               You get 80% of your price. (0.00 $) Remaining 20% goes to admin. (0.00 $)
                             </label>
@@ -209,7 +209,7 @@ export default class MySharePage extends React.Component {
                         </Row>
                         <Row form>
                           <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
-                          <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} />
+                          <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={this.state.userInfo.description} />
                         </Row>
                         <Row className="profile-detail-save center">
                           <Button className="btn-profile-detail-save" onClick={() => this.actionSave()}>Save</Button>

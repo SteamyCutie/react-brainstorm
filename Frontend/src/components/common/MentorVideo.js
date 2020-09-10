@@ -32,15 +32,25 @@ class MentorVideo extends React.Component {
         <div className="mentor-desc-video-header">
           <h6 className="video-upload-time no-margin">{day} at {time}</h6>
           
-          <NavItem tag={Dropdown} caret toggle={this.toggleActions}>
-            <DropdownToggle caret tag={NavLink} className="text-nowrap px-3" style={{width: '100px', height: '50px', float: 'right', marginTop: '-10px'}}>
-              <img
-                className="user-avatar mr-2"
-                src={MoreButtonImage}
-                alt="User Avatar"
-              />{" "}
-            </DropdownToggle>
-            <Collapse tag={DropdownMenu} right small open={this.state.visible} style={{position: 'absolute', top: '20px'}}>
+          <NavItem className="dropdown notifications notification-class">
+            <NavLink
+              className="nav-link-icon text-center"
+              onClick={this.toggleActions}
+              style={{position: 'absolute', right: 0, top: 0}}
+            >
+              <div className="nav-link-icon__wrapper">
+                <img
+                  className="user-avatar mr-2"
+                  src={MoreButtonImage}
+                  alt="User Avatar"
+                />{" "}
+              </div>
+            </NavLink>
+            <Collapse
+              open={this.state.visible}
+              className="dropdown-menu dropdown-menu-small"
+              style={{position: 'absolute', right: 0, top: 30}}
+            >
               <DropdownItem  onClick={() => this.edit()}>
                 Edit
               </DropdownItem>

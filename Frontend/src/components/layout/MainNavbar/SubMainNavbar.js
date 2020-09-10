@@ -23,7 +23,7 @@ const SubMainNavbar = ({ layout, stickyTop }) => {
               </svg>
             </div>
             <div className="margin-double-right-class">
-              <a href="#">Go Live Now</a>
+              <a href="javascript:void(0)">Go Live Now</a>
             </div>
             <div className="margin-right-class">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +33,7 @@ const SubMainNavbar = ({ layout, stickyTop }) => {
               </svg>
             </div>
             <div className="margin-right-class">
-              <a href="#">Upload photo/video</a>
+              <a href="javascript:void(0)">Upload photo/video</a>
             </div>
           </div>
         </Navbar>

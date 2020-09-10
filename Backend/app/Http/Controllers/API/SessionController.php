@@ -53,4 +53,26 @@ class SessionController extends Controller
             ]);
         }
     }
+
+    function createforum(Request $request)
+    {
+        $email = $request['email'];
+        $user_id = User::select('id')->where('email', $email)->first();
+        $title = $request['title'];
+        $description = $request['description'];
+        $tags = implode(",", $request['tags']);
+
+        Session::create([
+            'user_id' => $user_id['id'],
+            'title' => $title,
+            'description' => $description,
+            'tags_id' => $tags,
+            'status' => 0,
+        ]);
+
+        return response()->json([
+            'result'=> 'success',
+            'data'=> [],
+        ]);
+    }
 }
