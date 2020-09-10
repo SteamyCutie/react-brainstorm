@@ -33,7 +33,6 @@ class SessionController extends Controller
             $str_tags = $value['tags_id'];
             $tags_id = explode(',',$str_tags);
             $session_info[$key]['tags'] = $tags_id;
-            // var_dump($tags_id);
 
             foreach ($tags_id as $tag_key => $tag_value) {
                 $tags = Tag::select('name')->where('id', $tag_value)->first();
@@ -81,7 +80,7 @@ class SessionController extends Controller
         $result_res = null;
         $email = $request['email'];
         $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
-        $session_infos = Session::select('id', 'invited_id', 'from','tags_id')->where('status', '3')->get();
+        $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '3')->get();
 
         foreach ($session_infos as $session_key => $session_info)
         {
@@ -105,7 +104,8 @@ class SessionController extends Controller
                         $tag_names[$tag_key] = $tags['name'];
                     }
                     $result_res[$session_key]['tag_name'] = $tag_names;
-                    $result_res[$session_key]['name'] = $user_id['name'];
+                    $menter_name = User::select('name')->where('id', $session_info['user_id'])->first();
+                    $result_res[$session_key]['name'] = $menter_name['name'];
                     $result_res[$session_key]['avatar'] = $user_id['avatar'];
                 }
             }
@@ -129,7 +129,7 @@ class SessionController extends Controller
         $result_res = null;
         $email = $request['email'];
         $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
-        $session_infos = Session::select('id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
+        $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
 
         foreach ($session_infos as $session_key => $session_info)
         {
@@ -153,7 +153,8 @@ class SessionController extends Controller
                         $tag_names[$tag_key] = $tags['name'];
                     }
                     $result_res[$session_key]['tag_name'] = $tag_names;
-                    $result_res[$session_key]['name'] = $user_id['name'];
+                    $menter_name = User::select('name')->where('id', $session_info['user_id'])->first();
+                    $result_res[$session_key]['name'] = $menter_name['name'];
                     $result_res[$session_key]['avatar'] = $user_id['avatar'];
                 }
             }
