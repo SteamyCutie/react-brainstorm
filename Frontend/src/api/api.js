@@ -137,7 +137,7 @@ export const getHistory = (param) => {
 export const getUpcomingSession = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/getupcomingsession', param);
+            const response = await axios.post(SERVER_URL+'/api/getupcomingsessions', param);
             resolve(response);
         } catch(error) {
             reject(error);

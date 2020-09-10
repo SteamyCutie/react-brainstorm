@@ -81,7 +81,9 @@ export default class StudentSession extends React.Component {
             <Row>
               {this.state.sessionList.map((session, idx) => {
                 return (
-                  <SmallCard3 id={idx} data={session}/>
+                  <Col xl="4" lg="4" sm="6">
+                    <SmallCard3 id={idx} data={session}/>
+                  </Col>
                 )
               })}
             </Row>
