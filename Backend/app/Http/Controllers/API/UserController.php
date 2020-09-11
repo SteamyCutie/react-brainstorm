@@ -23,7 +23,7 @@ class UserController extends Controller
         if ($user == null) {
             return response()->json([
                 'result'=> 'failed',
-                'message'=> 'Current User Does Not Exist',
+                'message'=> 'Email is incorrect',
             ]);
         }
 
@@ -36,13 +36,21 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'result'=> 'failed',
-                'message'=> 'Password Does Not Match',
+                'message'=> 'Password is incorrect.',
             ]);  
         }
     }
 
     public function signup(Request $request)
     {
+        $user = User::where('email', $request['email'])->first();
+        if ($user) {
+            return response()->json([
+                'result'=> 'failed',
+                'message'=> 'This email is already in use',
+            ]);
+        }
+
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
