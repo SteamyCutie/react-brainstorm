@@ -39,7 +39,7 @@ export default class MySharePage extends React.Component {
         subpagename: '',
         subplanfee: '',
         videourl: '',
-        avatar: '555',
+        avatar: '',
         instantcall: false
       }
     };
@@ -63,6 +63,7 @@ export default class MySharePage extends React.Component {
         temp.fullname = result.data.data.name;
         temp.birthday = result.data.data.dob;
         temp.email = result.data.data.email;
+        temp.avatar = result.data.data.avatar;
         temp.description = result.data.data.description;
         temp.hourlyprice = result.data.data.hourly_price;
         temp.subpagename = result.data.data.sub_page_name;
@@ -228,13 +229,12 @@ export default class MySharePage extends React.Component {
     try {
       const result = await uploadimage(formData);
       if (result.data.result == "success") {
-        console.log(result.data.data);
-        // const {param} = this.state;
-        // let temp = param;
-        // temp.avatar = result.data.result;
+        const {param} = this.state;
+        let temp = param;
+        temp.avatar = result.data.data;
+        this.setState({param: temp});
       } else {
-        console.log(result.data.message, "++++++++++");
-        console.log(result);
+        console.log(result.data.message);
       }
     } catch(err) {
       console.log(err, "--------");
@@ -251,7 +251,7 @@ export default class MySharePage extends React.Component {
               <Col xl="3" className="subscription-mentor-detail">
                 <div >
                   <h2>Profile Setting</h2>
-                  <img src={MentorAvatar} alt="avatar" onClick={() => this.onDrop()}/>
+                  <img src={this.state.param.avatar} alt="avatar" onClick={() => this.onDrop()}/>
                   <input type="file" hidden ref={this.myRef} onChange={(e) => this.onChangeAvatar(e)}></input>
                 </div>
               </Col>
@@ -280,6 +280,7 @@ export default class MySharePage extends React.Component {
                               size="lg"
                               selected={this.state.displaydate}
                               onChange={(e) => this.onChangeBirthDay(e)}
+                              value={this.state.param.birthday}
                               placeholderText="Date of birth"
                               dropdownMode="select"
                               className="text-center"
