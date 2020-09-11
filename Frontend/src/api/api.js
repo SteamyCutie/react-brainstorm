@@ -145,4 +145,20 @@ export const getUpcomingSession = (param) => {
     });
 }
 
+export const uploadimage = (param) => {
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/uploadimage', param, config.headers);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 //Backend Apis

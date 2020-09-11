@@ -21,6 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/signin', 'UserController@signin');
 Route::post('/signup', 'UserController@signup');
 Route::post('/editprofile', 'UserController@editprofile');
+Route::post('/uploadimage', 'UserController@uploadimage');
 
 Route::post('/mysharepage', 'MediaController@getMediaShare');
 Route::post('/scheduleliveforum', 'SessionController@getSession');

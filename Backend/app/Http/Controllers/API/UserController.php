@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
@@ -97,6 +99,29 @@ class UserController extends Controller
         $subplanfee = $request['subplanfee'];
         $videourl = $request['videourl'];
         $instantcall = $request['instantcall'];
+        $avatar = $request['avatar'];
+
+        $rules = array(
+            'fullname' => 'required',
+            'email' => 'required|email',
+            'expertise' => 'required',
+            'hourlyprice' => 'required',
+            'subpagename' => 'required',
+            'subplanfee' => 'required'
+        );    
+        $messages = array(
+            'required' => 'This field is required.',
+        );
+        $validator = Validator::make( $request->all(), $rules, $messages );
+
+        if ($validator->fails()) 
+        {
+            return [
+                'result' => 'failed', 
+                'type' => 'require',
+                'message' => $validator->messages()
+            ];
+        }
 
         $user = User::where('email', $email)->get();
 
@@ -111,6 +136,7 @@ class UserController extends Controller
                 'dob' => $birthday,
                 'email' => $email,
                 'description' => $description,
+                'avatar' => $avatar,
                 // 'expertise' => $expertise,
                 'hourly_price' => $hourlyprice,
                 'sub_page_name' => $subpagename,
@@ -123,6 +149,30 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'success',
                 'data'=> $user,
+            ]);
+        }
+    }
+
+    public function uploadimage(Request $request)
+    {
+        $file = $request['files'];
+        $file_origin_name = $file[0]->getClientOriginalName();
+        $file_name = time().'_'.rand(100000, 999999).'_'.$file_origin_name;
+
+        try {
+            $s3 = Storage::disk('s3');
+            
+            $s3->put($file_name, file_get_contents($file[0]), 'public');
+
+            // $file_path = $s3->url($file_name);
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $file_name,
+            ]);
+        } catch (Exception $th) {
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $th,
             ]);
         }
     }
