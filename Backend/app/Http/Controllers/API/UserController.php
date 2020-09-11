@@ -131,7 +131,7 @@ class UserController extends Controller
                 'email' => $email,
                 'description' => $description,
                 'avatar' => $avatar,
-                // 'expertise' => $expertise,
+                'expertise' => $expertise,
                 'hourly_price' => $hourlyprice,
                 'sub_page_name' => $subpagename,
                 'sub_plan_fee' => $subplanfee,
