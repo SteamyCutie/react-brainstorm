@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'dob', 'avatar', 'hourly_price', 'video_url', 'sub_page_name', 'sub_plan_fee', 'description', 'instant_call', 'status', 'timezone'
+        'name', 'email', 'password', 'dob', 'avatar', 'two_factor_code', 'hourly_price', 'video_url', 'sub_page_name', 'sub_plan_fee', 'description', 'instant_call', 'status', 'is_active','timezone'
     ];
 
     /**
@@ -24,4 +24,15 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function generateTwoFactorCode()
+    {
+        $this->timestamps = false;
+        $this->two_factor_code = rand(100000, 999999);
+        $this->save();
+    }
+    
+    public function verifiedAccount(){
+        $this->email_verified_at = now();
+        $this->save();
+    }
 }

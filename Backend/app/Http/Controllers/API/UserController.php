@@ -16,54 +16,83 @@ class UserController extends Controller
 
     public function signin(Request $request)
     {
-        $email = $request['email'];
-        $password = $request['password'];
-        
-        $user = User::where('email', $email)->first();
-        if ($user == null) {
-            return response()->json([
-                'result'=> 'failed',
-                'message'=> 'Current User Does Not Exist',
-            ]);
-        }
+        try {
+            $input = $request->only('email', 'password');
+            $token = null;
+            $user = User::where('email', $request->email)->first();
 
-        // if ($user['password'] == bcrypt($password)) {
-        if ($user['password'] == $password) {
+            if( !$user->email_verified_at ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => config('messages.auth.verify_code'),
+                ], 401);
+            }
+            
+            if (!$token = JWTAuth::attempt($input)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid Email or Password',
+                ], 401);
+            }
+
             return response()->json([
-                'result'=> 'success',
-                'data'=> $user,
-            ]);  
-        } else {
+                'success' => true,
+                'token' => $token,
+                'user' => auth()->user(),
+            ]);            
+        } catch (\Throwable $th) {
             return response()->json([
-                'result'=> 'failed',
-                'message'=> 'Password Does Not Match',
-            ]);  
+                'success' => false,
+                'message' => 'Invalid Email or Password',
+            ]);
         }
     }
 
     public function signup(Request $request)
     {
-        $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            // 'password' => bcrypt($request['password']),
-            'password' => $request['password'],
-            'dob' => null,
-            'avatar' => '',
-            'hourly_price' => 0,
-            'video_url' => '',
-            'sub_page_name' => '',
-            'sub_plan_fee' => 0,
-            'description' => '',
-            'instant_call' => false,
-            'status' => 0,
-            'timezone' => ''
-        ]);
+        $email = $request['email'];
+        $name = $request['fullname'];
+        $password = $request['password'];
+        $subject = "Welcome to BransShare!";
+        $body = "Hi ".$name."<br>";
+        $body = $body."<img src='http://buscasa360storage0010513.s3-us-west-2.amazonaws.com/buscasa360_logo.png' style='width:90%;'/><br>";
+            
 
-        return response()->json([
-            'result'=> 'success',
-            'data'=> $user,
-        ]);
+        if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
+            return response()->json([
+                'success'   =>  false,
+                'message'   =>  'Email address is already existed'
+            ], 300);
+        }
+
+        try {
+            $user = new User();
+            $user->name = $name;
+            $user->email = $email;
+            $user->password = bcrypt($password);            
+            $user->is_active = config('global.users.active');
+            $user->id = 0;
+            
+            $user->save();
+
+            $user->generateTwoFactorCode();
+            $toEmail = $user->email;            
+
+            $body = $body."<p>Veryfication Code :".$user->two_factor_code."<p><br>";            
+            $body = $body."<a href = '".env("APP_URL")."/verifycode/'><button>Click to confirm your account</button></a>";
+
+            $this->send_email($toEmail, $name, $subject, $body);
+
+            return response()->json([
+                'success'   => true,
+                'user'      => $user,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, user can not register'
+            ], 500);
+        }        
     }
 
     public function getuserinfo(Request $request)
@@ -116,6 +145,37 @@ class UserController extends Controller
                 'result'=> 'success',
                 'data'=> $user,
             ]);
+        }
+    }
+
+    public function verifyCode(Request $request){
+        $subject = "Welcome to BransShare!";
+        $body = "Hi ".$name."<br>";
+        try {
+            $code = $request->code;
+            $email = $request->email;
+            $user = User::where('email', $email)->first();
+
+            if($code != $user->two_factor_code) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sorry, confirm code is wrong!'
+                ], 500);
+            }
+            $user->verifiedAccount();
+
+            $toEmail = $user->email;            
+            $name = $user->name;
+            $body = $body."<p>Veryfy Code</p>";
+            
+            $this->send_email($toEmail, $name, $subject, $body);
+            return $this->signin($request);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, can not verify the code'
+            ], 500);
         }
     }
 }
