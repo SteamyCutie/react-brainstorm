@@ -340,3 +340,30 @@
 .notification-container-top-right {
     right: 350px !important;
 }
+
+.dropdown .dropdown-menu {
+    left: -72px;
+}
+
+.dropdown button {
+    background: none;
+    border: none;
+}
+
+.dropdown button:hover {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.dropdown button:active {
+    background: none !important;
+    border: none;
+    box-shadow: none;
+}
+
+.dropdown button:focus {
+    background: none;
+    border: none;
+    box-shadow: none;
+}

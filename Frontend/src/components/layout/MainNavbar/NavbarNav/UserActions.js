@@ -17,10 +17,10 @@ export default class UserActions extends React.Component {
 
     this.state = {
       avatar: '',
-      visible: false
+      open: false
     };
 
-    this.toggleUserActions = this.toggleUserActions.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
   componentWillMount() {
@@ -41,10 +41,9 @@ export default class UserActions extends React.Component {
     };
   }
 
-
-  toggleUserActions() {
-    this.setState({
-      visible: !this.state.visible
+  toggle() {
+    this.setState(prevState => {
+      return { open: !prevState.open };
     });
   }
 
@@ -55,16 +54,15 @@ export default class UserActions extends React.Component {
 
   render() {
     return (
-      <NavItem tag={Dropdown} caret toggle={this.toggleUserActions}>
-        <DropdownToggle caret tag={NavLink} className="text-nowrap px-3">
+      <Dropdown open={this.state.open} toggle={this.toggle}>
+        <DropdownToggle>
           <img
             className="user-avatar rounded-circle mr-2"
             src={this.state.avatar}
             alt="User Avatar"
             style={{height: '2.5rem'}}
-          />{" "}
-        </DropdownToggle>
-        <Collapse tag={DropdownMenu} right small open={this.state.visible}>
+          />{" "}</DropdownToggle>
+        <DropdownMenu>
           <DropdownItem tag={Link} to="profile">
             <i className="material-icons">&#xE7FD;</i> Profile
           </DropdownItem>
@@ -72,8 +70,8 @@ export default class UserActions extends React.Component {
           <DropdownItem className="text-danger" onClick={() => this.logout()}>
             <i className="material-icons text-danger">&#xE879;</i> Logout
           </DropdownItem>
-        </Collapse>
-      </NavItem>
+        </DropdownMenu>
+      </Dropdown>
     );
   }
 }
