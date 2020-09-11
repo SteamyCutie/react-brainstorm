@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
-
+import Loader from 'react-loader-spinner';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 import WalletHeader from "../components/common/WalletHeader";
 import SmallCard from "../components/common/SmallCard";
 import CustomDataTable from "../components/common/CustomDataTable";
@@ -12,6 +15,7 @@ export default class MentorWallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       smallCards: [
         {
           value: "$231.45",
@@ -88,42 +92,84 @@ export default class MentorWallet extends React.Component {
 
   getWallets = async() => {
     try {
+      this.setState({loading: true});
       const result = await getwallets({email: localStorage.getItem('email')});
       if (result.data.result == "success") {
         this.setState({tHistory: result.data.data});
+        this.showSuccess();
       } else {
-        alert(result.data.message);
+        this.showFail();
       }
+      this.setState({loading: false});
     } catch(err) {
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
+  }
+
+  showSuccess() {
+    store.addNotification({
+      title: "Success",
+      message: "Action Success!",
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail() {
+    store.addNotification({
+      title: "Success",
+      message: "Action Success!",
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   render() {
     return (
-      <Container fluid className="main-content-container px-4 main-content-container-class">
-        <Row noGutters className="page-header py-4">
-          <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
-        </Row>
+      <>
+      {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      <ReactNotification />
+        <Container fluid className="main-content-container px-4 main-content-container-class">
+          <Row noGutters className="page-header py-4">
+            <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
+          </Row>
 
-        <Row>
-          {this.state.smallCards.map((card, idx) => (
-            <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
-              <SmallCard
-                id={idx}
-                label={card.label}
-                value={card.value}
-              />
+          <Row>
+            {this.state.smallCards.map((card, idx) => (
+              <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
+                <SmallCard
+                  id={idx}
+                  label={card.label}
+                  value={card.value}
+                />
+              </Col>
+            ))}
+          </Row>
+
+          <Row className="wallet-data-table-class">
+            <Col lg="12" md="12" sm="12">
+              <CustomDataTable title="Transaction history" data={this.state.tHistory} header={this.state.columns}/>
             </Col>
-          ))}
-        </Row>
-
-        <Row className="wallet-data-table-class">
-          <Col lg="12" md="12" sm="12">
-            <CustomDataTable title="Transaction history" data={this.state.tHistory} header={this.state.columns}/>
-          </Col>
-        </Row>
-      </Container>
+          </Row>
+        </Container>
+      </>
     )
   }
 };

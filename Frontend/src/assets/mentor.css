@@ -179,6 +179,9 @@
     width: 100%;
 }
 
+.project-detail-input-group .react-datepicker-wrapper .react-datepicker__input-container input{
+    text-align: left !important;
+}
 
 .project-detail-input-group label {
     font-size: 14px;
@@ -285,4 +288,55 @@
 .require-message {
     color: red;
     font-weight: bold;
+    float: right;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 200px;
+    border: 1px solid #e1e4e8!important;
+    height: 200px;
+    cursor: pointer;
+}
+
+.avatar-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-tooltip .avatar-tooltiptext {
+    visibility: hidden;
+    width: 150px;
+    background-color: #04B5FA !important;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 210px;
+    left: 30px;
+}
+
+.avatar-tooltip .avatar-tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #04B5FA transparent;
+}
+
+.avatar-tooltip:hover .avatar-tooltiptext {
+    visibility: visible;
+}
+
+.custom-control-label::before {
+    pointer-events: none !important;
+}
+
+.notification-container-top-right {
+    right: 350px !important;
 }

@@ -73,6 +73,8 @@ class UserController extends Controller
         $email = $request['email'];
 
         $user = User::where('email', $email)->first();
+        $newDate = date("Y-m-d", strtotime($user['dob']));
+        $user['dob'] = $newDate;
         return response()->json([
             'result'=> 'success',
             'data'=> $user,
@@ -129,7 +131,7 @@ class UserController extends Controller
                 'email' => $email,
                 'description' => $description,
                 'avatar' => $avatar,
-                // 'expertise' => $expertise,
+                'expertise' => $expertise,
                 'hourly_price' => $hourlyprice,
                 'sub_page_name' => $subpagename,
                 'sub_plan_fee' => $subplanfee,
@@ -153,17 +155,16 @@ class UserController extends Controller
 
         try {
             $s3 = Storage::disk('s3');
-            
             $s3->put($file_name, file_get_contents($file[0]), 'public');
 
-            // $file_path = $s3->url($file_name);
+            $file_path = $s3->url($file_name);
             return response()->json([
                 'result'=> 'success',
-                'data'=> $file_name,
+                'data'=> $file_path,
             ]);
         } catch (Exception $th) {
             return response()->json([
-                'result'=> 'success',
+                'result'=> 'failed',
                 'data'=> $th,
             ]);
         }

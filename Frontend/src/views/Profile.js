@@ -1,7 +1,10 @@
 import React, { useEffect, createRef, useRef } from "react";
 import PropTypes from "prop-types";
-import ImageUploader from 'react-images-upload';
-import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, FormRadio } from "shards-react";
+import Loader from 'react-loader-spinner';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
+import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, Alert } from "shards-react";
 import expertise from '../common/constants';
 import MentorVideo from "../components/common/MentorVideo";
 
@@ -10,12 +13,14 @@ import Icon from "../images/Lightning.svg"
 import Tooltip from "../images/Tooltip.svg"
 import { editprofile, getuserinfo, uploadimage } from '../api/api';
 import { parsePath } from "history";
+import zIndex from "@material-ui/core/styles/zIndex";
 
 export default class MySharePage extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
     this.state = {
+      loading: false,
       displaydate: undefined,
       displaygethourlyprice: '0.00',
       displaycuthourlyprice: '0.00',
@@ -39,7 +44,7 @@ export default class MySharePage extends React.Component {
         subpagename: '',
         subplanfee: '',
         videourl: '',
-        avatar: '555',
+        avatar: '',
         instantcall: false
       }
     };
@@ -56,6 +61,7 @@ export default class MySharePage extends React.Component {
 
   getUserInformation = async() => {
     try {
+      this.setState({loading: true});
       const result = await getuserinfo({email: localStorage.getItem('email')});
       if (result.data.result == "success") {
         const {param} = this.state;
@@ -63,18 +69,28 @@ export default class MySharePage extends React.Component {
         temp.fullname = result.data.data.name;
         temp.birthday = result.data.data.dob;
         temp.email = result.data.data.email;
+        temp.avatar = result.data.data.avatar;
         temp.description = result.data.data.description;
         temp.hourlyprice = result.data.data.hourly_price;
         temp.subpagename = result.data.data.sub_page_name;
         temp.subplanfee = result.data.data.sub_plan_fee;
         temp.videourl = result.data.data.video_url;
-        this.setState({param: temp});
-        // this.setState({userInfo: result.data.data});
+        temp.expertise = result.data.data.expertise;
+        this.setState({
+          param: temp,
+          displaygethourlyprice: (parseInt(result.data.data.hourly_price)*0.8).toFixed(2),
+          displaycuthourlyprice: (parseInt(result.data.data.hourly_price)*0.2).toFixed(2),
+          displaygetplanfee: (parseInt(result.data.data.sub_plan_fee)*0.8).toFixed(2),
+          displaycutplanfee: (parseInt(result.data.data.sub_plan_fee)*0.2).toFixed(2),
+        });
+        this.showSuccess();
       } else {
-        alert(result.data.message);
+        this.showFail();
       }
+      this.setState({loading: false});
     } catch(err) {
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
   }
 
@@ -91,9 +107,11 @@ export default class MySharePage extends React.Component {
       requiremessage: temp
     });
     try {
+      this.setState({loading: true});
       const result = await editprofile(this.state.param);
       if (result.data.result == "success") {
-        
+        this.setState({loading: false});
+        this.showSuccess();
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -114,16 +132,18 @@ export default class MySharePage extends React.Component {
             requiremessage: temp
           });
         } else {
-          alert(result.data.message);
+          this.showFail();
         }
+        this.showFail();
       }
+      this.setState({loading: false});
     } catch(err) {
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
   };
   
   onChangeFullName = (e) => {
-    console.log(e.target.value);
     const {param} = this.state;
     let temp = param;
     temp.fullname = e.target.value;
@@ -211,6 +231,7 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeInstantCall = (e) => {
+    console.log("111");
     const {param} = this.state;
     let temp = param;
     temp.instantcall = !this.state.param.instantcall;
@@ -226,38 +247,77 @@ export default class MySharePage extends React.Component {
     const formData = new FormData();
     formData.append('files[]', e.target.files[0]);
     try {
+      this.setState({loading: true});
       const result = await uploadimage(formData);
       if (result.data.result == "success") {
-        console.log(result.data.data);
-        // const {param} = this.state;
-        // let temp = param;
-        // temp.avatar = result.data.result;
+        const {param} = this.state;
+        let temp = param;
+        temp.avatar = result.data.data;
+        this.setState({param: temp});
+        this.showSuccess();
       } else {
-        console.log(result.data.message, "++++++++++");
-        console.log(result);
+        this.showFail();
       }
+      this.setState({loading: false});
     } catch(err) {
-      console.log(err, "--------");
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
+  }
+
+  showSuccess() {
+    store.addNotification({
+      title: "Success",
+      message: "Action Success!",
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail() {
+    store.addNotification({
+      title: "Success",
+      message: "Action Success!",
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   render() {
     return (
+      <>
+      {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="profile-setting-card">
           <CardBody>
             <Row>
               <Col xl="3" className="subscription-mentor-detail">
-                <div >
+                <div>
                   <h2>Profile Setting</h2>
-                  <img src={MentorAvatar} alt="avatar" onClick={() => this.onDrop()}/>
+                  <div className="avatar-tooltip"><img className="avatar" src={this.state.param.avatar} alt="avatar" onClick={() => this.onDrop()} /><span className="avatar-tooltiptext">Change your avatar</span></div>
                   <input type="file" hidden ref={this.myRef} onChange={(e) => this.onChangeAvatar(e)}></input>
                 </div>
               </Col>
               <Col xl="9" lg="12" className="profile-setting-detail">
                 <div className="right">
-                  <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)} >
+                  <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
                     <img src={Icon} alt="icon" style={{paddingRight: "5px", paddingBottom: "5px"}}/>
                     Instant call
                     <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
@@ -270,8 +330,8 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Full Name</label>
+                            {this.state.requiremessage.dfullname != '' && <span className="require-message">{this.state.requiremessage.dfullname}</span>}
                             <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>
-                            {this.state.requiremessage.dfullname != '' && <p className="require-message">{this.state.requiremessage.dfullname}</p>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <div><label htmlFor="fePassword">Date of birth</label></div>
@@ -280,6 +340,7 @@ export default class MySharePage extends React.Component {
                               size="lg"
                               selected={this.state.displaydate}
                               onChange={(e) => this.onChangeBirthDay(e)}
+                              value={this.state.param.birthday}
                               placeholderText="Date of birth"
                               dropdownMode="select"
                               className="text-center"
@@ -289,24 +350,24 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Email</label>
+                            {this.state.requiremessage.demail != '' && <span className="require-message">{this.state.requiremessage.demail}</span>}
                             <FormInput className="profile-detail-input" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>
-                            {this.state.requiremessage.demail != '' && <p className="require-message">{this.state.requiremessage.demail}</p>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feInputState" className="profile-detail-important" >Expertise</label>
-                            <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeExpertise(e)} >
+                            {this.state.requiremessage.dexpertise != '' && <span className="require-message">{this.state.requiremessage.dexpertise}</span>}
+                            <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeExpertise(e)}>
                               {expertise.map((item, index) =>
-                                <option value={item.value}>{item.name}</option>  
+                                item.value == this.state.param.expertise ? <option value={item.value} selected>{item.name}</option> : <option value={item.value}>{item.name}</option>
                               )}
                             </FormSelect>
-                            {this.state.requiremessage.dexpertise != '' && <p className="require-message">{this.state.requiremessage.dexpertise}</p>}
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Hourly price</label>
+                            {this.state.requiremessage.dhourlyprice != '' && <span className="require-message">{this.state.requiremessage.dhourlyprice}</span>}
                             <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>
-                            {this.state.requiremessage.dhourlyprice != '' && <p className="require-message">{this.state.requiremessage.dhourlyprice}</p>}
                             <label className="profile-detail-comment">
                               <span>You get 80% of your price. ({this.state.displaygethourlyprice} $)</span><br></br>
                               Remaining 20% goes to admin. ({this.state.displaycuthourlyprice} $)
@@ -320,13 +381,13 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Subscription Page Name</label>
+                            {this.state.requiremessage.dsubpagename != '' && <span className="require-message">{this.state.requiremessage.dsubpagename}</span>}
                             <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>
-                            {this.state.requiremessage.dsubpagename != '' && <p className="require-message">{this.state.requiremessage.dsubpagename}</p>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Subscription plan fee</label>
+                            {this.state.requiremessage.dsubplanfee != '' && <span className="require-message">{this.state.requiremessage.dsubplanfee}</span>}
                             <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>
-                            {this.state.requiremessage.dsubplanfee != '' && <p className="require-message">{this.state.requiremessage.dsubplanfee}</p>}
                             <label className="profile-detail-comment">
                               <span>You get 80% of your price. ({this.state.displaygetplanfee} $)</span><br></br>
                               Remaining 20% goes to admin. ({this.state.displaycutplanfee} $)
@@ -349,6 +410,7 @@ export default class MySharePage extends React.Component {
           </CardBody>
         </Card>    
       </Container>
+      </>
     )
   }
 };
