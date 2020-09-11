@@ -1,7 +1,7 @@
 import React, { useEffect, createRef, useRef } from "react";
 import PropTypes from "prop-types";
-import ImageUploader from 'react-images-upload';
-import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, FormRadio } from "shards-react";
+import Loader from 'react-loader-spinner';
+import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, Alert } from "shards-react";
 import expertise from '../common/constants';
 import MentorVideo from "../components/common/MentorVideo";
 
@@ -10,12 +10,14 @@ import Icon from "../images/Lightning.svg"
 import Tooltip from "../images/Tooltip.svg"
 import { editprofile, getuserinfo, uploadimage } from '../api/api';
 import { parsePath } from "history";
+import zIndex from "@material-ui/core/styles/zIndex";
 
 export default class MySharePage extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
     this.state = {
+      loading: false,
       displaydate: undefined,
       displaygethourlyprice: '0.00',
       displaycuthourlyprice: '0.00',
@@ -56,6 +58,7 @@ export default class MySharePage extends React.Component {
 
   getUserInformation = async() => {
     try {
+      this.setState({loading: true});
       const result = await getuserinfo({email: localStorage.getItem('email')});
       if (result.data.result == "success") {
         const {param} = this.state;
@@ -77,6 +80,7 @@ export default class MySharePage extends React.Component {
           displaygetplanfee: (parseInt(result.data.data.sub_plan_fee)*0.8).toFixed(2),
           displaycutplanfee: (parseInt(result.data.data.sub_plan_fee)*0.2).toFixed(2),
         });
+        this.setState({loading: false});
       } else {
         alert(result.data.message);
       }
@@ -98,6 +102,7 @@ export default class MySharePage extends React.Component {
       requiremessage: temp
     });
     try {
+      this.setState({loading: true});
       const result = await editprofile(this.state.param);
       if (result.data.result == "success") {
         
@@ -120,6 +125,7 @@ export default class MySharePage extends React.Component {
           this.setState({
             requiremessage: temp
           });
+          this.setState({loading: false});
         } else {
           alert(result.data.message);
         }
@@ -233,6 +239,7 @@ export default class MySharePage extends React.Component {
     const formData = new FormData();
     formData.append('files[]', e.target.files[0]);
     try {
+      this.setState({loading: true});
       const result = await uploadimage(formData);
       if (result.data.result == "success") {
         const {param} = this.state;
@@ -242,6 +249,7 @@ export default class MySharePage extends React.Component {
       } else {
         console.log(result.data.message);
       }
+      this.setState({loading: false});
     } catch(err) {
       console.log(err, "--------");
       alert(err);
@@ -250,6 +258,8 @@ export default class MySharePage extends React.Component {
 
   render() {
     return (
+      <>
+      {this.state.loading && <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="profile-setting-card">
           <CardBody>
@@ -356,6 +366,7 @@ export default class MySharePage extends React.Component {
           </CardBody>
         </Card>    
       </Container>
+      </>
     )
   }
 };
