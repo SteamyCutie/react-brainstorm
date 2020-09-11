@@ -10,6 +10,7 @@ import AddButtonImage from "../images/Add.svg"
 
 import { getAvailableTimes } from '../api/api';
 import { setAvailableTimes } from '../api/api';
+import TimezoneOptions from '../common/TimezoneOptions';
 
 const timeList = [
   {id: 1, str: "00 : 00 am"},
@@ -220,6 +221,10 @@ class SetAvailability extends React.Component {
     };
   }
 
+  onChangeTimeZone = (e) => {
+    console.log(e.target.value);
+  }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",
@@ -270,9 +275,10 @@ class SetAvailability extends React.Component {
                   <Row form>
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
-                      <FormSelect id="feInputState" className="profile-detail-input">
-                        <option>America New York (USA Eastern Time)</option>
-                        <option>...</option>
+                      <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
+                      {TimezoneOptions.map((item, index)  =>
+                         <option value={item.value}> {item.name}</option>
+                      )}
                       </FormSelect>
                     </Col>
                   </Row>

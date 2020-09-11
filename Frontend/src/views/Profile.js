@@ -16,6 +16,7 @@ export default class MySharePage extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
+
     this.state = {
       loading: false,
       displaydate: undefined,
@@ -29,7 +30,8 @@ export default class MySharePage extends React.Component {
         dexpertise: '',
         dhourlyprice: '',
         dsubpagename: '',
-        dsubplanfee:''
+        dsubplanfee:'',
+        videourl: ''
       },
       param: {
         fullname: '',
@@ -73,12 +75,13 @@ export default class MySharePage extends React.Component {
         temp.subplanfee = result.data.data.sub_plan_fee;
         temp.videourl = result.data.data.video_url;
         temp.expertise = result.data.data.expertise;
+        temp.instantcall = result.data.data.instant_call;
         this.setState({
           param: temp,
-          displaygethourlyprice: (parseInt(result.data.data.hourly_price)*0.8).toFixed(2),
-          displaycuthourlyprice: (parseInt(result.data.data.hourly_price)*0.2).toFixed(2),
-          displaygetplanfee: (parseInt(result.data.data.sub_plan_fee)*0.8).toFixed(2),
-          displaycutplanfee: (parseInt(result.data.data.sub_plan_fee)*0.2).toFixed(2),
+          displaygethourlyprice: (parseFloat(result.data.data.hourly_price)*0.8).toFixed(2),
+          displaycuthourlyprice: (parseFloat(result.data.data.hourly_price)*0.2).toFixed(2),
+          displaygetplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.8).toFixed(2),
+          displaycutplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.2).toFixed(2),
         });
       } else {
         this.showFail();
@@ -99,6 +102,7 @@ export default class MySharePage extends React.Component {
     temp.dhourlyprice = '';
     temp.dsubpagename = '';
     temp.dsubplanfee = '';
+    temp.videourl = '';
     this.setState({
       requiremessage: temp
     });
@@ -112,18 +116,27 @@ export default class MySharePage extends React.Component {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
           let temp = requiremessage;
-          if (result.data.message.fullname)
+          if (result.data.message.fullname) {
             temp.dfullname = result.data.message.fullname[0];
-          if (result.data.message.email)
+          }
+          if (result.data.message.email) {
             temp.demail = result.data.message.email[0];
-          if (result.data.message.expertise)
+          }
+          if (result.data.message.expertise) {
             temp.dexpertise = result.data.message.expertise[0];
-          if (result.data.message.hourlyprice)
+          }
+          if (result.data.message.hourlyprice) {
             temp.dhourlyprice = result.data.message.hourlyprice[0];
-          if (result.data.message.subpagename)
+          }
+          if (result.data.message.subpagename) {
             temp.dsubpagename = result.data.message.subpagename[0];
-          if (result.data.message.subplanfee)
+          }
+          if (result.data.message.subplanfee) {
             temp.dsubplanfee = result.data.message.subplanfee[0];
+          }
+          if (result.data.message.videourl) {
+            temp.videourl = result.data.message.videourl[0];
+          }
           this.setState({
             requiremessage: temp
           });
@@ -138,6 +151,10 @@ export default class MySharePage extends React.Component {
   };
   
   onChangeFullName = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 30) {
+      return;
+    }
     const {param} = this.state;
     let temp = param;
     temp.fullname = e.target.value;
@@ -162,6 +179,10 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeDescription = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 500) {
+      return;
+    }
     const {param} = this.state;
     let temp = param;
     temp.description = e.target.value;
@@ -184,8 +205,8 @@ export default class MySharePage extends React.Component {
       displaygethourlyprice = '0.00';
       displaycuthourlyprice = '0.00';
     } else {
-      displaygethourlyprice = (parseInt(e.target.value)*0.8).toFixed(2);
-      displaycuthourlyprice = (parseInt(e.target.value)*0.2).toFixed(2);  
+      displaygethourlyprice = (parseFloat(e.target.value)*0.8).toFixed(2);
+      displaycuthourlyprice = (parseFloat(e.target.value)*0.2).toFixed(2);  
     }
     
     this.setState({param: temp});
@@ -194,6 +215,10 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeSubPageName = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 50) {
+      return;
+    }
     const {param} = this.state;
     let temp = param;
     temp.subpagename = e.target.value;
@@ -209,8 +234,8 @@ export default class MySharePage extends React.Component {
       displaygetplanfee = '0.00';
       displaycutplanfee = '0.00';
     } else {
-      displaygetplanfee = (parseInt(e.target.value)*0.8).toFixed(2);
-      displaycutplanfee = (parseInt(e.target.value)*0.2).toFixed(2);
+      displaygetplanfee = (parseFloat(e.target.value)*0.8).toFixed(2);
+      displaycutplanfee = (parseFloat(e.target.value)*0.2).toFixed(2);
     }
     this.setState({param: temp});
     this.setState({displaygetplanfee: displaygetplanfee});
@@ -315,11 +340,15 @@ export default class MySharePage extends React.Component {
               </Col>
               <Col xl="9" lg="12" className="profile-setting-detail">
                 <div className="right">
-                  <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
+                  {this.state.param.instantcall ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
                     <img src={Icon} alt="icon" style={{paddingRight: "5px", paddingBottom: "5px"}}/>
                     Instant call
                     <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
-                  </FormCheckbox>
+                  </FormCheckbox> : <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
+                    <img src={Icon} alt="icon" style={{paddingRight: "5px", paddingBottom: "5px"}}/>
+                    Instant call
+                    <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
+                  </FormCheckbox>}
                 </div>
                 <div className="profile-detail">
                   <Row>
@@ -329,7 +358,8 @@ export default class MySharePage extends React.Component {
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Full Name</label>
                             {this.state.requiremessage.dfullname != '' && <span className="require-message">{this.state.requiremessage.dfullname}</span>}
-                            <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>
+                            {this.state.requiremessage.dfullname != '' && <FormInput className="profile-detail-input" placeholder="Full Name" invalid onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>}
+                            {this.state.requiremessage.dfullname == '' && <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <div><label htmlFor="fePassword">Date of birth</label></div>
@@ -349,7 +379,8 @@ export default class MySharePage extends React.Component {
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Email</label>
                             {this.state.requiremessage.demail != '' && <span className="require-message">{this.state.requiremessage.demail}</span>}
-                            <FormInput className="profile-detail-input" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>
+                            {this.state.requiremessage.demail != '' && <FormInput className="profile-detail-input" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
+                            {this.state.requiremessage.demail == '' && <FormInput className="profile-detail-input" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feInputState" className="profile-detail-important" >Expertise</label>
@@ -365,27 +396,32 @@ export default class MySharePage extends React.Component {
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Hourly price</label>
                             {this.state.requiremessage.dhourlyprice != '' && <span className="require-message">{this.state.requiremessage.dhourlyprice}</span>}
-                            <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>
+                            {this.state.requiremessage.dhourlyprice != '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" invalid onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
+                            {this.state.requiremessage.dhourlyprice == '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
                             <label className="profile-detail-comment">
                               <span>You get 80% of your price. ({this.state.displaygethourlyprice} $)</span><br></br>
                               Remaining 20% goes to admin. ({this.state.displaycuthourlyprice} $)
                             </label>
                           </Col>
                           <Col md="6" className="project-detail-input-group">
-                            <label htmlFor="fePassword">Video url</label>
-                            <FormInput className="profile-detail-input" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>
+                            <label htmlFor="fePassword" className="profile-detail-important">Video url</label>
+                            {this.state.requiremessage.videourl != '' && <span className="require-message">{this.state.requiremessage.videourl}</span>}
+                            {this.state.requiremessage.videourl != '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" invalid onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
+                            {this.state.requiremessage.videourl == '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Subscription Page Name</label>
                             {this.state.requiremessage.dsubpagename != '' && <span className="require-message">{this.state.requiremessage.dsubpagename}</span>}
-                            <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>
+                            {this.state.requiremessage.dsubpagename != '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" invalid onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
+                            {this.state.requiremessage.dsubpagename == '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Subscription plan fee</label>
                             {this.state.requiremessage.dsubplanfee != '' && <span className="require-message">{this.state.requiremessage.dsubplanfee}</span>}
-                            <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>
+                            {this.state.requiremessage.dsubplanfee != '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" invalid onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
+                            {this.state.requiremessage.dsubplanfee == '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
                             <label className="profile-detail-comment">
                               <span>You get 80% of your price. ({this.state.displaygetplanfee} $)</span><br></br>
                               Remaining 20% goes to admin. ({this.state.displaycutplanfee} $)

@@ -101,7 +101,8 @@ class UserController extends Controller
             'expertise' => 'required',
             'hourlyprice' => 'required',
             'subpagename' => 'required',
-            'subplanfee' => 'required'
+            'subplanfee' => 'required',
+            'videourl' => 'required|url'
         );    
         $messages = array(
             'required' => 'This field is required.',
