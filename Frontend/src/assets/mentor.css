@@ -164,12 +164,21 @@
     color: #333333;
     font-size: 16px;
     height: 50px !important;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .project-detail-input-group {
-    padding-right: 40px !important;    
+    padding-right: 40px !important;        
 }
+
+.project-detail-input-group .react-datepicker-wrapper {
+    width: 100%;
+}
+
+.project-detail-input-group .react-datepicker-wrapper .react-datepicker__input-container {
+    width: 100%;
+}
+
 
 .project-detail-input-group label {
     font-size: 14px;
@@ -187,7 +196,7 @@
     font-weight: 400 !important;
     color: #333333;
     font-style: italic;
-    width: 220px;
+    width: 450px;
 }
 
 .profile-detail-desc {
@@ -271,4 +280,9 @@
     font-size: 16px;
     height: 50px !important;
     margin-bottom: 20px;
+}
+
+.require-message {
+    color: red;
+    font-weight: bold;
 }
