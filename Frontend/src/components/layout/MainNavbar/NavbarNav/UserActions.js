@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { getuserinfo } from '../../../../api/api';
+import avatar from "../../../../images/avatar.jpg"
 import {
   Dropdown,
   DropdownToggle,
@@ -56,12 +57,9 @@ export default class UserActions extends React.Component {
     return (
       <Dropdown open={this.state.open} toggle={this.toggle}>
         <DropdownToggle>
-          <img
-            className="user-avatar rounded-circle mr-2"
-            src={this.state.avatar}
-            alt="User Avatar"
-            style={{height: '2.5rem'}}
-          />{" "}</DropdownToggle>
+          {this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={this.state.avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+          {!this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+          {" "}</DropdownToggle>
         <DropdownMenu>
           <DropdownItem tag={Link} to="profile">
             <i className="material-icons">&#xE7FD;</i> Profile

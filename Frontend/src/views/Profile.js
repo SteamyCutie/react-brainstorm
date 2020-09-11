@@ -1,19 +1,16 @@
 import React, { useEffect, createRef, useRef } from "react";
 import PropTypes from "prop-types";
-import Loader from 'react-loader-spinner';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, Alert } from "shards-react";
 import expertise from '../common/constants';
-import MentorVideo from "../components/common/MentorVideo";
+import LoadingModal from "../components/common/LoadingModal";
 
-import MentorAvatar from "../images/Rectangle_K.png"
 import Icon from "../images/Lightning.svg"
 import Tooltip from "../images/Tooltip.svg"
+import avatar from "../images/avatar.jpg"
 import { editprofile, getuserinfo, uploadimage } from '../api/api';
-import { parsePath } from "history";
-import zIndex from "@material-ui/core/styles/zIndex";
 
 export default class MySharePage extends React.Component {
   constructor(props) {
@@ -83,7 +80,6 @@ export default class MySharePage extends React.Component {
           displaygetplanfee: (parseInt(result.data.data.sub_plan_fee)*0.8).toFixed(2),
           displaycutplanfee: (parseInt(result.data.data.sub_plan_fee)*0.2).toFixed(2),
         });
-        this.showSuccess();
       } else {
         this.showFail();
       }
@@ -111,7 +107,7 @@ export default class MySharePage extends React.Component {
       const result = await editprofile(this.state.param);
       if (result.data.result == "success") {
         this.setState({loading: false});
-        this.showSuccess();
+        this.showSuccess("Edit Profile Success");
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -132,14 +128,12 @@ export default class MySharePage extends React.Component {
             requiremessage: temp
           });
         } else {
-          this.showFail();
         }
-        this.showFail();
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Edit Profile Fail");
     };
   };
   
@@ -254,7 +248,7 @@ export default class MySharePage extends React.Component {
         let temp = param;
         temp.avatar = result.data.data;
         this.setState({param: temp});
-        this.showSuccess();
+        this.showSuccess("Change Avatar Success");
       } else {
         this.showFail();
       }
@@ -265,10 +259,10 @@ export default class MySharePage extends React.Component {
     };
   }
 
-  showSuccess() {
+  showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -286,7 +280,7 @@ export default class MySharePage extends React.Component {
     store.addNotification({
       title: "Success",
       message: "Action Success!",
-      type: "success",
+      type: "danger",
       insert: "top",
       container: "top-right",
       dismiss: {
@@ -302,7 +296,7 @@ export default class MySharePage extends React.Component {
   render() {
     return (
       <>
-      {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      {this.state.loading && <LoadingModal open={true} />}
       <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="profile-setting-card">
@@ -311,7 +305,11 @@ export default class MySharePage extends React.Component {
               <Col xl="3" className="subscription-mentor-detail">
                 <div>
                   <h2>Profile Setting</h2>
-                  <div className="avatar-tooltip"><img className="avatar" src={this.state.param.avatar} alt="avatar" onClick={() => this.onDrop()} /><span className="avatar-tooltiptext">Change your avatar</span></div>
+                  <div className="avatar-tooltip">
+                    {this.state.param.avatar && <img className="avatar" src={this.state.param.avatar} alt="avatar" onClick={() => this.onDrop()} />}
+                    {!this.state.param.avatar && <img className="avatar" src={avatar} alt="avatar" onClick={() => this.onDrop()} />}
+                    <span className="avatar-tooltiptext">Change your avatar</span>
+                  </div>
                   <input type="file" hidden ref={this.myRef} onChange={(e) => this.onChangeAvatar(e)}></input>
                 </div>
               </Col>

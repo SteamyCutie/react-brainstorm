@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
-import Loader from 'react-loader-spinner';
+import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -96,7 +96,6 @@ export default class MentorWallet extends React.Component {
       const result = await getwallets({email: localStorage.getItem('email')});
       if (result.data.result == "success") {
         this.setState({tHistory: result.data.data});
-        this.showSuccess();
       } else {
         this.showFail();
       }
@@ -128,7 +127,7 @@ export default class MentorWallet extends React.Component {
     store.addNotification({
       title: "Success",
       message: "Action Success!",
-      type: "success",
+      type: "danger",
       insert: "top",
       container: "top-right",
       dismiss: {
@@ -144,7 +143,7 @@ export default class MentorWallet extends React.Component {
   render() {
     return (
       <>
-      {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      {this.state.loading && <LoadingModal open={true} />}
       <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
