@@ -1,6 +1,9 @@
 import React, { useEffect, createRef, useRef } from "react";
 import PropTypes from "prop-types";
 import Loader from 'react-loader-spinner';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, Alert } from "shards-react";
 import expertise from '../common/constants';
 import MentorVideo from "../components/common/MentorVideo";
@@ -81,7 +84,33 @@ export default class MySharePage extends React.Component {
           displaycutplanfee: (parseInt(result.data.data.sub_plan_fee)*0.2).toFixed(2),
         });
         this.setState({loading: false});
+        store.addNotification({
+          title: "Success",
+          message: "Action Success!",
+          type: "success",
+          insert: "top",
+          container: "top-left",
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else {
+        store.addNotification({
+          title: "Failed",
+          message: "Action Failed!",
+          type: "danger",
+          insert: "top",
+          container: "top-left",
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
         alert(result.data.message);
       }
     } catch(err) {
@@ -105,7 +134,7 @@ export default class MySharePage extends React.Component {
       this.setState({loading: true});
       const result = await editprofile(this.state.param);
       if (result.data.result == "success") {
-        
+        this.setState({loading: false});
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -259,8 +288,9 @@ export default class MySharePage extends React.Component {
   render() {
     return (
       <>
-      {this.state.loading && <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
+        <ReactNotification />
         <Card small className="profile-setting-card">
           <CardBody>
             <Row>
