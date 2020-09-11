@@ -336,3 +336,7 @@
 .custom-control-label::before {
     pointer-events: none !important;
 }
+
+.notification-container-top-right {
+    right: 350px !important;
+}

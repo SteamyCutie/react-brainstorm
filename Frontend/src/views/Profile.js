@@ -83,38 +83,14 @@ export default class MySharePage extends React.Component {
           displaygetplanfee: (parseInt(result.data.data.sub_plan_fee)*0.8).toFixed(2),
           displaycutplanfee: (parseInt(result.data.data.sub_plan_fee)*0.2).toFixed(2),
         });
-        this.setState({loading: false});
-        store.addNotification({
-          title: "Success",
-          message: "Action Success!",
-          type: "success",
-          insert: "top",
-          container: "top-left",
-          animationIn: ["animated", "fadeIn"],
-          animationOut: ["animated", "fadeOut"],
-          dismiss: {
-            duration: 5000,
-            onScreen: true
-          }
-        });
+        this.showSuccess();
       } else {
-        store.addNotification({
-          title: "Failed",
-          message: "Action Failed!",
-          type: "danger",
-          insert: "top",
-          container: "top-left",
-          animationIn: ["animated", "fadeIn"],
-          animationOut: ["animated", "fadeOut"],
-          dismiss: {
-            duration: 5000,
-            onScreen: true
-          }
-        });
-        alert(result.data.message);
+        this.showFail();
       }
+      this.setState({loading: false});
     } catch(err) {
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
   }
 
@@ -135,6 +111,7 @@ export default class MySharePage extends React.Component {
       const result = await editprofile(this.state.param);
       if (result.data.result == "success") {
         this.setState({loading: false});
+        this.showSuccess();
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -154,13 +131,15 @@ export default class MySharePage extends React.Component {
           this.setState({
             requiremessage: temp
           });
-          this.setState({loading: false});
         } else {
-          alert(result.data.message);
+          this.showFail();
         }
+        this.showFail();
       }
+      this.setState({loading: false});
     } catch(err) {
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
   };
   
@@ -275,22 +254,57 @@ export default class MySharePage extends React.Component {
         let temp = param;
         temp.avatar = result.data.data;
         this.setState({param: temp});
+        this.showSuccess();
       } else {
-        console.log(result.data.message);
+        this.showFail();
       }
       this.setState({loading: false});
     } catch(err) {
-      console.log(err, "--------");
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
+  }
+
+  showSuccess() {
+    store.addNotification({
+      title: "Success",
+      message: "Action Success!",
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail() {
+    store.addNotification({
+      title: "Success",
+      message: "Action Success!",
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   render() {
     return (
       <>
       {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
-        <ReactNotification />
         <Card small className="profile-setting-card">
           <CardBody>
             <Row>
@@ -303,7 +317,7 @@ export default class MySharePage extends React.Component {
               </Col>
               <Col xl="9" lg="12" className="profile-setting-detail">
                 <div className="right">
-                  <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)} >
+                  <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
                     <img src={Icon} alt="icon" style={{paddingRight: "5px", paddingBottom: "5px"}}/>
                     Instant call
                     <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
