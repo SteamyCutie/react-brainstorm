@@ -1,0 +1,110 @@
+import React from "react";
+import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
+import SmallCard3 from "../components/common/SmallCard3"
+import { getHistory } from '../api/api';
+
+export default class ForgetPassword extends React.Component {
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      historyData: [],
+      email: '',
+      validationErrorMsg: ''
+    }
+  }
+
+  componentWillMount() {
+    
+  }
+
+  showValidation() {
+    var emailInput = document.getElementById("email-input");
+    
+    if(this.state.validationErrorMsg) {
+      emailInput.classList.add("sign-has-err");
+    } else {
+      emailInput.classList.remove("sign-has-err");
+    }
+  }
+
+  checkValidation() {
+    let error = '';
+    let formIsValid = true;
+
+    if(!this.state.email){
+      formIsValid = false;
+      error = "This field is required";
+    } else {
+      if(this.state.email !== "undefined"){
+        let lastAtPos = this.state.email.lastIndexOf('@');
+        let lastDotPos = this.state.email.lastIndexOf('.');
+
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+          formIsValid = false;
+          error = "Email is incorrect";
+        }
+      }
+    }
+
+    this.setState({validationErrorMsg: error}, () => {
+      this.showValidation();
+    });
+    return formIsValid;
+  }
+
+  actionSendEmail() {
+
+  }
+
+  handleSendEmail() {
+    if(this.checkValidation())
+      this.actionSendEmail();
+  }
+
+  onChangeEmail = (e) => {
+    this.setState({
+      email: e.target.value,
+    });
+  }
+
+  onKeydownEmail = (e) => {
+    if (e.key === 'Enter') {
+      this.handleSendEmail();
+    }
+  }
+
+  render() {
+    return (
+      <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin center">
+        <Card small className="forget-password-card">
+          <CardHeader>
+            <label className="center forget-password-label">Reset your password</label>
+          </CardHeader>
+          <CardBody>
+              <label className="forget-password-input-label">Username or Email</label>
+              <Row className="center">
+                <FormInput
+                  id="email-input"
+                  className="forget-password-input"
+                  placeholder="Username or Email"
+                  onChange={e => this.onChangeEmail(e)}
+                  onKeyDown={e => this.onKeydownEmail(e)}
+                >
+                </FormInput>
+              </Row>
+              <label style={{marginLeft: "80px"}} className="validation-err">{this.state.validationErrorMsg}</label>
+          </CardBody>
+          <CardFooter className="center">
+            <Button
+              className="btn-general btn-send-email"
+              onClick={() => this.handleSendEmail()}
+            >
+              Send Reset Email
+            </Button>
+          </CardFooter>
+        </Card>    
+      </Container>
+    )
+  }
+}
