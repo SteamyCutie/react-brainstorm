@@ -3,20 +3,20 @@ import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker } from "
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { createforum, gettags } from '../../api/api';
+import { createforum, gettags, editforum, getforum } from '../../api/api';
 
 import Close from '../../images/Close.svg'
 
-export default class CreateLiveForum extends React.Component {
+export default class EditLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       displayfrom: '',
       displayto: '',
       foruminfo: {
+        id: "",
         title: "",
         description: "",
-        email: "",
         tags: [],
         from: '',
         to: ''
@@ -30,22 +30,13 @@ export default class CreateLiveForum extends React.Component {
   }
 
   componentWillMount() {
-    const {foruminfo} = this.state;
-    let temp = foruminfo;
-    temp.email = localStorage.getItem('email');
-    this.setState({foruminfo: temp});
-
     this.getAllTags();
+    this.getSession(this.props.id);
   }
 
   toggle() {
     const { toggle } = this.props;
     toggle();    
-  }
-
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
   }
 
   onChangeTitle = (e) => {
@@ -65,7 +56,7 @@ export default class CreateLiveForum extends React.Component {
   onChangeTags = (e) => {
     const {foruminfo} = this.state;
     let temp = foruminfo;
-
+    console.log(temp);
     if (temp.tags.indexOf(e.target.value) === -1)    
       temp.tags.push(e.target.value);
     else {
@@ -74,7 +65,6 @@ export default class CreateLiveForum extends React.Component {
         temp.tags.splice(index, 1);
     }
     this.setState({foruminfo: temp});
-    console.log(this.state.foruminfo);
   }
 
   getAllTags = async() => {
@@ -82,7 +72,6 @@ export default class CreateLiveForum extends React.Component {
       const result = await gettags();
       if (result.data.result === "success") {
         this.setState({tags: result.data.data});
-        console.log(this.state);
       } else {
         alert(result.data.message);
       }
@@ -91,7 +80,20 @@ export default class CreateLiveForum extends React.Component {
     };
   }
 
-  actionSave = async() => {
+  getSession = async(id) => {
+    try {
+      const result = await getforum({id: id});
+      if (result.data.result === "success") {
+        this.setState({foruminfo: result.data.data});
+      } else {
+        alert(result.data.message);
+      }
+    } catch(err) {
+      alert(err);
+    };
+  }
+
+  actionEdit = async() => {
     const {requiremessage} = this.state;
     let temp = requiremessage;
     temp.dtitle = '';
@@ -100,10 +102,10 @@ export default class CreateLiveForum extends React.Component {
       requiremessage: temp
     });
     try {
-      const result = await createforum(this.state.foruminfo);
+      const result = await editforum(this.state.foruminfo);
       if (result.data.result === "success") {
         this.toggle();
-        this.showSuccess("Create Schedule Success");
+        this.showSuccess("Edit Schedule Success");
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -121,7 +123,6 @@ export default class CreateLiveForum extends React.Component {
         }
       }
     } catch(err) {
-      console.log(err);
       this.showFail("Create Schedule Success");
       alert(err);
     };
@@ -164,7 +165,7 @@ export default class CreateLiveForum extends React.Component {
     });
   }
 
-  showFail(text) {
+  showFail() {
     store.addNotification({
       title: "Fail",
       message: "Action Fail!",
@@ -229,7 +230,7 @@ export default class CreateLiveForum extends React.Component {
             className="text-center"
           />
           <div className="content-center block-content-class button-text-group-class">
-            <Button onClick={() => this.actionSave()}>Save</Button>
+            <Button onClick={() => this.actionEdit()}>Edit</Button>
           </div>
           </ModalBody>
         </Modal>

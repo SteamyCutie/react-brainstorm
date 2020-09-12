@@ -8,11 +8,17 @@ import Clock from "../../images/clock-blue.svg"
 import ReivewImage from "../../images/Review.jpg"
 
 import avatar1 from "../../images/forum-avatar1.jpg"
+import EditLiveForum from "./EditLiveForum";
 
 class SmallCardForum extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {visible: false};
+    this.state = {
+      visible: false,
+      loading: false,
+      forumInfos: [],
+      ModalOpen: false,
+    };
     this.toggleActions = this.toggleActions.bind(this);
   }
 
@@ -25,14 +31,24 @@ class SmallCardForum extends React.Component {
     });
   }
 
-  edit() {
-    console.log("Go a Way!");
+  toggle_editliveforum() {
+    this.setState({
+      ModalOpen: !this.state.ModalOpen
+    });
+  }
+
+  toggle_modal() {
+    this.setState({
+      ModalOpen: !this.state.ModalOpen,
+    });
   }
 
   render() {
-    const {title, description, avatar, invited, tags, tag_name, day, time} = this.props.item
+    const {title, description, avatar, invited, tags, tag_name, day, time, id} = this.props.item;
+    const { ModalOpen } = this.state;
     return (
       <div className="small-card-forum">
+        <EditLiveForum open={ModalOpen} id={id} toggle={() => this.toggle_editliveforum()} toggle_modal={() => this.toggle_modal()}></EditLiveForum>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
           <NavItem className="dropdown notifications notification-class">
@@ -52,7 +68,7 @@ class SmallCardForum extends React.Component {
               open={this.state.visible}
               className="dropdown-menu dropdown-menu-small"
             >
-              <DropdownItem  onClick={() => this.edit()}>
+              <DropdownItem  onClick={() => this.toggle_editliveforum()}>
                 Edit
               </DropdownItem>
             </Collapse>

@@ -5,6 +5,7 @@ import { Calendar, momentLocalizer, globalizeLocalizer  } from 'react-big-calend
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import TimeGrid from 'react-big-calendar/lib/TimeGrid'
+import { getUpcomingSession } from '../api/api';
 
 // import PageTitle from "./../components/common/PageTitle";
 // import SmallStats from "./../components/common/SmallStats";
@@ -79,50 +80,7 @@ export default class MentorSession extends React.Component {
     super(props);
     const now = new Date();
     this.state = {
-      events: [
-        {
-          id: 0,
-          title: 'All Day Event very long title',
-          allDay: false,
-          noOfPax: 123,
-          isBooked: true,
-          start: new Date(2020, 7, 21, 2, 0, 0),
-          end: new Date(2020, 7, 21, 3, 30, 0),
-        },
-        {
-          id: 4,
-          title: 'All Day Event very long title 2',
-          allDay: false,
-          noOfPax: 123,
-          isBooked: true,
-          start: new Date(2020, 7, 21, 4, 0, 0),
-          end: new Date(2020, 7, 21, 6, 30, 0),
-        },
-        {
-          id: 1,
-          title: 'Long Event',
-          noOfPax: 101,
-          isBooked: true,
-          start: new Date(2020, 7, 27, 10, 0, 0),
-          end: new Date(2020, 7, 27, 11, 20, 0),
-        },
-        {
-          id: 2,
-          title: 'Long Event 2',
-          noOfPax: 10,
-          isBooked: true,
-          start: new Date(2020, 7, 27, 15, 0, 0),
-          end: new Date(2020, 7, 27, 16, 25, 0),
-        },
-        {
-          id: 3,
-          title: 'Long Event 3',
-          noOfPax: 10,
-          isBooked: true,
-          start: new Date(2020, 7, 27, 17, 0, 0),
-          end: new Date(2020, 7, 27, 18, 28, 0),
-        },
-      ],
+      events: [],
       currentDate: new Date(),
       view: "month",
     };
@@ -143,6 +101,10 @@ export default class MentorSession extends React.Component {
   componentWillMount() {
   }
 
+  changeMonth = (value) => {
+    this.setState({events: value});
+  }
+
   render() {
     return (
       <Container fluid className="main-content-container px-4">
@@ -161,6 +123,7 @@ export default class MentorSession extends React.Component {
             components={{
               toolbar: ToolBar({
                 setCurrentDate: this.setCurrentDate,
+                changeMonth: this.changeMonth
               }),
               dateCellWrapper: ColoredDateCellWrapper({
                 date: this.state.currentDate,
@@ -199,7 +162,7 @@ class CustomMonthEvent extends React.Component {
   }
 }
 
-const ToolBar = ({setCurrentDate}) => props => {
+const ToolBar = ({setCurrentDate, changeMonth}) => props => {
   const [alignment, setAlignment] = React.useState("right");
 
   const goToDayView = () => {
@@ -223,8 +186,40 @@ const ToolBar = ({setCurrentDate}) => props => {
     getCalendarEvents(today);
   }
 
-  const getCalendarEvents = (date) => {
+  const getCalendarEvents = async(date) => {
     // setCurrentDate(date);
+    let time = new Date(date);
+    try {
+      const result = await getUpcomingSession({email: localStorage.getItem('email'), time: time});
+      if(result.data.result === "success") {
+        var data_arr = [];
+        var arr = {
+          id: '',
+          title: '',
+          noOfPax: '',
+          isBooked: '',
+          start: 0,
+          end: false,
+        };
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          arr.id = i;
+          arr.title = result.data.data[i].title;
+          arr.noOfPax = 10;
+          arr.isBooked = true;
+          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month, result.data.data[i].s_day, i, i, 0);
+          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month, result.data.data[i].e_day, i, i + 20, 0);
+
+          data_arr.push(arr);
+          arr = {};
+        }
+        changeMonth(data_arr);
+      } else {
+
+      }
+    } catch(err) {
+      alert(err);
+    }
   }
 
   const handleAlignment = (event, newAlignment) => {
@@ -296,6 +291,18 @@ const ToolBar = ({setCurrentDate}) => props => {
     return `${dayName}, ${monthName} ${date}`;
   }
 
+  const onChangeCategory = async() => {
+
+  }
+
+  const onChangeSession = async() => {
+    
+  }
+
+  const onChangeStudent = async() => {
+    
+  }
+
   return (
     <div>
       <div className="toolbar-class">
@@ -334,21 +341,21 @@ const ToolBar = ({setCurrentDate}) => props => {
         <div className="headerbar-select-group">
           <div className="toolbar-select-label">
             <label className="">Sessions:</label>
-            <FormSelect className="profile-detail-input">
+            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeSession(e)}>
               <option>All</option>
               <option>...</option>
             </FormSelect>
           </div>
           <div className="toolbar-select-label">
             <label className="">Category: </label>
-            <FormSelect className="profile-detail-input">
+            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeCategory(e)}>
               <option>select category</option>
               <option>...</option>
             </FormSelect>
           </div>
           <div className="toolbar-select-label">
             <label className="">Student: </label>
-            <FormSelect className="profile-detail-input">
+            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeStudent(e)}>
               <option>select student</option>
               <option>...</option>
             </FormSelect>

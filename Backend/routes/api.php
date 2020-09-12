@@ -22,12 +22,16 @@ Route::post('/signin', 'UserController@signin');
 Route::post('/signup', 'UserController@signup');
 Route::post('/editprofile', 'UserController@editprofile');
 Route::post('/getuserinfo', 'UserController@getuserinfo');
+Route::post('/getallmentors', 'UserController@getallmentors');
 
 Route::post('/mysharepage', 'MediaController@getMediaShare');
 Route::post('/createshareinfo', 'MediaController@createshareinfo');
 
 Route::post('/scheduleliveforum', 'SessionController@getSession');
 Route::post('/createforum', 'SessionController@createforum');
+Route::post('/editforum', 'SessionController@editforum');
+Route::post('/getforum', 'SessionController@getforum');
+
 Route::post('/gethistory', 'SessionController@getHistory');
 Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
 

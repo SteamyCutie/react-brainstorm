@@ -155,4 +155,21 @@ class UserController extends Controller
             ]);
         }
     }
+
+    public function getallmentors(Request $request)
+    {
+        $email = $request['email'];
+        $users = User::all();
+        $mentors = [];
+
+        for ($i = 0; $i < count($users); $i ++) {
+            if ($users[$i]['email'] != $email && $users[$i]['mentor'] == 1)
+                $mentors[] = $users[$i];
+        }
+
+        return response()->json([
+            'result'=> 'success',
+            'data'=> $mentors,
+        ]);
+    }
 }

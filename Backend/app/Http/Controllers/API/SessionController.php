@@ -54,6 +54,25 @@ class SessionController extends Controller
         }
     }
 
+    function getforum(Request $request)
+    {
+        $id = $request['id'];
+        $forum = Session::where('id', $id)->first();
+        if ($forum['tags_id'] == null || $forum['tags_id'] == '')
+            $tags_id = [];
+        else
+            $tags_id = explode(',', $forum['tags_id']);
+        $forum['tags'] = $tags_id;
+        $from = date("Y-m-d", strtotime($forum['from']));
+        $to = date("Y-m-d", strtotime($forum['to']));
+        $forum['from'] = $from;
+        $forum['to'] = $to;
+        return response()->json([
+            'result'=> 'success',
+            'data'=> $forum,
+        ]);
+    }
+
     function createforum(Request $request)
     {
         $email = $request['email'];
@@ -61,6 +80,8 @@ class SessionController extends Controller
         $title = $request['title'];
         $description = $request['description'];
         $tags = implode(",", $request['tags']);
+        $from = $request['from'];
+        $to = $request['to'];
 
         $rules = array(
             'title' => 'required',
@@ -85,6 +106,8 @@ class SessionController extends Controller
             'title' => $title,
             'description' => $description,
             'tags_id' => $tags,
+            'from' => $from,
+            'to' => $to,
             'status' => 0,
         ]);
 
@@ -92,6 +115,57 @@ class SessionController extends Controller
             'result'=> 'success',
             'data'=> [],
         ]);
+    }
+
+    function editforum(Request $request)
+    {
+
+        $id = $request['id'];
+        $title = $request['title'];
+        $description = $request['description'];
+        $tags = implode(",", $request['tags']);
+        $from = $request['from'];
+        $to = $request['to'];
+
+        $rules = array(
+            'title' => 'required',
+            'description' => 'required',
+        );    
+        $messages = array(
+            'required' => 'This field is required.',
+        );
+        $validator = Validator::make( $request->all(), $rules, $messages );
+
+        if ($validator->fails()) 
+        {
+            return [
+                'result' => 'failed', 
+                'type' => 'require',
+                'message' => $validator->messages()
+            ];
+        }
+
+        $forum = Session::where('id', $id)->get();
+
+        if ($forum == null || count($forum) == 0) {
+            return response()->json([
+                'result'=> 'failed',
+                'message'=> 'Current User Does Not Exist',
+            ]);
+        } else {
+            Session::where('id', $id)->update(array(
+                'title' => $title,
+                'description' => $description,
+                'tags_id' => $tags,
+                'from' => $from,
+                'to' => $to
+            ));
+
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $forum,
+            ]);
+        }
     }
 
     function getHistory(Request $request)
@@ -145,41 +219,76 @@ class SessionController extends Controller
 
     function getUpcomingSession(Request $request)
     {
-        $result_res = null;
+        $result_res = [];
         $email = $request['email'];
-        $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
+        $user = User::select('id','name', 'avatar', 'mentor')->where('email', $email)->first();
         $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
+        if ($user['mentor'] == 0) {
+            foreach ($session_infos as $session_key => $session_info)
+            {
+                $result_from = $session_info['from'];
+                $result_tag = $session_info['tags_id'];
+                $tags_id = explode(',',$result_tag);
 
-        foreach ($session_infos as $session_key => $session_info)
-        {
-            $result_from = $session_info['from'];
-            $result_tag = $session_info['tags_id'];
-            $tags_id = explode(',',$result_tag);
+                $result_invited = $session_info['invited_id'];
+                $invited_id = explode(',', $result_invited);
 
-            $result_invited = $session_info['invited_id'];
-            $invited_id = explode(',', $result_invited);
+                foreach ($invited_id as $invited_key => $invited_value) {
+                    $temp = [];
+                    if (trim($invited_value) == $user['id'])
+                    {
+                        
+                        $temp = $session_info;
 
-            foreach ($invited_id as $invited_key => $invited_value) {
-                if (trim($invited_value) == $user_id['id'])
-                {
-                    $result_res[$session_key] = $session_info;
+                        $temp['day'] = date('d/m/y', strtotime($result_from));
+                        $temp['time'] = date('h:i a', strtotime($result_from));
 
-                    $result_res[$session_key]['day'] = date('d/m/y', strtotime($result_from));
-                    $result_res[$session_key]['time'] = date('h:i a', strtotime($result_from));
-
-                    foreach ($tags_id as $tag_key => $tag_value) {
-                        $tags = Tag::select('name')->where('id', $tag_value)->first();
-                        $tag_names[$tag_key] = $tags['name'];
+                        foreach ($tags_id as $tag_key => $tag_value) {
+                            $tags = Tag::select('name')->where('id', $tag_value)->first();
+                            $tag_names[$tag_key] = $tags['name'];
+                        }
+                        $temp['tag_name'] = $tag_names;
+                        $mentor_name = User::select('name')->where('id', $session_info['user_id'])->first();
+                        $temp['name'] = $mentor_name['name'];
+                        $temp['avatar'] = $user['avatar'];
+                        $result_res[] = $temp;
                     }
-                    $result_res[$session_key]['tag_name'] = $tag_names;
-                    $menter_name = User::select('name')->where('id', $session_info['user_id'])->first();
-                    $result_res[$session_key]['name'] = $menter_name['name'];
-                    $result_res[$session_key]['avatar'] = $user_id['avatar'];
                 }
+            }
+        } else if ($user['mentor'] == 1) {
+            $user = User::select('id','name', 'avatar', 'mentor')->where('email', $email)->first();
+            $result_res = Session::where('user_id', $user['id'])->get();
+
+            for ($i = 0; $i < count($result_res); $i ++) {
+                $s_year = date("Y", strtotime($result_res[$i]['from']));
+                $s_month = date("m", strtotime($result_res[$i]['from']));
+                $s_day = date("d", strtotime($result_res[$i]['from']));
+
+                $e_year = date("Y", strtotime($result_res[$i]['to']));
+                $e_month = date("m", strtotime($result_res[$i]['to']));
+                $e_day = date("d", strtotime($result_res[$i]['to']));
+
+                $result_res[$i]['s_year'] = $s_year;
+                $result_res[$i]['s_month'] = $s_month;
+                $result_res[$i]['s_day'] = $s_day;
+
+                $result_res[$i]['e_year'] = $e_year;
+                $result_res[$i]['e_month'] = $e_month;
+                $result_res[$i]['e_day'] = $e_day;
+
+                $tags_id = explode(',', $result_res[$i]['tags_id']);
+                foreach ($tags_id as $tag_key => $tag_value) {
+                    $tags = Tag::select('name')->where('id', $tag_value)->first();
+                    $tag_names[$tag_key] = $tags['name'];
+                }
+                $result_res[$i]['tag_name'] = $tag_names;
+                $result_res[$i]['name'] = $result_res[$i]['title'];
+                $result_res[$i]['day'] = date('d/m/y', strtotime($result_res[$i]['from']));
+                $result_res[$i]['time'] = date('h:i a', strtotime($result_res[$i]['from']));
             }
         }
 
-        if ($result_res == null) {
+        if ($result_res == []) {
             return response()->json([
                 'result'=> 'failed',
                 'message'=> 'Current User Does Not Exist',
