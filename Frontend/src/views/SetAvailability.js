@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormSelect, Form } from "shards-react";
-import Loader from 'react-loader-spinner';
+import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -10,6 +10,7 @@ import AddButtonImage from "../images/Add.svg"
 
 import { getAvailableTimes } from '../api/api';
 import { setAvailableTimes } from '../api/api';
+import TimezoneOptions from '../common/TimezoneOptions';
 
 const timeList = [
   {id: 1, str: "00 : 00 am"},
@@ -151,14 +152,14 @@ class SetAvailability extends React.Component {
       console.log(result);
       if (result.data.result === "success") {
         this.getTimeListData();
-        this.showSuccess();
+        this.showSuccess("Set Availability Success");
       } else {
-        this.showFail();
+        this.showFail("Set Availability Fail");
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Set Availability Fail");
     };
   }
   
@@ -210,7 +211,6 @@ class SetAvailability extends React.Component {
         this.setState({
           availableTimeList: availableTimeListTemp,
         });
-        this.showSuccess();
       } else {
         this.showFail();
       }
@@ -221,7 +221,11 @@ class SetAvailability extends React.Component {
     };
   }
 
-  showSuccess() {
+  onChangeTimeZone = (e) => {
+    console.log(e.target.value);
+  }
+
+  showSuccess(text) {
     store.addNotification({
       title: "Success",
       message: "Action Success!",
@@ -238,11 +242,11 @@ class SetAvailability extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Success",
       message: "Action Success!",
-      type: "success",
+      type: "danger",
       insert: "top",
       container: "top-right",
       dismiss: {
@@ -258,7 +262,7 @@ class SetAvailability extends React.Component {
   render () {
     return(
       <>
-      {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      {this.state.loading && <LoadingModal open={true} />}
       <ReactNotification />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class">
           <Card small className="profile-setting-card">
@@ -271,9 +275,10 @@ class SetAvailability extends React.Component {
                   <Row form>
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
-                      <FormSelect id="feInputState" className="profile-detail-input">
-                        <option>America New York (USA Eastern Time)</option>
-                        <option>...</option>
+                      <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
+                      {TimezoneOptions.map((item, index)  =>
+                         <option value={item.value}> {item.name}</option>
+                      )}
                       </FormSelect>
                     </Col>
                   </Row>

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
 import { mysharepage } from '../api/api';
-import Loader from 'react-loader-spinner';
+import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -31,7 +31,6 @@ export default class MySharePage extends React.Component {
       const result = await mysharepage({email: localStorage.getItem('email')});
       if (result.data.result == "success") {
         this.setState({infoList: result.data.data});
-        this.showSuccess();
       } else {
         this.showFail();
       }
@@ -73,7 +72,7 @@ export default class MySharePage extends React.Component {
     store.addNotification({
       title: "Success",
       message: "Action Success!",
-      type: "success",
+      type: "danger",
       insert: "top",
       container: "top-right",
       dismiss: {
@@ -89,7 +88,7 @@ export default class MySharePage extends React.Component {
   render() {
     return (
       <>
-      {this.state.loading && <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>}
+      {this.state.loading && <LoadingModal open={true} />}
       <ReactNotification />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Row noGutters className="page-header py-4">
