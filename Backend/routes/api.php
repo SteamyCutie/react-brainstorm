@@ -18,21 +18,27 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/signin', 'UserController@signin');
+Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
-Route::post('/editprofile', 'UserController@editprofile');
 Route::post('/verifycode', 'UserController@verifyCode');
+Route::post('/forgot', 'UserController@forgot');
+Route::post('/reset', 'UserController@reset');
+Route::post('/signout', 'UserController@logout');
 
-Route::post('/mysharepage', 'MediaController@getMediaShare');
-Route::post('/scheduleliveforum', 'SessionController@getSession');
-Route::post('/createforum', 'SessionController@createforum');
-Route::post('/gethistory', 'SessionController@getHistory');
-Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
 
-Route::post('/setavailabletimes', 'AvailableTimesController@setavailabletimes');
-Route::post('/getavailabletimes', 'AvailableTimesController@getavailabletimes');
-Route::post('/getuserinfo', 'UserController@getuserinfo');
-Route::post('/getwallets', 'WalletController@index');
+Route::group(['middleware' => 'jwt.verify'], function () {
+    Route::post('/signout', 'UserController@logout');
+    Route::post('/editprofile', 'UserController@editprofile');
+    Route::post('/mysharepage', 'MediaController@getMediaShare');
+    Route::post('/scheduleliveforum', 'SessionController@getSession');
+    Route::post('/createforum', 'SessionController@createforum');
+    Route::post('/gethistory', 'SessionController@getHistory');
+    Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
+    Route::post('/setavailabletimes', 'AvailableTimesController@setavailabletimes');
+    Route::post('/getavailabletimes', 'AvailableTimesController@getavailabletimes');
+    Route::post('/getuserinfo', 'UserController@getuserinfo');
+    Route::post('/getwallets', 'WalletController@index');
+    Route::post('/gettags', 'TagController@index');
+    Route::get('/test', 'UserController@test');
 
-Route::post('/gettags', 'TagController@index');
-
+});
