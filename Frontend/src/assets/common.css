@@ -1,0 +1,80 @@
+.forget-password-card {
+  width: 600px;
+  height: 400px;
+}
+
+.forget-password-label {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: 400;
+  color: #333333;
+}
+
+.forget-password-input-label {
+  font-size: 13px;
+  font-weight: bold;
+  padding-left: 80px;
+}
+
+.forget-password-input {
+  width: 70%;
+  align-self: center;
+}
+
+.forget-password-input {
+  font-size: 16px;
+  line-height: 30px;
+  color: #333333;
+  border: 1px solid #E3E3E3;
+  font-weight: 400;
+  box-shadow: none;
+  margin-bottom: 20px;
+}
+
+.forget-password-input:hover {
+  box-shadow: none;
+  border: 1px solid #E3E3E3 !important;
+}
+
+.forget-password-input:focus {
+  box-shadow: none;
+  border: 1px solid #E3E3E3 !important;
+}
+
+.forget-password-input:active {
+  box-shadow: none;
+  border: 1px solid #E3E3E3 !important;
+}
+
+.btn-general {
+  padding-left: 50px;
+  padding-right: 50px;
+  border-color: #04B5FA !important;
+  height: 48px;
+  background-color: #04B5FA !important;
+  font-weight: bold;
+  font-size: 15px !important;
+  border-radius: 7px !important;
+}
+
+.btn-send-email {
+  margin-bottom: 20px;
+}
+
+.reset-password-card {
+  width: 600px;
+  height: 500px;
+}
+
+.validation-err {
+  padding-left: 10px;
+  color: #d50000 !important;
+}
+
+.forgot-class {
+  color: #04B5FA;
+}
+
+.forgot-class:hover {
+  color: #04B5FA;
+}

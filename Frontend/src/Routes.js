@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { DefaultLayout, LandingPageLayout } from "./layouts";
+import { DefaultLayout, LandingPageLayout, ExtraPageLayout } from "./layouts";
 
 import MentorSession from "./views/MentorSession";
 import Profile from "./views/Profile";
@@ -19,6 +19,9 @@ import Unsubscribe from "./views/Unsubscribe";
 import Library from "./views/Library";
 import History from "./views/History";
 import Recommended from "./views/Recommended";
+import EmailVerify from "./views/EmailVerify"
+import ForgetPassword from "./views/ForgetPassword"
+import ResetPassword from "./views/ResetPassword"
 
 export default [
   {
@@ -101,5 +104,20 @@ export default [
     path: "/recommended",
     layout: DefaultLayout,
     component: Recommended
+  },
+  {
+    path: "/verification",
+    layout: ExtraPageLayout,
+    component: EmailVerify 
+  },
+  {
+    path: "/forgetpassword",
+    layout: ExtraPageLayout,
+    component: ForgetPassword
+  },
+  {
+    path: "/resetpassword",
+    layout: ExtraPageLayout,
+    component: ResetPassword
   }
 ];

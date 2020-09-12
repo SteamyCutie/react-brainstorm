@@ -56,13 +56,13 @@ class MentorDetailCard extends React.Component {
           <Row className="center">
             <Button className="btn-mentor-detail-instant">
               <img src={Lightening} alt="Lightening" />
-              Instant Call
+              Available now
             </Button>
           </Row>
           <Row className="center">
             <Button className="btn-mentor-detail-book">
               <img src={Clock} alt="Clock" />
-              Book Call
+              Book a session
             </Button>
           </Row>
         </div>

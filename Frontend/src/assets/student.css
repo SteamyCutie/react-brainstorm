@@ -292,6 +292,10 @@ body {
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
 }
 
+.small-card2:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
+}
+
 .small-card2-icon {
     padding-top: 10px;
     padding-left: 25px;
@@ -344,6 +348,10 @@ body {
     /* align-items: center; */
     display: flex;
     padding: 22px;
+}
+
+.mentor-detail-card:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
 }
 
 .mentor-detail-avatar {
@@ -453,7 +461,7 @@ body {
     border-width: 2.5px !important;
     border-radius: 6px !important;
     margin-bottom: 10px;
-    width: 146px;
+    height: 46px;
 }
 
 .btn-mentor-detail-instant img {
@@ -469,7 +477,9 @@ body {
     border-color: #04B5FA !important;
     border-width: 1px !important;
     border-radius: 6px !important;
-    width: 146px;
+    width: 163px;
+    padding-left: 10px;
+    height: 46px;
 }
 
 .btn-mentor-detail-book img {
@@ -489,6 +499,10 @@ body {
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
 
     display: flex;
+}
+
+.small-card-payment:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
 }
 
 .small-card-payment-logo {
@@ -827,7 +841,17 @@ body {
 
 .library-saved-content {
     width: 340px;
-    /* margin-right: 20px; */
+    border-radius: 7px;
+    padding-top: 3px;
+    padding-bottom: 10px;
+    padding-right: 3px;
+    padding-left: 3px;
+    margin-bottom: 20px;
+    box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
+}
+
+.library-saved-content:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
 }
 
 .saved-content-avatar {
@@ -856,6 +880,15 @@ body {
     margin: 10px 10px;
     border-radius: 7px;
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
+}
+
+.small-card3:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
+}
+
+
+.small-card-forum:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
 }
 
 .small-card3-avatar {
