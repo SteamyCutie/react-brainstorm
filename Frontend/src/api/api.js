@@ -2,6 +2,8 @@ import axios from 'axios';
 import { SERVER_URL } from '../common/config';
 
 //Frontend Apis
+
+//UserController
 export const signup = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -45,7 +47,10 @@ export const editprofile = (param) => {
         }
     });
 };
+//-------UserController------------
 
+
+//AvailableTimesController
 export const getAvailableTimes = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -67,7 +72,10 @@ export const setAvailableTimes = (param) => {
         }
     })
 }
+//----------AvailableTimesController--------------
 
+
+//MediaController
 export const mysharepage = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -79,6 +87,20 @@ export const mysharepage = (param) => {
     });
 };
 
+export const createshareinfo = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/createshareinfo', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+//----------MediaController-----------
+
+
+//WalletController
 export const getwallets = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -89,7 +111,10 @@ export const getwallets = (param) => {
         }
     });
 };
+//------------WalletController-----------------
 
+
+//SessionController
 export const getforums = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -112,16 +137,16 @@ export const createforum = (param) => {
     });
 };
 
-export const gettags = (param) => {
+export const getUpcomingSession = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/gettags', param);
+            const response = await axios.post(SERVER_URL+'/api/getupcomingsessions', param);
             resolve(response);
         } catch(error) {
             reject(error);
         }
     });
-};
+}
 
 export const getHistory = (param) => {
     return new Promise(async(resolve, reject) => {
@@ -134,17 +159,24 @@ export const getHistory = (param) => {
     });
 }
 
-export const getUpcomingSession = (param) => {
+//------------SessionController--------------
+
+
+//TagController
+export const gettags = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/getupcomingsessions', param);
+            const response = await axios.post(SERVER_URL+'/api/gettags', param);
             resolve(response);
         } catch(error) {
             reject(error);
         }
     });
-}
+};
+//----------TagController--------------
 
+
+//FileController
 export const uploadimage = (param) => {
     const config = {
         headers: {
@@ -160,5 +192,23 @@ export const uploadimage = (param) => {
         }
     });
 }
+
+export const uploadvideo = (param) => {
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/uploadvideo', param, config.headers);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+//----------FileController--------------
 
 //Backend Apis

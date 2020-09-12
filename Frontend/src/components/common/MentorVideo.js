@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
 
 import MoreButtonImage from "../../images/more.svg"
-import Video from "../../video/video.mp4"
 
 class MentorVideo extends React.Component {
   constructor(props) {
@@ -26,7 +25,7 @@ class MentorVideo extends React.Component {
   }
 
   render() {
-    const {title, description, media_url, media_type, day, time} = this.props.item
+    const {title, description, media_url, media_type, day, time} = this.props.item;
     return (
       <div className="mentor-desc-video">
         <div className="mentor-desc-video-header">
@@ -64,7 +63,7 @@ class MentorVideo extends React.Component {
         </div>
         <div>
           <video className="mentor-video-tag" controls>
-            <source src={Video} type={media_type} />
+            <source src={media_url} type={media_type} />
           </video>
         </div>
       </div>
