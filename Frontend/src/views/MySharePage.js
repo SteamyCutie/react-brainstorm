@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
-import { mysharepage } from '../api/api';
+import { mysharepage, getuserinfo } from '../api/api';
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import MentorVideo from "../components/common/MentorVideo";
+import avatar from "../images/avatar.jpg"
 
-import MentorAvatar from "../images/Rectangle_Rayna_big.png"
 import SubscriperImg from "../images/Users.svg"
 import LinkImg from "../images/Link.svg"
 
@@ -17,12 +17,14 @@ export default class MySharePage extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      infoList: []
+      infoList: [],
+      userInfo: []
     };
   }
 
   componentWillMount() {
     this.getMyInformation();
+    this.getuserinfo();
   }
 
   getMyInformation = async() => {
@@ -31,6 +33,22 @@ export default class MySharePage extends React.Component {
       const result = await mysharepage({email: localStorage.getItem('email')});
       if (result.data.result == "success") {
         this.setState({infoList: result.data.data});
+      } else {
+        this.showFail();
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail();
+    };
+  }
+
+  getuserinfo = async() => {
+    try {
+      this.setState({loading: true});
+      const result = await getuserinfo({email: localStorage.getItem('email')});
+      if (result.data.result == "success") {
+        this.setState({userInfo: result.data.data});
       } else {
         this.showFail();
       }
@@ -101,7 +119,8 @@ export default class MySharePage extends React.Component {
               <Row>
                 <Col xl="3" className="subscription-mentor-detail">
                   <div>
-                    <img src={MentorAvatar} />
+                    {this.state.userInfo.avatar && <img className="avatar" src={this.state.userInfo.avatar} alt="avatar"/>}
+                    {!this.state.userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
                     <div style={{display: "flex", padding: "20px 0px"}}>
                       <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
                       <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>

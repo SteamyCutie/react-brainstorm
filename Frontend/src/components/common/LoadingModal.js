@@ -17,7 +17,6 @@ export default class SignIn extends React.Component {
   }
 
   componentDidMount() {
-    // document.getElementById("email-input").focus();
   }
 
   render() {
@@ -25,10 +24,7 @@ export default class SignIn extends React.Component {
     return (
       <div>
         <Modal open={open} className="modal-class custom" backdrop={true} backdropClassName="backdrop-class">
-          {/* <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button> */}
-          {/* <ModalBody className="modal-content-class"> */}
-            <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '1', left: '50%', top: '50%'}}/>
-          {/* </ModalBody> */}
+          <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '10', left: '50%', top: '50%'}}/>
         </Modal>
       </div>
     );

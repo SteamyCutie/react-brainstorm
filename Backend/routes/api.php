@@ -21,9 +21,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/signin', 'UserController@signin');
 Route::post('/signup', 'UserController@signup');
 Route::post('/editprofile', 'UserController@editprofile');
-Route::post('/uploadimage', 'UserController@uploadimage');
+Route::post('/getuserinfo', 'UserController@getuserinfo');
 
 Route::post('/mysharepage', 'MediaController@getMediaShare');
+Route::post('/createshareinfo', 'MediaController@createshareinfo');
+
 Route::post('/scheduleliveforum', 'SessionController@getSession');
 Route::post('/createforum', 'SessionController@createforum');
 Route::post('/gethistory', 'SessionController@getHistory');
@@ -31,8 +33,10 @@ Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
 
 Route::post('/setavailabletimes', 'AvailableTimesController@setavailabletimes');
 Route::post('/getavailabletimes', 'AvailableTimesController@getavailabletimes');
-Route::post('/getuserinfo', 'UserController@getuserinfo');
 Route::post('/getwallets', 'WalletController@index');
 
 Route::post('/gettags', 'TagController@index');
+
+Route::post('/uploadimage', 'FileController@uploadimage');
+Route::post('/uploadvideo', 'FileController@uploadvideo');
 
