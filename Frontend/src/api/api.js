@@ -5,7 +5,7 @@ import { SERVER_URL } from '../common/config';
 export const signup = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            header = {'authorization': localStorage.getItem('token')};
+            let header = {'authorization': localStorage.getItem('token')};
             const response = await axios.post(SERVER_URL+'/api/signup', param, header);
             resolve(response);
         } catch(error) {

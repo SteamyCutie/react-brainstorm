@@ -70,7 +70,16 @@ class SetAvailability extends React.Component {
     this.state = {
       loading: false,
       currentUserId: '',
-      availableTimeList: []
+      availableTimeList: [],
+      dayOfWeekStatus: {
+        day_0: 1,
+        day_1: 1,
+        day_2: 1,
+        day_3: 1,
+        day_4: 1,
+        day_5: 1,
+        day_6: 1
+      }
     }
 
     this.handleAdd = this.handleAdd.bind(this);
@@ -258,6 +267,22 @@ class SetAvailability extends React.Component {
       }
     });
   }
+
+  handleChange(e, dayIdx) {
+    const {dayOfWeekStatus} = this.state;
+    let temp = dayOfWeekStatus;
+
+    if(this.state.dayOfWeekStatus[dayIdx]) {
+      document.getElementById(dayIdx).setAttribute("style", "pointer-events: none; color: #999999 !important;");
+    } else {
+      document.getElementById(dayIdx).setAttribute("style", "");
+    }
+
+    temp[dayIdx] = !dayOfWeekStatus[dayIdx];
+    this.setState({
+      dayOfWeekStatus: temp
+    })
+  }
   
   render () {
     return(
@@ -286,80 +311,86 @@ class SetAvailability extends React.Component {
                     return (
                       <div>
                         <Row style={{paddingLeft: "15px"}}>
-                          <FormCheckbox toggle small>
+                          <FormCheckbox 
+                            toggle
+                            small 
+                            checked={this.state.dayOfWeekStatus['day_' + dayIdx]}
+                            onChange={e => this.handleChange(e, 'day_' + dayIdx)}
+                          >
                           {day.dayOfWeek}
                           </FormCheckbox>
                         </Row>
-                        {
-                        day.timeList.length ?
-                          day.timeList.map((time, timeIdx) => {
-                            return (
-                              <Row form>
-                                <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
-                                  <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
-                                    {timeList.map((item, idx) => {
-                                      return (
-                                        time.from === item.id
-                                        ? <option selected>{item.str}</option>
-                                        : <option >{item.str}</option>
-                                      );
-                                    })}
-                                  </FormSelect>
-                                </Col>
-                                <Col md="5" className="available-time-group">
-                                  <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
-                                    {timeList.map((item, idx) => {
-                                      return (
-                                        time.to === item.id 
-                                        ? <option selected>{item.str}</option>
-                                        : <option >{item.str}</option>
-                                      );
-                                    })}
-                                  </FormSelect>
-                                </Col>
-                                <Col style={{marginTop: "10px", marginBottom: "10px"}}>
-                                {day.timeList.length !== 0 && 
-                                  <Button className="btn-available-time-add-delete no-padding"
-                                    onClick={() => this.handleDelete(dayIdx, timeIdx)}>
-                                    <img src={DeleteButtonImage} alt="Delete" />
-                                  </Button>}
-                                {day.timeList.length - 1 === timeIdx && 
-                                  <Button className="btn-available-time-add-delete no-padding"
-                                    onClick={() => this.handleAdd(dayIdx)}>
-                                    <img src={AddButtonImage} alt="Add" />
-                                  </Button>}
-                                </Col>
-                              </Row>
-                            )
-                          })
-                          // : null
-                          :<Row form>
-                            <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
-                              <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
-                                {timeList.map((item, idx) => {
-                                  return (
-                                    <option >{item.str}</option>
-                                  )
-                                })}
-                              </FormSelect>
-                            </Col>
-                            <Col md="5" className="available-time-group">
-                              <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
-                                {timeList.map((item, idx) => {
-                                  return (
-                                    <option >{item.str}</option>
-                                  )
-                                })}
-                              </FormSelect>
-                            </Col>
-                            <Col style={{marginTop: "10px", marginBottom: "10px"}}>
-                              <Button className="btn-available-time-add-delete no-padding"
-                                onClick={() => this.handleAdd(dayIdx)}>
-                                <img src={AddButtonImage} alt="Add" />
-                              </Button>
-                            </Col>
-                          </Row>
-                        }
+                        <div id={'day_' + dayIdx}>
+                          {day.timeList.length ?
+                            day.timeList.map((time, timeIdx) => {
+                              return (
+                                <Row form>
+                                  <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
+                                    <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
+                                      {timeList.map((item, idx) => {
+                                        return (
+                                          time.from === item.id
+                                          ? <option selected>{item.str}</option>
+                                          : <option >{item.str}</option>
+                                        );
+                                      })}
+                                    </FormSelect>
+                                  </Col>
+                                  <Col md="5" className="available-time-group">
+                                    <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
+                                      {timeList.map((item, idx) => {
+                                        return (
+                                          time.to === item.id 
+                                          ? <option selected>{item.str}</option>
+                                          : <option >{item.str}</option>
+                                        );
+                                      })}
+                                    </FormSelect>
+                                  </Col>
+                                  <Col style={{marginTop: "10px", marginBottom: "10px"}}>
+                                  {day.timeList.length !== 0 && 
+                                    <Button className="btn-available-time-add-delete no-padding"
+                                      onClick={() => this.handleDelete(dayIdx, timeIdx)}>
+                                      <img src={DeleteButtonImage} alt="Delete" />
+                                    </Button>}
+                                  {day.timeList.length - 1 === timeIdx && 
+                                    <Button className="btn-available-time-add-delete no-padding"
+                                      onClick={() => this.handleAdd(dayIdx)}>
+                                      <img src={AddButtonImage} alt="Add" />
+                                    </Button>}
+                                  </Col>
+                                </Row>
+                              )
+                            })
+                            // : null
+                            :<Row form>
+                              <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
+                                <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
+                                  {timeList.map((item, idx) => {
+                                    return (
+                                      <option >{item.str}</option>
+                                    )
+                                  })}
+                                </FormSelect>
+                              </Col>
+                              <Col md="5" className="available-time-group">
+                                <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
+                                  {timeList.map((item, idx) => {
+                                    return (
+                                      <option >{item.str}</option>
+                                    )
+                                  })}
+                                </FormSelect>
+                              </Col>
+                              <Col style={{marginTop: "10px", marginBottom: "10px"}}>
+                                <Button className="btn-available-time-add-delete no-padding"
+                                  onClick={() => this.handleAdd(dayIdx)}>
+                                  <img src={AddButtonImage} alt="Add" />
+                                </Button>
+                              </Col>
+                            </Row>
+                          }
+                        </div>
                       </div>
                     )
                   })}
