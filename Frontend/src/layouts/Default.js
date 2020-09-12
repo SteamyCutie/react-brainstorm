@@ -27,6 +27,11 @@ export default class DefaultLayout extends React.Component {
   }
 
   componentWillMount() {
+    if(!localStorage.getItem('token')) {
+      window.location.href = '/';
+      return;
+    }
+
     Store.addChangeListener(this.onChange);
   }
 
