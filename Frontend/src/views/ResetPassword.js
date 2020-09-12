@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
-import SmallCard3 from "../components/common/SmallCard3"
-import { getHistory } from '../api/api';
+import { resetPassword } from '../api/api';
 
 export default class ResetPassword extends React.Component {
   constructor(props) {
@@ -20,7 +19,10 @@ export default class ResetPassword extends React.Component {
   }
 
   componentWillMount() {
-    
+
+    let token = this.props.location.search.split('=')[1];
+
+    console.log(token);
   }
 
   showValidation() {
@@ -55,6 +57,7 @@ export default class ResetPassword extends React.Component {
     }
 
     if(this.state.password && this.state.confirm && this.state.password !== this.state.confirm) {
+      formIsValid = false;
       errors['confirm'] = "The password does not match";
     }
 
@@ -64,8 +67,18 @@ export default class ResetPassword extends React.Component {
     return formIsValid;
   }
 
-  actionResetPassword() {
+  actionResetPassword = async() => {
+    try {
+      const result = await resetPassword({email: localStorage.getItem('email'), passowrd: this.state.password, confirm: this.state.confirm});
 
+      if(result.data.result === "success") {
+        
+      } else {
+
+      }
+    } catch(err) {
+      alert(err);
+    }
   }
 
   handleResetPassword() {

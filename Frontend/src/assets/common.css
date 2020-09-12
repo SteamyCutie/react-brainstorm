@@ -70,3 +70,11 @@
   padding-left: 10px;
   color: #d50000 !important;
 }
+
+.forgot-class {
+  color: #04B5FA;
+}
+
+.forgot-class:hover {
+  color: #04B5FA;
+}

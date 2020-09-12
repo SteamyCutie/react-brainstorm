@@ -119,8 +119,8 @@ export default class SignIn extends React.Component {
   actionSignin = async() => {
     try {
       const result = await signin(this.state);
-      if (result.data.result == "success") {
-        localStorage.setItem('email', result.data.data.email);
+      if (result.data.success == true) {
+        localStorage.setItem('userData', result.data.user);
         window.location.href = '/mentorSession';
       } else {
         // this.setErrorMessage();
@@ -143,6 +143,10 @@ export default class SignIn extends React.Component {
     if (e.key === 'Enter') {
       this.handleSignin();
     }
+  }
+
+  handleforgetPassword() {
+    window.location.href = '/forgetpassword';
   }
 
   render() {
@@ -170,7 +174,7 @@ export default class SignIn extends React.Component {
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="fePassword">Password</label>
-              <label htmlFor="feForgot" className="forgot-class">Forgot password?</label>
+              <a href="#" htmlFor="feForgot" className="forgot-class" onClick={() => this.handleforgetPassword()}>Forgot password?</a>
               <FormInput
                 id="password-input"
                 type="password"

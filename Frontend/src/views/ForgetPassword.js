@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
-import SmallCard3 from "../components/common/SmallCard3"
-import { getHistory } from '../api/api';
+import { forgetPassword } from '../api/api';
 
 export default class ForgetPassword extends React.Component {
   constructor(props) {
@@ -53,13 +52,26 @@ export default class ForgetPassword extends React.Component {
     return formIsValid;
   }
 
-  actionSendEmail() {
+  actionForgetPassword = async() => {
+    try {
+      const result = await forgetPassword({email: localStorage.getItem('email')});
 
+      if(result.data.result === "success") {
+        
+      } else {
+
+      }
+    } catch(err) {
+      alert(err);
+    }
   }
 
   handleSendEmail() {
     if(this.checkValidation())
-      this.actionSendEmail();
+    {
+      localStorage.setItem('email', this.state.email);
+      this.actionForgetPassword();
+    }
   }
 
   onChangeEmail = (e) => {
@@ -79,7 +91,7 @@ export default class ForgetPassword extends React.Component {
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin center">
         <Card small className="forget-password-card">
           <CardHeader>
-            <label className="center forget-password-label">Reset your password</label>
+            <label className="center forget-password-label">Forgot Password</label>
           </CardHeader>
           <CardBody>
               <label className="forget-password-input-label">Username or Email</label>

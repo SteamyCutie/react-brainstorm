@@ -1,9 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col } from "shards-react";
-
-import MainNavbar from "../components/layout/LandingNavbar/MainNavbar";
-import MainFooter from "../components/layout/MainFooter";
+import { Container} from "shards-react";
 
 const ExtraPageLayout = ({ children}) => (
   <Container fluid>
