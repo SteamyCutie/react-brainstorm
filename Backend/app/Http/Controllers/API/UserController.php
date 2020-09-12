@@ -237,7 +237,7 @@ class UserController extends Controller
 
             $vCode = base64_encode($email);
             User::where('email', $email)->update(['remember_token' => $vCode]);
-            $body = $body."<a href = '".env("FRONT_URL")."/reset/{$vCode}'><button>Click to reset your password</button></a>";
+            $body = $body."<a href = '".env("FRONT_URL")."/resetpassword/{$vCode}'><button>Click to reset your password</button></a>";
 
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
@@ -246,8 +246,7 @@ class UserController extends Controller
                 ]);
             }
             return response()->json([
-                'result'=> 'success',
-                'vCode' => $vCode,
+                'result'=> 'success',                
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -264,7 +263,6 @@ class UserController extends Controller
             $password = $request->password;
 
             $user = User::where('email', $email)->first();
-
             if($user){
                 if($user->remember_token != $vCode){
                     return response()->json([
@@ -272,11 +270,17 @@ class UserController extends Controller
                         'message' => 'fail to confirm verify code.',
                     ]);
                 }
+                if($password == "") {
+                    return response()->json([
+                        'result'=> 'failed',
+                        'message' => 'Can not empty password'
+                    ]);
+                }
                 $password_code = bcrypt($password);
                 $user->update(['password' => $password_code]);
                 return response()->json([
                     'result'=> 'success',
-                    'message' => 'Updated password',
+                    'message' => 'Updated password',                    
                 ]);
             } else {
                 return response()->json([
