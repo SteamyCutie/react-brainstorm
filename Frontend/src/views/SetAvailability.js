@@ -70,7 +70,36 @@ class SetAvailability extends React.Component {
     this.state = {
       loading: false,
       currentUserId: '',
-      availableTimeList: [],
+      availableTimeList: [
+        {
+          dayOfWeek: "Sunday",
+          timeList: []
+        },
+        {
+          dayOfWeek: "Monday",
+          timeList: []
+        },
+        {
+          dayOfWeek: "Tuesday",
+          timeList: []
+        },
+        {
+          dayOfWeek: "Wednesday",
+          timeList: []
+        },
+        {
+          dayOfWeek: "Thursday",
+          timeList: []
+        },
+        {
+          dayOfWeek: "Friday",
+          timeList: []
+        },
+        {
+          dayOfWeek: "Saturday",
+          timeList: []
+        }
+      ],
       dayOfWeekStatus: {
         day_0: 1,
         day_1: 1,

@@ -51,13 +51,12 @@ export const editprofile = (param) => {
 export const getAvailableTimes = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            let formdata = new FormData();
-            param.each((value, key) => {
-                formdata.set(key, value);
-            });
-
-            const response = await axios.post(SERVER_URL+'/api/getavailabletimes', formdata, {header: 'Authorization: Bearer ' + localStorage.getItem('token')});
-            localStorage.setItem('token', response.data.token);
+            // let formdata = new FormData();
+            // param.each((value, key) => {
+            //     formdata.set(key, value);
+            // });
+            const response = await axios.post(SERVER_URL+'/api/getavailabletimes', param);
+            // localStorage.setItem('token', response.data.token);
             resolve(response);
         } catch(error) {
             reject(error)

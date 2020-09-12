@@ -119,8 +119,8 @@ export default class SignIn extends React.Component {
   actionSignin = async() => {
     try {
       const result = await signin(this.state);
-      if (result.data.success == true) {
-        localStorage.setItem('userData', result.data.user);
+      if (result.data.result === "success") {
+        localStorage.setItem('email', this.state.email);
         window.location.href = '/mentorSession';
       } else {
         // this.setErrorMessage();
