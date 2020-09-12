@@ -72,6 +72,12 @@ class UserSeeder extends Seeder
                 'hourly_price' => 100, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => 'subpage10',
                 'sub_plan_fee' => 80, 'description' => 'description10', 'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '2'
             ],
+            [
+                'id' => 11, 'name' => "dfasdf", 'email' => 'lucascholz@protonmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+                'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa', 'avatar' => 'http://localhost:8000/avatars/02.jpg', 'dob' => '2020-09-08 08:02:06', 'two_factor_code' => '0',
+                'hourly_price' => 100, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => 'subpage10',
+                'sub_plan_fee' => 80, 'description' => 'description10', 'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '2'
+            ]
         ];
 
         foreach($items as $item)

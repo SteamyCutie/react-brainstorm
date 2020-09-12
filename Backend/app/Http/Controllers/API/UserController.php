@@ -20,18 +20,6 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-<<<<<<< HEAD
-        $email = $request['email'];
-        $password = $request['password'];
-        
-        $user = User::where('email', $email)->first();
-        if ($user == null) {
-            return response()->json([
-                'result'=> 'failed',
-                'message'=> 'Email is incorrect',
-            ]);
-        }
-=======
         try {
             $input = $request->only('email', 'password');
             $token = null;
@@ -50,7 +38,6 @@ class UserController extends Controller
                     'message' => 'Invalid Email or Password',
                 ], 401);
             }
->>>>>>> develop/email
 
             return response()->json([
                 'result'=> 'success',
@@ -60,51 +47,19 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'result'=> 'failed',
-<<<<<<< HEAD
-                'message'=> 'Password is incorrect.',
+                'message'=> 'Email or Password is incorrect.',
             ]);  
-=======
-                'message' => 'Invalid Email or Password',
-            ]);
->>>>>>> develop/email
         }
     }
 
     public function signup(Request $request)
     {
-<<<<<<< HEAD
-        $user = User::where('email', $request['email'])->first();
-        if ($user) {
-            return response()->json([
-                'result'=> 'failed',
-                'message'=> 'This email is already in use',
-            ]);
-        }
-
-        $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            // 'password' => bcrypt($request['password']),
-            'password' => $request['password'],
-            'dob' => null,
-            'avatar' => '',
-            'hourly_price' => 0,
-            'video_url' => '',
-            'sub_page_name' => '',
-            'sub_plan_fee' => 0,
-            'description' => '',
-            'instant_call' => false,
-            'status' => 0,
-            'timezone' => ''
-        ]);
-=======
         $email = $request['email'];
-        $name = $request['fullname'];
+        $name = $request['name'];
         $password = $request['password'];
         $subject = "Welcome to BransShare!";
         $body = "Hi ".$name."<br>";
         $body = $body."<img src='http://buscasa360storage0010513.s3-us-west-2.amazonaws.com/buscasa360_logo.png' style='width:90%;'/><br>";
->>>>>>> develop/email
 
         if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
             return response()->json([
@@ -124,7 +79,7 @@ class UserController extends Controller
             $toEmail = $user->email;
 
             $body = $body."<p>Veryfication Code :".$user->two_factor_code."<p><br>";
-            $body = $body."<a href = '".env("FRONT_URL")."/verify'><button>Click to confirm your account</button></a>";
+            $body = $body."<a href = '".env("FRONT_URL")."/verification'><button>Click to confirm your account</button></a>";
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
                     'result'=> 'failed',
@@ -158,7 +113,7 @@ class UserController extends Controller
 
     public function editprofile(Request $request)
     {
-        $name = $request['fullname'];
+        $name = $request['name'];
         $birthday = $request['birthday'];
         $email = $request['email'];
         $description = $request['description'];
@@ -171,7 +126,7 @@ class UserController extends Controller
         $avatar = $request['avatar'];
 
         $rules = array(
-            'fullname' => 'required',
+            'name' => 'required',
             'email' => 'required|email',
             'expertise' => 'required',
             'hourlyprice' => 'required',

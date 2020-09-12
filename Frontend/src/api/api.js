@@ -237,6 +237,23 @@ export const uploadvideo = (param) => {
         }
     });
 }
+
+export const verifyCode = (param) => {
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/verifycode', param);
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+
 //---------FileController-------------
 
 //Backend Apis
