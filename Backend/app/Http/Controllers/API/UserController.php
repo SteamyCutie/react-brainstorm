@@ -22,29 +22,29 @@ class UserController extends Controller
             $input = $request->only('email', 'password');
             $token = null;
             $user = User::where('email', $request->email)->first();
-            
+
             if( !$user->email_verified_at ) {
                 return response()->json([
-                    'success' => false,
+                    'result'=> 'failed',
                     'message' => config('messages.auth.verify_code'),
                 ], 401);
             }
-            
+
             if (!$token = JWTAuth::attempt($input)) {
                 return response()->json([
-                    'success' => false,
+                    'result'=> 'failed',
                     'message' => 'Invalid Email or Password',
                 ], 401);
             }
-            
+
             return response()->json([
-                'success' => true,
+                'result'=> 'success',
                 'token' => $token,
                 'user' => auth()->user(),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'success' => false,
+                'result'=> 'failed',
                 'message' => 'Invalid Email or Password',
             ]);
         }
@@ -61,7 +61,7 @@ class UserController extends Controller
 
         if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
             return response()->json([
-                'success'   =>  false,
+                'result'=> 'failed',
                 'message'   =>  'Email address is already existed'
             ], 300);
         }
@@ -69,31 +69,31 @@ class UserController extends Controller
         try {
             $user = new User();
             $user->name = $name;
-            $user->email = $email;            
+            $user->email = $email;
             $user->password = bcrypt($password);
-            $user->is_active = config('global.users.active');            
+            $user->is_active = config('global.users.active');
             $user->save();
             $user->generateTwoFactorCode();
-            $toEmail = $user->email;            
+            $toEmail = $user->email;
 
-            $body = $body."<p>Veryfication Code :".$user->two_factor_code."<p><br>";            
+            $body = $body."<p>Veryfication Code :".$user->two_factor_code."<p><br>";
             $body = $body."<a href = '".env("FRONT_URL")."/verify'><button>Click to confirm your account</button></a>";
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
-                    'success' => false,
+                    'result'=> 'failed',
                     'message' => 'Sorry, fail send mail'
-                ]);    
+                ]);
             }
             return response()->json([
-                'success'   => true,
+                'result'=> 'success',
                 'user'      => $user,
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'success' => false,
+                'result'=> 'failed',
                 'message' => 'Sorry, user can not register'
             ], 500);
-        }        
+        }
     }
 
     public function getuserinfo(Request $request)
@@ -151,36 +151,36 @@ class UserController extends Controller
 
     public function verifyCode(Request $request){
         $subject = "Welcome to BransShare!";
-                
+
         try {
             $code = $request->code;
-            $email = $request->email;            
+            $email = $request->email;
             $user = User::where('email', $email)->first();
-            
+
             if($code != $user->two_factor_code) {
                 return response()->json([
-                    'success' => false,
+                    'result'=> 'failed',
                     'message' => 'Sorry, confirm code is wrong!'
                 ], 500);
             }
-            
-            $user->verifiedAccount();         
+
+            $user->verifiedAccount();
             $toEmail = $user->email;
             $name = $user->name;
             $body = "Hi ".$name."<br>";
-            $body = $body."<p>Veryfy Code Success!</p><br>";            
-            
+            $body = $body."<p>Veryfy Code Success!</p><br>";
+
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
-                    'success' => false,
+                    'result'=> 'failed',
                     'message' => 'Sorry, fail send mail'
-                ]);        
+                ]);
             }
             return $this->login($request);
 
         } catch (\Throwable $th) {
             return response()->json([
-                'success' => false,
+                'result'=> 'failed',
                 'message' => 'Sorry, can not verify the code'
             ], 500);
         }
@@ -191,73 +191,73 @@ class UserController extends Controller
         $email = $request['email'];
         $token = null;
 
-        $user = User::where('email', $email)->first();      
-        
+        $user = User::where('email', $email)->first();
+
         if(!$user){
             return response()->json([
-                'success'   =>  false,
+                'result'=> 'failed',
                 'message'   =>  'Email address is not existed'
             ], 300);
         }
-        
-        try {     
+
+        try {
             $toEmail = $user->email;
             $name = $user->name;
             $body = "Hi ".$name."<br>";
             $body = $body."<p>Did you forget your password?</p><br>";
-            
+
             $vCode = base64_encode($email);
             User::where('email', $email)->update(['remember_token' => $vCode]);
             $body = $body."<a href = '".env("FRONT_URL")."/reset/{$vCode}'><button>Click to reset your password</button></a>";
-            
+
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
-                    'success' => false,
+                    'result'=> 'failed',
                     'message' => 'Sorry, fail send mail'
-                ]);        
+                ]);
             }
             return response()->json([
-                'success' => true,
+                'result'=> 'success',
                 'vCode' => $vCode,
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'success' => false,
+                'result'=> 'failed',
                 'message' => 'Invalid Email',
             ]);
         }
     }
     public function reset(Request $request) {
         $vCode = null;
-        try {            
+        try {
             $vCode = $request->vCode;
             $email = $request->email;
-            $password = $request->password;                        
+            $password = $request->password;
 
             $user = User::where('email', $email)->first();
-            
+
             if($user){
                 if($user->remember_token != $vCode){
                     return response()->json([
-                        'success' => false,
+                        'result'=> 'failed',
                         'message' => 'fail to confirm verify code.',
                     ]);
-                }              
+                }
                 $password_code = bcrypt($password);
                 $user->update(['password' => $password_code]);
                 return response()->json([
-                    'success'   => true,
+                    'result'=> 'success',
                     'message' => 'Updated password',
                 ]);
             } else {
                 return response()->json([
-                    'success'   => false,
+                    'result'=> 'failed',
                     'message'      => 'Updating password failed',
                 ]);
             }
         } catch (\Throwable $th) {
             return response()->json([
-                'success' => false,
+                'result'=> 'failed',
                 'message' => 'Sorry, can not update password. Try again.'
             ], 500);
         }
@@ -266,7 +266,7 @@ class UserController extends Controller
     public function signout(Request $request)
     {
         return response()->json([
-            'success'   =>  true,
+            'result'=> 'success',
             'message'      =>  'logout successfully'
         ], 200);
     }
