@@ -20,11 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
+
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
-Route::post('/signout', 'UserController@logout');
-
 
 Route::group(['middleware' => 'jwt.verify'], function () {
     Route::post('/signout', 'UserController@logout');
@@ -40,5 +39,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::post('/getwallets', 'WalletController@index');
     Route::post('/gettags', 'TagController@index');
     Route::get('/test', 'UserController@test');
-
+    Route::post('/uploadimage', 'FileController@uploadimage');
+    Route::post('/uploadvideo', 'FileController@uploadvideo');
 });

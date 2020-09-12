@@ -1068,3 +1068,41 @@ body {
     margin-left: -3px !important;
 }
 
+input.sign-has-err {
+    border-color: #d50000 !important;
+}
+
+input.sign-has-err:active {
+    border-color: #d50000 !important;
+}
+
+input.sign-has-err:hover {
+    border-color: #d50000 !important;
+}
+
+input.sign-has-err:focus {
+    border-color: #d50000 !important;
+}
+
+.password-validation-err {
+    padding-left: 10px;
+    color: #d50000 !important;
+}
+
+.email-validation-err {
+    padding-left: 10px;
+    color: #d50000 !important;
+}
+
+.email-input {
+    margin-bottom: 10px !important;
+}
+
+.password-input {
+    margin-bottom: 10px !important;
+}
+
+.sign-in-err {
+    padding-left: 10px;
+    color: #d50000 !important;
+}

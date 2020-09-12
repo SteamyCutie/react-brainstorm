@@ -89,6 +89,10 @@
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
 }
 
+.small-card-forum:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
+}
+
 .small-card-forum-avatar {
     width: 62px;
     height: 62px;
@@ -164,11 +168,23 @@
     color: #333333;
     font-size: 16px;
     height: 50px !important;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .project-detail-input-group {
-    padding-right: 40px !important;    
+    padding-right: 40px !important;        
+}
+
+.project-detail-input-group .react-datepicker-wrapper {
+    width: 100%;
+}
+
+.project-detail-input-group .react-datepicker-wrapper .react-datepicker__input-container {
+    width: 100%;
+}
+
+.project-detail-input-group .react-datepicker-wrapper .react-datepicker__input-container input{
+    text-align: left !important;
 }
 
 .project-detail-input-group label {
@@ -187,7 +203,7 @@
     font-weight: 400 !important;
     color: #333333;
     font-style: italic;
-    width: 220px;
+    width: 450px;
 }
 
 .profile-detail-desc {
@@ -271,4 +287,91 @@
     font-size: 16px;
     height: 50px !important;
     margin-bottom: 20px;
+}
+
+.require-message {
+    color: red;
+    font-weight: bold;
+    float: right;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 200px;
+    border: 1px solid #e1e4e8!important;
+    height: 200px;
+    cursor: pointer;
+}
+
+.avatar-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-tooltip .avatar-tooltiptext {
+    visibility: hidden;
+    width: 150px;
+    background-color: #04B5FA !important;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 210px;
+    left: 30px;
+}
+
+.avatar-tooltip .avatar-tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #04B5FA transparent;
+}
+
+.avatar-tooltip:hover .avatar-tooltiptext {
+    visibility: visible;
+}
+
+.custom-control-label::before {
+    pointer-events: none !important;
+}
+
+.notification-container-top-right {
+    right: 350px !important;
+}
+
+.dropdown .dropdown-menu {
+    left: -72px;
+}
+
+.dropdown button {
+    background: none;
+    border: none;
+}
+
+.dropdown button:hover {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.dropdown button:active {
+    background: none !important;
+    border: none;
+    box-shadow: none;
+}
+
+.dropdown button:focus {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.custom .modal-content {
+    background: transparent;
 }

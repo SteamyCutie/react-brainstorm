@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Session;
 use App\Models\Tag;
 use App\Models\User;
@@ -60,6 +61,24 @@ class SessionController extends Controller
         $title = $request['title'];
         $description = $request['description'];
         $tags = implode(",", $request['tags']);
+
+        $rules = array(
+            'title' => 'required',
+            'description' => 'required',
+        );    
+        $messages = array(
+            'required' => 'This field is required.',
+        );
+        $validator = Validator::make( $request->all(), $rules, $messages );
+
+        if ($validator->fails()) 
+        {
+            return [
+                'result' => 'failed', 
+                'type' => 'require',
+                'message' => $validator->messages()
+            ];
+        }
 
         Session::create([
             'user_id' => $user_id['id'],

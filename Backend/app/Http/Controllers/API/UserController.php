@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
 use JWTAuth;
@@ -45,15 +47,15 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'result'=> 'failed',
-                'message' => 'Invalid Email or Password',
-            ]);
+                'message'=> 'Email or Password is incorrect.',
+            ]);  
         }
     }
 
     public function signup(Request $request)
     {
         $email = $request['email'];
-        $name = $request['fullname'];
+        $name = $request['name'];
         $password = $request['password'];
         $subject = "Welcome to BransShare!";
         $body = "Hi ".$name."<br>";
@@ -77,7 +79,7 @@ class UserController extends Controller
             $toEmail = $user->email;
 
             $body = $body."<p>Veryfication Code :".$user->two_factor_code."<p><br>";
-            $body = $body."<a href = '".env("FRONT_URL")."/verify'><button>Click to confirm your account</button></a>";
+            $body = $body."<a href = '".env("FRONT_URL")."/verification'><button>Click to confirm your account</button></a>";
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
                     'result'=> 'failed',
@@ -101,6 +103,8 @@ class UserController extends Controller
         $email = $request['email'];
 
         $user = User::where('email', $email)->first();
+        $newDate = date("Y-m-d", strtotime($user['dob']));
+        $user['dob'] = $newDate;
         return response()->json([
             'result'=> 'success',
             'data'=> $user,
@@ -109,7 +113,7 @@ class UserController extends Controller
 
     public function editprofile(Request $request)
     {
-        $name = $request['fullname'];
+        $name = $request['name'];
         $birthday = $request['birthday'];
         $email = $request['email'];
         $description = $request['description'];
@@ -119,6 +123,30 @@ class UserController extends Controller
         $subplanfee = $request['subplanfee'];
         $videourl = $request['videourl'];
         $instantcall = $request['instantcall'];
+        $avatar = $request['avatar'];
+
+        $rules = array(
+            'name' => 'required',
+            'email' => 'required|email',
+            'expertise' => 'required',
+            'hourlyprice' => 'required',
+            'subpagename' => 'required',
+            'subplanfee' => 'required',
+            'videourl' => 'required|url'
+        );    
+        $messages = array(
+            'required' => 'This field is required.',
+        );
+        $validator = Validator::make( $request->all(), $rules, $messages );
+
+        if ($validator->fails()) 
+        {
+            return [
+                'result' => 'failed', 
+                'type' => 'require',
+                'message' => $validator->messages()
+            ];
+        }
 
         $user = User::where('email', $email)->get();
 
@@ -133,7 +161,8 @@ class UserController extends Controller
                 'dob' => $birthday,
                 'email' => $email,
                 'description' => $description,
-                // 'expertise' => $expertise,
+                'avatar' => $avatar,
+                'expertise' => $expertise,
                 'hourly_price' => $hourlyprice,
                 'sub_page_name' => $subpagename,
                 'sub_plan_fee' => $subplanfee,
@@ -208,7 +237,7 @@ class UserController extends Controller
 
             $vCode = base64_encode($email);
             User::where('email', $email)->update(['remember_token' => $vCode]);
-            $body = $body."<a href = '".env("FRONT_URL")."/reset/{$vCode}'><button>Click to reset your password</button></a>";
+            $body = $body."<a href = '".env("FRONT_URL")."/resetpassword/{$vCode}'><button>Click to reset your password</button></a>";
 
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
@@ -217,8 +246,7 @@ class UserController extends Controller
                 ]);
             }
             return response()->json([
-                'result'=> 'success',
-                'vCode' => $vCode,
+                'result'=> 'success',                
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -235,7 +263,6 @@ class UserController extends Controller
             $password = $request->password;
 
             $user = User::where('email', $email)->first();
-
             if($user){
                 if($user->remember_token != $vCode){
                     return response()->json([
@@ -243,11 +270,17 @@ class UserController extends Controller
                         'message' => 'fail to confirm verify code.',
                     ]);
                 }
+                if($password == "") {
+                    return response()->json([
+                        'result'=> 'failed',
+                        'message' => 'Can not empty password'
+                    ]);
+                }
                 $password_code = bcrypt($password);
                 $user->update(['password' => $password_code]);
                 return response()->json([
                     'result'=> 'success',
-                    'message' => 'Updated password',
+                    'message' => 'Updated password',                    
                 ]);
             } else {
                 return response()->json([

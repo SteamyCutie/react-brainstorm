@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { getuserinfo } from '../../../../api/api';
+import avatar from "../../../../images/avatar.jpg"
 import {
   Dropdown,
   DropdownToggle,
@@ -15,15 +17,34 @@ export default class UserActions extends React.Component {
     super(props);
 
     this.state = {
-      visible: false
+      avatar: '',
+      open: false
     };
 
-    this.toggleUserActions = this.toggleUserActions.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
-  toggleUserActions() {
-    this.setState({
-      visible: !this.state.visible
+  componentWillMount() {
+    this.getUserInformation();
+  }
+
+  getUserInformation = async() => {
+    try {
+      
+      const result = await getuserinfo({email: localStorage.getItem('email')});
+      if (result.data.result == "success") {
+        this.setState({avatar: result.data.data.avatar});
+      } else {
+        this.showFail();
+      }
+    } catch(err) {
+      
+    };
+  }
+
+  toggle() {
+    this.setState(prevState => {
+      return { open: !prevState.open };
     });
   }
 
@@ -34,33 +55,21 @@ export default class UserActions extends React.Component {
 
   render() {
     return (
-      <NavItem tag={Dropdown} caret toggle={this.toggleUserActions}>
-        <DropdownToggle caret tag={NavLink} className="text-nowrap px-3">
-          <img
-            className="user-avatar rounded-circle mr-2"
-            src={require("./../../../../images/avatars/0.jpg")}
-            alt="User Avatar"
-          />{" "}
-        </DropdownToggle>
-        <Collapse tag={DropdownMenu} right small open={this.state.visible}>
-          <DropdownItem tag={Link} to="user-profile">
+      <Dropdown open={this.state.open} toggle={this.toggle}>
+        <DropdownToggle>
+          {this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={this.state.avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+          {!this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+          {" "}</DropdownToggle>
+        <DropdownMenu>
+          <DropdownItem tag={Link} to="profile">
             <i className="material-icons">&#xE7FD;</i> Profile
-          </DropdownItem>
-          <DropdownItem tag={Link} to="edit-user-profile">
-            <i className="material-icons">&#xE8B8;</i> Edit Profile
-          </DropdownItem>
-          <DropdownItem tag={Link} to="file-manager-list">
-            <i className="material-icons">&#xE2C7;</i> Files
-          </DropdownItem>
-          <DropdownItem tag={Link} to="transaction-history">
-            <i className="material-icons">&#xE896;</i> Transactions
           </DropdownItem>
           <DropdownItem divider />
           <DropdownItem className="text-danger" onClick={() => this.logout()}>
             <i className="material-icons text-danger">&#xE879;</i> Logout
           </DropdownItem>
-        </Collapse>
-      </NavItem>
+        </DropdownMenu>
+      </Dropdown>
     );
   }
 }

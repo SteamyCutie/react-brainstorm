@@ -15,7 +15,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'dob', 'avatar', 'two_factor_code', 'hourly_price', 'video_url', 'sub_page_name', 'sub_plan_fee', 'description', 'instant_call', 'status', 'is_active','timezone'
+        'name', 'email', 'password', 'dob', 'avatar', 'two_factor_code', 'hourly_price', 'video_url', 'sub_page_name', 'sub_plan_fee', 'description', 'instant_call', 'status', 'is_active','timezone', 'expertise'
     ];
 
     /**
@@ -46,6 +46,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function verifiedAccount(){
         $this->email_verified_at = now();
-        $this->save();        
+        $this->save();
     }
 }
