@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
@@ -23,7 +25,7 @@ class UserController extends Controller
         if ($user == null) {
             return response()->json([
                 'result'=> 'failed',
-                'message'=> 'Current User Does Not Exist',
+                'message'=> 'Email is incorrect',
             ]);
         }
 
@@ -36,13 +38,21 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'result'=> 'failed',
-                'message'=> 'Password Does Not Match',
+                'message'=> 'Password is incorrect.',
             ]);  
         }
     }
 
     public function signup(Request $request)
     {
+        $user = User::where('email', $request['email'])->first();
+        if ($user) {
+            return response()->json([
+                'result'=> 'failed',
+                'message'=> 'This email is already in use',
+            ]);
+        }
+
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
@@ -71,6 +81,8 @@ class UserController extends Controller
         $email = $request['email'];
 
         $user = User::where('email', $email)->first();
+        $newDate = date("Y-m-d", strtotime($user['dob']));
+        $user['dob'] = $newDate;
         return response()->json([
             'result'=> 'success',
             'data'=> $user,
@@ -89,6 +101,30 @@ class UserController extends Controller
         $subplanfee = $request['subplanfee'];
         $videourl = $request['videourl'];
         $instantcall = $request['instantcall'];
+        $avatar = $request['avatar'];
+
+        $rules = array(
+            'fullname' => 'required',
+            'email' => 'required|email',
+            'expertise' => 'required',
+            'hourlyprice' => 'required',
+            'subpagename' => 'required',
+            'subplanfee' => 'required',
+            'videourl' => 'required|url'
+        );    
+        $messages = array(
+            'required' => 'This field is required.',
+        );
+        $validator = Validator::make( $request->all(), $rules, $messages );
+
+        if ($validator->fails()) 
+        {
+            return [
+                'result' => 'failed', 
+                'type' => 'require',
+                'message' => $validator->messages()
+            ];
+        }
 
         $user = User::where('email', $email)->get();
 
@@ -103,7 +139,8 @@ class UserController extends Controller
                 'dob' => $birthday,
                 'email' => $email,
                 'description' => $description,
-                // 'expertise' => $expertise,
+                'avatar' => $avatar,
+                'expertise' => $expertise,
                 'hourly_price' => $hourlyprice,
                 'sub_page_name' => $subpagename,
                 'sub_plan_fee' => $subplanfee,
@@ -115,6 +152,29 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'success',
                 'data'=> $user,
+            ]);
+        }
+    }
+
+    public function uploadimage(Request $request)
+    {
+        $file = $request['files'];
+        $file_origin_name = $file[0]->getClientOriginalName();
+        $file_name = time().'_'.rand(100000, 999999).'_'.$file_origin_name;
+
+        try {
+            $s3 = Storage::disk('s3');
+            $s3->put($file_name, file_get_contents($file[0]), 'public');
+
+            $file_path = $s3->url($file_name);
+            return response()->json([
+                'result'=> 'success',
+                'data'=> $file_path,
+            ]);
+        } catch (Exception $th) {
+            return response()->json([
+                'result'=> 'failed',
+                'data'=> $th,
             ]);
         }
     }

@@ -1,33 +1,53 @@
 import React, { useEffect, createRef, useRef } from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea } from "shards-react";
-import { Link } from "react-router-dom";
-import MentorVideo from "../components/common/MentorVideo";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
+import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, Alert } from "shards-react";
+import expertise from '../common/constants';
+import LoadingModal from "../components/common/LoadingModal";
 
-import MentorAvatar from "../images/Rectangle_K.png"
 import Icon from "../images/Lightning.svg"
 import Tooltip from "../images/Tooltip.svg"
-import { editprofile, getuserinfo } from '../api/api';
-import { parsePath } from "history";
+import avatar from "../images/avatar.jpg"
+import { editprofile, getuserinfo, uploadimage } from '../api/api';
 
 export default class MySharePage extends React.Component {
   constructor(props) {
     super(props);
+    this.myRef = React.createRef();
+
     this.state = {
-      userInfo: [],
+      loading: false,
+      displaydate: undefined,
+      displaygethourlyprice: '0.00',
+      displaycuthourlyprice: '0.00',
+      displaygetplanfee: '0.00',
+      displaycutplanfee: '0.00',
+      requiremessage: {
+        dfullname: '',
+        demail: '',
+        dexpertise: '',
+        dhourlyprice: '',
+        dsubpagename: '',
+        dsubplanfee:'',
+        videourl: ''
+      },
       param: {
         fullname: '',
-        birthday: '',
+        birthday: undefined,
         email: '',
         description: '',
-        expertise: '',
+        expertise: 1,
         hourlyprice: '',
         subpagename: '',
         subplanfee: '',
         videourl: '',
+        avatar: '',
         instantcall: false
       }
     };
+    this.onDrop = this.onDrop.bind(this);
   }
 
   componentWillMount() {
@@ -40,31 +60,101 @@ export default class MySharePage extends React.Component {
 
   getUserInformation = async() => {
     try {
+      this.setState({loading: true});
       const result = await getuserinfo({email: localStorage.getItem('email')});
       if (result.data.result == "success") {
-        this.setState({userInfo: result.data.data});
+        const {param} = this.state;
+        let temp = param;
+        temp.fullname = result.data.data.name;
+        temp.birthday = result.data.data.dob;
+        temp.email = result.data.data.email;
+        temp.avatar = result.data.data.avatar;
+        temp.description = result.data.data.description;
+        temp.hourlyprice = result.data.data.hourly_price;
+        temp.subpagename = result.data.data.sub_page_name;
+        temp.subplanfee = result.data.data.sub_plan_fee;
+        temp.videourl = result.data.data.video_url;
+        temp.expertise = result.data.data.expertise;
+        temp.instantcall = result.data.data.instant_call;
+        this.setState({
+          param: temp,
+          displaygethourlyprice: (parseFloat(result.data.data.hourly_price)*0.8).toFixed(2),
+          displaycuthourlyprice: (parseFloat(result.data.data.hourly_price)*0.2).toFixed(2),
+          displaygetplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.8).toFixed(2),
+          displaycutplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.2).toFixed(2),
+        });
       } else {
-        alert(result.data.message);
+        this.showFail();
       }
+      this.setState({loading: false});
     } catch(err) {
-      alert(err);
+      this.setState({loading: false});
+      this.showFail();
     };
   }
 
   actionSave = async() => {
+    const {requiremessage} = this.state;
+    let temp = requiremessage;
+    temp.dfullname = '';
+    temp.demail = '';
+    temp.dexpertise = '';
+    temp.dhourlyprice = '';
+    temp.dsubpagename = '';
+    temp.dsubplanfee = '';
+    temp.videourl = '';
+    this.setState({
+      requiremessage: temp
+    });
     try {
+      this.setState({loading: true});
       const result = await editprofile(this.state.param);
       if (result.data.result == "success") {
-        
+        this.setState({loading: false});
+        this.showSuccess("Edit Profile Success");
       } else {
-        alert(result.data.message);
+        if (result.data.type == 'require') {
+          const {requiremessage} = this.state;
+          let temp = requiremessage;
+          if (result.data.message.fullname) {
+            temp.dfullname = result.data.message.fullname[0];
+          }
+          if (result.data.message.email) {
+            temp.demail = result.data.message.email[0];
+          }
+          if (result.data.message.expertise) {
+            temp.dexpertise = result.data.message.expertise[0];
+          }
+          if (result.data.message.hourlyprice) {
+            temp.dhourlyprice = result.data.message.hourlyprice[0];
+          }
+          if (result.data.message.subpagename) {
+            temp.dsubpagename = result.data.message.subpagename[0];
+          }
+          if (result.data.message.subplanfee) {
+            temp.dsubplanfee = result.data.message.subplanfee[0];
+          }
+          if (result.data.message.videourl) {
+            temp.videourl = result.data.message.videourl[0];
+          }
+          this.setState({
+            requiremessage: temp
+          });
+        } else {
+        }
       }
+      this.setState({loading: false});
     } catch(err) {
-      alert(err);
+      this.setState({loading: false});
+      this.showFail("Edit Profile Fail");
     };
   };
   
   onChangeFullName = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 30) {
+      return;
+    }
     const {param} = this.state;
     let temp = param;
     temp.fullname = e.target.value;
@@ -74,8 +164,11 @@ export default class MySharePage extends React.Component {
   onChangeBirthDay = (e) => {
     const {param} = this.state;
     let temp = param;
-    temp.birthday = e.target.value;
+    let date = new Date(e);
+    let displaydate = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();
+    temp.birthday = displaydate;
     this.setState({param: temp});
+    this.setState({displaydate: date});
   };
 
   onChangeEmail = (e) => {
@@ -86,6 +179,10 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeDescription = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 500) {
+      return;
+    }
     const {param} = this.state;
     let temp = param;
     temp.description = e.target.value;
@@ -103,10 +200,25 @@ export default class MySharePage extends React.Component {
     const {param} = this.state;
     let temp = param;
     temp.hourlyprice = e.target.value;
+    let displaygethourlyprice, displaycuthourlyprice  = '';
+    if (e.target.value == '') {
+      displaygethourlyprice = '0.00';
+      displaycuthourlyprice = '0.00';
+    } else {
+      displaygethourlyprice = (parseFloat(e.target.value)*0.8).toFixed(2);
+      displaycuthourlyprice = (parseFloat(e.target.value)*0.2).toFixed(2);  
+    }
+    
     this.setState({param: temp});
+    this.setState({displaygethourlyprice: displaygethourlyprice});
+    this.setState({displaycuthourlyprice: displaycuthourlyprice});
   }
 
   onChangeSubPageName = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 50) {
+      return;
+    }
     const {param} = this.state;
     let temp = param;
     temp.subpagename = e.target.value;
@@ -117,7 +229,17 @@ export default class MySharePage extends React.Component {
     const {param} = this.state;
     let temp = param;
     temp.subplanfee = e.target.value;
+    let displaygetplanfee, displaycutplanfee  = '';
+    if (e.target.value == '') {
+      displaygetplanfee = '0.00';
+      displaycutplanfee = '0.00';
+    } else {
+      displaygetplanfee = (parseFloat(e.target.value)*0.8).toFixed(2);
+      displaycutplanfee = (parseFloat(e.target.value)*0.2).toFixed(2);
+    }
     this.setState({param: temp});
+    this.setState({displaygetplanfee: displaygetplanfee});
+    this.setState({displaycutplanfee: displaycutplanfee});
   }
 
   onChangeVideoUrl = (e) => {
@@ -128,31 +250,105 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeInstantCall = (e) => {
+    console.log("111");
     const {param} = this.state;
     let temp = param;
     temp.instantcall = !this.state.param.instantcall;
     this.setState({param: temp});
   }
 
+  onDrop() {
+    const node = this.myRef.current;
+    node.click();
+  }
+
+  onChangeAvatar = async(e) => {
+    const formData = new FormData();
+    formData.append('files[]', e.target.files[0]);
+    try {
+      this.setState({loading: true});
+      const result = await uploadimage(formData);
+      if (result.data.result == "success") {
+        const {param} = this.state;
+        let temp = param;
+        temp.avatar = result.data.data;
+        this.setState({param: temp});
+        this.showSuccess("Change Avatar Success");
+      } else {
+        this.showFail();
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail();
+    };
+  }
+
+  showSuccess(text) {
+    store.addNotification({
+      title: "Success",
+      message: text,
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail() {
+    store.addNotification({
+      title: "Success",
+      message: "Action Success!",
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
     return (
+      <>
+      {this.state.loading && <LoadingModal open={true} />}
+      <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="profile-setting-card">
           <CardBody>
             <Row>
               <Col xl="3" className="subscription-mentor-detail">
-                <div >
+                <div>
                   <h2>Profile Setting</h2>
-                  <img src={MentorAvatar} alt="avatar"/>
+                  <div className="avatar-tooltip">
+                    {this.state.param.avatar && <img className="avatar" src={this.state.param.avatar} alt="avatar" onClick={() => this.onDrop()} />}
+                    {!this.state.param.avatar && <img className="avatar" src={avatar} alt="avatar" onClick={() => this.onDrop()} />}
+                    <span className="avatar-tooltiptext">Change your avatar</span>
+                  </div>
+                  <input type="file" hidden ref={this.myRef} onChange={(e) => this.onChangeAvatar(e)}></input>
                 </div>
               </Col>
               <Col xl="9" lg="12" className="profile-setting-detail">
                 <div className="right">
-                  <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)} >
+                  {this.state.param.instantcall ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
                     <img src={Icon} alt="icon" style={{paddingRight: "5px", paddingBottom: "5px"}}/>
                     Instant call
                     <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
-                  </FormCheckbox>
+                  </FormCheckbox> : <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
+                    <img src={Icon} alt="icon" style={{paddingRight: "5px", paddingBottom: "5px"}}/>
+                    Instant call
+                    <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
+                  </FormCheckbox>}
                 </div>
                 <div className="profile-detail">
                   <Row>
@@ -161,55 +357,80 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Full Name</label>
-                            <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.userInfo.fullname} />
+                            {this.state.requiremessage.dfullname != '' && <span className="require-message">{this.state.requiremessage.dfullname}</span>}
+                            {this.state.requiremessage.dfullname != '' && <FormInput className="profile-detail-input" placeholder="Full Name" invalid onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>}
+                            {this.state.requiremessage.dfullname == '' && <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
-                            <label htmlFor="fePassword">Date of birth</label>
-                            <FormInput className="profile-detail-input" placeholder="Date of Birth" onChange={(e) => this.onChangeBirthDay(e)} />
+                            <div><label htmlFor="fePassword">Date of birth</label></div>
+                            <DatePicker
+                              md="6"
+                              size="lg"
+                              selected={this.state.displaydate}
+                              onChange={(e) => this.onChangeBirthDay(e)}
+                              value={this.state.param.birthday}
+                              placeholderText="Date of birth"
+                              dropdownMode="select"
+                              className="text-center"
+                            />
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Email</label>
-                            <FormInput className="profile-detail-input" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.userInfo.email} />
+                            {this.state.requiremessage.demail != '' && <span className="require-message">{this.state.requiremessage.demail}</span>}
+                            {this.state.requiremessage.demail != '' && <FormInput className="profile-detail-input" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
+                            {this.state.requiremessage.demail == '' && <FormInput className="profile-detail-input" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feInputState" className="profile-detail-important" >Expertise</label>
-                            <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeExpertise(e)} >
-                              <option>Intermediate</option>
-                              <option>...</option>
+                            {this.state.requiremessage.dexpertise != '' && <span className="require-message">{this.state.requiremessage.dexpertise}</span>}
+                            <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeExpertise(e)}>
+                              {expertise.map((item, index) =>
+                                item.value == this.state.param.expertise ? <option value={item.value} selected>{item.name}</option> : <option value={item.value}>{item.name}</option>
+                              )}
                             </FormSelect>
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Hourly price</label>
-                            <FormInput className="profile-detail-input no-margin" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.userInfo.hourly_price} />
+                            {this.state.requiremessage.dhourlyprice != '' && <span className="require-message">{this.state.requiremessage.dhourlyprice}</span>}
+                            {this.state.requiremessage.dhourlyprice != '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" invalid onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
+                            {this.state.requiremessage.dhourlyprice == '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
                             <label className="profile-detail-comment">
-                              You get 80% of your price. (0.00 $) Remaining 20% goes to admin. (0.00 $)
+                              <span>You get 80% of your price. ({this.state.displaygethourlyprice} $)</span><br></br>
+                              Remaining 20% goes to admin. ({this.state.displaycuthourlyprice} $)
                             </label>
                           </Col>
                           <Col md="6" className="project-detail-input-group">
-                            <label htmlFor="fePassword">Video url</label>
-                            <FormInput className="profile-detail-input" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.userInfo.video_url} />
+                            <label htmlFor="fePassword" className="profile-detail-important">Video url</label>
+                            {this.state.requiremessage.videourl != '' && <span className="require-message">{this.state.requiremessage.videourl}</span>}
+                            {this.state.requiremessage.videourl != '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" invalid onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
+                            {this.state.requiremessage.videourl == '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Subscription Page Name</label>
-                            <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.userInfo.sub_page_name} />
+                            {this.state.requiremessage.dsubpagename != '' && <span className="require-message">{this.state.requiremessage.dsubpagename}</span>}
+                            {this.state.requiremessage.dsubpagename != '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" invalid onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
+                            {this.state.requiremessage.dsubpagename == '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Subscription plan fee</label>
-                            <FormInput className="profile-detail-input no-margin" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.userInfo.sub_plan_fee} />
+                            {this.state.requiremessage.dsubplanfee != '' && <span className="require-message">{this.state.requiremessage.dsubplanfee}</span>}
+                            {this.state.requiremessage.dsubplanfee != '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" invalid onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
+                            {this.state.requiremessage.dsubplanfee == '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
                             <label className="profile-detail-comment">
-                              You get 80% of your price. (0.00 $) Remaining 20% goes to admin. (0.00 $)
+                              <span>You get 80% of your price. ({this.state.displaygetplanfee} $)</span><br></br>
+                              Remaining 20% goes to admin. ({this.state.displaycutplanfee} $)
                             </label>
                           </Col>
                         </Row>
                         <Row form>
                           <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
-                          <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={this.state.userInfo.description} />
+                          <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={this.state.param.description}/>
                         </Row>
                         <Row className="profile-detail-save center">
                           <Button className="btn-profile-detail-save" onClick={() => this.actionSave()}>Save</Button>
@@ -223,6 +444,7 @@ export default class MySharePage extends React.Component {
           </CardBody>
         </Card>    
       </Container>
+      </>
     )
   }
 };

@@ -58,10 +58,12 @@ export default class SignUp extends React.Component {
         localStorage.setItem('email', result.data.data.email);
         window.location.href = '/profile';
       } else {
-        alert("Failed");
+        this.setState({
+          signUpError: result.data.message
+        })
       }
     } catch(err) {
-      alert(err);
+      
     };
   }
 
@@ -97,7 +99,7 @@ export default class SignUp extends React.Component {
         password: '',
         confirm: ''
       },
-      signInError: ''
+      signUpError: ''
     })
   }
 
@@ -161,7 +163,7 @@ export default class SignUp extends React.Component {
     //Compare
     if(this.state.confirmpassword && this.state.password && this.state.password !== this.state.confirmpassword) {
       formIsValid = false;
-      errors["confirm"] = "The password is incorrect. Please try again";
+      errors["confirm"] = "The password does not match. Try again";
     }
 
     //Password
@@ -245,6 +247,7 @@ export default class SignUp extends React.Component {
               <label class="password-validation-err">{this.state.validationError['confirm']}</label>
             </div>
             <div className="content-center block-content-class button-text-group-class">
+              <label class="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
               <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
             </div>
