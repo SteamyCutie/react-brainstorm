@@ -9,6 +9,7 @@ import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
 import "../src/assets/mentorWallet.css";
 import "../src/assets/student.css";
 import "../src/assets/mentor.css";
+import "../src/assets/common.css";
 
 import Video from "./video/video.mp4"
 

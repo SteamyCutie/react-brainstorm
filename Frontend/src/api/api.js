@@ -7,7 +7,8 @@ import { SERVER_URL } from '../common/config';
 export const signup = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/signup', param);
+            let header = {'authorization': localStorage.getItem('token')};
+            const response = await axios.post(SERVER_URL+'/api/signup', param, header);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -19,6 +20,7 @@ export const signin = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
             const response = await axios.post(SERVER_URL+'/api/signin', param);
+            localStorage.setItem('token', response.data.token);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -47,6 +49,28 @@ export const editprofile = (param) => {
         }
     });
 };
+
+export const forgetPassword = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/forgetpassword', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const resetPassword = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/resetpassword', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 //-------UserController------------
 
 
@@ -54,7 +78,12 @@ export const editprofile = (param) => {
 export const getAvailableTimes = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
+            // let formdata = new FormData();
+            // param.each((value, key) => {
+            //     formdata.set(key, value);
+            // });
             const response = await axios.post(SERVER_URL+'/api/getavailabletimes', param);
+            // localStorage.setItem('token', response.data.token);
             resolve(response);
         } catch(error) {
             reject(error)
@@ -203,12 +232,11 @@ export const uploadvideo = (param) => {
         try {
             const response = await axios.post(SERVER_URL+'/api/uploadvideo', param, config.headers);
             resolve(response);
-        } catch(error) {
+        }  catch(error) {
             reject(error);
         }
     });
 }
-
-//----------FileController--------------
+//---------FileController-------------
 
 //Backend Apis

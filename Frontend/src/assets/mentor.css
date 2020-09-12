@@ -89,6 +89,10 @@
     box-shadow: 0 0.125rem 0.625rem rgba(90,97,105,.14);
 }
 
+.small-card-forum:hover {
+    box-shadow: 0.125rem 0.125rem 0.325rem 0.125rem rgba(90,97,105,.14);
+}
+
 .small-card-forum-avatar {
     width: 62px;
     height: 62px;
