@@ -10,6 +10,7 @@ export default class ResetPassword extends React.Component {
       historyData: [],
       password: '',
       confirm: '',
+      vCode: '',
       validationErrorMsg: {
         password: '',
         confirm: ''
@@ -19,10 +20,10 @@ export default class ResetPassword extends React.Component {
   }
 
   componentWillMount() {
-
-    let token = this.props.location.search.split('=')[1];
-
-    console.log(token);
+    let vCode = this.props.location.pathname.split('/')[2];
+    this.setState({
+      vCode: vCode
+    })
   }
 
   showValidation() {
@@ -69,12 +70,11 @@ export default class ResetPassword extends React.Component {
 
   actionResetPassword = async() => {
     try {
-      const result = await resetPassword({email: localStorage.getItem('email'), passowrd: this.state.password, confirm: this.state.confirm});
-
+      const result = await resetPassword({email: localStorage.getItem('email'), password: this.state.password, vCode: this.state.vCode});      
       if(result.data.result === "success") {
-        
+        window.location.href = '/';
       } else {
-
+        alert("failed")
       }
     } catch(err) {
       alert(err);
@@ -86,7 +86,7 @@ export default class ResetPassword extends React.Component {
       this.actionResetPassword();
   }
 
-  onChangePassword = (e) => {
+  onChangePassword =  (e) => {
     this.setState({
       password: e.target.value,
     });

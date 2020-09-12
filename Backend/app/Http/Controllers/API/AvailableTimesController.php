@@ -16,13 +16,13 @@ class AvailableTimesController extends Controller
 
     public function getAvailableTimes(Request $request)
     {
-        $email = $request['email'];
+        $email = $request['email'];        
         $user = User::where('email', $email)->first();
         // var_dump($user['id']);
         $timeList = AvailableTimes::where('user_id', $user['id'])->get();
 
         return response()->json([
-            'result'=> 'success',
+            'result'=> 'success',            
             'data' => $timeList
         ]);
     }

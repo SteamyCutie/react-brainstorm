@@ -31,7 +31,11 @@ export const signin = (param) => {
 export const getuserinfo = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/getuserinfo', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getuserinfo', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -42,7 +46,11 @@ export const getuserinfo = (param) => {
 export const editprofile = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/editprofile', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'Bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/editprofile', param, header);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -53,7 +61,7 @@ export const editprofile = (param) => {
 export const forgetPassword = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/forgetpassword', param);
+            const response = await axios.post(SERVER_URL+'/api/forgot', param);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -64,7 +72,7 @@ export const forgetPassword = (param) => {
 export const resetPassword = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/resetpassword', param);
+            const response = await axios.post(SERVER_URL+'/api/reset', param);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -237,6 +245,23 @@ export const uploadvideo = (param) => {
         }
     });
 }
+
+export const verifyCode = (param) => {
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/verifycode', param);
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+
 //---------FileController-------------
 
 //Backend Apis
