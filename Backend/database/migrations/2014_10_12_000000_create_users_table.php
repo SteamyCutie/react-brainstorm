@@ -20,6 +20,9 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('avatar');
+            $table->integer('two_factor_code');
+            $table->integer('is_active');
+            $table->integer('expertise');
             $table->timestamp('dob')->nullable();
             $table->float('hourly_price');
             $table->string('video_url')->nullable();
