@@ -55,12 +55,14 @@ export default class SignUp extends React.Component {
     try {
       const result = await signup(this.state);
       if (result.data.result == "success") {
-        localStorage.setItem('email', result.data.data.email);
-        window.location.href = '/profile';
+        localStorage.setItem('email', result.data.user.email);
+        localStorage.setItem('password', this.state.password);
+        window.location.href = '/verification';
       } else {
-        this.setState({
-          signUpError: result.data.message
-        })
+        alert(result.data.message)
+        // this.setState({
+        //   signUpError: result.data.message
+        // })
       }
     } catch(err) {
       

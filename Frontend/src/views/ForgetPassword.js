@@ -9,7 +9,8 @@ export default class ForgetPassword extends React.Component {
     this.state = {
       historyData: [],
       email: '',
-      validationErrorMsg: ''
+      validationErrorMsg: '',
+      vCode: ''
     }
   }
 
@@ -57,9 +58,10 @@ export default class ForgetPassword extends React.Component {
       const result = await forgetPassword({email: localStorage.getItem('email')});
 
       if(result.data.result === "success") {
-        
+        alert("Please check your Email");
+        window.location.href = '/';
       } else {
-
+        alert("failed")
       }
     } catch(err) {
       alert(err);

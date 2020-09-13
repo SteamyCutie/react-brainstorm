@@ -25,7 +25,7 @@ export default class MySharePage extends React.Component {
       displaygetplanfee: '0.00',
       displaycutplanfee: '0.00',
       requiremessage: {
-        dfullname: '',
+        dname: '',
         demail: '',
         dexpertise: '',
         dhourlyprice: '',
@@ -34,7 +34,7 @@ export default class MySharePage extends React.Component {
         videourl: ''
       },
       param: {
-        fullname: '',
+        name: '',
         birthday: undefined,
         email: '',
         description: '',
@@ -65,7 +65,7 @@ export default class MySharePage extends React.Component {
       if (result.data.result == "success") {
         const {param} = this.state;
         let temp = param;
-        temp.fullname = result.data.data.name;
+        temp.name = result.data.data.name;
         temp.birthday = result.data.data.dob;
         temp.email = result.data.data.email;
         temp.avatar = result.data.data.avatar;
@@ -96,7 +96,7 @@ export default class MySharePage extends React.Component {
   actionSave = async() => {
     const {requiremessage} = this.state;
     let temp = requiremessage;
-    temp.dfullname = '';
+    temp.dname = '';
     temp.demail = '';
     temp.dexpertise = '';
     temp.dhourlyprice = '';
@@ -116,8 +116,8 @@ export default class MySharePage extends React.Component {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
           let temp = requiremessage;
-          if (result.data.message.fullname) {
-            temp.dfullname = result.data.message.fullname[0];
+          if (result.data.message.name) {
+            temp.dname = result.data.message.name[0];
           }
           if (result.data.message.email) {
             temp.demail = result.data.message.email[0];
@@ -157,7 +157,7 @@ export default class MySharePage extends React.Component {
     }
     const {param} = this.state;
     let temp = param;
-    temp.fullname = e.target.value;
+    temp.name = e.target.value;
     this.setState({param: temp});
   };
 
@@ -357,9 +357,9 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Full Name</label>
-                            {this.state.requiremessage.dfullname != '' && <span className="require-message">{this.state.requiremessage.dfullname}</span>}
-                            {this.state.requiremessage.dfullname != '' && <FormInput className="profile-detail-input" placeholder="Full Name" invalid onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>}
-                            {this.state.requiremessage.dfullname == '' && <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.fullname}/>}
+                            {this.state.requiremessage.dname != '' && <span className="require-message">{this.state.requiremessage.dname}</span>}
+                            {this.state.requiremessage.dname != '' && <FormInput className="profile-detail-input" placeholder="Full Name" invalid onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
+                            {this.state.requiremessage.dname == '' && <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <div><label htmlFor="fePassword">Date of birth</label></div>
