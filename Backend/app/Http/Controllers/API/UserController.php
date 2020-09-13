@@ -235,7 +235,6 @@ class UserController extends Controller
             $body = $body."<p>Did you forget your password?</p><br>";
             $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';            
             $vCode =  substr(str_shuffle($permitted_chars), 0, 30);
-            die();
             User::where('email', $email)->update(['remember_token' => $vCode]);
             $body = $body."<a href = '".env("FRONT_URL")."/resetpassword/{$vCode}'><button>Click to reset your password</button></a>";
 
