@@ -1,31 +1,30 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { DropdownItem, Collapse, NavItem, NavLink, Dropdown, DropdownToggle, DropdownMenu } from "shards-react";
+import { DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
 
 import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 import ReivewImage from "../../images/Review.jpg"
 
-class SmallCard3 extends React.Component {
+class SmallCard4 extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {open: false,};
-    
-    this.toggle = this.toggle.bind(this);
+    this.state = {visible: false};
+    this.toggleActions = this.toggleActions.bind(this);
   }
 
   componentDidMount() {
   }
 
-  edit() {
-
+  toggleActions() {
+    this.setState({
+      visible: !this.state.visible
+    });
   }
 
-  toggle() {
-    this.setState(prevState => {
-      return { open: !prevState.open };
-    });
+  edit() {
+
   }
 
   render() {
@@ -35,6 +34,7 @@ class SmallCard3 extends React.Component {
         <div className="small-card3-desc">
           <div style={{display: "flex", float: "left"}}>
             <img src={ReivewImage} className="small-card3-avatar" alt="avatar" />
+            {/* <img src={ReivewImage} className="small-card3-avatar" alt="avatar" /> */}
             <div>
               <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
@@ -46,22 +46,6 @@ class SmallCard3 extends React.Component {
               </div>
             </div>
           </div>
-          {/* <Dropdown open={this.state.open} toggle={this.toggle}>
-            <DropdownToggle style={{float: 'right'}}>
-            <div className="nav-link-icon__wrapper">
-                <img
-                  className="user-avatar mr-2"
-                  src={MoreButtonImage}
-                  alt="User Avatar"
-                />{" "}
-              </div>
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem  onClick={() => this.edit()}>
-                Edit
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown> */}
         </div>
         <div className="small-card3-date-time">
           <div style={{display: "flex", marginBottom: "5px"}}>
@@ -82,14 +66,14 @@ class SmallCard3 extends React.Component {
   }
 }
 
-SmallCard3.propTypes = {
+SmallCard4.propTypes = {
   label: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
-SmallCard3.defaultProps = {
+SmallCard4.defaultProps = {
   value: 0,
   label: "Label",
 };
 
-export default SmallCard3;
+export default SmallCard4;
