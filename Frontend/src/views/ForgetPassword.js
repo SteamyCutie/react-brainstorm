@@ -58,8 +58,7 @@ export default class ForgetPassword extends React.Component {
       const result = await forgetPassword({email: localStorage.getItem('email')});
 
       if(result.data.result === "success") {
-        alert("Please check your Email");
-        window.location.href = '/';
+        window.location.href = '/emailsent';
       } else {
         alert("failed")
       }

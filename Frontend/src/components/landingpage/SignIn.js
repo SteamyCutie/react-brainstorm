@@ -123,13 +123,12 @@ export default class SignIn extends React.Component {
         localStorage.setItem('email', this.state.email);
         window.location.href = '/mentorSession';
       } else {
-        // this.setErrorMessage();
         this.setState({
           signInError: result.data.message
         })
       }
     } catch(err) {
-      alert(err);
+
     };
   }
 

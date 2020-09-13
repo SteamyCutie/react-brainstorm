@@ -26,14 +26,16 @@ class UserController extends Controller
                 return response()->json([
                     'result'=> 'failed',
                     'message' => config('messages.auth.verify_code'),
-                ], 401);
+                // ], 401);
+                ]);
             }
 
             if (!$token = JWTAuth::attempt($input)) {
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Invalid Email or Password',
-                ], 401);
+                // ], 401);
+                ]);
             }
 
             return response()->json([
@@ -62,7 +64,8 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message'   =>  'Email address is already existed'
-            ], 300);
+            // ], 300);
+            ]);
         }
 
         try {
@@ -71,13 +74,14 @@ class UserController extends Controller
             $user->email = $email;
             $user->password = bcrypt($password);
             $user->is_active = config('global.users.active');
-            $user->save();
+            // $user->save();
             $user->generateTwoFactorCode();
             $toEmail = $user->email;
 
             $body = $body."<p>Veryfication Code :".$user->two_factor_code."<p><br>";
             $body = $body."<a href = '".env("FRONT_URL")."/verification'><button>Click to confirm your account</button></a>";
             if (!$this->send_email($toEmail, $name, $subject, $body)){
+                User::where(['email' => $email])->delete();
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, fail send mail'
@@ -91,7 +95,8 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message' => 'Sorry, user can not register'
-            ], 500);
+            // ], 500);
+            ]);
         }
     }
 
@@ -187,7 +192,8 @@ class UserController extends Controller
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, confirm code is wrong!'
-                ], 500);
+                // ], 500);
+                ]);
             }
 
             $user->verifiedAccount();
@@ -209,7 +215,8 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message' => 'Sorry, can not verify the code'
-            ], 500);
+            // ], 500);
+            ]);
         }
     }
 
@@ -224,7 +231,8 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message'   =>  'Email address is not existed'
-            ], 300);
+            // ], 300);
+            ]);
         }
 
         try {
@@ -291,7 +299,8 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message' => 'Sorry, can not update password. Try again.'
-            ], 500);
+            // ], 500);
+            ]);
         }
     }
 
@@ -300,7 +309,8 @@ class UserController extends Controller
         return response()->json([
             'result'=> 'success',
             'message'      =>  'logout successfully'
-        ], 200);
+        // ], 200);
+        ]);
     }
 
     public function getallmentors(Request $request)

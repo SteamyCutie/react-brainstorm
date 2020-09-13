@@ -59,10 +59,10 @@ export default class SignUp extends React.Component {
         localStorage.setItem('password', this.state.password);
         window.location.href = '/verification';
       } else {
-        alert(result.data.message)
-        // this.setState({
-        //   signUpError: result.data.message
-        // })
+        // alert(result.data.message)
+        this.setState({
+          signUpError: result.data.message
+        })
       }
     } catch(err) {
       
