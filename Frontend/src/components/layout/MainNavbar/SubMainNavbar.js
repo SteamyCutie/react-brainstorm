@@ -4,14 +4,7 @@ import classNames from "classnames";
 import { Container, Navbar } from "shards-react";
 import CreateMyShare from "../../common/CreateMyShare";
 
-// const SubMainNavbar = ({ layout, stickyTop }) => {
 export default class SubMainNavbar extends React.Component {
-  // classes = classNames(
-  //   "main-navbar",
-  //   "bg-white",
-  //   "sub-main-nav-bar-class",
-  //   stickyTop && "sticky-top"
-  // );
 
   constructor(props) {
     super(props);

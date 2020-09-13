@@ -79,6 +79,21 @@ export const resetPassword = (param) => {
         }
     });
 }
+
+export const getallmentors = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getallmentors', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 //-------UserController------------
 
 
@@ -91,7 +106,6 @@ export const getAvailableTimes = (param) => {
                 'Authorization': 'bearer ' + token
             }
             const response = await axios.post(SERVER_URL+'/api/getavailabletimes', param, {headers: header});
-            // localStorage.setItem('token', response.data.token);
             resolve(response);
         } catch(error) {
             reject(error)
@@ -198,6 +212,36 @@ export const createforum = (param) => {
     });
 };
 
+export const editforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/editforum', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
+export const getforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getforum', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
 export const getUpcomingSession = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -227,7 +271,6 @@ export const getHistory = (param) => {
         }
     });
 }
-
 //------------SessionController--------------
 
 

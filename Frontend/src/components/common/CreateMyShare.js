@@ -73,6 +73,7 @@ export default class CreateMyShare extends React.Component {
       this.setState({loading: true});
       const result = await createshareinfo(this.state.foruminfo);
       if (result.data.result === "success") {
+        this.toggle();
         this.showSuccess("Action Successful");
       } else {
         if (result.data.type == 'require') {
@@ -92,7 +93,6 @@ export default class CreateMyShare extends React.Component {
         this.showFail("Action Fail");
       }
       this.setState({loading: false});
-      this.toggle();
     } catch(err) {
       this.setState({loading: false});
       this.showFail("Action Fail");
