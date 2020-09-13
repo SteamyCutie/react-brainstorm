@@ -56,7 +56,6 @@ export default class EditLiveForum extends React.Component {
   onChangeTags = (e) => {
     const {foruminfo} = this.state;
     let temp = foruminfo;
-    console.log(temp);
     if (temp.tags.indexOf(e.target.value) === -1)    
       temp.tags.push(e.target.value);
     else {
@@ -84,7 +83,17 @@ export default class EditLiveForum extends React.Component {
     try {
       const result = await getforum({id: id});
       if (result.data.result === "success") {
-        this.setState({foruminfo: result.data.data});
+        const {foruminfo} = this.state;
+        let temp = foruminfo;
+        temp.tags = result.data.data.tags;
+        temp.id = result.data.data.id;
+        temp.title = result.data.data.title;
+        temp.description = result.data.data.description;
+        temp.from = result.data.data.from;
+        temp.to = result.data.data.to;
+        this.setState({foruminfo: temp});
+
+        // console.log(this.state);
       } else {
         alert(result.data.message);
       }
@@ -204,9 +213,11 @@ export default class EditLiveForum extends React.Component {
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Tags</label>
-            {this.state.tags.map((item, idx) => 
-              <FormCheckbox className="mb-1" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>
-            )}
+            {this.state.tags.map((item, idx) => {
+              var index = this.state.foruminfo.tags.findIndex((value) => item.id == value)
+              return index > -1 ? <FormCheckbox className="mb-1" checked value={this.state.foruminfo.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
+                <FormCheckbox className="mb-1" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
+            })}
           </div>
           <DatePicker
             md="6"

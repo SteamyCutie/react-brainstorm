@@ -14,20 +14,20 @@ class SmallCardForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
+      open: false,
       loading: false,
       forumInfos: [],
       ModalOpen: false,
     };
-    this.toggleActions = this.toggleActions.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
   componentDidMount() {
   }
 
-  toggleActions() {
-    this.setState({
-      visible: !this.state.visible
+  toggle() {
+    this.setState(prevState => {
+      return { open: !prevState.open };
     });
   }
 
@@ -51,11 +51,8 @@ class SmallCardForum extends React.Component {
         <EditLiveForum open={ModalOpen} id={id} toggle={() => this.toggle_editliveforum()} toggle_modal={() => this.toggle_modal()}></EditLiveForum>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
-          <NavItem className="dropdown notifications notification-class">
-            <NavLink
-              className="nav-link-icon text-center"
-              onClick={this.toggleActions}
-            >
+          <Dropdown open={this.state.open} toggle={this.toggle}>
+            <DropdownToggle>
               <div className="nav-link-icon__wrapper">
                 <img
                   className="user-avatar mr-2"
@@ -63,16 +60,13 @@ class SmallCardForum extends React.Component {
                   alt="User Avatar"
                 />{" "}
               </div>
-            </NavLink>
-            <Collapse
-              open={this.state.visible}
-              className="dropdown-menu dropdown-menu-small"
-            >
+            </DropdownToggle>
+            <DropdownMenu>
               <DropdownItem  onClick={() => this.toggle_editliveforum()}>
                 Edit
               </DropdownItem>
-            </Collapse>
-          </NavItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
         <div style={{display: "flex"}}>
         {tag_name.map((item, idx) => 

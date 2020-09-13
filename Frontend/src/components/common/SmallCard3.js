@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
+import { DropdownItem, Collapse, NavItem, NavLink, Dropdown, DropdownToggle, DropdownMenu } from "shards-react";
 
 import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
@@ -10,21 +10,22 @@ import ReivewImage from "../../images/Review.jpg"
 class SmallCard3 extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {visible: false};
-    this.toggleActions = this.toggleActions.bind(this);
+    this.state = {open: false,};
+    
+    this.toggle = this.toggle.bind(this);
   }
 
   componentDidMount() {
   }
 
-  toggleActions() {
-    this.setState({
-      visible: !this.state.visible
-    });
-  }
-
   edit() {
 
+  }
+
+  toggle() {
+    this.setState(prevState => {
+      return { open: !prevState.open };
+    });
   }
 
   render() {
@@ -45,28 +46,22 @@ class SmallCard3 extends React.Component {
               </div>
             </div>
           </div>
-          <NavItem style={{float: 'right'}} className="dropdown notifications notification-class">
-            <NavLink
-              className="nav-link-icon text-center"
-              onClick={this.toggleActions}
-            >
-              <div className="nav-link-icon__wrapper">
+          {/* <Dropdown open={this.state.open} toggle={this.toggle}>
+            <DropdownToggle style={{float: 'right'}}>
+            <div className="nav-link-icon__wrapper">
                 <img
                   className="user-avatar mr-2"
                   src={MoreButtonImage}
                   alt="User Avatar"
                 />{" "}
               </div>
-            </NavLink>
-            <Collapse
-              open={this.state.visible}
-              className="dropdown-menu dropdown-menu-small"
-            >
+            </DropdownToggle>
+            <DropdownMenu>
               <DropdownItem  onClick={() => this.edit()}>
                 Edit
               </DropdownItem>
-            </Collapse>
-          </NavItem>
+            </DropdownMenu>
+          </Dropdown> */}
         </div>
         <div className="small-card3-date-time">
           <div style={{display: "flex", marginBottom: "5px"}}>
