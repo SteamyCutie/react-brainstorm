@@ -161,7 +161,6 @@ export default class CreateMyShare extends React.Component {
     const { open } = this.props;
     return (
       <div>
-        {this.state.loading && <LoadingModal open={true} />}
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
@@ -187,6 +186,7 @@ export default class CreateMyShare extends React.Component {
           </div>
           </ModalBody>
         </Modal>
+        {this.state.loading && <LoadingModal open={true} />}
       </div>
     );
   }

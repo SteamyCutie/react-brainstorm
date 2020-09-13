@@ -24,7 +24,7 @@ class MentorDetailCard extends React.Component {
   }
 
   render() {
-    const {name, score, avatar, teaches, online, description, hourly_price} = this.props.mentorData;
+    const {name, score, avatar, tag_name, online, description, hourly_price} = this.props.mentorData;
   
     return (
       <div className="mentor-detail-card">
@@ -42,7 +42,7 @@ class MentorDetailCard extends React.Component {
           </Row>
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-            {this.state.teaches.map((teach, idk) => (
+            {tag_name.map((teach, idk) => (
               <p key={idk} className="brainsshare-tag">{teach}</p>
             ))
             }

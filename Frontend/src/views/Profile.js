@@ -10,7 +10,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import Icon from "../images/Lightning.svg"
 import Tooltip from "../images/Tooltip.svg"
 import avatar from "../images/avatar.jpg"
-import { editprofile, getuserinfo, uploadimage } from '../api/api';
+import { editprofile, getuserinfo, uploadimage, gettags } from '../api/api';
 
 export default class MySharePage extends React.Component {
   constructor(props) {
@@ -18,6 +18,7 @@ export default class MySharePage extends React.Component {
     this.myRef = React.createRef();
 
     this.state = {
+      tags: [],
       loading: false,
       displaydate: undefined,
       displaygethourlyprice: '0.00',
@@ -44,7 +45,9 @@ export default class MySharePage extends React.Component {
         subplanfee: '',
         videourl: '',
         avatar: '',
-        instantcall: false
+        instantcall: false,
+        is_mentor: false,
+        tags: [],
       }
     };
     this.onDrop = this.onDrop.bind(this);
@@ -56,6 +59,11 @@ export default class MySharePage extends React.Component {
     temp.email = localStorage.getItem('email');
     this.setState({param: temp});
     this.getUserInformation();
+    this.getAllTags();
+  }
+
+  componentDidMount() {
+    document.getElementById('email').setAttribute('style', 'pointer-events : none !important');
   }
 
   getUserInformation = async() => {
@@ -76,6 +84,8 @@ export default class MySharePage extends React.Component {
         temp.videourl = result.data.data.video_url;
         temp.expertise = result.data.data.expertise;
         temp.instantcall = result.data.data.instant_call;
+        temp.is_mentor = result.data.data.is_mentor;
+        temp.tags = result.data.data.tags;
         this.setState({
           param: temp,
           displaygethourlyprice: (parseFloat(result.data.data.hourly_price)*0.8).toFixed(2),
@@ -91,6 +101,40 @@ export default class MySharePage extends React.Component {
       this.setState({loading: false});
       this.showFail();
     };
+  }
+
+  getAllTags = async() => {
+    try {
+      const result = await gettags();
+      if (result.data.result === "success") {
+        this.setState({tags: result.data.data});
+      } else {
+        alert(result.data.message);
+      }
+    } catch(err) {
+      alert(err);
+    };
+  }
+
+  onChangeTags = (e) => {
+    const {param} = this.state;
+    let temp = param;
+
+    if (temp.tags.indexOf(e.target.value) === -1)    
+      temp.tags.push(e.target.value);
+    else {
+      var index = temp.tags.indexOf(e.target.value);
+      if (index > -1)
+        temp.tags.splice(index, 1);
+    }
+    this.setState({param: temp});
+  }
+
+  onChangeUser = (e) => {
+    const {param} = this.state;
+    let temp = param;
+    temp.is_mentor = !this.state.param.is_mentor;
+    this.setState({param: temp});
   }
 
   actionSave = async() => {
@@ -250,7 +294,6 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeInstantCall = (e) => {
-    console.log("111");
     const {param} = this.state;
     let temp = param;
     temp.instantcall = !this.state.param.instantcall;
@@ -379,8 +422,8 @@ export default class MySharePage extends React.Component {
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Email</label>
                             {this.state.requiremessage.demail != '' && <span className="require-message">{this.state.requiremessage.demail}</span>}
-                            {this.state.requiremessage.demail != '' && <FormInput className="profile-detail-input" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
-                            {this.state.requiremessage.demail == '' && <FormInput className="profile-detail-input" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
+                            {this.state.requiremessage.demail != '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
+                            {this.state.requiremessage.demail == '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feInputState" className="profile-detail-important" >Expertise</label>
@@ -432,6 +475,23 @@ export default class MySharePage extends React.Component {
                           <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
                           <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={this.state.param.description}/>
                         </Row>
+                        {this.state.param.is_mentor ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
+                        (Student/Mentor)
+                        <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
+                        </FormCheckbox> : <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
+                          (Student/Mentor)
+                          <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
+                        </FormCheckbox>}
+                        {this.state.param.is_mentor ? <Row form>
+                          <Col md="6" className="project-detail-input-group">
+                            <label htmlFor="feEmail">Tags</label>
+                            {this.state.tags.map((item, idx) => {
+                              var index = this.state.param.tags.findIndex((value) => item.id == value)
+                              return index > -1 ? <FormCheckbox className="mb-1" checked value={this.state.param.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
+                                <FormCheckbox className="mb-1" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
+                            })}
+                          </Col>
+                        </Row> : ""}
                         <Row className="profile-detail-save center">
                           <Button className="btn-profile-detail-save" onClick={() => this.actionSave()}>Save</Button>
                         </Row>
