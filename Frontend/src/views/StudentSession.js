@@ -19,19 +19,24 @@ export default class StudentSession extends React.Component {
   getSessionList = async() => {
     try {
       const result = await getUpcomingSession({email: localStorage.getItem('email')});
-
+      console.log(result, "+++++");
       if(result.data.result === "success") {
         var sessionTemp = result.data.data;
 
         this.setState({
           sessionList: sessionTemp,
-        })
+        });
+        console.log(this.state.sessionList);
       } else {
 
       }
     } catch(err) {
       alert(err);
     }
+  }
+
+  findMentor = async() => {
+    
   }
 
   render() {
@@ -41,7 +46,7 @@ export default class StudentSession extends React.Component {
           <Col className="page-title">
             <h3>Upcoming session</h3>
           </Col>
-          <Button className="btn-add-payment">Find a mentor</Button>
+          <Button className="btn-add-payment" onClick={() => this.findMentor()}>Find a mentor</Button>
         </Row>
         <Card small className="history-card">
           <CardHeader className="history-card-header">
