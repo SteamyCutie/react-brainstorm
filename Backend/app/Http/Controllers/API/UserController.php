@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
 use JWTAuth;
 use Exception;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Auth;
 
 class UserController extends Controller
 {
@@ -236,8 +233,9 @@ class UserController extends Controller
             $body = "Hi ".$name."<br>";
             $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
             $body = $body."<p>Did you forget your password?</p><br>";
-
-            $vCode = base64_encode($email);
+            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';            
+            $vCode =  substr(str_shuffle($permitted_chars), 0, 30);
+            die();
             User::where('email', $email)->update(['remember_token' => $vCode]);
             $body = $body."<a href = '".env("FRONT_URL")."/resetpassword/{$vCode}'><button>Click to reset your password</button></a>";
 
