@@ -45,7 +45,7 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message'=> 'Email or Password is incorrect.',
-            ]);  
+            ]);
         }
     }
 
@@ -130,16 +130,16 @@ class UserController extends Controller
             'subpagename' => 'required',
             'subplanfee' => 'required',
             'videourl' => 'required|url'
-        );    
+        );
         $messages = array(
             'required' => 'This field is required.',
         );
         $validator = Validator::make( $request->all(), $rules, $messages );
 
-        if ($validator->fails()) 
+        if ($validator->fails())
         {
             return [
-                'result' => 'failed', 
+                'result' => 'failed',
                 'type' => 'require',
                 'message' => $validator->messages()
             ];
@@ -245,7 +245,7 @@ class UserController extends Controller
                 ]);
             }
             return response()->json([
-                'result'=> 'success',               
+                'result'=> 'success',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -279,7 +279,7 @@ class UserController extends Controller
                 $user->update(['password' => $password_code]);
                 return response()->json([
                     'result'=> 'success',
-                    'message' => 'Updated password',                    
+                    'message' => 'Updated password',
                 ]);
             } else {
                 return response()->json([
@@ -301,5 +301,22 @@ class UserController extends Controller
             'result'=> 'success',
             'message'      =>  'logout successfully'
         ], 200);
+    }
+
+    public function getallmentors(Request $request)
+    {
+        $email = $request['email'];
+        $users = User::all();
+        $mentors = [];
+
+        for ($i = 0; $i < count($users); $i ++) {
+            if ($users[$i]['email'] != $email && $users[$i]['mentor'] == 1)
+                $mentors[] = $users[$i];
+        }
+
+        return response()->json([
+            'result'=> 'success',
+            'data'=> $mentors,
+        ]);
     }
 }
