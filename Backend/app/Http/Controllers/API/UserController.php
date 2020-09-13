@@ -59,7 +59,7 @@ class UserController extends Controller
         $password = $request['password'];
         $subject = "Welcome to BransShare!";
         $body = "Hi ".$name."<br>";
-        $body = $body."<img src='http://buscasa360storage0010513.s3-us-west-2.amazonaws.com/buscasa360_logo.png' style='width:90%;'/><br>";
+        $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
 
         if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
             return response()->json([
@@ -197,6 +197,7 @@ class UserController extends Controller
             $toEmail = $user->email;
             $name = $user->name;
             $body = "Hi ".$name."<br>";
+            $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
             $body = $body."<p>Veryfy Code Success!</p><br>";
 
             if (!$this->send_email($toEmail, $name, $subject, $body)){
@@ -233,6 +234,7 @@ class UserController extends Controller
             $toEmail = $user->email;
             $name = $user->name;
             $body = "Hi ".$name."<br>";
+            $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
             $body = $body."<p>Did you forget your password?</p><br>";
 
             $vCode = base64_encode($email);
@@ -246,7 +248,7 @@ class UserController extends Controller
                 ]);
             }
             return response()->json([
-                'result'=> 'success',                
+                'result'=> 'success',               
             ]);
         } catch (\Throwable $th) {
             return response()->json([
