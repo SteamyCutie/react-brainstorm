@@ -101,13 +101,13 @@ class SetAvailability extends React.Component {
         }
       ],
       dayOfWeekStatus: {
-        day_0: 1,
-        day_1: 1,
-        day_2: 1,
-        day_3: 1,
-        day_4: 1,
-        day_5: 1,
-        day_6: 1
+        day_0: 0,
+        day_1: 0,
+        day_2: 0,
+        day_3: 0,
+        day_4: 0,
+        day_5: 0,
+        day_6: 0
       }
     }
 
@@ -123,13 +123,16 @@ class SetAvailability extends React.Component {
   }
 
   handleAdd(dayIdx) {
-    const {availableTimeList} = this.state;
-    let list = availableTimeList;
-    list[dayIdx].timeList.push({from: 0, to: 0});
-
-    this.setState({
-      availableTimeList: list,
-    });
+    // if(this.state.dayOfWeekStatus[dayIdx]) {
+      console.log(dayIdx);
+      const {availableTimeList} = this.state;
+      let list = availableTimeList;
+      list[dayIdx].timeList.push({from: 0, to: 0});
+  
+      this.setState({
+        availableTimeList: list,
+      });
+    // }
   }
 
   handleDelete(dayIdx, idx) {
@@ -178,6 +181,7 @@ class SetAvailability extends React.Component {
     }
     
     list[dayIdx].timeList[timeIdx].from = timeId + 1;
+    list[dayIdx].timeList[timeIdx].to = timeId + 2;
     this.setState({
       availableTimeList: list,
     });
@@ -187,7 +191,7 @@ class SetAvailability extends React.Component {
     try {
       this.setState({loading: true});
       const result = await setAvailableTimes({email: localStorage.getItem('email'), data: this.state.availableTimeList});
-      console.log(result);
+
       if (result.data.result === "success") {
         this.getTimeListData();
         this.showSuccess("Set Availability Success");
@@ -297,14 +301,46 @@ class SetAvailability extends React.Component {
     });
   }
 
-  handleChange(e, dayIdx) {
+  handleChange(e, dayIdx, dayOfWeek) {
     const {dayOfWeekStatus} = this.state;
     let temp = dayOfWeekStatus;
 
     if(this.state.dayOfWeekStatus[dayIdx]) {
-      document.getElementById(dayIdx).setAttribute("style", "pointer-events: none; color: #999999 !important;");
+      if(this.state.availableTimeList[dayOfWeek].timeList.length) {
+        const elements = document.getElementById(dayIdx).getElementsByTagName("*");
+        let y = [...elements];
+
+        y.map((element, id) => {
+          element.setAttribute("disabled", true);
+          element.classList.add("disable-event");
+        });
+      } else {
+        const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
+        let y = [...elements];
+
+        y.map((element, id) => {
+          element.setAttribute("disabled", true);
+          element.classList.add("disable-event");
+        });
+      }
     } else {
-      document.getElementById(dayIdx).setAttribute("style", "");
+      if(this.state.availableTimeList[dayOfWeek].timeList.length) {
+        const elements = document.getElementById(dayIdx).getElementsByTagName("*");
+        let y = [...elements];
+
+        y.map((element, id) => {
+          element.removeAttribute("disabled");
+          element.classList.remove("disable-event")
+        });
+      } else {
+        const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
+        let y = [...elements];
+
+        y.map((element, id) => {
+          element.removeAttribute("disabled");
+          element.classList.remove("disable-event")
+        });
+      }
     }
 
     temp[dayIdx] = !dayOfWeekStatus[dayIdx];
@@ -344,7 +380,7 @@ class SetAvailability extends React.Component {
                             toggle
                             small 
                             checked={this.state.dayOfWeekStatus['day_' + dayIdx]}
-                            onChange={e => this.handleChange(e, 'day_' + dayIdx)}
+                            onChange={e => this.handleChange(e, 'day_' + dayIdx, dayIdx)}
                           >
                           {day.dayOfWeek}
                           </FormCheckbox>
@@ -413,6 +449,7 @@ class SetAvailability extends React.Component {
                               </Col>
                               <Col style={{marginTop: "10px", marginBottom: "10px"}}>
                                 <Button className="btn-available-time-add-delete no-padding"
+                                  
                                   onClick={() => this.handleAdd(dayIdx)}>
                                   <img src={AddButtonImage} alt="Add" />
                                 </Button>
