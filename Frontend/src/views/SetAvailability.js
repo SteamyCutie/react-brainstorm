@@ -100,15 +100,15 @@ class SetAvailability extends React.Component {
           timeList: []
         }
       ],
-      dayOfWeekStatus: {
-        day_0: 0,
-        day_1: 0,
-        day_2: 0,
-        day_3: 0,
-        day_4: 0,
-        day_5: 0,
-        day_6: 0
-      }
+      dayOfWeekStatus: [
+         false,
+         false,
+         false,
+         false,
+         false,
+         false,
+         false
+      ]
     }
 
     this.handleAdd = this.handleAdd.bind(this);
@@ -123,8 +123,6 @@ class SetAvailability extends React.Component {
   }
 
   handleAdd(dayIdx) {
-    // if(this.state.dayOfWeekStatus[dayIdx]) {
-      console.log(dayIdx);
       const {availableTimeList} = this.state;
       let list = availableTimeList;
       list[dayIdx].timeList.push({from: 0, to: 0});
@@ -132,7 +130,6 @@ class SetAvailability extends React.Component {
       this.setState({
         availableTimeList: list,
       });
-    // }
   }
 
   handleDelete(dayIdx, idx) {
@@ -187,9 +184,17 @@ class SetAvailability extends React.Component {
     });
   }
 
+  makeParam() {
+    const {availableTimeList} = this.state;
+    let temp = availableTimeList;
+
+    // temp.map((time, ))
+  }
+
   handleSave = async() => {
     try {
       this.setState({loading: true});
+      this.makeParam();
       const result = await setAvailableTimes({email: localStorage.getItem('email'), data: this.state.availableTimeList});
 
       if (result.data.result === "success") {
@@ -304,8 +309,8 @@ class SetAvailability extends React.Component {
   handleChange(e, dayIdx, dayOfWeek) {
     const {dayOfWeekStatus} = this.state;
     let temp = dayOfWeekStatus;
-
-    if(this.state.dayOfWeekStatus[dayIdx]) {
+    
+    if(this.state.dayOfWeekStatus[dayOfWeek]) {
       if(this.state.availableTimeList[dayOfWeek].timeList.length) {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
@@ -342,8 +347,8 @@ class SetAvailability extends React.Component {
         });
       }
     }
-
-    temp[dayIdx] = !dayOfWeekStatus[dayIdx];
+    temp[dayOfWeek] = !dayOfWeekStatus[dayOfWeek];
+    
     this.setState({
       dayOfWeekStatus: temp
     })
@@ -448,8 +453,9 @@ class SetAvailability extends React.Component {
                                 </FormSelect>
                               </Col>
                               <Col style={{marginTop: "10px", marginBottom: "10px"}}>
+                              {!this.state.dayOfWeekStatus[dayIdx]}
                                 <Button className="btn-available-time-add-delete no-padding"
-                                  
+                                  disabled={!this.state.dayOfWeekStatus[dayIdx]}
                                   onClick={() => this.handleAdd(dayIdx)}>
                                   <img src={AddButtonImage} alt="Add" />
                                 </Button>
