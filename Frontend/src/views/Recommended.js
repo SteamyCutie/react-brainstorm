@@ -63,8 +63,8 @@ export default class Recommended extends React.Component {
 
   showFail() {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: "Action Fail!",
       type: "danger",
       insert: "top",
       container: "top-right",

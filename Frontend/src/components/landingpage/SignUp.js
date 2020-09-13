@@ -65,7 +65,6 @@ export default class SignUp extends React.Component {
         // })
       }
     } catch(err) {
-      
     };
   }
 

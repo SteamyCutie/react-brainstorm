@@ -109,10 +109,10 @@ export default class MySharePage extends React.Component {
       if (result.data.result === "success") {
         this.setState({tags: result.data.data});
       } else {
-        alert(result.data.message);
+        this.showFail(result.data.message);
       }
     } catch(err) {
-      alert(err);
+      this.showFail(err);
     };
   }
 
@@ -323,7 +323,7 @@ export default class MySharePage extends React.Component {
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail(err);
     };
   }
 
@@ -344,10 +344,10 @@ export default class MySharePage extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",

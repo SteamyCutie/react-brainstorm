@@ -85,10 +85,10 @@ export default class CreateLiveForum extends React.Component {
         this.setState({tags: result.data.data});
         console.log(this.state);
       } else {
-        alert(result.data.message);
+        this.showFail(result.data.message);
       }
     } catch(err) {
-      alert(err);
+      this.showFail(err);
     };
   }
 
@@ -123,9 +123,7 @@ export default class CreateLiveForum extends React.Component {
         }
       }
     } catch(err) {
-      console.log(err);
-      this.showFail("Create Schedule Success");
-      alert(err);
+      this.showFail("Create Schedule Fail");
     };
   }
 
@@ -174,7 +172,7 @@ export default class CreateLiveForum extends React.Component {
   showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",

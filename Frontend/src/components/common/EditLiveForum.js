@@ -72,10 +72,10 @@ export default class EditLiveForum extends React.Component {
       if (result.data.result === "success") {
         this.setState({tags: result.data.data});
       } else {
-        alert(result.data.message);
+        this.showFail(result.data.message);
       }
     } catch(err) {
-      alert(err);
+      this.showFail(err);
     };
   }
 
@@ -92,13 +92,11 @@ export default class EditLiveForum extends React.Component {
         temp.from = result.data.data.from;
         temp.to = result.data.data.to;
         this.setState({foruminfo: temp});
-
-        console.log(this.state);
       } else {
-        alert(result.data.message);
+        this.showFail(result.data.message);
       }
     } catch(err) {
-      alert(err);
+      this.showFail(err);
     };
   }
 
@@ -133,8 +131,7 @@ export default class EditLiveForum extends React.Component {
         }
       }
     } catch(err) {
-      this.showFail("Create Schedule Success");
-      alert(err);
+      this.showFail("Create Schedule Fail");
     };
   }
 
@@ -175,10 +172,10 @@ export default class EditLiveForum extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
