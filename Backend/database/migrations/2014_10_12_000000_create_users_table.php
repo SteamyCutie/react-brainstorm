@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->integer('expertise')->nullable();
             $table->timestamp('dob')->nullable();
             $table->string('tags_id')->nullable();
-            $table->integer('mentor')->nullable();
+            $table->integer('is_mentor')->nullable();
             $table->float('hourly_price')->nullable();
             $table->string('video_url')->nullable();
             $table->string('sub_page_name')->nullable();
