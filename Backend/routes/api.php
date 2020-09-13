@@ -41,4 +41,9 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('/test', 'UserController@test');
     Route::post('/uploadimage', 'FileController@uploadimage');
     Route::post('/uploadvideo', 'FileController@uploadvideo');
+
+    Route::post('/getallmentors', 'UserController@getallmentors');
+    Route::post('/createshareinfo', 'MediaController@createshareinfo');
+    Route::post('/editforum', 'SessionController@editforum');
+    Route::post('/getforum', 'SessionController@getforum');
 });

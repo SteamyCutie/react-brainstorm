@@ -48,9 +48,9 @@ export const editprofile = (param) => {
         try {
             const token = localStorage.getItem('token');
             const header = {
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'bearer ' + token
             }
-            const response = await axios.post(SERVER_URL+'/api/editprofile', param, header);
+            const response = await axios.post(SERVER_URL+'/api/editprofile', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -79,6 +79,17 @@ export const resetPassword = (param) => {
         }
     });
 }
+
+export const getallmentors = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getallmentors', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 //-------UserController------------
 
 
@@ -86,11 +97,11 @@ export const resetPassword = (param) => {
 export const getAvailableTimes = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            // let formdata = new FormData();
-            // param.each((value, key) => {
-            //     formdata.set(key, value);
-            // });
-            const response = await axios.post(SERVER_URL+'/api/getavailabletimes', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getavailabletimes', param, {headers: header});
             // localStorage.setItem('token', response.data.token);
             resolve(response);
         } catch(error) {
@@ -102,7 +113,11 @@ export const getAvailableTimes = (param) => {
 export const setAvailableTimes = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/setavailabletimes', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/setavailabletimes', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error)
@@ -116,7 +131,11 @@ export const setAvailableTimes = (param) => {
 export const mysharepage = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/mysharepage', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/mysharepage', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -127,7 +146,11 @@ export const mysharepage = (param) => {
 export const createshareinfo = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/createshareinfo', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/createshareinfo', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -141,7 +164,11 @@ export const createshareinfo = (param) => {
 export const getwallets = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/getwallets', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getwallets', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -155,7 +182,11 @@ export const getwallets = (param) => {
 export const getforums = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/scheduleliveforum', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/scheduleliveforum', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -166,7 +197,33 @@ export const getforums = (param) => {
 export const createforum = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/createforum', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/createforum', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
+export const editforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/editforum', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
+export const getforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getforum', param);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -177,7 +234,11 @@ export const createforum = (param) => {
 export const getUpcomingSession = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/getupcomingsessions', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getupcomingsessions', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -188,14 +249,17 @@ export const getUpcomingSession = (param) => {
 export const getHistory = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/gethistory', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/gethistory', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
         }
     });
 }
-
 //------------SessionController--------------
 
 
@@ -203,7 +267,11 @@ export const getHistory = (param) => {
 export const gettags = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/gettags', param);
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/gettags', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -215,14 +283,14 @@ export const gettags = (param) => {
 
 //FileController
 export const uploadimage = (param) => {
-    const config = {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
-    };
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        'content-type': 'multipart/form-data'
+    }
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/uploadimage', param, config.headers);
+            const response = await axios.post(SERVER_URL+'/api/uploadimage', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -231,14 +299,14 @@ export const uploadimage = (param) => {
 }
 
 export const uploadvideo = (param) => {
-    const config = {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
-    };
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        'content-type': 'multipart/form-data'
+    }
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/uploadvideo', param, config.headers);
+            const response = await axios.post(SERVER_URL+'/api/uploadvideo', param, {headers: header});
             resolve(response);
         }  catch(error) {
             reject(error);
