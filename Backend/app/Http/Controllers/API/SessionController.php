@@ -231,6 +231,7 @@ class SessionController extends Controller
         $email = $request['email'];
         $user = User::select('id','name', 'avatar', 'is_mentor')->where('email', $email)->first();
         $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
+        $current_date = date("Y/m/d h:i:s");
         if ($user['is_mentor'] == 0) {
             foreach ($session_infos as $session_key => $session_info)
             {
@@ -245,9 +246,7 @@ class SessionController extends Controller
                     $temp = [];
                     if (trim($invited_value) == $user['id'])
                     {
-                        
                         $temp = $session_info;
-
                         $temp['day'] = date('d/m/y', strtotime($result_from));
                         $temp['time'] = date('h:i a', strtotime($result_from));
 
@@ -260,7 +259,6 @@ class SessionController extends Controller
                         $mentor_name = User::select('name')->where('id', $session_info['user_id'])->first();
                         $temp['name'] = $mentor_name['name'];
                         $temp['avatar'] = $user['avatar'];
-                        $result_res[] = $temp;
                     }
                 }
             }

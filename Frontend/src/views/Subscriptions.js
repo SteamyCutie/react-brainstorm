@@ -71,7 +71,7 @@ export default class Subscriptions extends React.Component {
           style: {
             fontSize: "16px",
           },
-          cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to={row.subscribe ? "/subscription-specific" : "/unsubscribe-specific"} class="scription-to-specific">{row.mentorName}</Link></div>,
+          cell: row => <div><img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to={row.subscribe ? "/subscription-specific" : "/unsubscribe-specific"} class="scription-to-specific">{row.mentorName}</Link></div>,
         },
         {
           name: 'Subscription page name',
