@@ -126,7 +126,8 @@ export default [
     path: "/emailsent",
     layout: ExtraPageLayout,
     component: EmailSent
-  }
+  },
+  {
     path: "/call",
     layout: ExtraPageLayout,
     component: VideoCall
