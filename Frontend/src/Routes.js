@@ -22,6 +22,7 @@ import Recommended from "./views/Recommended";
 import EmailVerify from "./views/EmailVerify"
 import ForgetPassword from "./views/ForgetPassword"
 import ResetPassword from "./views/ResetPassword"
+import VideoCall from "./views/VideoCall"
 
 export default [
   {
@@ -119,5 +120,10 @@ export default [
     path: "/resetpassword",
     layout: ExtraPageLayout,
     component: ResetPassword
-  }
+  },
+  {
+    path: "/call",
+    layout: ExtraPageLayout,
+    component: VideoCall
+  },
 ];
