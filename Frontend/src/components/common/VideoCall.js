@@ -27,6 +27,7 @@ export default class VideoCall extends React.Component {
       callState: 0,
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
+    this.handleStop = this.handleStop.bind(this);
   }
 
   componentDidMount() {
@@ -129,12 +130,12 @@ export default class VideoCall extends React.Component {
 
   sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
-    console.log('Sending message: ' + jsonMessage);
+    // console.log('Sending message: ' + jsonMessage);
     this.ws.send(jsonMessage);
   }
 
   onIceCandidate(candidate) {
-    console.log("Local candidate" + JSON.stringify(candidate));
+    // console.log("Local candidate" + JSON.stringify(candidate));
 
     var message = {
       id: 'onIceCandidate',
@@ -144,6 +145,7 @@ export default class VideoCall extends React.Component {
   }
 
   handleStop = () => {
+    console.log("*************************STOP")
     this.props.stop();
   }
 
@@ -157,12 +159,12 @@ export default class VideoCall extends React.Component {
             <div className="video-call-element">
               <Row className="center video-tags">
                 <Col xl="6">
-                  <video id="videoInput" autoplay="" width="320px" height="240px">
+                  <video id="videoInput" autoplay="" width="480px" height="360px">
                     Your browser does not support the video tag.
                   </video>
                 </Col>
                 <Col xl="6">
-                  <video id="videoOutput" autoplay="" width="320px" height="240px">
+                  <video id="videoOutput" autoplay="" width="480px" height="360px">
                     Your browser does not support the video tag.
                   </video>
                 </Col>

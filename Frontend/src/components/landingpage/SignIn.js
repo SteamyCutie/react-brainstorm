@@ -155,7 +155,7 @@ export default class SignIn extends React.Component {
     const { open } = this.props;
     return (
       <div>
-        <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
+        <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop="true" backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Sign in</h1>
