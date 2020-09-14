@@ -43,6 +43,21 @@ export const getuserinfo = (param) => {
     });
 };
 
+export const getuserinfobyid = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getuserinfobyid', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
 export const editprofile = (param) => {
     return new Promise(async(resolve, reject) => {
         try {

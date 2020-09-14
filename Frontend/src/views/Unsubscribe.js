@@ -1,7 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
 import { Link } from "react-router-dom";
+import { store } from 'react-notifications-component';
 
 import Review from "../components/common/Review"
 import SubscribeModal from "../components/common/SubscribeModal"
@@ -12,28 +12,50 @@ import PlayIcon from "../images/Play_icon.svg";
 import Clock from "../images/Clock.svg";
 import MentorAvatar from "../images/Rectangle_Kianna_big.png"
 import SubscriperImg from "../images/Users.svg"
+import { getuserinfobyid } from '../api/api';
 
 export default class Unsubscribe extends React.Component {
   
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       subscriptionOpen: false,
       mentorData: {
-        name: "Kianna Press",
-        score: 4.8,
-        reviewCount: 6,
-        image: require("../images/Rectangle_Kianna_big.png"),
-        teaches: [
-          "Algebra",
-          "Mathematics",
-        ],
-        online: true,
-        description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for rem ipsum dolor sit amet, sollicitudin nec dapibus molestie risus eleifend augue, justo dui et est a pharetra, ut nullam gravida sed amet.",
-        rate: 25,
-        time: 60,
+        // name: "Kianna Press",
+        // score: 4.8,
+        // reviewCount: 6,
+        // image: require("../images/Rectangle_Kianna_big.png"),
+        // teaches: [
+        //   "Algebra",
+        //   "Mathematics",
+        // ],
+        // online: true,
+        // description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for rem ipsum dolor sit amet, sollicitudin nec dapibus molestie risus eleifend augue, justo dui et est a pharetra, ut nullam gravida sed amet.",
+        // rate: 25,
+        // time: 60,
       } 
     }
+  }
+
+  componentWillMount() {
+    this.getUserInfo(this.props.location.query);
+  }
+
+  getUserInfo = async(id) => {
+    try {
+      this.setState({loading: true});
+      const result = await getuserinfobyid({id: id});
+      if (result.data.result == "success") {
+        this.setState({mentorData: result.data.data});
+      } else {
+        this.showFail();
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail();
+    };
   }
 
   toggle_unsubscribe() {
@@ -46,6 +68,40 @@ export default class Unsubscribe extends React.Component {
     this.setState({
       subscriptionOpen: !this.state.subscriptionOpen,
     });
+  }
+
+  showSuccess(text) {
+    // store.addNotification({
+    //   title: "Success",
+    //   message: text,
+    //   type: "success",
+    //   insert: "top",
+    //   container: "top-right",
+    //   dismiss: {
+    //     duration: 500,
+    //     onScreen: false,
+    //     waitForAnimation: false,
+    //     showIcon: false,
+    //     pauseOnHover: false
+    //   },
+    // });
+  }
+
+  showFail(text) {
+    // store.addNotification({
+    //   title: "Fail",
+    //   message: text,
+    //   type: "danger",
+    //   insert: "top",
+    //   container: "top-right",
+    //   dismiss: {
+    //     duration: 500,
+    //     onScreen: false,
+    //     waitForAnimation: false,
+    //     showIcon: false,
+    //     pauseOnHover: false
+    //   }
+    // });
   }
 
   render() {
@@ -65,14 +121,14 @@ export default class Unsubscribe extends React.Component {
             <Row>
               <Col xl="3" className="subscription-mentor-detail">
                 <div>
-                  <img src={MentorAvatar} style={{width: "206px"}}/>
+                  <img src={mentorData.avatar} style={{width: "206px"}}/>
                   <div style={{display: "flex", padding: "20px 0px"}}>
                     <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
                     <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
                     <h6 className="no-margin"style={{fontWeight: "bold"}}>0</h6>
                   </div>
                   <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
-                    Subscription $50/month
+                    Subscription ${mentorData.sub_plan_fee}/month
                   </Button>
                 </div>
               </Col>
@@ -89,24 +145,23 @@ export default class Unsubscribe extends React.Component {
                     </Row>
                     <Row className="mentor-detail-subject-tag">
                       <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-                      {
-                        mentorData.teaches.map((teach, idk) => (
-                          <p key={idk} className="brainsshare-tag">{teach}</p>
+                      {/* {
+                        mentorData.tags.map((tag, idk) => (
+                          <p key={idk} className="brainsshare-tag">{tag}</p>
                         ))
-                      }
+                      } */}
                     </Row>
                     <div className="mentor-detail-myself">
                       <p>{mentorData.description}...</p>
                     </div>
                     <div className="mentor-detail-video">
-                      <img src={PlayIcon} alt="play-icon"/>
-                        Video presentation
-                      </div>
+                      <a href={mentorData.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
+                    </div>
                   </div>
                   <div className="mentor-deatail-rate-buttons">
                     <Row className="center">
                       <p>
-                        $ {mentorData.rate} / 60 min
+                        $ {mentorData.hourly_price} / 60 min
                       </p>
                     </Row>
                     <Row className="center">

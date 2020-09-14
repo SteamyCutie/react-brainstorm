@@ -36,6 +36,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::post('/setavailabletimes', 'AvailableTimesController@setavailabletimes');
     Route::post('/getavailabletimes', 'AvailableTimesController@getavailabletimes');
     Route::post('/getuserinfo', 'UserController@getuserinfo');
+    Route::post('/getuserinfobyid', 'UserController@getuserinfobyid');
     Route::post('/getwallets', 'WalletController@index');
     Route::post('/gettags', 'TagController@index');
     Route::get('/test', 'UserController@test');

@@ -20,7 +20,7 @@ export default class MySharePage extends React.Component {
     this.state = {
       tags: [],
       loading: false,
-      displaydate: undefined,
+      displaydate: '',
       displaygethourlyprice: '0.00',
       displaycuthourlyprice: '0.00',
       displaygetplanfee: '0.00',
@@ -36,7 +36,7 @@ export default class MySharePage extends React.Component {
       },
       param: {
         name: '',
-        birthday: undefined,
+        birthday: '2020-01-01',
         email: '',
         description: '',
         expertise: 1,
@@ -74,7 +74,7 @@ export default class MySharePage extends React.Component {
         const {param} = this.state;
         let temp = param;
         temp.name = result.data.data.name;
-        temp.birthday = result.data.data.dob;
+        temp.birthday = (result.data.data.dob == "" || result.data.data.dob == null) ? '1970-10-10' : result.data.data.dob;
         temp.email = result.data.data.email;
         temp.avatar = result.data.data.avatar;
         temp.description = result.data.data.description;

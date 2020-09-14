@@ -39,9 +39,12 @@ class SmallCard3 extends React.Component {
               <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
                 {tag_name.map((tag, idx) => {
-                  return(
-                    <p className="brainsshare-tag" id={idx} title={tag}>{tag}</p>
-                  );
+                  if (idx < 2)
+                    return <p className="brainsshare-tag" id={idx} title={tag}>{tag}</p>;
+                  else if (idx == 2)
+                    return <a href="javascript:void(0)">More</a>
+                  else
+                    return <></>;
                 })}
               </div>
             </div>

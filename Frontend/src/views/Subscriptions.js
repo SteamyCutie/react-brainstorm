@@ -21,48 +21,6 @@ export default class Subscriptions extends React.Component {
       mentors: [
         
       ],
-      subscriptionList: [
-        // {
-        //   id: 1,
-        //   avatar: require("../images/avatar1.jpg"),
-        //   mentorName: "Kianna Press",
-        //   pageName: "Algebra 101",
-        //   planFee: 49.99,
-        //   status: true,
-        //   edit: true,
-        //   subscribe: true
-        // },
-        // {
-        //   id: 2,
-        //   avatar: require("../images/avatar2.jpg"),
-        //   mentorName: "Cristofer Septimus",
-        //   pageName: "Video editing",
-        //   planFee: 29.50,
-        //   status: true,
-        //   edit: true,
-        //   subscribe: true
-        // },
-        // {
-        //   id: 3,
-        //   avatar: require("../images/avatar3.jpg"),
-        //   mentorName: "Martin Geidt",
-        //   pageName: "Finance",
-        //   planFee: "29.50",
-        //   status: true,
-        //   edit: true,
-        //   subscribe: true
-        // },
-        // {
-        //   id: 4,
-        //   avatar: require("../images/avatar4.jpg"),
-        //   mentorName: "Kaiya Torff",
-        //   pageName: "Programming",
-        //   planFee: 32.40,
-        //   status: false,
-        //   edit: false,
-        //   subscribe: false
-        // }
-      ],
       columns: [
         {
           name: 'Mentor',
@@ -71,7 +29,7 @@ export default class Subscriptions extends React.Component {
           style: {
             fontSize: "16px",
           },
-          cell: row => <div><img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to={row.subscribe ? "/subscription-specific" : "/unsubscribe-specific"} class="scription-to-specific">{row.mentorName}</Link></div>,
+          cell: row => <div><img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to={{pathname: "unsubscribe-specific", query: row.id}} class="scription-to-specific">{row.mentorName}</Link></div>,
         },
         {
           name: 'Subscription page name',
@@ -149,7 +107,6 @@ export default class Subscriptions extends React.Component {
           mentors: data_arr
         });
 
-        console.log(this.state.mentors);
       } else {
       }
       this.setState({loading: false});
