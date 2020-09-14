@@ -23,6 +23,7 @@ import EmailVerify from "./views/EmailVerify"
 import ForgetPassword from "./views/ForgetPassword"
 import ResetPassword from "./views/ResetPassword"
 import EmailSent from "./views/EmailSent"
+import VideoCall from "./views/VideoCall"
 
 export default [
   {
@@ -126,4 +127,8 @@ export default [
     layout: ExtraPageLayout,
     component: EmailSent
   }
+    path: "/call",
+    layout: ExtraPageLayout,
+    component: VideoCall
+  },
 ];
