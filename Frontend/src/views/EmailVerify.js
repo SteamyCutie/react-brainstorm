@@ -73,9 +73,9 @@ export default class EmailVerify extends React.Component {
                 </FormInput>
               </Row>
               <label style={{marginLeft: "80px"}} className="validation-err">{this.state.validationErrorMsg}</label>
+              <label className="sign-in-err">{this.state.errorMsg}</label>
           </CardBody>
           <CardFooter className="center">
-            <label className="sign-in-err">{this.state.errorMsg}</label>
             <Button
               className="btn-general btn-send-email"
               onClick={() => this.handleVerifyCode()}

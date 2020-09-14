@@ -72,10 +72,10 @@ export default class EditLiveForum extends React.Component {
       if (result.data.result === "success") {
         this.setState({tags: result.data.data});
       } else {
-        alert(result.data.message);
+        // alert(result.data.message);
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
     };
   }
 
@@ -95,10 +95,10 @@ export default class EditLiveForum extends React.Component {
 
         // console.log(this.state);
       } else {
-        alert(result.data.message);
+        // alert(result.data.message);
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
     };
   }
 
@@ -133,7 +133,7 @@ export default class EditLiveForum extends React.Component {
       }
     } catch(err) {
       this.showFail("Create Schedule Success");
-      alert(err);
+      // alert(err);
     };
   }
 
