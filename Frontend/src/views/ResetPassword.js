@@ -74,10 +74,14 @@ export default class ResetPassword extends React.Component {
       if(result.data.result === "success") {
         window.location.href = '/';
       } else {
-        alert("failed")
+        this.setState({
+          resetErrorMsg: result.data.message
+        })
       }
     } catch(err) {
-      alert(err);
+      this.setState({
+        resetErrorMsg: "Error is occured"
+      })
     }
   }
 

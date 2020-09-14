@@ -78,9 +78,9 @@ class SubscriptionTable extends React.Component {
               (
                 <div style={{ display: 'flex', alignItems: 'center' }} className="subscription-table-header">
                   <h2 className="subscription-table-title">Subscriptions</h2>
-                  <Button theme="primary" className="mb-2 mr-3 btn-subscription-table">
+                  {/* <Button theme="primary" className="mb-2 mr-3 btn-subscription-table">
                     Find a mentor
-                  </Button>
+                  </Button> */}
                 </div>
               )
             }

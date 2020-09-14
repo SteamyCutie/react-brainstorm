@@ -218,7 +218,10 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
 
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
+      this.setState({
+        errorMsg: "Error is occured"
+      })
     }
   }
 

@@ -79,6 +79,13 @@
   color: #04B5FA;
 }
 
+.email-sent-label {
+  color: #333333;
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
+}
+
 .modal-video-call {
   align-items: center;
   justify-content: center;

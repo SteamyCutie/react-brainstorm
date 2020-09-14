@@ -88,8 +88,8 @@ export default class MySharePage extends React.Component {
 
   showFail() {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: "Action Fail!",
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -129,10 +129,10 @@ export default class MySharePage extends React.Component {
                   </div>
                 </Col>
                 <Col xl="9" lg="12" className="subscription-mentor-videos">
-                  <h6 className="profile-link-url">
+                  {/* <h6 className="profile-link-url">
                     <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
                     <a href="javascript:void(0)">www.brainsshare.com/kiannapress</a>
-                  </h6>
+                  </h6> */}
                   {this.state.infoList.map((item, idx) => 
                     <MentorVideo key={idx} item={item} />
                   )}
