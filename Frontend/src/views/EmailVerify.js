@@ -44,6 +44,7 @@ export default class EmailVerify extends React.Component {
   onChangeCode = (e) => {
     this.setState({
       code: e.target.value,
+      errorMsg: ''
     });
   }
 

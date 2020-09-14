@@ -84,6 +84,7 @@ export default class ForgetPassword extends React.Component {
   onChangeEmail = (e) => {
     this.setState({
       email: e.target.value,
+      errorMsg: ''
     });
   }
 
