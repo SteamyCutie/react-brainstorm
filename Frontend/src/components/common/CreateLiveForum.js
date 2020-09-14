@@ -19,7 +19,7 @@ export default class CreateLiveForum extends React.Component {
         email: "",
         tags: [],
         from: '',
-        to: ''
+        to: '',
       },
       tags: [],
       requiremessage: {
@@ -27,6 +27,7 @@ export default class CreateLiveForum extends React.Component {
         ddescription: '',
       },
     };
+
   }
 
   componentWillMount() {
@@ -82,13 +83,12 @@ export default class CreateLiveForum extends React.Component {
       const result = await gettags();
       if (result.data.result === "success") {
         this.setState({tags: result.data.data});
-        console.log(this.state);
       } else {
-        alert(result.data.message);
+        this.showFail(result.data.message);
       }
     } catch(err) {
-      alert(err);
-    };
+        this.showFail(err);
+      }
   }
 
   actionSave = async() => {
@@ -104,6 +104,7 @@ export default class CreateLiveForum extends React.Component {
       if (result.data.result === "success") {
         this.toggle();
         this.showSuccess("Create Schedule Success");
+        window.location.href = "/scheduleLiveForum";
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -121,9 +122,7 @@ export default class CreateLiveForum extends React.Component {
         }
       }
     } catch(err) {
-      console.log(err);
-      this.showFail("Create Schedule Success");
-      alert(err);
+      this.showFail("Create Schedule Fail");
     };
   }
 
@@ -147,6 +146,11 @@ export default class CreateLiveForum extends React.Component {
     this.setState({displayto: date});
   };
 
+  onTimeChange(time) {
+    console.log(time);
+    this.setState({time});
+  }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",
@@ -167,7 +171,7 @@ export default class CreateLiveForum extends React.Component {
   showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -202,22 +206,23 @@ export default class CreateLiveForum extends React.Component {
             {this.state.requiremessage.ddescription == '' && <FormInput className="profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
-            <label htmlFor="feEmail">Tags</label>
+            <label htmlFor="feEmail">Tags</label><br></br>
             {this.state.tags.map((item, idx) => 
-              <FormCheckbox className="mb-1" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>
+              <FormCheckbox inline className="col-md-5 col-lg-5 col-xs-5" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>
             )}
           </div>
+          <div><label htmlFor="fePassword">From</label></div>
           <DatePicker
             md="6"
             size="lg"
             selected={this.state.displayfrom}
             onChange={(e) => this.onChangeFrom(e)}
             value={this.state.foruminfo.from}
-            placeholderText="From"
+            placeholderText="Select Date"
             dropdownMode="select"
             className="text-center"
           />
-          ~
+          <div><label htmlFor="fePassword">To</label></div>
           <DatePicker
             md="6"
             size="lg"
