@@ -29,7 +29,7 @@ class SmallCard3 extends React.Component {
   }
 
   render() {
-    const {name, day, time, tag_name, avatar_url} = this.props.data
+    const {name, day, from_time, to_time, tag_name, avatar_url} = this.props.data
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
@@ -40,7 +40,7 @@ class SmallCard3 extends React.Component {
               <div style={{display: "flex"}}>
                 {tag_name.map((tag, idx) => {
                   return(
-                    <p className="brainsshare-tag" id={idx}>{tag}</p>
+                    <p className="brainsshare-tag" id={idx} title={tag}>{tag}</p>
                   );
                 })}
               </div>
@@ -73,7 +73,7 @@ class SmallCard3 extends React.Component {
           <div style={{display: "flex", marginBottom: "5px"}}>
             <img src={Clock} alt="Clock" />
             <h6 style={{fontSize: "16px", paddingLeft: "10px"}} className="no-margin">
-              {time}
+              {from_time}~{to_time}
             </h6>
           </div>
         </div>

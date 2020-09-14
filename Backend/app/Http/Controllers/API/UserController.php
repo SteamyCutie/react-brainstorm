@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Tag;
 use JWTAuth;
 use Exception;
 
@@ -18,25 +19,27 @@ class UserController extends Controller
     }
 
     public function login(Request $request)
-    {        
+    {
         try {
             $input = $request->only('email', 'password');
             $token = null;
-            
+
             $user = User::where('email', $request->email)->first();
 
             if( !$user->email_verified_at ) {
                 return response()->json([
                     'result'=> 'failed',
                     'message' => config('messages.auth.verify_code'),
-                ], 401);
+                // ], 401);
+                ]);
             }
 
             if (!$token = JWTAuth::attempt($input)) {
                 return response()->json([
                     'result'=> 'failed',
-                    'message' => 'Invalid Email or Password',
-                ], 401);
+                    'message' => 'Email or Password is incorrect.',
+                // ], 401);
+                ]);
             }
 
             return response()->json([
@@ -59,18 +62,20 @@ class UserController extends Controller
         $password = $request['password'];
         $subject = "Welcome to BransShare!";
         $fronturl = env("FRONT_URL");
-        $toEmail = $email;       
+        $toEmail = $email;
+
         if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
             return response()->json([
                 'result'=> 'failed',
                 'message'   =>  'Email address is already existed'
-            ], 300);
+            // ], 300);
+            ]);
         }
-        try {            
+        try {
             $user = new User();
             $user->name = $name;
             $user->email = $email;
-            $user->password = bcrypt($password);            
+            $user->password = bcrypt($password);
             $user->save();
             $user->generateTwoFactorCode();
             $user->is_active = config('global.users.active');
@@ -78,23 +83,24 @@ class UserController extends Controller
             $app_path = app_path();
             $body = include_once($app_path.'/Mails/VerifyAccount.php');
             $body = implode(" ",$body);
-            
+
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 User::where(['email' => $email])->delete();
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, fail send mail'
                 ]);
-            }            
+            }
             return response()->json([
                 'result'=> 'success',
                 'user'      => $user,
             ]);
-        } catch (Exception $e) {            
+        } catch (Exception $e) {
             return response()->json([
                 'result'=> 'failed',
                 'message' => 'Sorry, user can not register'
-            ], 500);
+            // ], 500);
+            ]);
         }
     }
 
@@ -105,6 +111,11 @@ class UserController extends Controller
         $user = User::where('email', $email)->first();
         $newDate = date("Y-m-d", strtotime($user['dob']));
         $user['dob'] = $newDate;
+        if ($user['tags_id'] == null || $user['tags_id'] == '')
+            $tags_id = [];
+        else
+            $tags_id = explode(',', $user['tags_id']);
+        $user['tags'] = $tags_id;
         return response()->json([
             'result'=> 'success',
             'data'=> $user,
@@ -124,6 +135,8 @@ class UserController extends Controller
         $videourl = $request['videourl'];
         $instantcall = $request['instantcall'];
         $avatar = $request['avatar'];
+        $is_mentor = $request['is_mentor'];
+        $tags = implode(",", $request['tags']);
 
         $rules = array(
             'name' => 'required',
@@ -169,6 +182,8 @@ class UserController extends Controller
                 'video_url' => $videourl,
                 'instant_call' => $instantcall,
                 'status' => 1,
+                'is_mentor' => $is_mentor,
+                'tags_id' => $tags
             ));
 
             return response()->json([
@@ -179,32 +194,34 @@ class UserController extends Controller
     }
 
     public function verifyCode(Request $request){
-        $subject = "Welcome to BransShare!";
+        $subject = "Welcome to BrainsShare!";
+
         try {
-            $code = $request->code;            
+            $code = $request->code;
             $user = User::where('two_factor_code', $code)->first();
-            
+
             if($user->email == "") {
                 return response()->json([
                     'result'=> 'failed',
-                    'message' => 'Sorry, confirm code is wrong!'
-                ], 500);
+                    'message' => 'Sorry, The confirm code is incorrect!'
+                // ], 500);
+                ]);
             }
             $user->verifiedAccount();
             $toEmail = $user->email;
             $name = $user->name;
             $app_path = app_path();
             $body = include_once($app_path.'/Mails/Welcome.php');
-            $body = implode(" ",$body); 
-            
+            $body = implode(" ",$body);
+
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, fail send mail'
                 ]);
             }
-            
-            $user->update(['two_factor_code' => ""]);            
+
+            $user->update(['two_factor_code' => ""]);
             return response()->json([
                 'result'=> 'success',
                 'message' => 'Updated password',
@@ -214,12 +231,13 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message' => 'Sorry, can not verify the code'
-            ], 500);
+            // ], 500);
+            ]);
         }
     }
 
     public function forgot(Request $request) {
-        $subject = "Welcome to BransShare!";
+        $subject = "Welcome to BrainsShare!";
         $email = $request['email'];
         $token = null;
 
@@ -229,7 +247,8 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message'   =>  'Email address is not existed'
-            ], 300);
+            // ], 300);
+            ]);
         }
 
         try {
@@ -237,13 +256,13 @@ class UserController extends Controller
             $name = $user->name;
             $fronturl = env("FRONT_URL");
 
-            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';            
-            $vCode =  substr(str_shuffle($permitted_chars), 0, 50);            
+            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+            $vCode =  substr(str_shuffle($permitted_chars), 0, 50);
             User::where('email', $email)->update(['remember_token' => $vCode]);
 
             $app_path = app_path();
             $body = include_once($app_path.'/Mails/VerifyCode.php');
-            $body = implode(" ",$body); 
+            $body = implode(" ",$body);
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
                     'result'=> 'failed',
@@ -297,7 +316,8 @@ class UserController extends Controller
             return response()->json([
                 'result'=> 'failed',
                 'message' => 'Sorry, can not update password. Try again.'
-            ], 500);
+            // ], 500);
+            ]);
         }
     }
 
@@ -306,7 +326,8 @@ class UserController extends Controller
         return response()->json([
             'result'=> 'success',
             'message'      =>  'logout successfully'
-        ], 200);
+        // ], 200);
+        ]);
     }
 
     public function getallmentors(Request $request)
@@ -314,10 +335,20 @@ class UserController extends Controller
         $email = $request['email'];
         $users = User::all();
         $mentors = [];
-
         for ($i = 0; $i < count($users); $i ++) {
-            if ($users[$i]['email'] != $email && $users[$i]['mentor'] == 1)
+            if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
                 $mentors[] = $users[$i];
+            }
+        }
+
+        for ($i = 0; $i < count($mentors); $i ++) {
+            $tags_id = explode(',', $mentors[$i]['tags_id']);
+            $tag_names = [];
+            foreach ($tags_id as $tag_key => $tag_value) {
+                $tags = Tag::where('id', $tag_value)->first();
+                $tag_names[$tag_key] = $tags['name'];
+            }
+            $mentors[$i]['tag_name'] = $tag_names;
         }
 
         return response()->json([

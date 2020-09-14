@@ -85,14 +85,14 @@ export default function Library() {
               <Tab label="Upcoming events" {...a11yProps(1)} />
             </Tabs>
           </AppBar>
-          {/* <SwipeableViews
+          <SwipeableViews
             axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
             index={value}
             onChangeIndex={handleChangeIndex}
-          > */}
+          >
             <TabPanel value={value} index={0} dir={theme.direction}>
               <Row>
-                <Col xl="4" lg="4" sm="6">
+                {/* <Col xl="4" lg="4" sm="6">
                   <LibrarySavedContent />
                 </Col>
                 <Col xl="4" lg="4" sm="6">
@@ -115,7 +115,7 @@ export default function Library() {
                 </Col>
                 <Col xl="4" lg="4" sm="6">
                   <LibrarySavedContent />
-                </Col>
+                </Col> */}
               </Row>
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
@@ -143,7 +143,7 @@ export default function Library() {
                 </Col>
               </Row>
             </TabPanel>
-          {/* </SwipeableViews> */}
+          </SwipeableViews>
         </CardBody>
       </Card>
     </Container>

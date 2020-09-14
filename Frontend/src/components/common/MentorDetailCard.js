@@ -24,7 +24,7 @@ class MentorDetailCard extends React.Component {
   }
 
   render() {
-    const {name, score, avatar, teaches, online, description, hourly_price} = this.props.mentorData;
+    const {name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
   
     return (
       <div className="mentor-detail-card">
@@ -42,8 +42,8 @@ class MentorDetailCard extends React.Component {
           </Row>
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-            {this.state.teaches.map((teach, idk) => (
-              <p key={idk} className="brainsshare-tag">{teach}</p>
+            {tag_name.map((teach, idk) => (
+              <p key={idk} className="brainsshare-tag" title={teach}>{teach}</p>
             ))
             }
           </Row>
@@ -52,8 +52,7 @@ class MentorDetailCard extends React.Component {
             <a className="read-more">Read more</a>
           </div>
           <div className="mentor-detail-video">
-            <img src={PlayIcon} alt="play-icon"/>
-              Video presentation
+              <a href={video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
             </div>
         </div>
         <div className="mentor-deatail-rate-buttons">
@@ -63,21 +62,18 @@ class MentorDetailCard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            <Button className="btn-mentor-detail-instant">
+            {instant_call ? <Button className="btn-mentor-detail-instant">
               <img src={Lightening} alt="Lightening" />
               Available now
-            </Button>
+            </Button> : <Button disabled className="btn-mentor-detail-instant">
+              <img src={Lightening} alt="Lightening" />
+              Available now
+            </Button>}
           </Row>
           <Row className="center">
             <Button className="btn-mentor-detail-book">
               <img src={Clock} alt="Clock" />
               Book a session
-            </Button>
-          </Row>
-          <Row className="center">
-            <Button className="btn-mentor-detail-book">
-              <img src={Clock} alt="Clock" />
-              Recommand
             </Button>
           </Row>
         </div>
