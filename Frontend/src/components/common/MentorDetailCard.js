@@ -24,7 +24,7 @@ class MentorDetailCard extends React.Component {
   }
 
   render() {
-    const {name, score, avatar, tag_name, online, description, hourly_price} = this.props.mentorData;
+    const {name, score, avatar, tag_name, online, description, hourly_price, instant_call} = this.props.mentorData;
   
     return (
       <div className="mentor-detail-card">
@@ -63,21 +63,18 @@ class MentorDetailCard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            <Button className="btn-mentor-detail-instant">
+            {instant_call ? <Button className="btn-mentor-detail-instant">
               <img src={Lightening} alt="Lightening" />
               Available now
-            </Button>
+            </Button> : <Button disabled className="btn-mentor-detail-instant">
+              <img src={Lightening} alt="Lightening" />
+              Available now
+            </Button>}
           </Row>
           <Row className="center">
             <Button className="btn-mentor-detail-book">
               <img src={Clock} alt="Clock" />
               Book a session
-            </Button>
-          </Row>
-          <Row className="center">
-            <Button className="btn-mentor-detail-book">
-              <img src={Clock} alt="Clock" />
-              Recommand
             </Button>
           </Row>
         </div>

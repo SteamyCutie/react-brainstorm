@@ -22,46 +22,46 @@ export default class Subscriptions extends React.Component {
         
       ],
       subscriptionList: [
-        {
-          id: 1,
-          avatar: require("../images/avatar1.jpg"),
-          mentorName: "Kianna Press",
-          pageName: "Algebra 101",
-          planFee: 49.99,
-          status: true,
-          edit: true,
-          subscribe: true
-        },
-        {
-          id: 2,
-          avatar: require("../images/avatar2.jpg"),
-          mentorName: "Cristofer Septimus",
-          pageName: "Video editing",
-          planFee: 29.50,
-          status: true,
-          edit: true,
-          subscribe: true
-        },
-        {
-          id: 3,
-          avatar: require("../images/avatar3.jpg"),
-          mentorName: "Martin Geidt",
-          pageName: "Finance",
-          planFee: "29.50",
-          status: true,
-          edit: true,
-          subscribe: true
-        },
-        {
-          id: 4,
-          avatar: require("../images/avatar4.jpg"),
-          mentorName: "Kaiya Torff",
-          pageName: "Programming",
-          planFee: 32.40,
-          status: false,
-          edit: false,
-          subscribe: false
-        }
+        // {
+        //   id: 1,
+        //   avatar: require("../images/avatar1.jpg"),
+        //   mentorName: "Kianna Press",
+        //   pageName: "Algebra 101",
+        //   planFee: 49.99,
+        //   status: true,
+        //   edit: true,
+        //   subscribe: true
+        // },
+        // {
+        //   id: 2,
+        //   avatar: require("../images/avatar2.jpg"),
+        //   mentorName: "Cristofer Septimus",
+        //   pageName: "Video editing",
+        //   planFee: 29.50,
+        //   status: true,
+        //   edit: true,
+        //   subscribe: true
+        // },
+        // {
+        //   id: 3,
+        //   avatar: require("../images/avatar3.jpg"),
+        //   mentorName: "Martin Geidt",
+        //   pageName: "Finance",
+        //   planFee: "29.50",
+        //   status: true,
+        //   edit: true,
+        //   subscribe: true
+        // },
+        // {
+        //   id: 4,
+        //   avatar: require("../images/avatar4.jpg"),
+        //   mentorName: "Kaiya Torff",
+        //   pageName: "Programming",
+        //   planFee: 32.40,
+        //   status: false,
+        //   edit: false,
+        //   subscribe: false
+        // }
       ],
       columns: [
         {

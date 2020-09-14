@@ -18,15 +18,15 @@ export default class MentorWallet extends React.Component {
       loading: false,
       smallCards: [
         {
-          value: "$231.45",
+          value: "$0",
           label: "Available Balance",
         },
         {
-          value: "$154.90",
+          value: "$0",
           label: "Pending Balance",
         },
         {
-          value: "$1320.10",
+          value: "$0",
           label: "Life time Earnings",
         }
       ],

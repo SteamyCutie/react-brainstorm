@@ -251,6 +251,7 @@ class SessionController extends Controller
                         $temp['day'] = date('d/m/y', strtotime($result_from));
                         $temp['time'] = date('h:i a', strtotime($result_from));
 
+                        $tag_names = [];
                         foreach ($tags_id as $tag_key => $tag_value) {
                             $tags = Tag::select('name')->where('id', $tag_value)->first();
                             $tag_names[$tag_key] = $tags['name'];
@@ -285,6 +286,7 @@ class SessionController extends Controller
                 $result_res[$i]['e_day'] = $e_day;
 
                 $tags_id = explode(',', $result_res[$i]['tags_id']);
+                $tag_names = [];
                 foreach ($tags_id as $tag_key => $tag_value) {
                     $tags = Tag::select('name')->where('id', $tag_value)->first();
                     $tag_names[$tag_key] = $tags['name'];
