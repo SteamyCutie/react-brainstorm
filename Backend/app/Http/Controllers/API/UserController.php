@@ -9,6 +9,8 @@ use App\Models\Tag;
 use JWTAuth;
 use Exception;
 
+// include "../VerifyAccount.html";
+
 class UserController extends Controller
 {
     public function __construct()
@@ -57,10 +59,8 @@ class UserController extends Controller
         $email = $request['email'];
         $name = $request['name'];
         $password = $request['password'];
-        $subject = "Welcome to BrainsShare!";
-        $body = "Hi ".$name."<br>";
-        $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
-
+        $subject = "Welcome to BransShare!";
+        $toEmail = $email;
         if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
             return response()->json([
                 'result'=> 'failed',
@@ -68,19 +68,18 @@ class UserController extends Controller
             // ], 300);
             ]);
         }
-
         try {
             $user = new User();
             $user->name = $name;
             $user->email = $email;
             $user->password = bcrypt($password);
-            $user->is_active = config('global.users.active');
-            // $user->save();
+            $user->save();
             $user->generateTwoFactorCode();
-            $toEmail = $user->email;
-
-            $body = $body."<p>Veryfication Code :".$user->two_factor_code."<p><br>";
-            $body = $body."<a href = '".env("FRONT_URL")."/verification'><button>Click to confirm your account</button></a>";
+            $user->is_active = config('global.users.active');
+            $two_factor_code = $user->two_factor_code;
+            $app_path = app_path();
+            $body = include_once($app_path.'/Mails/VerifyAccount.php');
+            $body = implode(" ",$body);
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 User::where(['email' => $email])->delete();
                 return response()->json([
@@ -195,23 +194,20 @@ class UserController extends Controller
 
         try {
             $code = $request->code;
-            $email = $request->email;
-            $user = User::where('email', $email)->first();
-
-            if($code != $user->two_factor_code) {
+            $user = User::where('two_factor_code', $code)->first();
+            if(!$user) {
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, The confirm code is incorrect!'
                 // ], 500);
                 ]);
             }
-
             $user->verifiedAccount();
             $toEmail = $user->email;
             $name = $user->name;
-            $body = "Hi ".$name."<br>";
-            $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
-            $body = $body."<p>Verify Code Success!</p><br>";
+            $app_path = app_path();
+            $body = include_once($app_path.'/Mails/Welcome.php');
+            $body = implode(" ",$body);
 
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
@@ -219,6 +215,7 @@ class UserController extends Controller
                     'message' => 'Sorry, fail send mail'
                 ]);
             }
+            $user->update(['two_factor_code' => ""]);
             return $this->login($request);
 
         } catch (\Throwable $th) {
@@ -248,14 +245,15 @@ class UserController extends Controller
         try {
             $toEmail = $user->email;
             $name = $user->name;
-            $body = "Hi ".$name."<br>";
-            $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
-            $body = $body."<p>Did you forget your password?</p><br>";
-            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';            
-            $vCode =  substr(str_shuffle($permitted_chars), 0, 30);
-            User::where('email', $email)->update(['remember_token' => $vCode]);
-            $body = $body."<a href = '".env("FRONT_URL")."/resetpassword/{$vCode}'><button>Click to reset your password</button></a>";
+            $fronturl = env("FRONT_URL");
 
+            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+            $vCode =  substr(str_shuffle($permitted_chars), 0, 50);
+            User::where('email', $email)->update(['remember_token' => $vCode]);
+
+            $app_path = app_path();
+            $body = include_once($app_path.'/Mails/Welcome.php');
+            $body = implode(" ",$body);
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
                     'result'=> 'failed',
