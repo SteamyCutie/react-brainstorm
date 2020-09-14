@@ -38,6 +38,7 @@ export default class DefaultLayout extends React.Component {
       callState: 0,
       videoCallModal: 0,
       from: '',
+      to: ''
     }
 
     this.handleClick = this.handleClick.bind(this);
@@ -46,6 +47,7 @@ export default class DefaultLayout extends React.Component {
     this.webRtcPeer = null;
     this.setWebRtcPeer = this.setWebRtcPeer.bind(this);
     this.stop = this.stop.bind(this);
+    this.call = this.call.bind(this);
   }
 
   componentWillMount() {
@@ -255,10 +257,14 @@ export default class DefaultLayout extends React.Component {
     }
   }
 
-  call() {
+  call(to) {
+    console.log(to, '==============++++++++++++++');
     this.setState({
-      callState: OUTGOING_CALL
+      callState: OUTGOING_CALL,
+      call: true,
+      to: to
     })
+
     // if (document.getElementById('peer').value == '') {
     //   window.alert("You must specify the peer name");
     //   return;
@@ -340,6 +346,13 @@ export default class DefaultLayout extends React.Component {
     const {videoCallModal} = this.state;
     const { children } = this.props;
     const { noFooter, noNavbar, filterType } = this.state;
+    if (children.props.location.pathname == '/trending' || children.props.location.pathname == '/recomended') {
+      children.props.location.state = {};
+      children.props.location.state.callState = this.state.callState;
+      children.props.location.state.setWebRtcPeer = this.setWebRtcPeer;
+      children.props.location.state.stop = this.stop;
+      children.props.location.state.call = this.call;
+    }
 
     return (
       <Container fluid>
@@ -356,7 +369,7 @@ export default class DefaultLayout extends React.Component {
               // this.state.call && 
               // this.state.videoCallModal && 
               // <Redirect to={{pathname: '/call'}} />
-              <VideoCall ref={this.videoCallModal} open={!this.state.videoCallModal} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} from={this.state.from} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
+              <VideoCall ref={this.videoCallModal} open={!this.state.videoCallModal} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
               // <VideoCall />
             }
             {!noFooter && <MainFooter />}

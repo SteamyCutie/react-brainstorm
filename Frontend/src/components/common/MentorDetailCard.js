@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
+import VideoCall from "../common/VideoCall"
 
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
@@ -12,15 +13,45 @@ class MentorDetailCard extends React.Component {
   constructor(props) {
     super(props);
 
+    this.videoCallModal = React.createRef();
+
     this.state = {
       teaches: [
         "Algebra",
         "Mathematics",
       ],
+      call: false,
+      registerState: 0,
+      callState: 0,
+      videoCallModal: 0,
+      from: '',
     }
   }
 
   componentDidMount() {
+  }
+
+  handleAvailableNow() {
+    console.log(this.props.mentorData.email, '+++++ ======');
+    this.props.call(this.props.mentorData.email);
+  }
+
+  toggle_videocall() {
+    this.setState({
+      videoCallModal: !this.state.videoCallModal
+    });
+    // if(!this.state.videoCallModal) {
+    //   this.videoCallModal.current.clearValidationErrors();
+    // }
+  }
+
+  toggle_modal() {
+    this.setState({
+      videoCallModal: !this.state.videoCallModal,
+    });
+    // if(!this.state.videoCallModal) {
+    //   this.videoCallModal.current.clearValidationErrors();
+    // }
   }
 
   render() {
@@ -63,8 +94,8 @@ class MentorDetailCard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            {instant_call ? <Button className="btn-mentor-detail-instant">
-              <img src={Lightening} alt="Lightening" />
+            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleAvailableNow()}>
+              <img src={Lightening} alt="Lightening"/>
               Available now
             </Button> : <Button disabled className="btn-mentor-detail-instant">
               <img src={Lightening} alt="Lightening" />
@@ -78,6 +109,14 @@ class MentorDetailCard extends React.Component {
             </Button>
           </Row>
         </div>
+        {this.state.call && 
+          // this.state.call && 
+          // this.state.videoCallModal && 
+          // <Redirect to={{pathname: '/call'}} />
+          <VideoCall ref={this.videoCallModal} open={!this.state.videoCallModal} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} 
+          from={this.props.from} callState={this.props.callState} ws={this.props.ws} setWebRtcPeer={this.props.setWebRtcPeer} stop={this.props.stop}/>
+          // <VideoCall />
+        }
       </div>
     );
   }
