@@ -128,6 +128,7 @@ export default class SignIn extends React.Component {
         })
       }
     } catch(err) {
+      console.log(err);
       this.setState({
         signInError: 'Error is occured'
       })

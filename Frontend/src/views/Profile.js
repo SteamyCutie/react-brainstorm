@@ -475,7 +475,7 @@ export default class MySharePage extends React.Component {
                           <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
                           <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={this.state.param.description}/>
                         </Row>
-                        {this.state.param.is_mentor ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
+                        {/* {this.state.param.is_mentor ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
                         (Student/Mentor)
                         <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
                         </FormCheckbox> : <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
@@ -483,15 +483,29 @@ export default class MySharePage extends React.Component {
                           <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
                         </FormCheckbox>}
                         {this.state.param.is_mentor ? <Row form>
-                          <Col md="6" className="project-detail-input-group">
-                            <label htmlFor="feEmail">Tags</label>
+                          <Col className="col-md-12 col-xs-12 col-lg-12 project-detail-input-group">
+                            <div><label htmlFor="feEmail">Tags</label></div>
                             {this.state.tags.map((item, idx) => {
                               var index = this.state.param.tags.findIndex((value) => item.id == value)
-                              return index > -1 ? <FormCheckbox className="mb-1" checked value={this.state.param.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
-                                <FormCheckbox className="mb-1" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
+                              return index > -1 ? <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" checked value={this.state.param.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
+                                <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
                             })}
                           </Col>
-                        </Row> : ""}
+                        </Row> : ""} */}
+                        <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
+                          (Student/Mentor)
+                          <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
+                        </FormCheckbox>
+                        <Row form>
+                          <Col className="col-md-12 col-xs-12 col-lg-12 project-detail-input-group">
+                            <div><label htmlFor="feEmail">Tags</label></div>
+                            {this.state.tags.map((item, idx) => {
+                              var index = this.state.param.tags.findIndex((value) => item.id == value)
+                              return index > -1 ? <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" checked value={this.state.param.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
+                                <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
+                            })}
+                          </Col>
+                        </Row>
                         <Row className="profile-detail-save center">
                           <Button className="btn-profile-detail-save" onClick={() => this.actionSave()}>Save</Button>
                         </Row>
