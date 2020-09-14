@@ -7,7 +7,7 @@ export default class EmailVerify extends React.Component {
     super(props);
     
     this.state = {
-      historyData: [],
+      errorMsg: '',
       code: '',
     }
   }
@@ -24,10 +24,15 @@ export default class EmailVerify extends React.Component {
         localStorage.setItem('token', result.data.token);
         window.location.href = '/mentorSession';
       } else {
-        alert("incorrect code")
+        this.setState({
+          errorMsg: result.data.message
+        })
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
+      this.setState({
+        errorMsg: "Error is occured"
+      })
     }
     localStorage.removeItem('password');
   }
@@ -39,6 +44,7 @@ export default class EmailVerify extends React.Component {
   onChangeCode = (e) => {
     this.setState({
       code: e.target.value,
+      errorMsg: ''
     });
   }
 
@@ -68,6 +74,7 @@ export default class EmailVerify extends React.Component {
                 </FormInput>
               </Row>
               <label style={{marginLeft: "80px"}} className="validation-err">{this.state.validationErrorMsg}</label>
+              <label className="sign-in-err">{this.state.errorMsg}</label>
           </CardBody>
           <CardFooter className="center">
             <Button

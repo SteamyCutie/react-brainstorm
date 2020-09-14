@@ -75,8 +75,8 @@ export default class EditLiveForum extends React.Component {
         this.showFail(result.data.message);
       }
     } catch(err) {
-      this.showFail(err);
-    };
+        this.showFail(err);
+      }
   }
 
   getSession = async(id) => {
@@ -97,7 +97,7 @@ export default class EditLiveForum extends React.Component {
       }
     } catch(err) {
       this.showFail(err);
-    };
+    }
   }
 
   actionEdit = async() => {
@@ -129,6 +129,7 @@ export default class EditLiveForum extends React.Component {
           });
         } else {
         }
+        this.showFail("Create Schedule Fail");
       }
     } catch(err) {
       this.showFail("Create Schedule Fail");

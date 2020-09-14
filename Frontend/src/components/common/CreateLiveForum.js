@@ -83,13 +83,12 @@ export default class CreateLiveForum extends React.Component {
       const result = await gettags();
       if (result.data.result === "success") {
         this.setState({tags: result.data.data});
-        console.log(this.state);
       } else {
         this.showFail(result.data.message);
       }
     } catch(err) {
-      this.showFail(err);
-    };
+        this.showFail(err);
+      }
   }
 
   actionSave = async() => {
