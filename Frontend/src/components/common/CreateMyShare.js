@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import { Modal, ModalBody, Button, FormInput,  FormCheckbox } from "shards-react";
 import { uploadvideo, uploadimage, createshareinfo } from '../../api/api';
 import ReactNotification from 'react-notifications-component';
@@ -13,6 +13,7 @@ export default class CreateMyShare extends React.Component {
     super(props);
 
     this.state = {
+      files: [],
       loading: false,
       foruminfo: {
         title: "",
@@ -75,6 +76,7 @@ export default class CreateMyShare extends React.Component {
       if (result.data.result === "success") {
         this.toggle();
         this.showSuccess("Action Successful");
+        window.location.reload();
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -90,7 +92,6 @@ export default class CreateMyShare extends React.Component {
           });
         } else {
         }
-        this.showFail("Action Fail");
       }
       this.setState({loading: false});
     } catch(err) {
@@ -157,14 +158,25 @@ export default class CreateMyShare extends React.Component {
     });
   }
 
+  onPreviewDrop = (files) => {
+    this.setState({
+      files: this.state.files.concat(files),
+     });
+  }
+
   render() {
     const { open } = this.props;
+    const previewStyle = {
+      display: 'inline',
+      width: 100,
+      height: 100,
+    };
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Input Information</h1>
+          <h1 className="content-center modal-header-class">Upload photo/video</h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
             {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}

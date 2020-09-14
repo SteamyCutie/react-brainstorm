@@ -24,7 +24,7 @@ class MentorDetailCard extends React.Component {
   }
 
   render() {
-    const {name, score, avatar, tag_name, online, description, hourly_price, instant_call} = this.props.mentorData;
+    const {name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
   
     return (
       <div className="mentor-detail-card">
@@ -43,7 +43,7 @@ class MentorDetailCard extends React.Component {
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
             {tag_name.map((teach, idk) => (
-              <p key={idk} className="brainsshare-tag">{teach}</p>
+              <p key={idk} className="brainsshare-tag" title={teach}>{teach}</p>
             ))
             }
           </Row>
@@ -52,8 +52,7 @@ class MentorDetailCard extends React.Component {
             <a className="read-more">Read more</a>
           </div>
           <div className="mentor-detail-video">
-            <img src={PlayIcon} alt="play-icon"/>
-              Video presentation
+              <a href={video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
             </div>
         </div>
         <div className="mentor-deatail-rate-buttons">

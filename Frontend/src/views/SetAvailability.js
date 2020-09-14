@@ -11,57 +11,7 @@ import AddButtonImage from "../images/Add.svg"
 import { getAvailableTimes } from '../api/api';
 import { setAvailableTimes } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
-
-const timeList = [
-  {id: 1, str: "00 : 00 am"},
-  {id: 2, str: "00 : 30 am"},
-  {id: 3, str: "01 : 00 am"},
-  {id: 4, str: "01 : 30 am"},
-  {id: 5, str: "02 : 00 am"},
-  {id: 6, str: "02 : 30 am"},
-  {id: 7, str: "03 : 00 am"},
-  {id: 8, str: "03 : 30 am"},
-  {id: 9, str: "04 : 00 am"},
-  {id: 10, str: "04 : 30 am"},
-  {id: 11, str: "05 : 00 am"},
-  {id: 12, str: "05 : 30 am"},
-  {id: 13, str: "06 : 00 am"},
-  {id: 14, str: "06 : 30 am"},
-  {id: 15, str: "07 : 00 am"},
-  {id: 16, str: "07 : 30 am"},
-  {id: 17, str: "08 : 00 am"},
-  {id: 18, str: "08 : 30 am"},
-  {id: 19, str: "09 : 00 am"},
-  {id: 20, str: "09 : 30 am"},
-  {id: 21, str: "10 : 00 am"},
-  {id: 22, str: "10 : 30 am"},
-  {id: 23, str: "11 : 00 am"},
-  {id: 24, str: "11 : 30 am"},
-  {id: 25, str: "12 : 00 pm"},
-  {id: 26, str: "12 : 30 pm"},
-  {id: 27, str: "01 : 00 pm"},
-  {id: 28, str: "01 : 30 pm"},
-  {id: 29, str: "02 : 00 pm"},
-  {id: 30, str: "02 : 30 pm"},
-  {id: 31, str: "03 : 00 pm"},
-  {id: 32, str: "03 : 30 pm"},
-  {id: 33, str: "04 : 00 pm"},
-  {id: 34, str: "04 : 30 pm"},
-  {id: 35, str: "05 : 00 pm"},
-  {id: 36, str: "05 : 30 pm"},
-  {id: 37, str: "06 : 00 pm"},
-  {id: 38, str: "06 : 30 pm"},
-  {id: 39, str: "07 : 00 pm"},
-  {id: 40, str: "07 : 30 pm"},
-  {id: 41, str: "08 : 00 pm"},
-  {id: 42, str: "08 : 30 pm"},
-  {id: 43, str: "09 : 00 pm"},
-  {id: 44, str: "09 : 30 pm"},
-  {id: 45, str: "10 : 00 pm"},
-  {id: 46, str: "10 : 30 pm"},
-  {id: 47, str: "11 : 00 pm"},
-  {id: 48, str: "11 : 30 pm"}
-];
+import Timelinelist from '../common/TimelistList';
 
 class SetAvailability extends React.Component {
   constructor(props) {
@@ -152,8 +102,8 @@ class SetAvailability extends React.Component {
     let list = availableTimeList;
     let timeId = 0;
 
-    for(var i = 0; i < timeList.length; i ++) {
-      if(e.target.value === timeList[i]['str']) {
+    for(var i = 0; i < Timelinelist.length; i ++) {
+      if(e.target.value === Timelinelist[i]['str']) {
         timeId = i;
         break;
       }
@@ -170,8 +120,8 @@ class SetAvailability extends React.Component {
     let list = availableTimeList;
     let timeId = 0;
 
-    for(var i = 0; i < timeList.length; i ++) {
-      if(e.target.value === timeList[i]['str']) {
+    for(var i = 0; i < Timelinelist.length; i ++) {
+      if(e.target.value === Timelinelist[i]['str']) {
         timeId = i;
         break;
       }
@@ -356,7 +306,7 @@ class SetAvailability extends React.Component {
                                 <Row form>
                                   <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
                                     <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
-                                      {timeList.map((item, idx) => {
+                                      {Timelinelist.map((item, idx) => {
                                         return (
                                           time.from === item.id
                                           ? <option selected>{item.str}</option>
@@ -367,7 +317,7 @@ class SetAvailability extends React.Component {
                                   </Col>
                                   <Col md="5" className="available-time-group">
                                     <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
-                                      {timeList.map((item, idx) => {
+                                      {Timelinelist.map((item, idx) => {
                                         return (
                                           time.to === item.id 
                                           ? <option selected>{item.str}</option>
@@ -395,7 +345,7 @@ class SetAvailability extends React.Component {
                             :<Row form>
                               <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
-                                  {timeList.map((item, idx) => {
+                                  {Timelinelist.map((item, idx) => {
                                     return (
                                       <option >{item.str}</option>
                                     )
@@ -404,7 +354,7 @@ class SetAvailability extends React.Component {
                               </Col>
                               <Col md="5" className="available-time-group">
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
-                                  {timeList.map((item, idx) => {
+                                  {Timelinelist.map((item, idx) => {
                                     return (
                                       <option >{item.str}</option>
                                     )
