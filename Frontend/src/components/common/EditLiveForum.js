@@ -77,9 +77,6 @@ export default class EditLiveForum extends React.Component {
     } catch(err) {
         this.showFail(result.data.message);
       }
-    } catch(err) {
-      this.showFail(err);
-    };
   }
 
   getSession = async(id) => {
