@@ -23,6 +23,7 @@ class UserController extends Controller
         try {
             $input = $request->only('email', 'password');
             $token = null;
+
             $user = User::where('email', $request->email)->first();
 
             if( !$user->email_verified_at ) {
@@ -60,7 +61,9 @@ class UserController extends Controller
         $name = $request['name'];
         $password = $request['password'];
         $subject = "Welcome to BransShare!";
+        $fronturl = env("FRONT_URL");
         $toEmail = $email;
+
         if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
             return response()->json([
                 'result'=> 'failed',
@@ -80,6 +83,7 @@ class UserController extends Controller
             $app_path = app_path();
             $body = include_once($app_path.'/Mails/VerifyAccount.php');
             $body = implode(" ",$body);
+
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 User::where(['email' => $email])->delete();
                 return response()->json([
@@ -195,7 +199,8 @@ class UserController extends Controller
         try {
             $code = $request->code;
             $user = User::where('two_factor_code', $code)->first();
-            if(!$user) {
+
+            if($user->email == "") {
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, The confirm code is incorrect!'
@@ -215,8 +220,12 @@ class UserController extends Controller
                     'message' => 'Sorry, fail send mail'
                 ]);
             }
+
             $user->update(['two_factor_code' => ""]);
-            return $this->login($request);
+            return response()->json([
+                'result'=> 'success',
+                'message' => 'Updated password',
+            ]);
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -252,7 +261,7 @@ class UserController extends Controller
             User::where('email', $email)->update(['remember_token' => $vCode]);
 
             $app_path = app_path();
-            $body = include_once($app_path.'/Mails/Welcome.php');
+            $body = include_once($app_path.'/Mails/VerifyCode.php');
             $body = implode(" ",$body);
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
