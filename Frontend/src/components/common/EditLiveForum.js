@@ -3,7 +3,7 @@ import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker } from "
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { createforum, gettags, editforum, getforum } from '../../api/api';
+import { gettags, editforum, getforum } from '../../api/api';
 
 import Close from '../../images/Close.svg'
 
@@ -72,10 +72,13 @@ export default class EditLiveForum extends React.Component {
       if (result.data.result === "success") {
         this.setState({tags: result.data.data});
       } else {
-        // alert(result.data.message);
+        this.showFail(result.data.message);
       }
     } catch(err) {
-      // alert(err);
+        this.showFail(result.data.message);
+      }
+    } catch(err) {
+      this.showFail(err);
     };
   }
 
@@ -92,14 +95,12 @@ export default class EditLiveForum extends React.Component {
         temp.from = result.data.data.from;
         temp.to = result.data.data.to;
         this.setState({foruminfo: temp});
-
-        // console.log(this.state);
       } else {
-        // alert(result.data.message);
+        this.showFail(result.data.message);
       }
     } catch(err) {
-      // alert(err);
-    };
+      this.showFail(err);
+    }
   }
 
   actionEdit = async() => {
@@ -115,6 +116,7 @@ export default class EditLiveForum extends React.Component {
       if (result.data.result === "success") {
         this.toggle();
         this.showSuccess("Edit Schedule Success");
+        window.location.href = "/scheduleLiveForum";
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -130,10 +132,10 @@ export default class EditLiveForum extends React.Component {
           });
         } else {
         }
+        this.showFail("Create Schedule Fail");
       }
     } catch(err) {
-      this.showFail("Create Schedule Success");
-      // alert(err);
+      this.showFail("Create Schedule Fail");
     };
   }
 
@@ -174,10 +176,10 @@ export default class EditLiveForum extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -219,6 +221,7 @@ export default class EditLiveForum extends React.Component {
                 <FormCheckbox className="mb-1" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
             })}
           </div>
+          <div><label htmlFor="fePassword">From</label></div>
           <DatePicker
             md="6"
             size="lg"
@@ -229,7 +232,7 @@ export default class EditLiveForum extends React.Component {
             dropdownMode="select"
             className="text-center"
           />
-          ~
+          <div><label htmlFor="fePassword">To</label></div>
           <DatePicker
             md="6"
             size="lg"

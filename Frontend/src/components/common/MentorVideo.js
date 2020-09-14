@@ -31,7 +31,7 @@ class MentorVideo extends React.Component {
         <div className="mentor-desc-video-header">
           <h6 className="video-upload-time no-margin">{day} at {time}</h6>
           
-          <NavItem className="dropdown notifications notification-class">
+          {/* <NavItem className="dropdown notifications notification-class">
             <NavLink
               className="nav-link-icon text-center"
               onClick={this.toggleActions}
@@ -54,7 +54,7 @@ class MentorVideo extends React.Component {
                 Edit
               </DropdownItem>
             </Collapse>
-          </NavItem>
+          </NavItem> */}
         </div>
         <div>
           <h6 className="mentor-desc-video-detail no-margin">

@@ -63,8 +63,16 @@ class SessionController extends Controller
         else
             $tags_id = explode(',', $forum['tags_id']);
         $forum['tags'] = $tags_id;
-        $from = date("Y-m-d", strtotime($forum['from']));
-        $to = date("Y-m-d", strtotime($forum['to']));
+        if ($forum['from'] == "" || $forum['from'] == null)
+            $from = "";
+        else
+            $from = date("Y-m-d", strtotime($forum['from']));
+
+        if ($forum['from'] == "" || $forum['from'] == null)
+            $to = "";
+        else
+            $to = date("Y-m-d", strtotime($forum['to']));
+
         $forum['from'] = $from;
         $forum['to'] = $to;
         return response()->json([
@@ -221,9 +229,10 @@ class SessionController extends Controller
     {
         $result_res = [];
         $email = $request['email'];
-        $user = User::select('id','name', 'avatar', 'mentor')->where('email', $email)->first();
+        $user = User::select('id','name', 'avatar', 'is_mentor')->where('email', $email)->first();
         $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
-        if ($user['mentor'] == 0) {
+        $current_date = date("Y/m/d h:i:s");
+        if ($user['is_mentor'] == 0) {
             foreach ($session_infos as $session_key => $session_info)
             {
                 $result_from = $session_info['from'];
@@ -237,12 +246,11 @@ class SessionController extends Controller
                     $temp = [];
                     if (trim($invited_value) == $user['id'])
                     {
-                        
                         $temp = $session_info;
-
                         $temp['day'] = date('d/m/y', strtotime($result_from));
                         $temp['time'] = date('h:i a', strtotime($result_from));
 
+                        $tag_names = [];
                         foreach ($tags_id as $tag_key => $tag_value) {
                             $tags = Tag::select('name')->where('id', $tag_value)->first();
                             $tag_names[$tag_key] = $tags['name'];
@@ -251,12 +259,11 @@ class SessionController extends Controller
                         $mentor_name = User::select('name')->where('id', $session_info['user_id'])->first();
                         $temp['name'] = $mentor_name['name'];
                         $temp['avatar'] = $user['avatar'];
-                        $result_res[] = $temp;
                     }
                 }
             }
-        } else if ($user['mentor'] == 1) {
-            $user = User::select('id','name', 'avatar', 'mentor')->where('email', $email)->first();
+        } else if ($user['is_mentor'] == 1) {
+            $user = User::select('id','name', 'avatar', 'is_mentor')->where('email', $email)->first();
             $result_res = Session::where('user_id', $user['id'])->get();
 
             for ($i = 0; $i < count($result_res); $i ++) {
@@ -277,6 +284,7 @@ class SessionController extends Controller
                 $result_res[$i]['e_day'] = $e_day;
 
                 $tags_id = explode(',', $result_res[$i]['tags_id']);
+                $tag_names = [];
                 foreach ($tags_id as $tag_key => $tag_value) {
                     $tags = Tag::select('name')->where('id', $tag_value)->first();
                     $tag_names[$tag_key] = $tags['name'];
@@ -291,7 +299,7 @@ class SessionController extends Controller
         if ($result_res == []) {
             return response()->json([
                 'result'=> 'failed',
-                'message'=> 'Current User Does Not Exist',
+                'message'=> 'Session Empty',
             ]);
         } else {
             return response()->json([

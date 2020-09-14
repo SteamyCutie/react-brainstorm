@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Tag;
 use JWTAuth;
 use Exception;
 
@@ -107,6 +108,11 @@ class UserController extends Controller
         $user = User::where('email', $email)->first();
         $newDate = date("Y-m-d", strtotime($user['dob']));
         $user['dob'] = $newDate;
+        if ($user['tags_id'] == null || $user['tags_id'] == '')
+            $tags_id = [];
+        else
+            $tags_id = explode(',', $user['tags_id']);
+        $user['tags'] = $tags_id;
         return response()->json([
             'result'=> 'success',
             'data'=> $user,
@@ -126,6 +132,8 @@ class UserController extends Controller
         $videourl = $request['videourl'];
         $instantcall = $request['instantcall'];
         $avatar = $request['avatar'];
+        $is_mentor = $request['is_mentor'];
+        $tags = implode(",", $request['tags']);
 
         $rules = array(
             'name' => 'required',
@@ -171,6 +179,8 @@ class UserController extends Controller
                 'video_url' => $videourl,
                 'instant_call' => $instantcall,
                 'status' => 1,
+                'is_mentor' => $is_mentor,
+                'tags_id' => $tags
             ));
 
             return response()->json([
@@ -318,10 +328,20 @@ class UserController extends Controller
         $email = $request['email'];
         $users = User::all();
         $mentors = [];
-
         for ($i = 0; $i < count($users); $i ++) {
-            if ($users[$i]['email'] != $email && $users[$i]['mentor'] == 1)
+            if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
                 $mentors[] = $users[$i];
+            }
+        }
+
+        for ($i = 0; $i < count($mentors); $i ++) {
+            $tags_id = explode(',', $mentors[$i]['tags_id']);
+            $tag_names = [];
+            foreach ($tags_id as $tag_key => $tag_value) {
+                $tags = Tag::where('id', $tag_value)->first();
+                $tag_names[$tag_key] = $tags['name'];
+            }
+            $mentors[$i]['tag_name'] = $tag_names;
         }
 
         return response()->json([

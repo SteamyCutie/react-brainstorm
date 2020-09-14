@@ -3,7 +3,7 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from "shards-react";
 
 import SignIn from "../../landingpage/SignIn";

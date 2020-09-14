@@ -375,3 +375,7 @@
 .custom .modal-content {
     background: transparent;
 }
+
+.top-modal {
+    z-index: 9070;
+}
