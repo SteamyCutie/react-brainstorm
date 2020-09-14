@@ -10,7 +10,8 @@ export default class ForgetPassword extends React.Component {
       historyData: [],
       email: '',
       validationErrorMsg: '',
-      vCode: ''
+      vCode: '',
+      errorMsg: ''
     }
   }
 
@@ -60,10 +61,15 @@ export default class ForgetPassword extends React.Component {
       if(result.data.result === "success") {
         window.location.href = '/emailsent';
       } else {
-        alert("failed")
+        this.setState({
+          errorMsg: result.data.message
+        })
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
+      this.setState({
+        errorMsg: "Error is occured"
+      })
     }
   }
 
@@ -109,6 +115,7 @@ export default class ForgetPassword extends React.Component {
               <label style={{marginLeft: "80px"}} className="validation-err">{this.state.validationErrorMsg}</label>
           </CardBody>
           <CardFooter className="center">
+            <label className="sign-in-err">{this.state.errorMsg}</label>
             <Button
               className="btn-general btn-send-email"
               onClick={() => this.handleSendEmail()}

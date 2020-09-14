@@ -30,7 +30,9 @@ export default class History extends React.Component {
 
       }
     } catch(err) {
-      alert(err);
+      this.setState({
+        errorMsg: "Error is occured"
+      })
     }
   }
 

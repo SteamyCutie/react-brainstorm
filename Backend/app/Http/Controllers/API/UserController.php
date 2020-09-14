@@ -56,7 +56,7 @@ class UserController extends Controller
         $email = $request['email'];
         $name = $request['name'];
         $password = $request['password'];
-        $subject = "Welcome to BransShare!";
+        $subject = "Welcome to BrainsShare!";
         $body = "Hi ".$name."<br>";
         $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
 
@@ -181,7 +181,7 @@ class UserController extends Controller
     }
 
     public function verifyCode(Request $request){
-        $subject = "Welcome to BransShare!";
+        $subject = "Welcome to BrainsShare!";
 
         try {
             $code = $request->code;
@@ -191,7 +191,7 @@ class UserController extends Controller
             if($code != $user->two_factor_code) {
                 return response()->json([
                     'result'=> 'failed',
-                    'message' => 'Sorry, confirm code is wrong!'
+                    'message' => 'Sorry, The confirm code is incorrect!'
                 // ], 500);
                 ]);
             }
@@ -201,7 +201,7 @@ class UserController extends Controller
             $name = $user->name;
             $body = "Hi ".$name."<br>";
             $body = $body."<img src='https://brainshares.s3-us-west-2.amazonaws.com/1599947110_517759_logo.svg' style='width:10%;'/><br>";
-            $body = $body."<p>Veryfy Code Success!</p><br>";
+            $body = $body."<p>Verify Code Success!</p><br>";
 
             if (!$this->send_email($toEmail, $name, $subject, $body)){
                 return response()->json([
@@ -221,7 +221,7 @@ class UserController extends Controller
     }
 
     public function forgot(Request $request) {
-        $subject = "Welcome to BransShare!";
+        $subject = "Welcome to BrainsShare!";
         $email = $request['email'];
         $token = null;
 

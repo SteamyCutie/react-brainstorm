@@ -84,10 +84,10 @@ export default class CreateLiveForum extends React.Component {
         this.setState({tags: result.data.data});
         console.log(this.state);
       } else {
-        alert(result.data.message);
+        // alert(result.data.message);
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
     };
   }
 
@@ -123,7 +123,7 @@ export default class CreateLiveForum extends React.Component {
     } catch(err) {
       console.log(err);
       this.showFail("Create Schedule Success");
-      alert(err);
+      // alert(err);
     };
   }
 
