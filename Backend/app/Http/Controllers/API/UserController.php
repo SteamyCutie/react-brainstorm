@@ -33,7 +33,7 @@ class UserController extends Controller
             if (!$token = JWTAuth::attempt($input)) {
                 return response()->json([
                     'result'=> 'failed',
-                    'message' => 'Invalid Email or Password',
+                    'message' => 'Email or Password is incorrect.',
                 // ], 401);
                 ]);
             }
