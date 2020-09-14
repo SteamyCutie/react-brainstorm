@@ -221,7 +221,7 @@ class UserController extends Controller
                 ]);
             }
 
-            $user->update(['two_factor_code' => ""]);
+            $user->update(['two_factor_code' => "0"]);
             return response()->json([
                 'result'=> 'success',
                 'message' => 'Updated password',
