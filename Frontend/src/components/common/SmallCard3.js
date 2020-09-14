@@ -6,7 +6,6 @@ import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 import ReivewImage from "../../images/Review.jpg"
-import Title from "antd/lib/skeleton/Title";
 
 class SmallCard3 extends React.Component {
   constructor(props) {
