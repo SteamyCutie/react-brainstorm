@@ -492,10 +492,13 @@ export default class MySharePage extends React.Component {
                             })}
                           </Col>
                         </Row> : ""} */}
-                        <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
+                        {this.state.param.is_mentor ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
+                        (Student/Mentor)
+                        <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
+                        </FormCheckbox> : <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
                           (Student/Mentor)
                           <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
-                        </FormCheckbox>
+                        </FormCheckbox>}
                         <Row form>
                           <Col className="col-md-12 col-xs-12 col-lg-12 project-detail-input-group">
                             <div><label htmlFor="feEmail">Tags</label></div>
