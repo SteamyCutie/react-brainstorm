@@ -154,6 +154,12 @@
     margin-right: 50px
 }
 
+.custom-toggle {
+    display: inline-block !important;
+    margin-left: 13px;
+    margin-right: 0px;
+}
+
 .profile-setting-detail {
     /* display: flex; */
     /* justify-content: center; */

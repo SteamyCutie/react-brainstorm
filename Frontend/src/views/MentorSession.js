@@ -345,22 +345,22 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
           <div className="toolbar-select-label">
             <label className="">Sessions:</label>
             <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeSession(e)}>
+              {/* {this.state.events.map((item, index) =>
+                <option value={item.id} selected>{item.title}</option>
+              )} */}
               <option>All</option>
-              <option>...</option>
             </FormSelect>
           </div>
           <div className="toolbar-select-label">
             <label className="">Category: </label>
             <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeCategory(e)}>
               <option>select category</option>
-              <option>...</option>
             </FormSelect>
           </div>
           <div className="toolbar-select-label">
             <label className="">Student: </label>
             <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeStudent(e)}>
               <option>select student</option>
-              <option>...</option>
             </FormSelect>
           </div>
         </div>
