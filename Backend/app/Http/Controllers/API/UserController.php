@@ -181,10 +181,9 @@ class UserController extends Controller
     public function verifyCode(Request $request){
         $subject = "Welcome to BransShare!";
         try {
-            $code = $request->code;            
-            $user = User::where('two_factor_code', $code)->first();
-            
-            if($user->email == "") {
+            $code = $request->code;           
+            $user = User::where('two_factor_code', $code)->first();            
+            if(!$user) {                                
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, confirm code is wrong!'
@@ -195,19 +194,18 @@ class UserController extends Controller
             $name = $user->name;
             $app_path = app_path();
             $body = include_once($app_path.'/Mails/Welcome.php');
-            $body = implode(" ",$body); 
+            $body = implode(" ",$body);
             
-            if (!$this->send_email($toEmail, $name, $subject, $body)){
+            if (!$this->send_email($toEmail, $name, $subject, $body)){                
                 return response()->json([
                     'result'=> 'failed',
                     'message' => 'Sorry, fail send mail'
                 ]);
-            }
-            
-            $user->update(['two_factor_code' => ""]);            
+            }            
+            $user->update(['two_factor_code' => '0']);             
             return response()->json([
                 'result'=> 'success',
-                'message' => 'Updated password',
+                'message' => 'verified code',
             ]);
 
         } catch (\Throwable $th) {

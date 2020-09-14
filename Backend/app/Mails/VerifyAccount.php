@@ -92,7 +92,7 @@
         </div>
         <div class='block' >
             <span>
-                <a href = '$fronturl'/verification>
+                <a href = '$fronturl/verification'>
                 	<button class='button'>Click Here</button>
                 </a>
 			</span>

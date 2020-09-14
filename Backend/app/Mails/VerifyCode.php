@@ -92,7 +92,7 @@
         </div>
         <div class='block' >
             <span>
-                <a href = '$fronturl'/resetpassword/$vCode>
+                <a href = '$fronturl/resetpassword/$vCode'>
                 	<button class='button'>Click Here</button>                	
                 </a>
 			</span>
