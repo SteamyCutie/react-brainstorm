@@ -75,7 +75,7 @@ export default class EditLiveForum extends React.Component {
         this.showFail(result.data.message);
       }
     } catch(err) {
-        this.showFail(result.data.message);
+        this.showFail(err);
       }
   }
 
