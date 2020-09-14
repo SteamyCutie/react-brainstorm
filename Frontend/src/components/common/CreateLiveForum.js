@@ -206,9 +206,9 @@ export default class CreateLiveForum extends React.Component {
             {this.state.requiremessage.ddescription == '' && <FormInput className="profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
-            <label htmlFor="feEmail">Tags</label>
+            <label htmlFor="feEmail">Tags</label><br></br>
             {this.state.tags.map((item, idx) => 
-              <FormCheckbox className="mb-1" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>
+              <FormCheckbox inline className="col-md-5 col-lg-5 col-xs-5" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>
             )}
           </div>
           <div><label htmlFor="fePassword">From</label></div>

@@ -10,7 +10,6 @@ import { store } from 'react-notifications-component';
 
 import { getallmentors } from '../api/api';
 
-// const Recommended = ({ smallCards, tHistory, columns, mentorData }) => (
 export default class Recommended extends React.Component {
   constructor(props) {
     super(props);
