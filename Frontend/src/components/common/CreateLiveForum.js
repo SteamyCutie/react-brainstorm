@@ -207,7 +207,7 @@ export default class CreateLiveForum extends React.Component {
     const { open } = this.props;
     return (
       <div>
-        <Modal size="lg" open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
+        <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
           <h1 className="content-center modal-header-class">
