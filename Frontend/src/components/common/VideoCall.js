@@ -162,12 +162,12 @@ export default class VideoCall extends React.Component {
             <div className="video-call-element">
               <Row className="center video-tags">
                 {/* <Col xl="6"> */}
-                <video id="videoOutput" autoplay="" width="200px" height="150px" className="video-call-student">
+                <video id="videoOutput" autoplay="" width="1000px" height="600px" className="video-call-student">
                     Your browser does not support the video tag.
                   </video>
                 {/* </Col> */}
                 {/* <Col xl="6"> */}
-                  <video id="videoInput" autoplay="" width="1000px" height="600px" className="video-call-mentor">
+                  <video id="videoInput" autoplay="" width="200px" height="150px" className="video-call-mentor">
                     {/* Your browser does not support the video tag. */}
                   </video>
                 {/* </Col> */}
