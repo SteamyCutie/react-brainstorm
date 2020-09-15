@@ -85,3 +85,73 @@
   font-weight: 400;
   text-align: center;
 }
+
+.modal-video-call {
+  align-items: center;
+  justify-content: center;
+  display: block;
+  padding: 0px !important;
+  width: 90%;
+}
+
+.modal-content-class {
+  align-items: center;
+  justify-content: center;
+  display: block;
+  padding: 0px !important;
+  width: 65%;
+}
+
+.modal-class {
+  height: 100%;
+  margin: auto !important;
+  display: flex;
+}
+
+.modal-video-call-container .modal-content {
+  min-height: 800px;
+  min-width: 1200px;
+  margin: auto;
+  align-items: center;
+  box-shadow: none !important;
+}
+
+.video-call-element {
+  padding: 40px 20px;
+  width: 100%;
+}
+
+.video-tags {
+  margin: 20px;
+}
+
+.btn-video-call-mic-camera {
+  border-color: white !important;
+  width: 80px;
+  height: 80px;
+  background-color: white !important;
+  font-size: 15px !important;
+  border-radius: 7px !important;
+}
+
+.btn-video-call-end {
+  margin-right: 30px;
+  margin-left: 30px;
+  border-color: #F9364D !important;
+  width: 150px;
+  height: 80px;
+  background-color: #F9364D !important;
+  font-size: 15px !important;
+  border-radius: 7px !important;
+}
+
+.video-call-mentor {
+  /* width: 1200px; */
+}
+
+.video-call-student {
+  position: absolute;
+  right: 150px;
+  top: 80px;
+  border-radius: 4px;
+}
