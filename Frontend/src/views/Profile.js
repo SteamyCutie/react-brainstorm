@@ -20,7 +20,7 @@ export default class MySharePage extends React.Component {
     this.state = {
       tags: [],
       loading: false,
-      displaydate: undefined,
+      displaydate: '',
       displaygethourlyprice: '0.00',
       displaycuthourlyprice: '0.00',
       displaygetplanfee: '0.00',
@@ -36,7 +36,7 @@ export default class MySharePage extends React.Component {
       },
       param: {
         name: '',
-        birthday: undefined,
+        birthday: '2020-01-01',
         email: '',
         description: '',
         expertise: 1,
@@ -74,7 +74,7 @@ export default class MySharePage extends React.Component {
         const {param} = this.state;
         let temp = param;
         temp.name = result.data.data.name;
-        temp.birthday = result.data.data.dob;
+        temp.birthday = (result.data.data.dob == "" || result.data.data.dob == null) ? '1970-10-10' : result.data.data.dob;
         temp.email = result.data.data.email;
         temp.avatar = result.data.data.avatar;
         temp.description = result.data.data.description;
@@ -82,7 +82,7 @@ export default class MySharePage extends React.Component {
         temp.subpagename = result.data.data.sub_page_name;
         temp.subplanfee = result.data.data.sub_plan_fee;
         temp.videourl = result.data.data.video_url;
-        temp.expertise = result.data.data.expertise;
+        temp.expertise = (result.data.data.expertise == null || result.data.data.expertise == "") ? 1 : result.data.data.expertise;
         temp.instantcall = result.data.data.instant_call;
         temp.is_mentor = result.data.data.is_mentor;
         temp.tags = result.data.data.tags;
@@ -156,6 +156,7 @@ export default class MySharePage extends React.Component {
       if (result.data.result == "success") {
         this.setState({loading: false});
         this.showSuccess("Edit Profile Success");
+        localStorage.setItem('user-type', this.state.param.is_mentor);
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -492,13 +493,15 @@ export default class MySharePage extends React.Component {
                             })}
                           </Col>
                         </Row> : ""} */}
-                        {this.state.param.is_mentor ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
-                        (Student/Mentor)
-                        <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
-                        </FormCheckbox> : <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
-                          (Student/Mentor)
-                          <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
-                        </FormCheckbox>}
+                        {this.state.param.is_mentor ? 
+                          <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
+                          <FormCheckbox toggle checked className="instant-call-toggle custom-toggle" onChange={(e) => this.onChangeUser(e)}>
+                          </FormCheckbox><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span> : 
+
+                          <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
+                          <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
+                          </FormCheckbox>
+                          <span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span>}
                         <Row form>
                           <Col className="col-md-12 col-xs-12 col-lg-12 project-detail-input-group">
                             <div><label htmlFor="feEmail">Tags</label></div>

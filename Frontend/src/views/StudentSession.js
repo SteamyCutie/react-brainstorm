@@ -1,54 +1,135 @@
 import React from "react";
 import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 import SmallCard3 from "../components/common/SmallCard3"
-import { getUpcomingSession } from '../api/api';
+import { getUpcomingSession, gettags, getweekdata } from '../api/api';
+import LoadingModal from "../components/common/LoadingModal";
 
 export default class StudentSession extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      sessionList: []
+      loading: false,
+      sessionList: [],
+      tags: [],
+      weekList: []
     }
   }
 
   componentWillMount() {
     this.getSessionList();
+    this.getTags();
+    this.getWeekData();
   }
 
   getSessionList = async() => {
     try {
+      this.setState({loading: true});
       const result = await getUpcomingSession({email: localStorage.getItem('email')});
-      console.log(result, "+++++");
       if(result.data.result === "success") {
         var sessionTemp = result.data.data;
 
         this.setState({
           sessionList: sessionTemp,
         });
-        console.log(this.state.sessionList);
+        
       } else {
 
       }
+      this.setState({loading: false});
     } catch(err) {
-      this.setState({
-        errorMsg: "Error is occured"
-      })
+      this.setState({loading: false});
+      this.showFail(err);
     }
   }
 
-  findMentor = async() => {
+  getTags = async() => {
+    try {
+      const result = await gettags();
+      if (result.data.result === "success") {
+        this.setState({tags: result.data.data});
+      } else {
+        this.showFail(result.data.message);
+      }
+    } catch(err) {
+      this.showFail(err);
+    };
+  }
+
+  getWeekData = async() => {
+    try {
+      const result = await getweekdata();
+      if (result.data.result == "success") {
+        this.setState({weekList: result.data.data});
+      } else {
+        this.showFail(result.data.message);
+      }
+    } catch(err) {
+      this.showFail("Action Fail");
+    };
+  }
+
+  onChangeTags = async(e) => {
+    console.log(e.target.value);
+  }
+
+  onChangeDate = async(e) => {
+    console.log(e.target.value);
+  }
+
+  // findMentor = async() => {
     
+  // }
+
+  showSuccess(text) {
+    store.addNotification({
+      title: "Success",
+      message: text,
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   render() {
+    const {tags, weekList} = this.state;
     return (
+      <>
+      {this.state.loading && <LoadingModal open={true} />}
+      <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Row noGutters className="page-header py-4">
           <Col className="page-title">
             <h3>Upcoming session</h3>
           </Col>
-          <Button className="btn-add-payment" onClick={() => this.findMentor()}>Find a mentor</Button>
+          {/* <Button className="btn-add-payment" onClick={() => this.findMentor()}>Find a mentor</Button> */}
         </Row>
         <Card small className="history-card">
           <CardHeader className="history-card-header">
@@ -57,31 +138,33 @@ export default class StudentSession extends React.Component {
               <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                 Date:
               </label>
-              <FormSelect style={{height: "30px", width: "180px", marginRight: "10px"}}>
-                <option>Augut 10 - August 16</option>
-                <option>...</option>
+              <FormSelect style={{height: "30px", width: "200px", marginRight: "10px"}} onChange={(e) => this.onChangeDate(e)}>
+                <option>Select Date</option>
+                {weekList.map((item, index) =>
+                  <option>{item}</option>
+                )}
               </FormSelect>
-              <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+              {/* <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                 Sessions:
               </label>
               <FormSelect style={{height: "30px", width: "80px", marginRight: "10px"}}>
                 <option>All</option>
-                <option>...</option>
-              </FormSelect>
+              </FormSelect> */}
               <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                 Category:
               </label>
-              <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}}>
-                <option>Select category</option>
-                <option>...</option>
+              <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}} onChange={(e) => this.onChangeTags(e)}>
+                <option value="0">Select category</option>
+                {tags.map((item, index) =>
+                  <option value={item.id}>{item.name}</option>
+                )}
               </FormSelect>
-              <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+              {/* <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                 Mentor:
               </label>
               <FormSelect style={{height: "30px", width: "120px", marginRight: "10px"}}>
                 <option>Select mentor</option>
-                <option>...</option>
-              </FormSelect>
+              </FormSelect> */}
             </div>
           </CardHeader>
           <CardBody>
@@ -97,6 +180,7 @@ export default class StudentSession extends React.Component {
           </CardBody>
         </Card>    
       </Container>
+      </>
     )
   }
 };
