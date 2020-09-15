@@ -57,8 +57,8 @@
         .button {
             background: #007BFF;
             border-radius: 25px;
-            width: 20%;
-            height: 4%;
+            width: 150px;
+            height: 40px;
             font-size: 1.1rem;
         }
     </style>
@@ -67,11 +67,11 @@
 <body>
     <div class='content'>
         <div class='logo'>        
-            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:30%;'/>
+            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:200px;'/>
         </div>
         <div class='block'>
             <span>
-                Hello { $name },
+                Hello $name
             </span>
         </div>
         <div class='block'>
@@ -86,7 +86,7 @@
         </div>
         <div class='block'>
             <span>
-                { $two_factor_code }
+                $two_factor_code
                 
             </span>
         </div>
@@ -111,9 +111,6 @@
         <div class='block'>
             BrainsShare &copy; 2020, All rights reserved..<br>
             You are receiving this email as a BrainsShare customer.
-        </div>
-        <div class='block'>
-            You can unsubscribe from this list.
         </div>
     </div>
 </body>

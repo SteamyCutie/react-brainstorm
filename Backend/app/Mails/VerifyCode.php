@@ -67,7 +67,7 @@
 <body>
     <div class='content'>
         <div class='logo'>        
-            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:20%;'/>
+            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:200px;'/>
         </div>
         <div class='block'>
             <span>
@@ -111,9 +111,6 @@
         <div class='block'>
             BrainsShare &copy; 2020, All rights reserved..<br>
             You are receiving this email as a BrainsShare customer.
-        </div>
-        <div class='block'>
-            You can unsubscribe from this list.
         </div>
     </div>
 </body>
