@@ -55,7 +55,7 @@ export default class DefaultLayout extends React.Component {
       window.location.href = '/';
       return;
     }
-    var wsUri = 'wss://44.225.65.218:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com:8443/one2one';
     this.setWebsocket(wsUri);
 
     Store.addChangeListener(this.onChange);
