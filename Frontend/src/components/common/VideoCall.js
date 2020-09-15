@@ -157,32 +157,32 @@ export default class VideoCall extends React.Component {
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
+          {/* <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button> */}
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
                 {/* <Col xl="6"> */}
-                <video id="videoOutput" autoplay="" width="200px" height="150px" className="video-call-student">
+                <video id="videoOutput" autoplay="" width="1000px" height="600px" className="video-call-student">
                     Your browser does not support the video tag.
                   </video>
                 {/* </Col> */}
                 {/* <Col xl="6"> */}
-                  <video id="videoInput" autoplay="" width="1000px" height="600px" className="video-call-mentor">
+                  <video id="videoInput" autoplay="" width="200px" height="150px" className="video-call-mentor">
                     {/* Your browser does not support the video tag. */}
                   </video>
                 {/* </Col> */}
               </Row>
               
               <Row className="center btn-group-call">
-                <Button className="btn-video-call-mic-camera">
+                {/* <Button className="btn-video-call-mic-camera">
                   <img src={Mic} placeholder="Mic" />
-                </Button>
+                </Button> */}
                 <Button className="btn-video-call-end" onClick={() => this.toggle()}>
                   <img src={Phone} placeholder="Phone" />
                 </Button>
-                <Button className="btn-video-call-mic-camera">
+                {/* <Button className="btn-video-call-mic-camera">
                   <img src={Camera} placeholder="Camera" />
-                </Button>
+                </Button> */}
               </Row>
             </div>
           </ModalBody>
