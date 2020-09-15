@@ -29,19 +29,22 @@ class SmallCard3 extends React.Component {
   }
 
   render() {
-    const {name, day, from_time, to_time, tag_name, avatar_url} = this.props.data
+    const {name, day, from_time, to_time, tag_name, avatar} = this.props.data
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
           <div style={{display: "flex", float: "left"}}>
-            <img src={ReivewImage} className="small-card3-avatar" alt="avatar" />
+            <img src={avatar} className="small-card3-avatar" alt="avatar" />
             <div>
               <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
                 {tag_name.map((tag, idx) => {
-                  return(
-                    <p className="brainsshare-tag" id={idx} title={tag}>{tag}</p>
-                  );
+                  if (idx < 2)
+                    return <p className="brainsshare-tag" id={idx} title={tag}>{tag}</p>;
+                  else if (idx == 2)
+                    return <a href="javascript:void(0)">More</a>
+                  else
+                    return <></>;
                 })}
               </div>
             </div>

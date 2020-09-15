@@ -256,6 +256,7 @@ body {
 .carousel-component-body-desc-class p {
     margin-bottom: 10px;
     font-weight: 400;
+    word-break: break-word;
 }
 
 .carousel-component-body-desc-class a {
@@ -533,7 +534,6 @@ body {
 
 .brainsshare-tag 
 {
-    width: 75px;
     height: 25px;
     font-size: 14px;
     font-weight: 400;
@@ -545,8 +545,8 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
     font-weight: 500;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    /* text-overflow: ellipsis;
+    overflow: hidden; */
 }
 
 .tag-title {

@@ -122,6 +122,25 @@ class UserController extends Controller
         ]);
     }
 
+    public function getuserinfobyid(Request $request)
+    {
+        $id = $request['id'];
+
+        $user = User::where('id', $id)->first();
+        $newDate = date("Y-m-d", strtotime($user['dob']));
+        $user['dob'] = $newDate;
+        $tags_id = explode(',', $user['tags_id']);
+        foreach ($tags_id as $tag_key => $tag_value) {
+            $tags = Tag::where('id', $tag_value)->first();
+            $tag_names[$tag_key] = $tags['name'];
+        }
+        $user['tags'] = $tag_names;
+        return response()->json([
+            'result'=> 'success',
+            'data'=> $user,
+        ]);
+    }
+
     public function editprofile(Request $request)
     {
         $name = $request['name'];
