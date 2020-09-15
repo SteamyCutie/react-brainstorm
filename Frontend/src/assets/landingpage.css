@@ -658,8 +658,8 @@ body {
 }
 
 @media (max-width: 1250px) {
-    /* .btn-group-header { display: none !important; }
-    .btn-dropdown-header { display: inline-block !important; } */
+    .btn-group-header { display: none !important; }
+    .btn-dropdown-header { display: inline-block !important; }
 }
 
 .blue-background-one-class {
