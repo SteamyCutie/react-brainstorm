@@ -174,15 +174,15 @@ export default class VideoCall extends React.Component {
               </Row>
               
               <Row className="center btn-group-call">
-                <Button className="btn-video-call-mic-camera">
+                {/* <Button className="btn-video-call-mic-camera">
                   <img src={Mic} placeholder="Mic" />
-                </Button>
+                </Button> */}
                 <Button className="btn-video-call-end" onClick={() => this.toggle()}>
                   <img src={Phone} placeholder="Phone" />
                 </Button>
-                <Button className="btn-video-call-mic-camera">
+                {/* <Button className="btn-video-call-mic-camera">
                   <img src={Camera} placeholder="Camera" />
-                </Button>
+                </Button> */}
               </Row>
             </div>
           </ModalBody>
