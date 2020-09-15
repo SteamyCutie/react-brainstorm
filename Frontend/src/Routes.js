@@ -88,7 +88,7 @@ export default [
     component: SpecificSubscription
   },
   {
-    path: "/unsubscribe-specific", /* specific must be user id on this system */
+    path: "/unsubscribe-specific/:id", /* specific must be user id on this system */
     layout: DefaultLayout,
     component: Unsubscribe
   },
