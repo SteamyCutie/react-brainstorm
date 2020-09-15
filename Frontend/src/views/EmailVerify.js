@@ -21,8 +21,8 @@ export default class EmailVerify extends React.Component {
       const result = await verifyCode({email: localStorage.getItem('email'), password: localStorage.getItem('password'),code: this.state.code});
 
       if(result.data.result === "success") {
-        localStorage.setItem('token', result.data.token);
-        window.location.href = '/mentorSession';
+        // localStorage.setItem('token', result.data.token);
+        window.location.href = '/';
       } else {
         this.setState({
           errorMsg: result.data.message

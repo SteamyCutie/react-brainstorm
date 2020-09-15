@@ -11,7 +11,6 @@ export default class EditLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      day: null,
       displayday: '',
       displayfrom: '',
       displayto: '',
@@ -102,8 +101,8 @@ export default class EditLiveForum extends React.Component {
         temp.description = result.data.data.description;
         temp.from = result.data.data.from;
         temp.to = result.data.data.to;
+        temp.day = result.data.data.day;
         this.setState({foruminfo: temp});
-
       } else {
         this.showFail(result.data.message);
       }
@@ -156,27 +155,20 @@ export default class EditLiveForum extends React.Component {
     temp.day = displayday;
     this.setState({foruminfo: temp});
     this.setState({displayday: date});
-    this.setState({day: date});
   };
 
   onChangeFrom = (e) => {
     const {foruminfo} = this.state;
     let temp = foruminfo;
-    let date = new Date(e);
-    let displayfrom = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();
-    temp.from = displayfrom;
+    temp.from = e.target.value;
     this.setState({foruminfo: temp});
-    this.setState({displayfrom: date});
   };
 
   onChangeTo = (e) => {
     const {foruminfo} = this.state;
     let temp = foruminfo;
-    let date = new Date(e);
-    let displayto = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();
-    temp.to = displayto;
+    temp.to = e.target.value;
     this.setState({foruminfo: temp});
-    this.setState({displayto: date});
   };
 
   showSuccess(text) {
@@ -247,7 +239,7 @@ export default class EditLiveForum extends React.Component {
             size="lg"
             selected={this.state.displayday}
             onChange={(e) => this.onChangeDay(e)}
-            value={this.state.foruminfo.from}
+            value={this.state.foruminfo.day}
             placeholderText="From"
             dropdownMode="select"
             className="text-center"
@@ -256,7 +248,7 @@ export default class EditLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                <option value={item.value} >{item.str}</option>
+                item.value == this.state.foruminfo.from ? <option value={item.value} selected>{item.str}</option> : <option value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>
@@ -264,7 +256,7 @@ export default class EditLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeTo(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                <option value={item.value} >{item.str}</option>
+                item.value == this.state.foruminfo.to ? <option value={item.value} selected>{item.str}</option> : <option value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>

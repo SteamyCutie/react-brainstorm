@@ -12,18 +12,15 @@ export default class CreateLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      day: null,
       displayday: '',
-      displayfrom: '',
-      displayto: '',
       foruminfo: {
         title: "",
         description: "",
         email: "",
         tags: [],
-        from: '',
-        to: '',
-        day: ''
+        from: '00:00',
+        to: '00:00',
+        day: '2020-01-01'
       },
       tags: [],
       requiremessage: {
@@ -146,39 +143,31 @@ export default class CreateLiveForum extends React.Component {
     temp.day = displayday;
     this.setState({foruminfo: temp});
     this.setState({displayday: date});
-    this.setState({day: date});
   };
 
   onChangeFrom = (e) => {
-    let hour = e.target.value.split(":")[0];
-    let minute = e.target.value.split(":")[1];
-    const {foruminfo, day} = this.state;
+    const {foruminfo} = this.state;
     let temp = foruminfo;
-    day.setHours(hour);
-    day.setMinutes(minute);
-    temp.from = day;
+    temp.from = e.target.value;
     this.setState({foruminfo: temp});
-
-    console.log(foruminfo);
   };
 
   onChangeTo = (e) => {
-    let hour = e.target.value.split(":")[0];
-    let minute = e.target.value.split(":")[1];
-    const {foruminfo, day} = this.state;
+    const {foruminfo} = this.state;
     let temp = foruminfo;
-    day.setHours(hour);
-    day.setMinutes(minute);
-    temp.to = day;
+    temp.to = e.target.value;
     this.setState({foruminfo: temp});
-    
-    console.log(foruminfo);
   };
 
-  onTimeChange(time) {
-    console.log(time);
-    this.setState({time});
-  }
+  handleSelectChange (item) {
+    console.log('You\'ve selected:', value);
+    const { value } = this.state;
+    let temp = value;
+    temp.push(item);
+    this.setState({ value: temp });
+
+    console.log(value);
+	};
 
   showSuccess(text) {
     store.addNotification({
@@ -218,10 +207,11 @@ export default class CreateLiveForum extends React.Component {
     const { open } = this.props;
     return (
       <div>
-        <Modal size="lg" open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
+        <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Schedule live forum Information</h1>
+          <h1 className="content-center modal-header-class">
+          </h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
             {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
@@ -267,16 +257,6 @@ export default class CreateLiveForum extends React.Component {
               );
             })}
           </FormSelect>
-          {/* <DatePicker
-            md="6"
-            size="lg"
-            selected={this.state.displayto}
-            onChange={(e) => this.onChangeTo(e)}
-            value={this.state.foruminfo.to}
-            placeholderText="To"
-            dropdownMode="select"
-            className="text-center"
-          /> */}
           <div className="content-center block-content-class button-text-group-class">
             <Button onClick={() => this.actionSave()}>Save</Button>
           </div>

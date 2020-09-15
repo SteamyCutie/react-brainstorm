@@ -195,9 +195,9 @@ class UserController extends Controller
 				$subject = "Welcome to BrainsShare!";
 
 				try {
-						$code = $request->code;           
-						$user = User::where('two_factor_code', $code)->first();            
-						if(!$user) {                                
+						$code = $request->code;
+						$user = User::where('two_factor_code', $code)->first();
+						if(!$user) {
 								return response()->json([
 										'result'=> 'failed',
 										'message' => 'Sorry, The confirm code is incorrect!'
@@ -217,7 +217,7 @@ class UserController extends Controller
 										'message' => 'Sorry, fail send mail'
 								]);
 						}
-						
+
 						$user->update(['two_factor_code' => "0"]);
 						return response()->json([
 								'result'=> 'success',

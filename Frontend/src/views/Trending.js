@@ -14,6 +14,8 @@ export default class Trending extends React.Component {
   constructor(props) {
     super(props);
 
+    this.mentorRef = React.createRef();
+
     this.state = {
       loading: false,
       mentors: [],
@@ -35,10 +37,16 @@ export default class Trending extends React.Component {
         }
       ],
     };
+    this.call = this.call.bind(this);
   }
 
   componentWillMount() {
    this.getMentors();
+  }
+
+  call(to) {
+    console.log(to, '++++++++++++++++');
+    this.props.location.state.call(to);
   }
 
   getMentors = async() => {
@@ -94,6 +102,10 @@ export default class Trending extends React.Component {
     });
   }
 
+  handleAvailableNow() {
+    // this.mentorRef
+  }
+
   render() {
     return (
       <>
@@ -127,7 +139,7 @@ export default class Trending extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {this.state.mentors.map((data, idx) =>(
-                <MentorDetailCard mentorData={data} key={idx}/>
+                <MentorDetailCard ref={this.mentorRef} mentorData={data} key={idx} onAvailableNow={() => this.handleAvailableNow()} call={this.call}/>
               ))}
             </Col>
           </Row>

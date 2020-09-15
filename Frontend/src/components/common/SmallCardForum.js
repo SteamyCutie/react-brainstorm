@@ -8,6 +8,7 @@ import Clock from "../../images/clock-blue.svg"
 import ReivewImage from "../../images/Review.jpg"
 
 import avatar1 from "../../images/forum-avatar1.jpg"
+import avatar2 from "../../images/avatar.jpg"
 import EditLiveForum from "./EditLiveForum";
 
 class SmallCardForum extends React.Component {
@@ -68,9 +69,14 @@ class SmallCardForum extends React.Component {
           </Dropdown>
         </div>
         <div style={{display: "flex"}}>
-        {tag_name.map((item, idx) => 
-          <p className="brainsshare-tag" title={item}>{item}</p>
-        )}
+        {tag_name.map((item, idx) => {
+          if (idx < 3)
+            return <p className="brainsshare-tag" title={item}>{item}</p>;
+          else if (idx == 3)
+            return <a href="javascript:void(0)">More</a>
+          else 
+            return <></>;
+        })}
         </div>
         <div className="small-card-forum-date-time">
           <div style={{display: "flex", marginBottom: "5px", marginRight: "10px"}}>
@@ -88,11 +94,12 @@ class SmallCardForum extends React.Component {
         </div>
         <div className="forum-invited-student">
           <div style={{display: "flex"}}>
-          {avatar.map((item, idx) => 
-            <img src={avatar1} alt="avatar" className="forum-student-avatar"/>
-          )}
+          {/* {avatar.map((item, idx) => 
+            <img src={avatar2} alt="avatar" className="forum-student-avatar"/>
+          )} */}
+          <img src={avatar2} alt="avatar" className="forum-student-avatar"/>
           </div>
-          <h6 className="forum-student-number no-margin">{invited.length} invited</h6>
+          <h6 className="forum-student-number no-margin">0 invited</h6>
         </div>
       </div>
     );
