@@ -12,6 +12,9 @@ import Camera from '../../images/call-camera.svg'
 import Phone from '../../images/call-phone.svg'
 import Mic from '../../images/call-mic.svg'
 
+import DeclineImg from '../../images/call-decline.svg'
+import AcceptImg from '../../images/call-accept.svg'
+
 const NOT_REGISTERED = 0;
 const REGISTERING = 1;
 const REGISTERED = 2;
@@ -21,7 +24,7 @@ const IN_CALL = 1;
 const INCOMING_CALL = 2;
 const OUTGOING_CALL = 3;
 
-export default class VideoCall extends React.Component {
+export default class IncomingCall extends React.Component {
   constructor(props) {
     super(props);
 
@@ -45,9 +48,21 @@ export default class VideoCall extends React.Component {
     // })
   }
 
+  setCallingStatus(state) {
+    this.setState({
+      isCallingNow: state
+    })
+  }
+
+  setConnectStatus(state) {
+    this.setState({
+      isConnected: state,
+    })
+  }
+
   toggle() {
     const { toggle } = this.props;
-    this.handleStop();
+    // this.handleStop();
     toggle();
   }
 
@@ -150,41 +165,28 @@ export default class VideoCall extends React.Component {
   }
 
   handleStop = () => {
-    console.log("*************************STOP")
-    this.props.stop();
+    // console.log("*************************STOP")
+    // this.props.stop();
   }
 
   render() {
     const { open } = this.props;
     return (
       <div>
-        <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
-          {/* <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button> */}
+        <Modal open={open} toggle={() => this.toggle()} className="modal-incoming-call center" backdrop={true} backdropClassName="backdrop-class">
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                {/* <Col xl="6"> */}
-                <video id="videoOutput" autoplay="" width="1000px" height="600px" className="video-call-student">
-                    Your browser does not support the video tag.
-                  </video>
-                {/* </Col> */}
-                {/* <Col xl="6"> */}
-                  <video id="videoInput" autoplay="" width="200px" height="150px" className="video-call-mentor">
-                    {/* Your browser does not support the video tag. */}
-                  </video>
-                {/* </Col> */}
+                <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333"}}>Calling to {this.props.name}</label>
               </Row>
-              
+              <Row className="center">
+                <img src={this.props.avatarURL} style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
+              </Row>
               <Row className="center btn-group-call">
-                {/* <Button className="btn-video-call-mic-camera">
-                  <img src={Mic} placeholder="Mic" />
-                </Button> */}
-                <Button className="btn-video-call-end" onClick={() => this.toggle()}>
-                  <img src={Phone} placeholder="Phone" />
+                <Button className="btn-video-call-decline" onClick={() => this.toggle(true)}>
+                  <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}}/>
+                  Decline
                 </Button>
-                {/* <Button className="btn-video-call-mic-camera">
-                  <img src={Camera} placeholder="Camera" />
-                </Button> */}
               </Row>
             </div>
           </ModalBody>

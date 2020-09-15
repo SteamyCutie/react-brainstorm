@@ -6,6 +6,7 @@ import SubMainNavbar from "../components/layout/MainNavbar/SubMainNavbar";
 import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 import VideoCall from "../components/common/VideoCall";
+import IncomingCall from "../components/common/IncomingCall"
 
 
 import { Store } from "../flux";
@@ -38,7 +39,9 @@ export default class DefaultLayout extends React.Component {
       callState: 0,
       videoCallModal: 0,
       from: '',
-      to: ''
+      to: '',
+      incomingCalStatus: 0,
+      message: '',
     }
 
     this.handleClick = this.handleClick.bind(this);
@@ -214,17 +217,22 @@ export default class DefaultLayout extends React.Component {
       return this.sendMessage(response);
     }
 
+    this.setState({
+      message: message,
+    })
+
     // that.ring = INCOMING_RING;
     // this.setState({
     //   callState: INCOMING_CALL
     // });
-    if (window.confirm('User ' + message.from
-      + ' is calling you. Do you accept the call?')) {
-        this.setState({
-          callState: INCOMING_CALL,
-          call: true,
-          from: message.from
-        })
+    // if (1) {
+    //   this.setState({
+    //     callState: INCOMING_CALL,
+    //     call: true,
+    //     from: message.from
+    //   })
+      
+      this.toggle_incomingCall_modal(message)
 
       // var options = {
       //   localVideo: videoInput,
@@ -254,16 +262,16 @@ export default class DefaultLayout extends React.Component {
       //     });
       //   });
 
-    } else {
-      var response = {
-        id: 'incomingCallResponse',
-        from: message.from,
-        callResponse: 'reject',
-        message: 'user declined'
-      };
-      this.sendMessage(response);
-      this.stop(true);
-    }
+    // } else {
+    //   var response = {
+    //     id: 'incomingCallResponse',
+    //     from: message.from,
+    //     callResponse: 'reject',
+    //     message: 'user declined'
+    //   };
+    //   this.sendMessage(response);
+    //   this.stop(true);
+    // }
   }
 
   call(to) {
@@ -354,8 +362,39 @@ export default class DefaultLayout extends React.Component {
     // }
   }
 
+  toggle_incomingCall_modal(message) {
+    this.setState({
+      message: message,
+      incomingCalStatus: !this.state.incomingCalStatus,
+    })
+  }
+
+  handleDecline() {
+    var response = {
+      id: 'incomingCallResponse',
+      from: this.state.message.from,
+      callResponse: 'reject',
+      message: 'user declined'
+    };
+    this.sendMessage(response);
+    this.toggle_incomingCall_modal();
+    this.stop(true);
+  }
+
+  handleAccept() {
+    this.setState({
+      callState: INCOMING_CALL,
+      call: true,
+      from: this.state.message.from
+    })
+
+    this.toggle_incomingCall_modal();
+    this.toggle_videocall()
+  }
+
   render() {
-    const {videoCallModal} = this.state;
+    const {videoCallModal, incomingCalStatus} = this.state;
+    
     const { children } = this.props;
     const { noFooter, noNavbar, filterType } = this.state;
     if (children.props.location.pathname == '/trending' || children.props.location.pathname == '/recomended') {
@@ -385,6 +424,8 @@ export default class DefaultLayout extends React.Component {
               // <VideoCall />
             }
             {!noFooter && <MainFooter />}
+            <IncomingCall open={incomingCalStatus} toggle={() => this.toggle_incomingCall_modal()} 
+              onAccept={() => this.handleAccept()} onDecline={() => this.handleDecline()} name={this.state.from}/>
           </Col>
         </Row>
       </Container>

@@ -19,6 +19,8 @@ export default class Trending extends React.Component {
     this.state = {
       loading: false,
       mentors: [],
+      isCallingNow: 0,
+      isConneced: 0,
       smallCards: [
         {
           title: "Act science",
@@ -104,6 +106,10 @@ export default class Trending extends React.Component {
 
   handleAvailableNow() {
     // this.mentorRef
+  }
+
+  setCallingStatus(status) {
+    // this.setCallingStatus.
   }
 
   render() {

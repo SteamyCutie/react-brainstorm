@@ -1,8 +1,9 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Form, FormGroup } from 'reactstrap';
 
 import VideoCall from "../common/VideoCall"
+import IncomingCall from "../common/IncomingCall"
+import OutcomingCall from "./OutcomingCall"
 
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
@@ -28,6 +29,10 @@ class MentorDetailCard extends React.Component {
       videoCallModal: 0,
       from: '',
       modal_isOpen: 0,
+      isCallingNow: 0,
+      isConnectingNow: 0,
+      incomingCallToggle: 0,
+      outcomingCallToggle: 0,
     }
   }
 
@@ -68,9 +73,22 @@ class MentorDetailCard extends React.Component {
 
   }
 
+  toggle_incomingCall() {
+    this.setState({
+      incomingCallToggle: !this.state.incomingCallToggle,
+    })
+  }
+
+  toggle_outcomingCall() {
+    this.setState({
+      outcomingCallToggle: !this.state.outcomingCallToggle,
+    })
+  }
+
   render() {
     const {name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
-  
+    const {incomingCallToggle, outcomingCallToggle} = this.state;
+
     return (
       <div className="mentor-detail-card">
         <div style={{position: "relative"}} className="mentor-detail-avatar">
@@ -130,16 +148,7 @@ class MentorDetailCard extends React.Component {
           from={this.props.from} callState={this.props.callState} ws={this.props.ws} setWebRtcPeer={this.props.setWebRtcPeer} stop={this.props.stop}/>
           // <VideoCall />
         }
-        {/* <Modal isOpen={this.state.modal_isOpen} toggle={this.modal_toggle()} backdrop="static">
-          <ModalHeader toggle={toggle}>Modal title</ModalHeader>
-          <ModalBody>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
-            <Button color="secondary" onClick={toggle}>Cancel</Button>
-          </ModalFooter>
-        </Modal> */}
+        <OutcomingCall open={outcomingCallToggle} toggle={() => this.toggle_outcomingCall()} />
       </div>
     );
   }
