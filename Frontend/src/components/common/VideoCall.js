@@ -8,6 +8,9 @@ import kurentoUtils from 'kurento-utils';
 import Facebook from '../../images/Facebook.svg'
 import Google from '../../images/Google.svg'
 import Close from '../../images/Close.svg'
+import Camera from '../../images/call-camera.svg'
+import Phone from '../../images/call-phone.svg'
+import Mic from '../../images/call-mic.svg'
 
 const NOT_REGISTERED = 0;
 const REGISTERING = 1;
@@ -158,27 +161,27 @@ export default class VideoCall extends React.Component {
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                <Col xl="6">
-                  <video id="videoInput" autoplay="" width="480px" height="360px">
+                {/* <Col xl="6"> */}
+                  <video id="videoInput" autoplay="" width="1000px" height="600px" className="video-call-mentor">
+                    {/* Your browser does not support the video tag. */}
+                  </video>
+                {/* </Col> */}
+                {/* <Col xl="6"> */}
+                  <video id="videoOutput" autoplay="" width="200px" height="150px" className="video-call-student">
                     Your browser does not support the video tag.
                   </video>
-                </Col>
-                <Col xl="6">
-                  <video id="videoOutput" autoplay="" width="480px" height="360px">
-                    Your browser does not support the video tag.
-                  </video>
-                </Col>
+                {/* </Col> */}
               </Row>
               
               <Row className="center btn-group-call">
                 <Button className="btn-video-call-mic-camera">
-                  Mic
+                  <img src={Mic} placeholder="Mic" />
                 </Button>
-                <Button className="btn-video-call-end" onclick={() => this.handleStop()}>
-                  End
+                <Button className="btn-video-call-end" onClick={() => this.toggle()}>
+                  <img src={Phone} placeholder="Phone" />
                 </Button>
                 <Button className="btn-video-call-mic-camera">
-                  Camera
+                  <img src={Camera} placeholder="Camera" />
                 </Button>
               </Row>
             </div>

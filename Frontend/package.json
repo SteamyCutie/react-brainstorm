@@ -43,6 +43,7 @@
     "react-simple-timefield": "^3.2.3",
     "react-swipeable-views": "^0.13.9",
     "react-time-picker": "^4.0.1",
+    "reactstrap": "^8.5.1",
     "shards-react": "^1.0.0",
     "shortid": "^2.2.15",
     "styled-components": "^5.1.1",

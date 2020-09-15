@@ -126,7 +126,7 @@ export default class DefaultLayout extends React.Component {
       console.log('Socket is closed. Reconnect will be attempted in 5 second.');
       setTimeout(() => {
         that.setWebsocket(wsUri);
-      }, 1000);
+      }, 5000);
     }
 
     this.ws.onerror = function(err) {
