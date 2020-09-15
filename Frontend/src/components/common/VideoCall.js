@@ -157,7 +157,7 @@ export default class VideoCall extends React.Component {
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
+          {/* <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button> */}
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
