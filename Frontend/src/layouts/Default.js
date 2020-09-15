@@ -81,8 +81,10 @@ export default class DefaultLayout extends React.Component {
 
     const { filterType, mentorUrl, studentUrl } = this.state;
 
-    if ( !filterType ) this.props.history.push(mentorUrl);
-    else this.props.history.push(studentUrl);
+    if ( !filterType ) 
+      this.props.history.push(mentorUrl);
+    else 
+      this.props.history.push(studentUrl);
   }
 
   setWebsocket(wsUri) {

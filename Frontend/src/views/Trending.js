@@ -58,7 +58,6 @@ export default class Trending extends React.Component {
           loading: false,
           mentors: result.data.data
         });
-        console.log(this.state.mentors);
       } else {
       }
       this.setState({loading: false});
@@ -116,7 +115,6 @@ export default class Trending extends React.Component {
               <h3>Trending</h3>
             </Col>
           </Row>
-
           <Row>
             <div className="card-container">
             {this.state.smallCards.map((card, idx) => (
@@ -129,13 +127,11 @@ export default class Trending extends React.Component {
             ))}
             </div>
           </Row>
-
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>
             </Col>
           </Row>
-
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {this.state.mentors.map((data, idx) =>(
