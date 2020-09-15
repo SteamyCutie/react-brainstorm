@@ -55,11 +55,14 @@
             margin-top: 5px;
         }
         .button {
-            background: #007BFF;
+            background: #6fadef;
             border-radius: 25px;
             width: 150px;
             height: 40px;
             font-size: 1.1rem;
+        }
+        .customer-name {
+            font-size: 25px;
         }
     </style>
 </head>
@@ -67,10 +70,10 @@
 <body>
     <div class='content'>
         <div class='logo'>        
-            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:200px;'/>
+            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:250px;'/>
         </div>
         <div class='block'>
-            <span>
+            <span customer-name>
                 Hello $name
             </span>
         </div>

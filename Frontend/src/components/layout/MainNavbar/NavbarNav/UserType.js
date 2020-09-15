@@ -9,7 +9,6 @@ export default class UserType extends React.Component {
     this.state = {
       alignment: "left",
     }
-
   }
 
   componentWillMount() {
