@@ -33,7 +33,6 @@ export default class Recommended extends React.Component {
           loading: false,
           mentors: result.data.data
         });
-        console.log(this.state.mentors);
       } else {
       }
       this.setState({loading: false});

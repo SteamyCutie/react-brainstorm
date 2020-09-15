@@ -2,16 +2,18 @@ import React from "react";
 import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
 import { Link } from "react-router-dom";
 import { store } from 'react-notifications-component';
-
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 import Review from "../components/common/Review"
 import SubscribeModal from "../components/common/SubscribeModal"
+import LoadingModal from "../components/common/LoadingModal";
 
 import StarIcon from "../images/star_icon.svg";
 import Lightening from "../images/Lightening.svg";
 import PlayIcon from "../images/Play_icon.svg";
 import Clock from "../images/Clock.svg";
-import MentorAvatar from "../images/Rectangle_Kianna_big.png"
 import SubscriperImg from "../images/Users.svg"
+import avatar from "../images/avatar.jpg"
 import { getuserinfobyid } from '../api/api';
 
 export default class Unsubscribe extends React.Component {
@@ -21,20 +23,7 @@ export default class Unsubscribe extends React.Component {
     this.state = {
       loading: false,
       subscriptionOpen: false,
-      mentorData: {
-        // name: "Kianna Press",
-        // score: 4.8,
-        // reviewCount: 6,
-        // image: require("../images/Rectangle_Kianna_big.png"),
-        // teaches: [
-        //   "Algebra",
-        //   "Mathematics",
-        // ],
-        // online: true,
-        // description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for rem ipsum dolor sit amet, sollicitudin nec dapibus molestie risus eleifend augue, justo dui et est a pharetra, ut nullam gravida sed amet.",
-        // rate: 25,
-        // time: 60,
-      } 
+      mentorData: {} 
     }
   }
 
@@ -106,8 +95,10 @@ export default class Unsubscribe extends React.Component {
 
   render() {
     const { mentorData } = this.state;
-
     return (
+      <>
+      {this.state.loading && <LoadingModal open={true} />}
+      <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="specific-subsciption-card">
           <CardBody>
@@ -121,7 +112,8 @@ export default class Unsubscribe extends React.Component {
             <Row>
               <Col xl="3" className="subscription-mentor-detail">
                 <div>
-                  <img src={mentorData.avatar} style={{width: "206px"}}/>
+                  {mentorData.avatar && <img src={mentorData.avatar} style={{width: "206px", height: "206px"}}/>}
+                  {!mentorData.avatar && <img src={avatar} style={{width: "206px", height: "206px"}}/>}
                   <div style={{display: "flex", padding: "20px 0px"}}>
                     <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
                     <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
@@ -194,8 +186,9 @@ export default class Unsubscribe extends React.Component {
             </Row>
           </CardBody>
         </Card>
-        <SubscribeModal open={this.state.subscriptionOpen} toggle={() => this.toggle_unsubscribe()} toggle_modal={() => this.toggle_modal()} />
+        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} toggle={() => this.toggle_unsubscribe()} toggle_modal={() => this.toggle_modal()} />
       </Container>
+      </>
     );
   }
 }

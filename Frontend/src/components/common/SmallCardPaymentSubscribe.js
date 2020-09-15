@@ -7,19 +7,32 @@ import MoreButtonImage from "../../images/more.svg"
 class SmallCardPaymentSubscribe extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      selectedCard: null
+    };
+
+    this.changeCard = this.changeCard.bind(this);
   }
 
   componentDidMount() {
   }
 
+  changeCard(type) {
+    console.log(type);
+    this.setState({
+      selectedCard: type
+    });
+  }
+
   render() {
-    const { title, image, expireDate, isPrimary } = this.props;
+    const { title, image, expireDate, isPrimary, type } = this.props;
     return (
       <Card small className="small-card-payment" >
         <CardBody className="no-padding">
           <div className="items-container">
             <div  style={{marginTop: "15px", paddingLeft: "10px"}}>
-              <FormRadio/>
+              <FormRadio name="fruit" checked={this.state.selectedCard == type} onChange={() => { this.changeCard(type) }}></FormRadio>
             </div>
             <div className="no-padding">
                 <img src={image} className="small-card-payment-logo" alt="card"/>

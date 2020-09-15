@@ -1,19 +1,15 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col, Badge, Button, FormSelect } from "shards-react";
 import { Calendar, momentLocalizer, globalizeLocalizer  } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import LoadingModal from "../components/common/LoadingModal";
 import TimeGrid from 'react-big-calendar/lib/TimeGrid'
-import { getUpcomingSession } from '../api/api';
-
-// import PageTitle from "./../components/common/PageTitle";
-// import SmallStats from "./../components/common/SmallStats";
-// import UsersOverview from "./../components/blog/UsersOverview";
-// import UsersByDevice from "./../components/blog/UsersByDevice";
-// import NewDraft from "./../components/blog/NewDraft";
-// import Discussions from "./../components/blog/Discussions";
-// import TopReferrals from "./../components/common/TopReferrals";
+import { getUpcomingSession, gettags } from '../api/api';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 import WalletHeader from "../components/common/WalletHeader";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -80,6 +76,7 @@ export default class MentorSession extends React.Component {
     super(props);
     const now = new Date();
     this.state = {
+      loading: false,
       events: [],
       currentDate: new Date(),
       view: "month",
@@ -99,14 +96,76 @@ export default class MentorSession extends React.Component {
   }
 
   componentWillMount() {
+    this.getSessionList();
+  }
+
+  getSessionList = async() => {
+    try {
+      this.setState({loading: true});
+      const result = await getUpcomingSession({email: localStorage.getItem('email')});
+      if(result.data.result === "success") {
+        var data_arr = [];
+        var arr = {
+          id: '',
+          title: '',
+          noOfPax: '',
+          isBooked: '',
+          start: 0,
+          end: false,
+        };
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          arr.id = i;
+          arr.title = result.data.data[i].title;
+          arr.noOfPax = 10;
+          arr.isBooked = true;
+          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
+          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+
+          data_arr.push(arr);
+          arr = {};
+        }
+        this.setState({events: data_arr});
+      } else {
+        this.showFail("Action Fail");
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Action Fail");
+    }
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   changeMonth = (value) => {
     this.setState({events: value});
   }
 
+  showLoading = (value) => {
+    this.setState({loading: value});
+  }
+
   render() {
     return (
+      <>
+      {this.state.loading && <LoadingModal open={true} />}
+      <ReactNotification />
       <Container fluid className="main-content-container px-4">
         <Row noGutters className="page-header py-4">
           <WalletHeader title="Upcoming Session" className="text-sm-left mb-3" flag={false}/>
@@ -123,7 +182,8 @@ export default class MentorSession extends React.Component {
             components={{
               toolbar: ToolBar({
                 setCurrentDate: this.setCurrentDate,
-                changeMonth: this.changeMonth
+                changeMonth: this.changeMonth,
+                showLoading: this.showLoading
               }),
               dateCellWrapper: ColoredDateCellWrapper({
                 date: this.state.currentDate,
@@ -143,6 +203,7 @@ export default class MentorSession extends React.Component {
           />
         </Row>
       </Container>
+      </>
     );
   }
 }
@@ -162,8 +223,40 @@ class CustomMonthEvent extends React.Component {
   }
 }
 
-const ToolBar = ({setCurrentDate, changeMonth}) => props => {
+const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
   const [alignment, setAlignment] = React.useState("right");
+  const [tags, setTags] = React.useState([
+    {id: 1, name: 'Algebra'}, 
+    {id: 2, name: 'Mathematics'},
+    {id: 3, name: 'Act'},
+    {id: 4, name: 'Organic'},
+    {id: 5, name: 'English'},
+    {id: 6, name: 'Cooking'},
+    {id: 7, name: 'German'},
+    {id: 8, name: 'French'},
+    {id: 9, name: 'Spanish'},
+    {id: 10, name: 'Russian'},
+    {id: 11, name: 'Coaching'},
+    {id: 12, name: 'Travelling'},
+    {id: 13, name: 'Cooking'},
+    {id: 14, name: 'Copy'},
+    {id: 15, name: 'Sales'},
+  ]);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const result = await gettags();
+  //       if (result.data.result === "success") {
+  //         setTags(result.data.data);
+  //       } else {
+
+  //       }
+  //     } catch(err) {
+
+  //     }
+  //   };
+  //   fetchData();
+  // });
 
   const goToDayView = () => {
     props.onView("day");
@@ -186,11 +279,11 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
     getCalendarEvents(today);
   }
 
-  const getCalendarEvents = async(date) => {
+  const getCalendarEvents = async() => {
     // setCurrentDate(date);
-    let time = new Date(date);
     try {
-      const result = await getUpcomingSession({email: localStorage.getItem('email'), time: time});
+      showLoading(true);
+      const result = await getUpcomingSession({email: localStorage.getItem('email')});
       if(result.data.result === "success") {
         var data_arr = [];
         var arr = {
@@ -207,8 +300,8 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
           arr.title = result.data.data[i].title;
           arr.noOfPax = 10;
           arr.isBooked = true;
-          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month, result.data.data[i].s_day, i, i, 0);
-          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month, result.data.data[i].e_day, i, i + 20, 0);
+          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
+          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
 
           data_arr.push(arr);
           arr = {};
@@ -217,8 +310,9 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
       } else {
 
       }
+      showLoading(false);
     } catch(err) {
-      // alert(err);
+      showLoading(false);
       this.setState({
         errorMsg: "Error is occured"
       })
@@ -294,16 +388,40 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
     return `${dayName}, ${monthName} ${date}`;
   }
 
-  const onChangeCategory = async() => {
+  const onChangeTag = async(e) => {
+    try {
+      showLoading(true);
+      const result = await getUpcomingSession({email: localStorage.getItem('email'), tag: e.target.value});
+      if(result.data.result === "success") {
+        var data_arr = [];
+        var arr = {
+          id: '',
+          title: '',
+          noOfPax: '',
+          isBooked: '',
+          start: 0,
+          end: false,
+        };
 
-  }
+        for (var i = 0; i < result.data.data.length; i ++) {
+          arr.id = i;
+          arr.title = result.data.data[i].title;
+          arr.noOfPax = 10;
+          arr.isBooked = true;
+          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
+          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
 
-  const onChangeSession = async() => {
-    
-  }
+          data_arr.push(arr);
+          arr = {};
+        }
+        changeMonth(data_arr);
+      } else {
 
-  const onChangeStudent = async() => {
-    
+      }
+      showLoading(false);
+    } catch(err) {
+      showLoading(false);
+    }
   }
 
   return (
@@ -342,27 +460,30 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
       <div className="headerbar-class">
         <div className="headerbar-status center">{getToday()}</div>
         <div className="headerbar-select-group">
-          <div className="toolbar-select-label">
+          {/* <div className="toolbar-select-label">
             <label className="">Sessions:</label>
-            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeSession(e)}>
-              {/* {this.state.events.map((item, index) =>
+            <FormSelect className="profile-detail-input" onChange={(e) => onChangeSession(e)}>
+              {this.state.events.map((item, index) =>
                 <option value={item.id} selected>{item.title}</option>
-              )} */}
+              )}
               <option>All</option>
             </FormSelect>
-          </div>
+          </div> */}
           <div className="toolbar-select-label">
-            <label className="">Category: </label>
-            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeCategory(e)}>
-              <option>select category</option>
+            <label className="">Tag: </label>
+            <FormSelect className="profile-detail-input" onChange={(e) => onChangeTag(e)}>
+              <option>select tag</option>
+              {tags.map((item, idx) =>                 
+                <option value={item.id}>{item.name}</option>
+              )}
             </FormSelect>
           </div>
-          <div className="toolbar-select-label">
+          {/* <div className="toolbar-select-label">
             <label className="">Student: </label>
-            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeStudent(e)}>
+            <FormSelect className="profile-detail-input" onChange={(e) => onChangeStudent(e)}>
               <option>select student</option>
             </FormSelect>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

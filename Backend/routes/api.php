@@ -47,4 +47,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::post('/createshareinfo', 'MediaController@createshareinfo');
     Route::post('/editforum', 'SessionController@editforum');
     Route::post('/getforum', 'SessionController@getforum');
+
+    Route::post('/getweekdata', 'DayController@index');
 });

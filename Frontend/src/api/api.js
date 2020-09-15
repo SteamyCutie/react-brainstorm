@@ -358,4 +358,23 @@ export const verifyCode = (param) => {
 
 //---------FileController-------------
 
+//WeekController
+
+export const getweekdata = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getweekdata', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+//---------WeekController-------------
+
 //Backend Apis

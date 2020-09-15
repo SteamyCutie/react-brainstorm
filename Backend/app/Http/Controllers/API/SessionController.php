@@ -145,7 +145,7 @@ class SessionController extends Controller
         $title = $request['title'];
         $description = $request['description'];
         $tags = implode(",", $request['tags']);
-        
+
         $from = $request['from'];
         $to = $request['to'];
         $day = $request['day'];
@@ -316,6 +316,7 @@ class SessionController extends Controller
                 $result_res[$i]['day'] = date('d/m/y', strtotime($result_res[$i]['from']));
                 $result_res[$i]['from_time'] = date('h:i a', strtotime($result_res[$i]['from']));
                 $result_res[$i]['to_time'] = date('h:i a', strtotime($result_res[$i]['to']));
+                $result_res[$i]['avatar'] = $user['avatar'];
             }
         }
 
