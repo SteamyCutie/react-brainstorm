@@ -55,11 +55,14 @@
             margin-top: 5px;
         }
         .button {
-            background: #007BFF;
+            background: #6fadef;
             border-radius: 25px;
-            width: 20%;
-            height: 4%;
+            width: 150px;
+            height: 40px;
             font-size: 1.1rem;
+        }
+        .customer-name {
+            font-size: 25px;
         }
     </style>
 </head>
@@ -67,11 +70,11 @@
 <body>
     <div class='content'>
         <div class='logo'>        
-            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:200px;'/>
+            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:250px;'/>
         </div>
         <div class='block'>
-            <span>
-                Hello { $name },
+            <span class = 'customer-name'>
+                Hello $name
             </span>
         </div>
         <div class='block'>
@@ -86,8 +89,7 @@
         </div>
         <div class='block'>
             <span>
-                { $vCode }
-                
+                $vCode                
             </span>
         </div>
         <div class='block' >
@@ -107,7 +109,6 @@
                 <img src='https://buscasa360storage0010513.s3-us-west-2.amazonaws.com/facebook.png' style='width:100%;'/>
             </a>
         </div>
-
         <div class='block'>
             BrainsShare &copy; 2020, All rights reserved..<br>
             You are receiving this email as a BrainsShare customer.
