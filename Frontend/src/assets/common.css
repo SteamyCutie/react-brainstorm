@@ -146,12 +146,12 @@
 }
 
 .video-call-mentor {
-  /* width: 1200px; */
-}
-
-.video-call-student {
   position: absolute;
   right: 150px;
   top: 80px;
   border-radius: 4px;
+}
+
+.video-call-student {
+
 }
