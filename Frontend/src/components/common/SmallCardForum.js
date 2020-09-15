@@ -15,7 +15,6 @@ class SmallCardForum extends React.Component {
     super(props);
     this.state = {
       open: false,
-      loading: false,
       forumInfos: [],
       ModalOpen: false,
     };
@@ -44,7 +43,7 @@ class SmallCardForum extends React.Component {
   }
 
   render() {
-    const {title, description, avatar, invited, tags, tag_name, day, time, id} = this.props.item;
+    const {title, description, avatar, invited, tags, tag_name, day, from_time, to_time, id} = this.props.item;
     const { ModalOpen } = this.state;
     return (
       <div className="small-card-forum">
@@ -70,7 +69,7 @@ class SmallCardForum extends React.Component {
         </div>
         <div style={{display: "flex"}}>
         {tag_name.map((item, idx) => 
-          <p className="brainsshare-tag">{item}</p>
+          <p className="brainsshare-tag" title={item}>{item}</p>
         )}
         </div>
         <div className="small-card-forum-date-time">
@@ -83,7 +82,7 @@ class SmallCardForum extends React.Component {
           <div style={{display: "flex", marginBottom: "5px", marginRight: "10px"}}>
             <img src={Clock} alt="Clock" />
             <h6 style={{fontSize: "16px", paddingLeft: "10px"}} className="no-margin">
-              {time}
+              {from_time}~{to_time}
             </h6>
           </div>
         </div>

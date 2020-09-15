@@ -10,7 +10,6 @@ import { store } from 'react-notifications-component';
 
 import { getallmentors } from '../api/api';
 
-// const Recommended = ({ smallCards, tHistory, columns, mentorData }) => (
 export default class Recommended extends React.Component {
   constructor(props) {
     super(props);
@@ -18,73 +17,6 @@ export default class Recommended extends React.Component {
     this.state = {
       loading: false,
       mentors: [],
-      mentorData: [
-        {
-          name: "Kianna Press",
-          score: 4.8,
-          image: require("../images/Rectangle_Kianna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: true,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 25,
-          time: 60,
-        },
-        {
-          name: "Rayna Korsgaard",
-          score: 4.8,
-          image: require("../images/Rectangle_Rayna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: false,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        },
-        {
-          name: "Malcom Wiliam",
-          score: 5.0,
-          image: require("../images/Rectangle_K.png"),
-          teaches: [
-            "Physics",
-            "Mathematics",
-          ],
-          online: true,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        },
-        {
-          name: "Rayna Korsgaard",
-          score: 4.8,
-          image: require("../images/Rectangle_Rayna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: false,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        },
-        {
-          name: "Rayna Korsgaard",
-          score: 4.8,
-          image: require("../images/Rectangle_Rayna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: false,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        }
-      ]
     };
   }
 
@@ -130,8 +62,8 @@ export default class Recommended extends React.Component {
 
   showFail() {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: "Action Fail!",
       type: "danger",
       insert: "top",
       container: "top-right",

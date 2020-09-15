@@ -69,7 +69,7 @@ export default class Unsubscribe extends React.Component {
                   <div style={{display: "flex", padding: "20px 0px"}}>
                     <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
                     <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                    <h6 className="no-margin"style={{fontWeight: "bold"}}>24</h6>
+                    <h6 className="no-margin"style={{fontWeight: "bold"}}>0</h6>
                   </div>
                   <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
                     Subscription $50/month

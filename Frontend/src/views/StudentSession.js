@@ -31,7 +31,9 @@ export default class StudentSession extends React.Component {
 
       }
     } catch(err) {
-      alert(err);
+      this.setState({
+        errorMsg: "Error is occured"
+      })
     }
   }
 
@@ -57,28 +59,24 @@ export default class StudentSession extends React.Component {
               </label>
               <FormSelect style={{height: "30px", width: "180px", marginRight: "10px"}}>
                 <option>Augut 10 - August 16</option>
-                <option>...</option>
               </FormSelect>
               <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                 Sessions:
               </label>
               <FormSelect style={{height: "30px", width: "80px", marginRight: "10px"}}>
                 <option>All</option>
-                <option>...</option>
               </FormSelect>
               <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                 Category:
               </label>
               <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}}>
                 <option>Select category</option>
-                <option>...</option>
               </FormSelect>
               <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                 Mentor:
               </label>
               <FormSelect style={{height: "30px", width: "120px", marginRight: "10px"}}>
                 <option>Select mentor</option>
-                <option>...</option>
               </FormSelect>
             </div>
           </CardHeader>
