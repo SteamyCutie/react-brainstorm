@@ -58,7 +58,6 @@ export default class Trending extends React.Component {
           loading: false,
           mentors: result.data.data
         });
-        console.log(this.state.mentors);
       } else {
       }
       this.setState({loading: false});
