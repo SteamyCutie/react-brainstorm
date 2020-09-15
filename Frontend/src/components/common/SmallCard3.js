@@ -6,6 +6,7 @@ import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 import ReivewImage from "../../images/Review.jpg"
+import default_avatar from "../../images/avatar.jpg"
 
 class SmallCard3 extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class SmallCard3 extends React.Component {
       <div className="small-card3">
         <div className="small-card3-desc">
           <div style={{display: "flex", float: "left"}}>
-            <img src={avatar} className="small-card3-avatar" alt="avatar" />
+            {avatar ? <img src={avatar} className="small-card3-avatar" alt="avatar" /> : <img src={default_avatar} className="small-card3-avatar" alt="avatar" />}
             <div>
               <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
