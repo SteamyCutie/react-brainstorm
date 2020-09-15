@@ -107,12 +107,16 @@ class UserController extends Controller
 			$email = $request['email'];
 
 			$user = User::where('email', $email)->first();
-			$newDate = date("Y-m-d", strtotime($user['dob']));
-			$user['dob'] = $newDate;
+			if ($user['dob'] == null || $user['dob'] == "") {
+				$user['dob'] = '2020-01-01';	
+			} else {
+				$newDate = date("Y-m-d", strtotime($user['dob']));
+				$user['dob'] = $newDate;	
+			}
 			if ($user['tags_id'] == null || $user['tags_id'] == '')
-					$tags_id = [];
+				$tags_id = [];
 			else
-					$tags_id = explode(',', $user['tags_id']);
+				$tags_id = explode(',', $user['tags_id']);
 			$user['tags'] = $tags_id;
 			return response()->json([
 					'result'=> 'success',
