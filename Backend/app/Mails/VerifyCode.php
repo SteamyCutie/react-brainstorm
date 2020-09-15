@@ -55,11 +55,11 @@
             margin-top: 5px;
         }
         .button {
-        	background: #007BFF;
-		    border-radius: 25px;
-		    width: 20%;
-		    height: 4%;
-		    font-size: 1.1rem;
+            background: #007BFF;
+            border-radius: 25px;
+            width: 20%;
+            height: 4%;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -93,11 +93,11 @@
         <div class='block' >
             <span>
                 <a href = '$fronturl/resetpassword/$vCode'>
-                	<button class='button'>Click Here</button>                	
+                    <button class='button'>Click Here</button>                  
                 </a>
-			</span>
-		</div>
-		<div class='block'>
+            </span>
+        </div>
+        <div class='block'>
             <span>
                 If you have questions about features or need help, please contact us at support@BrainsShare.com
             </span>
