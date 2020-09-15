@@ -57,7 +57,7 @@
 <body>
     <div class='content'>
         <div class='logo'>
-            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:200px;'/>
+            <img src='https://brainshares.s3-us-west-2.amazonaws.com/Brainshare_logo.png' style='width:250px;'/>
         </div>
         <div>
             <h1>Welcome to BrainsShare!</h1>
