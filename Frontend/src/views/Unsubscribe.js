@@ -27,8 +27,8 @@ export default class Unsubscribe extends React.Component {
     }
   }
 
-  componentWillMount() {
-    this.getUserInfo(this.props.location.query);
+  componentDidMount() {
+    this.getUserInfo(this.props.match.params.id);
   }
 
   getUserInfo = async(id) => {
@@ -95,6 +95,7 @@ export default class Unsubscribe extends React.Component {
 
   render() {
     const { mentorData } = this.state;
+    console.log(mentorData);
     return (
       <>
       {this.state.loading && <LoadingModal open={true} />}

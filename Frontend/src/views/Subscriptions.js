@@ -29,7 +29,11 @@ export default class Subscriptions extends React.Component {
           style: {
             fontSize: "16px",
           },
-          cell: row => <div><img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" /><Link to={{pathname: "unsubscribe-specific", query: row.id}} class="scription-to-specific">{row.mentorName}</Link></div>,
+          cell: row => 
+          <div>
+            <img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
+              <a href="javascript:void(0)" onClick={() => this.handleClick(row.id)}>{row.mentorName}</a>
+          </div>,
         },
         {
           name: 'Subscription page name',
@@ -70,6 +74,11 @@ export default class Subscriptions extends React.Component {
 
   componentWillMount() {
    this.getMentors();
+  }
+
+  handleClick(id) {
+    const { history } = this.props;
+    history.push('/unsubscribe-specific/' + id);
   }
 
   getMentors = async() => {

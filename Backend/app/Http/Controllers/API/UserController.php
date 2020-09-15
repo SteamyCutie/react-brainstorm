@@ -104,21 +104,40 @@ class UserController extends Controller
 
 		public function getuserinfo(Request $request)
 		{
-				$email = $request['email'];
+			$email = $request['email'];
 
-				$user = User::where('email', $email)->first();
-				$newDate = date("Y-m-d", strtotime($user['dob']));
-				$user['dob'] = $newDate;
-				if ($user['tags_id'] == null || $user['tags_id'] == '')
-						$tags_id = [];
-				else
-						$tags_id = explode(',', $user['tags_id']);
-				$user['tags'] = $tags_id;
-				return response()->json([
-						'result'=> 'success',
-						'data'=> $user,
-				]);
+			$user = User::where('email', $email)->first();
+			$newDate = date("Y-m-d", strtotime($user['dob']));
+			$user['dob'] = $newDate;
+			if ($user['tags_id'] == null || $user['tags_id'] == '')
+					$tags_id = [];
+			else
+					$tags_id = explode(',', $user['tags_id']);
+			$user['tags'] = $tags_id;
+			return response()->json([
+					'result'=> 'success',
+					'data'=> $user,
+			]);
 		}
+
+		public function getuserinfobyid(Request $request)
+	    {
+	        $id = $request['id'];
+
+	        $user = User::where('id', $id)->first();
+	        $newDate = date("Y-m-d", strtotime($user['dob']));
+	        $user['dob'] = $newDate;
+	        $tags_id = explode(',', $user['tags_id']);
+	        foreach ($tags_id as $tag_key => $tag_value) {
+	            $tags = Tag::where('id', $tag_value)->first();
+	            $tag_names[$tag_key] = $tags['name'];
+	        }
+	        $user['tags'] = $tag_names;
+	        return response()->json([
+	            'result'=> 'success',
+	            'data'=> $user,
+	        ]);
+	    }
 
 		public function editprofile(Request $request)
 		{
@@ -333,9 +352,9 @@ class UserController extends Controller
 				$users = User::all();
 				$mentors = [];
 				for ($i = 0; $i < count($users); $i ++) {
-						if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
-								$mentors[] = $users[$i];
-						}
+					if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
+						$mentors[] = $users[$i];
+					}
 				}
 
 				for ($i = 0; $i < count($mentors); $i ++) {
