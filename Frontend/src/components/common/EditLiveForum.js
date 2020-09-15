@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import ReactNotification from 'react-notifications-component';
+import LoadingModal from "./LoadingModal";
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import { gettags, editforum, getforum } from '../../api/api';
@@ -11,6 +12,7 @@ export default class EditLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       displayday: '',
       displayfrom: '',
       displayto: '',
@@ -120,6 +122,7 @@ export default class EditLiveForum extends React.Component {
       requiremessage: temp
     });
     try {
+      this.setState({loading: true});
       const result = await editforum(this.state.foruminfo);
       if (result.data.result === "success") {
         this.toggle();
@@ -142,7 +145,9 @@ export default class EditLiveForum extends React.Component {
         }
         this.showFail("Create Schedule Fail");
       }
+      this.setState({loading: false});
     } catch(err) {
+      this.setState({loading: false});
       this.showFail("Create Schedule Fail");
     };
   }
@@ -265,6 +270,7 @@ export default class EditLiveForum extends React.Component {
           </div>
           </ModalBody>
         </Modal>
+        {this.state.loading && <LoadingModal open={true} />}
       </div>
     );
   }
