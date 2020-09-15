@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
+import LoadingModal from "./LoadingModal";
 import { store } from 'react-notifications-component';
 import { createforum, gettags } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
@@ -12,6 +13,7 @@ export default class CreateLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       displayday: '',
       foruminfo: {
         title: "",
@@ -109,6 +111,7 @@ export default class CreateLiveForum extends React.Component {
       requiremessage: temp
     });
     try {
+      this.setState({loading: true});
       const result = await createforum(this.state.foruminfo);
       if (result.data.result === "success") {
         this.toggle();
@@ -130,7 +133,9 @@ export default class CreateLiveForum extends React.Component {
         } else {
         }
       }
+      this.setState({loading: false});
     } catch(err) {
+      this.setState({loading: false});
       this.showFail("Create Schedule Fail");
     };
   }
@@ -262,6 +267,7 @@ export default class CreateLiveForum extends React.Component {
           </div>
           </ModalBody>
         </Modal>
+        {this.state.loading && <LoadingModal open={true} />}
       </div>
     );
   }
