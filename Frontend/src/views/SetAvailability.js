@@ -142,22 +142,31 @@ class SetAvailability extends React.Component {
   }
 
   handleSave = async() => {
-    try {
-      this.setState({loading: true});
-      this.makeParam();
-      const result = await setAvailableTimes({email: localStorage.getItem('email'), data: this.state.availableTimeList});
+    let param = {
+      email: localStorage.getItem('email'),
+      data: this.state.availableTimeList,
+      status: this.state.dayOfWeekStatus
+    }
+    // try {
+    //   this.setState({loading: true});
+    //   this.makeParam();
+    //   const result = await setAvailableTimes(param);
 
-      if (result.data.result === "success") {
-        this.getTimeListData();
-        this.showSuccess("Set Availability Success");
-      } else {
-        this.showFail("Set Availability Fail");
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Set Availability Fail");
-    };
+    //   if (result.data.result === "success") {
+    //     this.getTimeListData();
+    //     this.showSuccess("Set Availability Success");
+    //   } else {
+    //     this.showFail(result.data.message);
+    //     if (result.data.message == "Token is Expired") {
+    //       this.removeSession();
+    //       window.location.href = "/";
+    //     }
+    //   }
+    //   this.setState({loading: false});
+    // } catch(err) {
+    //   this.setState({loading: false});
+    //   this.showFail("Something Went wrong");
+    // };
   }
   
   getTimeListData = async() => {
@@ -209,23 +218,26 @@ class SetAvailability extends React.Component {
           availableTimeList: availableTimeListTemp,
         });
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message == "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
   onChangeTimeZone = (e) => {
-    console.log(e.target.value);
   }
 
   showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -242,7 +254,7 @@ class SetAvailability extends React.Component {
   showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -298,10 +310,16 @@ class SetAvailability extends React.Component {
       }
     }
     temp[dayOfWeek] = !dayOfWeekStatus[dayOfWeek];
-    
     this.setState({
       dayOfWeekStatus: temp
-    })
+    });
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
   }
   
   render () {
@@ -321,15 +339,15 @@ class SetAvailability extends React.Component {
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
                       <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
-                      {TimezoneOptions.map((item, index)  =>
-                         <option value={item.value}> {item.name}</option>
+                      {TimezoneOptions.map((item, idx)  =>
+                         <option key={idx} value={item.value}> {item.name}</option>
                       )}
                       </FormSelect>
                     </Col>
                   </Row>
                   {this.state.availableTimeList.map((day, dayIdx) => {
                     return (
-                      <div>
+                      <div key={dayIdx}>
                         <Row style={{paddingLeft: "15px"}}>
                           <FormCheckbox 
                             toggle
@@ -344,14 +362,14 @@ class SetAvailability extends React.Component {
                           {day.timeList.length ?
                             day.timeList.map((time, timeIdx) => {
                               return (
-                                <Row form>
+                                <Row key={timeIdx} form>
                                   <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
                                     <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
                                           time.from === item.id
-                                          ? <option selected>{item.str}</option>
-                                          : <option >{item.str}</option>
+                                          ? <option key={idx} selected>{item.str}</option>
+                                          : <option key={idx} >{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
@@ -361,8 +379,8 @@ class SetAvailability extends React.Component {
                                       {Timelinelist.map((item, idx) => {
                                         return (
                                           time.to === item.id 
-                                          ? <option selected>{item.str}</option>
-                                          : <option >{item.str}</option>
+                                          ? <option key={idx} selected>{item.str}</option>
+                                          : <option key={idx} >{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
@@ -388,7 +406,7 @@ class SetAvailability extends React.Component {
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
                                   {Timelinelist.map((item, idx) => {
                                     return (
-                                      <option >{item.str}</option>
+                                      <option key={idx} >{item.str}</option>
                                     )
                                   })}
                                 </FormSelect>
@@ -397,7 +415,7 @@ class SetAvailability extends React.Component {
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
                                   {Timelinelist.map((item, idx) => {
                                     return (
-                                      <option >{item.str}</option>
+                                      <option key={idx} >{item.str}</option>
                                     )
                                   })}
                                 </FormSelect>

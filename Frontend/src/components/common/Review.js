@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "shards-react";
 
 import ReivewImage from "../../images/Review.jpg"
 import StarIcon from "../../images/star_icon.svg";

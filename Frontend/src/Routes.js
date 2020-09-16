@@ -1,6 +1,3 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-
 import { DefaultLayout, LandingPageLayout, ExtraPageLayout } from "./layouts";
 
 import MentorSession from "./views/MentorSession";

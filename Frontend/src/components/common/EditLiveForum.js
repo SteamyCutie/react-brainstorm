@@ -85,32 +85,14 @@ export default class EditLiveForum extends React.Component {
         this.setState({tags: result.data.data});
       } else {
         this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
     } catch(err) {
-        this.showFail(err);
+        this.showFail("Something Went wrong");
       }
-  }
-
-  getSession = async(id) => {
-    try {
-      const result = await getforum({id: id});
-      if (result.data.result === "success") {
-        const {foruminfo} = this.state;
-        let temp = foruminfo;
-        temp.tags = result.data.data.tags;
-        temp.id = result.data.data.id;
-        temp.title = result.data.data.title;
-        temp.description = result.data.data.description;
-        temp.from = result.data.data.from;
-        temp.to = result.data.data.to;
-        temp.day = result.data.data.day;
-        this.setState({foruminfo: temp});
-      } else {
-        this.showFail(result.data.message);
-      }
-    } catch(err) {
-      this.showFail(err);
-    }
   }
 
   actionEdit = async() => {
@@ -129,7 +111,7 @@ export default class EditLiveForum extends React.Component {
         this.showSuccess("Edit Schedule Success");
         window.location.href = "/scheduleLiveForum";
       } else {
-        if (result.data.type == 'require') {
+        if (result.data.type === 'require') {
           const {requiremessage} = this.state;
           let temp = requiremessage;
           if (result.data.message.title) {
@@ -142,14 +124,51 @@ export default class EditLiveForum extends React.Component {
             requiremessage: temp
           });
         } else {
+          this.showFail(result.data.message);
+          if (result.data.message === "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          }
         }
-        this.showFail("Create Schedule Fail");
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Create Schedule Fail");
+      this.showFail("Something Went wrong");
     };
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
+  getSession = async(id) => {
+    try {
+      const result = await getforum({id: id});
+      if (result.data.result === "success") {
+        const {foruminfo} = this.state;
+        let temp = foruminfo;
+        temp.tags = result.data.data.tags;
+        temp.id = result.data.data.id;
+        temp.title = result.data.data.title;
+        temp.description = result.data.data.description;
+        temp.from = result.data.data.from;
+        temp.to = result.data.data.to;
+        temp.day = result.data.data.day;
+        this.setState({foruminfo: temp});
+      } else {
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
+      }
+    } catch(err) {
+      this.showFail("Something Went wrong");
+    }
   }
 
   onChangeDay = (e) => {
@@ -214,28 +233,29 @@ export default class EditLiveForum extends React.Component {
     const { open } = this.props;
     return (
       <div>
+        <ReactNotification />
         <Modal size="lg" open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
           <h1 className="content-center modal-header-class">Schedule live forum Information</h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
-            {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
-            {this.state.requiremessage.dtitle != '' && <FormInput className="profile-detail-input" placeholder="Title" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
-            {this.state.requiremessage.dtitle == '' && <FormInput className="profile-detail-input" placeholder="Title" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle !== '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
+            {this.state.requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle ==='' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Description</label>
-            {this.state.requiremessage.ddescription != '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
-            {this.state.requiremessage.ddescription != '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
-            {this.state.requiremessage.ddescription == '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription !== '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
+            {this.state.requiremessage.ddescription !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Tags</label><br></br>
             {this.state.tags.map((item, idx) => {
               var index = this.state.foruminfo.tags.findIndex((value) => item.id == value)
-              return index > -1 ? <FormCheckbox inline className="col-md-5 col-lg-5 col-xs-5" checked value={this.state.foruminfo.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
-                <FormCheckbox inline className="col-md-5 col-lg-5 col-xs-5" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
+              return index > -1 ? <FormCheckbox key={idx} inline className="col-md-5 col-lg-5 col-xs-5" checked value={this.state.foruminfo.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
+                <FormCheckbox key={idx} inline className="col-md-5 col-lg-5 col-xs-5" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
             })}
           </div>
           <div><label htmlFor="fePassword">From</label></div>
@@ -253,7 +273,7 @@ export default class EditLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                item.value == this.state.foruminfo.from ? <option value={item.value} selected>{item.str}</option> : <option value={item.value}>{item.str}</option>
+                item.value == this.state.foruminfo.from ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>
@@ -261,7 +281,7 @@ export default class EditLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeTo(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                item.value == this.state.foruminfo.to ? <option value={item.value} selected>{item.str}</option> : <option value={item.value}>{item.str}</option>
+                item.value == this.state.foruminfo.to ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>

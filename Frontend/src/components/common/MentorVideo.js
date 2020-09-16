@@ -1,8 +1,9 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
+import { Player } from 'video-react';
+import "video-react/dist/video-react.css";
 import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
-
-import MoreButtonImage from "../../images/more.svg"
+import background from "../../images/background.jpeg"
 
 class MentorVideo extends React.Component {
   constructor(props) {
@@ -62,9 +63,15 @@ class MentorVideo extends React.Component {
           </h6>
         </div>
         <div>
-          <video className="mentor-video-tag" controls>
-            <source src={media_url} type={media_type} />
-          </video>
+          {/* <video className="mentor-video-tag" controls> */}
+            {/* <source src={media_url} type={media_type} /> */}
+            
+          {/* </video> */}
+          <Player
+              playsInline
+              poster={background}
+              src={media_url}
+            />
         </div>
       </div>
     );

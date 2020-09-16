@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 import { getuserinfo } from '../../../../api/api';
 import avatar from "../../../../images/avatar.jpg"
 import {
@@ -7,9 +10,6 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Collapse,
-  NavItem,
-  NavLink
 } from "shards-react";
 
 export default class UserActions extends React.Component {
@@ -30,15 +30,18 @@ export default class UserActions extends React.Component {
 
   getUserInformation = async() => {
     try {
-      
       const result = await getuserinfo({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({avatar: result.data.data.avatar});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
     } catch(err) {
-      
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -53,23 +56,43 @@ export default class UserActions extends React.Component {
     window.location.href = "/";
   }
 
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
     return (
-      <Dropdown open={this.state.open} toggle={this.toggle}>
-        <DropdownToggle>
-          {this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={this.state.avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
-          {!this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
-          {" "}</DropdownToggle>
-        <DropdownMenu>
-          <DropdownItem tag={Link} to="profile">
-            <i className="material-icons">&#xE7FD;</i> Profile
-          </DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem className="text-danger" onClick={() => this.logout()}>
-            <i className="material-icons text-danger">&#xE879;</i> Logout
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+      <>
+        <ReactNotification />
+        <Dropdown open={this.state.open} toggle={this.toggle}>
+          <DropdownToggle>
+            {this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={this.state.avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+            {!this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+            {" "}</DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem tag={Link} to="profile">
+              <i className="material-icons">&#xE7FD;</i> Profile
+            </DropdownItem>
+            <DropdownItem divider />
+            <DropdownItem className="text-danger" onClick={() => this.logout()}>
+              <i className="material-icons text-danger">&#xE879;</i> Logout
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </>
     );
   }
 }

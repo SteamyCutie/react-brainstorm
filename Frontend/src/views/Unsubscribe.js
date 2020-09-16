@@ -35,15 +35,19 @@ export default class Unsubscribe extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getuserinfobyid({id: id});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({mentorData: result.data.data});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -59,38 +63,21 @@ export default class Unsubscribe extends React.Component {
     });
   }
 
-  showSuccess(text) {
-    // store.addNotification({
-    //   title: "Success",
-    //   message: text,
-    //   type: "success",
-    //   insert: "top",
-    //   container: "top-right",
-    //   dismiss: {
-    //     duration: 500,
-    //     onScreen: false,
-    //     waitForAnimation: false,
-    //     showIcon: false,
-    //     pauseOnHover: false
-    //   },
-    // });
-  }
-
   showFail(text) {
-    // store.addNotification({
-    //   title: "Fail",
-    //   message: text,
-    //   type: "danger",
-    //   insert: "top",
-    //   container: "top-right",
-    //   dismiss: {
-    //     duration: 500,
-    //     onScreen: false,
-    //     waitForAnimation: false,
-    //     showIcon: false,
-    //     pauseOnHover: false
-    //   }
-    // });
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   render() {
@@ -113,10 +100,10 @@ export default class Unsubscribe extends React.Component {
             <Row>
               <Col xl="3" className="subscription-mentor-detail">
                 <div>
-                  {mentorData.avatar && <img src={mentorData.avatar} style={{width: "206px", height: "206px"}}/>}
-                  {!mentorData.avatar && <img src={avatar} style={{width: "206px", height: "206px"}}/>}
+                  {mentorData.avatar && <img src={mentorData.avatar} style={{width: "206px", height: "206px"}} alt="User Avatar"/>}
+                  {!mentorData.avatar && <img src={avatar} style={{width: "206px", height: "206px"}} alt="User Avatar"/>}
                   <div style={{display: "flex", padding: "20px 0px"}}>
-                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
+                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}  alt="Subscribe Image"/>
                     <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
                     <h6 className="no-margin"style={{fontWeight: "bold"}}>0</h6>
                   </div>
@@ -138,11 +125,11 @@ export default class Unsubscribe extends React.Component {
                     </Row>
                     <Row className="mentor-detail-subject-tag">
                       <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-                      {/* {
+                      {mentorData.tags && 
                         mentorData.tags.map((tag, idk) => (
                           <p key={idk} className="brainsshare-tag">{tag}</p>
                         ))
-                      } */}
+                      }
                     </Row>
                     <div className="mentor-detail-myself">
                       <p>{mentorData.description}...</p>

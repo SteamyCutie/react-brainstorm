@@ -1,6 +1,7 @@
 import React, {Fragment} from "react";
 import { Modal, ModalBody, Button, FormInput,  FormCheckbox } from "shards-react";
 import { uploadvideo, uploadimage, createshareinfo } from '../../api/api';
+import {DropzoneArea} from 'material-ui-dropzone';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -91,37 +92,53 @@ export default class CreateMyShare extends React.Component {
             requiremessage: temp
           });
         } else {
+          this.showFail(result.data.message);
+          if (result.data.message == "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          }
         }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Action Fail");
+      this.showFail("Something Went wrong");
       this.toggle();
     };
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   onChnageVideo = async(e) => {
-    const formData = new FormData();
-    formData.append('files[]', e.target.files[0]);
-    try {
-      this.setState({loading: true});
-      const result = await uploadvideo(formData);
-      if (result.data.result == "success") {
-        const {foruminfo} = this.state;
-        let temp = foruminfo;
-        temp.media_url = result.data.data;
-        this.setState({foruminfo: temp});
-        console.log(this.state);
-        this.showSuccess("Upload Video Success");
-      } else {
+    if (e[0] == null || e[0] == undefined)
+      return;
+    else {
+      const formData = new FormData();
+      formData.append('files[]', e[0]);
+      try {
+        this.setState({loading: true});
+        const result = await uploadvideo(formData);
+        if (result.data.result == "success") {
+          const {foruminfo} = this.state;
+          let temp = foruminfo;
+          temp.media_url = result.data.data;
+          this.setState({foruminfo: temp});
+          console.log(this.state);
+          this.showSuccess("Upload Video Success");
+        } else {
+          this.showFail();
+        }
+        this.setState({loading: false});
+      } catch(err) {
+        this.setState({loading: false});
         this.showFail();
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail();
-    };
+      };
+    }
   }
 
   showSuccess(text) {
@@ -158,12 +175,6 @@ export default class CreateMyShare extends React.Component {
     });
   }
 
-  onPreviewDrop = (files) => {
-    this.setState({
-      files: this.state.files.concat(files),
-     });
-  }
-
   render() {
     const { open } = this.props;
     const previewStyle = {
@@ -180,8 +191,8 @@ export default class CreateMyShare extends React.Component {
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
             {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
-            {this.state.requiremessage.dtitle != '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
-            {this.state.requiremessage.dtitle == '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle != '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle == '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Description</label>
@@ -190,8 +201,8 @@ export default class CreateMyShare extends React.Component {
             {this.state.requiremessage.ddescription == '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
-          <label htmlFor="feEmail">Video</label>
-            <FormInput className="profile-detail-input" type="file" placeholder="Title" onChange={(e) => this.onChnageVideo(e)}/>
+            <label htmlFor="feEmail">Video</label>
+            <DropzoneArea onChange={(e) => this.onChnageVideo(e)}/>
           </div>
           <div className="content-center block-content-class button-text-group-class">
             <Button onClick={() => this.actionSave()}>Save</Button>

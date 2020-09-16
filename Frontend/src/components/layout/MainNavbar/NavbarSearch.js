@@ -21,7 +21,7 @@ export default () => (
       <InputGroupAddon type="append">
         <Button className="navbar-search btn-search">
           <InputGroupText>
-            <img src={SearchIcon}/>
+            <img src={SearchIcon} alt="search-icon"/>
           </InputGroupText>
         </Button>
       </InputGroupAddon>

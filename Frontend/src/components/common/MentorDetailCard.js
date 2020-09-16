@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Form, FormGroup } from 'reactstrap';
 
 import VideoCall from "../common/VideoCall"
+import MentorReview from "../common/MentorReview";
 
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
@@ -18,6 +18,8 @@ class MentorDetailCard extends React.Component {
     this.videoCallModal = React.createRef();
 
     this.state = {
+      more: false,
+      ModalOpenReview: false,
       teaches: [
         "Algebra",
         "Mathematics",
@@ -58,7 +60,6 @@ class MentorDetailCard extends React.Component {
   }
 
   handleBookCall() {
-    // alert("asdf;lkjasdf;klj");
     this.setState({
       modal_toggle: !this.state.modal_toggle
     })
@@ -68,11 +69,32 @@ class MentorDetailCard extends React.Component {
 
   }
 
+  toggle_openmodalreview() {
+    this.setState({
+      ModalOpenReview: !this.state.ModalOpenReview
+    });
+  }
+
+  toggle_modalreview() {
+    this.setState({
+      ModalOpenReview: !this.state.ModalOpenReview,
+    });
+  }
+
+  readMore() {
+    this.setState({more: true});
+  }
+
+  readLess() {
+    this.setState({more: false});
+  }
+
   render() {
-    const {name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
-  
+    const {id, name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
+    const {ModalOpenReview} = this.state;
     return (
       <div className="mentor-detail-card">
+        <MentorReview mentorid={id} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()} toggle_modal={() => this.toggle_modalreview()}></MentorReview>
         <div style={{position: "relative"}} className="mentor-detail-avatar">
             {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
             {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
@@ -87,14 +109,18 @@ class MentorDetailCard extends React.Component {
           </Row>
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-            {tag_name.map((teach, idk) => (
-              <p key={idk} className="brainsshare-tag" title={teach}>{teach}</p>
-            ))
-            }
+            {tag_name.map((teach, idx) => {
+              if (idx < 5)
+                return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
+              else if (idx == 5)
+                return <p key={idx} href="#!">{tag_name.length - 5} more</p>
+              else 
+                return <></>;
+            })}
           </Row>
           <div className="mentor-detail-myself">
-            <p>{description}</p>
-            <a className="read-more">Read more</a>
+            {this.state.more ? <p>{description}</p> : <p>{description.slice(0,200)}...</p>}
+            {this.state.more ? <a href="#!" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="#!" className="read-more" onClick={() => this.readMore()}>Read more</a>}
           </div>
           <div className="mentor-detail-video">
               <a href={video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
@@ -119,6 +145,12 @@ class MentorDetailCard extends React.Component {
             <Button className="btn-mentor-detail-book" onClick={() => this.handleBookCall()}>
               <img src={Clock} alt="Clock" />
               Book a session
+            </Button>
+          </Row>
+          <Row className="center">
+            <Button className="btn-mentor-detail-book" onClick={() => this.toggle_openmodalreview()}>
+              <img src={Clock} alt="Clock" />
+              Review Mentor
             </Button>
           </Row>
         </div>
