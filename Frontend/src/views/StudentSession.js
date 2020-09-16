@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
+import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -15,7 +15,12 @@ export default class StudentSession extends React.Component {
       loading: false,
       sessionList: [],
       tags: [],
-      weekList: []
+      weekList: [],
+      param: {
+        time: '',
+        tag_id: '',
+        email: localStorage.getItem('email')
+      }
     }
   }
 
@@ -26,23 +31,26 @@ export default class StudentSession extends React.Component {
   }
 
   getSessionList = async() => {
+    const { param } = this.state;
     try {
       this.setState({loading: true});
-      const result = await getUpcomingSession({email: localStorage.getItem('email')});
+      const result = await getUpcomingSession(param);
       if(result.data.result === "success") {
         var sessionTemp = result.data.data;
-
         this.setState({
           sessionList: sessionTemp,
         });
-        
       } else {
-
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail(err);
+      this.showFail("Something Went wrong");
     }
   }
 
@@ -53,31 +61,47 @@ export default class StudentSession extends React.Component {
         this.setState({tags: result.data.data});
       } else {
         this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
     } catch(err) {
-      this.showFail(err);
+      this.showFail("Something Went wrong");
     };
   }
 
   getWeekData = async() => {
     try {
       const result = await getweekdata();
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({weekList: result.data.data});
       } else {
         this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
     } catch(err) {
-      this.showFail("Action Fail");
+      this.showFail("Something Went wrong");
     };
   }
 
-  onChangeTags = async(e) => {
-    console.log(e.target.value);
+  onChangeTags = (e) => {
+    const { param } = this.state;
+    let temp = param;
+    temp.tag_id = e.target.value;
+    this.setState({param: temp});
+    this.getSessionList();
   }
 
-  onChangeDate = async(e) => {
-    console.log(e.target.value);
+  onChangeDate = (e) => {
+    const { param } = this.state;
+    let temp = param;
+    temp.time = e.target.value;
+    this.setState({param: temp});
+    this.getSessionList();
   }
 
   // findMentor = async() => {
@@ -118,6 +142,13 @@ export default class StudentSession extends React.Component {
     });
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   render() {
     const {tags, weekList} = this.state;
     return (
@@ -140,8 +171,8 @@ export default class StudentSession extends React.Component {
               </label>
               <FormSelect style={{height: "30px", width: "200px", marginRight: "10px"}} onChange={(e) => this.onChangeDate(e)}>
                 <option>Select Date</option>
-                {weekList.map((item, index) =>
-                  <option>{item}</option>
+                {weekList.map((item, idx) =>
+                  <option key={idx}>{item}</option>
                 )}
               </FormSelect>
               {/* <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
@@ -155,8 +186,8 @@ export default class StudentSession extends React.Component {
               </label>
               <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}} onChange={(e) => this.onChangeTags(e)}>
                 <option value="0">Select category</option>
-                {tags.map((item, index) =>
-                  <option value={item.id}>{item.name}</option>
+                {tags.map((item, idx) =>
+                  <option key={idx} value={item.id}>{item.name}</option>
                 )}
               </FormSelect>
               {/* <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
@@ -171,8 +202,8 @@ export default class StudentSession extends React.Component {
             <Row>
               {this.state.sessionList.map((session, idx) => {
                 return (
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 id={idx} data={session}/>
+                  <Col key={idx} xl="4" lg="4" sm="6">
+                    <SmallCard3 key={idx} data={session}/>
                   </Col>
                 )
               })}

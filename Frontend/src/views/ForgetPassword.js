@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
+import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { forgetPassword } from '../api/api';
 
 export default class ForgetPassword extends React.Component {
@@ -41,7 +41,7 @@ export default class ForgetPassword extends React.Component {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
           formIsValid = false;
           error = "Email is incorrect";
         }

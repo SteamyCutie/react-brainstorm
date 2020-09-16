@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Card, CardBody, FormRadio } from "shards-react";
 
-import MoreButtonImage from "../../images/more.svg"
-
 class SmallCardPaymentSubscribe extends React.Component {
   constructor(props) {
     super(props);
@@ -19,20 +17,20 @@ class SmallCardPaymentSubscribe extends React.Component {
   }
 
   changeCard(type) {
-    console.log(type);
     this.setState({
       selectedCard: type
     });
+    this.props.changeCard(type);
   }
 
   render() {
-    const { title, image, expireDate, isPrimary, type } = this.props;
+    const { title, image, expireDate, type } = this.props;
     return (
       <Card small className="small-card-payment" >
         <CardBody className="no-padding">
           <div className="items-container">
             <div  style={{marginTop: "15px", paddingLeft: "10px"}}>
-              <FormRadio name="fruit" checked={this.state.selectedCard == type} onChange={() => { this.changeCard(type) }}></FormRadio>
+              <FormRadio name={type} checked={this.state.selectedCard === type} onChange={() => { this.changeCard(type) }}></FormRadio>
             </div>
             <div className="no-padding">
                 <img src={image} className="small-card-payment-logo" alt="card"/>

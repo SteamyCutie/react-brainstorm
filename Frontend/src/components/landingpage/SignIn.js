@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
 import "../../assets/landingpage.css"
-import { Link } from "react-router-dom";
 import { signin } from '../../api/api';
 
 import Facebook from '../../images/Facebook.svg'
@@ -75,7 +74,7 @@ export default class SignIn extends React.Component {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
           formIsValid = false;
           errors["email"] = "Email is incorrect";
         }
@@ -128,7 +127,6 @@ export default class SignIn extends React.Component {
         })
       }
     } catch(err) {
-      console.log(err);
       this.setState({
         signInError: 'Error is occured'
       })
@@ -155,7 +153,7 @@ export default class SignIn extends React.Component {
     const { open } = this.props;
     return (
       <div>
-        <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop="true" backdropClassName="backdrop-class">
+        <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Sign in</h1>
@@ -170,9 +168,9 @@ export default class SignIn extends React.Component {
                 onKeyDown={(e) => this.handleEmailKeyDown(e)}
                 autoComplete="email"
                 className="email-input"
-                autofocus="1"
+                autoFocus="1"
               />
-              <label class="email-validation-err">{this.state.validationError['email']}</label>
+              <label className="email-validation-err">{this.state.validationError['email']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="fePassword">Password</label>
@@ -186,7 +184,7 @@ export default class SignIn extends React.Component {
                 autoComplete="text"
                 className="password-input"
               />
-              <label class="password-validation-err">{this.state.validationError['password']}</label>
+              <label className="password-validation-err">{this.state.validationError['password']}</label>
             </div>
             <div className="content-center block-content-class button-text-group-class">
               <label className="sign-in-err">{this.state.signInError}</label>

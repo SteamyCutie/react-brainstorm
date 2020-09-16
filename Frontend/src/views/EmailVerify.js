@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
+import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { verifyCode } from '../api/api';
 
 export default class EmailVerify extends React.Component {

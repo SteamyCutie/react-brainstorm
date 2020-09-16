@@ -1,12 +1,10 @@
-import React, {useEffect} from "react";
-import PropTypes from "prop-types";
-import { Container, Row, Col, Badge, Button, FormSelect } from "shards-react";
-import { Calendar, momentLocalizer, globalizeLocalizer  } from 'react-big-calendar'
+import React from "react";
+import { Container, Row, Badge, Button, FormSelect } from "shards-react";
+import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import LoadingModal from "../components/common/LoadingModal";
-import TimeGrid from 'react-big-calendar/lib/TimeGrid'
-import { getUpcomingSession, gettags } from '../api/api';
+import { getUpcomingSession } from '../api/api';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -48,13 +46,6 @@ const ColoredDateCellWrapper = ( {date} ) => props => {
     return 0;
   }
 
-  const checkBorderWidth = () => {
-    let cPos = props.value.getDay();
-    if(cPos === 0) return -1;
-    else if(cPos === 6) return 1;
-    else return 0;
-  }
-
   return (
     React.cloneElement(React.Children.only(props.children), {
       style: {
@@ -63,9 +54,7 @@ const ColoredDateCellWrapper = ( {date} ) => props => {
         borderBottomLeftRadius: checkBorderRadius() === -1 ? "10px" : "0px",
         borderBottomRightRadius: checkBorderRadius() === 1 ? "10px" : "0px",
         borderColor: "#E0E0E0",
-        borderWidth: "1px",
-        // borderLeftWidth: checkBorderWidth() === -1 ? "0px" : "1px",
-        // borderRightWidth: checkBorderWidth() === 1 ? "0px" : "1px",
+        borderWidth: "1px"
       },
     })
   );
@@ -74,7 +63,6 @@ const ColoredDateCellWrapper = ( {date} ) => props => {
 export default class MentorSession extends React.Component {
   constructor(props) {
     super(props);
-    const now = new Date();
     this.state = {
       loading: false,
       events: [],
@@ -100,9 +88,13 @@ export default class MentorSession extends React.Component {
   }
 
   getSessionList = async() => {
+    let param = {
+      email: localStorage.getItem('email'),
+      tag_id: ''
+    }
     try {
       this.setState({loading: true});
-      const result = await getUpcomingSession({email: localStorage.getItem('email')});
+      const result = await getUpcomingSession(param);
       if(result.data.result === "success") {
         var data_arr = [];
         var arr = {
@@ -127,12 +119,16 @@ export default class MentorSession extends React.Component {
         }
         this.setState({events: data_arr});
       } else {
-        this.showFail("Action Fail");
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Action Fail");
+      this.showFail("Something Went wrong");
     }
   }
 
@@ -214,7 +210,6 @@ class CustomMonthEvent extends React.Component {
   }
   
   render() {
-    const bookedIcon = this.props.event.isBooked ? <Badge><i className="fa fa-bookmark"></i></Badge> : null ;
     return (
       <div style={{position: "relative"}} className="Hello">
         Hello World!
@@ -308,14 +303,16 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
         }
         changeMonth(data_arr);
       } else {
-
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       showLoading(false);
     } catch(err) {
       showLoading(false);
-      this.setState({
-        errorMsg: "Error is occured"
-      })
+      this.showFail("Something Went wrong");
     }
   }
 
@@ -391,7 +388,7 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
   const onChangeTag = async(e) => {
     try {
       showLoading(true);
-      const result = await getUpcomingSession({email: localStorage.getItem('email'), tag: e.target.value});
+      const result = await getUpcomingSession({email: localStorage.getItem('email'), tag_id: e.target.value});
       if(result.data.result === "success") {
         var data_arr = [];
         var arr = {
@@ -474,7 +471,7 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
             <FormSelect className="profile-detail-input" onChange={(e) => onChangeTag(e)}>
               <option>select tag</option>
               {tags.map((item, idx) =>                 
-                <option value={item.id}>{item.name}</option>
+                <option key={idx} value={item.id}>{item.name}</option>
               )}
             </FormSelect>
           </div>

@@ -1,9 +1,8 @@
-import React, { useEffect, createRef, useRef } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormGroup, FormSelect, Form, FormTextarea, DatePicker, Alert } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormSelect, Form, FormTextarea, DatePicker } from "shards-react";
 import expertise from '../common/constants';
 import LoadingModal from "../components/common/LoadingModal";
 
@@ -70,11 +69,11 @@ export default class MySharePage extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getuserinfo({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         const {param} = this.state;
         let temp = param;
         temp.name = result.data.data.name;
-        temp.birthday = (result.data.data.dob == null || result.data.data.dob == "") ? '2020-01-01' : result.data.data.dob;
+        temp.birthday = (result.data.data.dob === null || result.data.data.dob === "") ? '2020-01-01' : result.data.data.dob;
         temp.email = result.data.data.email;
         temp.avatar = result.data.data.avatar;
         temp.description = result.data.data.description;
@@ -82,7 +81,7 @@ export default class MySharePage extends React.Component {
         temp.subpagename = result.data.data.sub_page_name;
         temp.subplanfee = result.data.data.sub_plan_fee;
         temp.videourl = result.data.data.video_url;
-        temp.expertise = (result.data.data.expertise == null || result.data.data.expertise == "") ? 1 : result.data.data.expertise;
+        temp.expertise = (result.data.data.expertise === null || result.data.data.expertise === "") ? 1 : result.data.data.expertise;
         temp.instantcall = result.data.data.instant_call;
         temp.is_mentor = result.data.data.is_mentor;
         temp.tags = result.data.data.tags;
@@ -94,12 +93,16 @@ export default class MySharePage extends React.Component {
           displaycutplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.2).toFixed(2),
         });
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -110,9 +113,13 @@ export default class MySharePage extends React.Component {
         this.setState({tags: result.data.data});
       } else {
         this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
     } catch(err) {
-      this.showFail(err);
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -153,12 +160,12 @@ export default class MySharePage extends React.Component {
     try {
       this.setState({loading: true});
       const result = await editprofile(this.state.param);
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({loading: false});
         this.showSuccess("Edit Profile Success");
         localStorage.setItem('user-type', this.state.param.is_mentor);
       } else {
-        if (result.data.type == 'require') {
+        if (result.data.type === "require") {
           const {requiremessage} = this.state;
           let temp = requiremessage;
           if (result.data.message.name) {
@@ -186,12 +193,17 @@ export default class MySharePage extends React.Component {
             requiremessage: temp
           });
         } else {
+          this.showFail(result.data.message);
+          if (result.data.message === "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          }
         }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Edit Profile Fail");
+      this.showFail("Something Went wrong");
     };
   };
   
@@ -246,7 +258,7 @@ export default class MySharePage extends React.Component {
     let temp = param;
     temp.hourlyprice = e.target.value;
     let displaygethourlyprice, displaycuthourlyprice  = '';
-    if (e.target.value == '') {
+    if (e.target.value === '') {
       displaygethourlyprice = '0.00';
       displaycuthourlyprice = '0.00';
     } else {
@@ -275,7 +287,7 @@ export default class MySharePage extends React.Component {
     let temp = param;
     temp.subplanfee = e.target.value;
     let displaygetplanfee, displaycutplanfee  = '';
-    if (e.target.value == '') {
+    if (e.target.value === '') {
       displaygetplanfee = '0.00';
       displaycutplanfee = '0.00';
     } else {
@@ -312,19 +324,23 @@ export default class MySharePage extends React.Component {
     try {
       this.setState({loading: true});
       const result = await uploadimage(formData);
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         const {param} = this.state;
         let temp = param;
         temp.avatar = result.data.data;
         this.setState({param: temp});
         this.showSuccess("Change Avatar Success");
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail(err);
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -401,9 +417,9 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Full Name</label>
-                            {this.state.requiremessage.dname != '' && <span className="require-message">{this.state.requiremessage.dname}</span>}
-                            {this.state.requiremessage.dname != '' && <FormInput className="profile-detail-input" placeholder="Full Name" invalid onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
-                            {this.state.requiremessage.dname == '' && <FormInput className="profile-detail-input" placeholder="Full Name" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
+                            {this.state.requiremessage.dname !== '' && <span className="require-message">{this.state.requiremessage.dname}</span>}
+                            {this.state.requiremessage.dname !== '' && <FormInput className="profile-detail-input" placeholder="Full Name" autoFocus="1" invalid onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
+                            {this.state.requiremessage.dname === '' && <FormInput className="profile-detail-input" placeholder="Full Name" autoFocus="1" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <div><label htmlFor="fePassword">Date of birth</label></div>
@@ -422,16 +438,16 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Email</label>
-                            {this.state.requiremessage.demail != '' && <span className="require-message">{this.state.requiremessage.demail}</span>}
-                            {this.state.requiremessage.demail != '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
-                            {this.state.requiremessage.demail == '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
+                            {this.state.requiremessage.demail !== '' && <span className="require-message">{this.state.requiremessage.demail}</span>}
+                            {this.state.requiremessage.demail !== '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
+                            {this.state.requiremessage.demail === '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feInputState" className="profile-detail-important" >Expertise</label>
-                            {this.state.requiremessage.dexpertise != '' && <span className="require-message">{this.state.requiremessage.dexpertise}</span>}
+                            {this.state.requiremessage.dexpertise !== '' && <span className="require-message">{this.state.requiremessage.dexpertise}</span>}
                             <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeExpertise(e)}>
                               {expertise.map((item, index) =>
-                                item.value == this.state.param.expertise ? <option value={item.value} selected>{item.name}</option> : <option value={item.value}>{item.name}</option>
+                                item.value === this.state.param.expertise ? <option value={item.value} selected>{item.name}</option> : <option value={item.value}>{item.name}</option>
                               )}
                             </FormSelect>
                           </Col>
@@ -439,9 +455,9 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Hourly price</label>
-                            {this.state.requiremessage.dhourlyprice != '' && <span className="require-message">{this.state.requiremessage.dhourlyprice}</span>}
-                            {this.state.requiremessage.dhourlyprice != '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" invalid onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
-                            {this.state.requiremessage.dhourlyprice == '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
+                            {this.state.requiremessage.dhourlyprice !== '' && <span className="require-message">{this.state.requiremessage.dhourlyprice}</span>}
+                            {this.state.requiremessage.dhourlyprice !== '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" invalid onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
+                            {this.state.requiremessage.dhourlyprice === '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
                             <label className="profile-detail-comment">
                               <span>You get 80% of your price. ({this.state.displaygethourlyprice} $)</span><br></br>
                               Remaining 20% goes to admin. ({this.state.displaycuthourlyprice} $)
@@ -449,23 +465,23 @@ export default class MySharePage extends React.Component {
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Video url</label>
-                            {this.state.requiremessage.videourl != '' && <span className="require-message">{this.state.requiremessage.videourl}</span>}
-                            {this.state.requiremessage.videourl != '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" invalid onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
-                            {this.state.requiremessage.videourl == '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
+                            {this.state.requiremessage.videourl !== '' && <span className="require-message">{this.state.requiremessage.videourl}</span>}
+                            {this.state.requiremessage.videourl !== '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" invalid onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
+                            {this.state.requiremessage.videourl === '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Subscription Page Name</label>
-                            {this.state.requiremessage.dsubpagename != '' && <span className="require-message">{this.state.requiremessage.dsubpagename}</span>}
-                            {this.state.requiremessage.dsubpagename != '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" invalid onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
-                            {this.state.requiremessage.dsubpagename == '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
+                            {this.state.requiremessage.dsubpagename !== '' && <span className="require-message">{this.state.requiremessage.dsubpagename}</span>}
+                            {this.state.requiremessage.dsubpagename !== '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" invalid onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
+                            {this.state.requiremessage.dsubpagename === '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Subscription plan fee</label>
-                            {this.state.requiremessage.dsubplanfee != '' && <span className="require-message">{this.state.requiremessage.dsubplanfee}</span>}
-                            {this.state.requiremessage.dsubplanfee != '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" invalid onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
-                            {this.state.requiremessage.dsubplanfee == '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
+                            {this.state.requiremessage.dsubplanfee !== '' && <span className="require-message">{this.state.requiremessage.dsubplanfee}</span>}
+                            {this.state.requiremessage.dsubplanfee !== '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" invalid onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
+                            {this.state.requiremessage.dsubplanfee === '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
                             <label className="profile-detail-comment">
                               <span>You get 80% of your price. ({this.state.displaygetplanfee} $)</span><br></br>
                               Remaining 20% goes to admin. ({this.state.displaycutplanfee} $)
@@ -476,23 +492,6 @@ export default class MySharePage extends React.Component {
                           <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
                           <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={this.state.param.description}/>
                         </Row>
-                        {/* {this.state.param.is_mentor ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
-                        (Student/Mentor)
-                        <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
-                        </FormCheckbox> : <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
-                          (Student/Mentor)
-                          <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
-                        </FormCheckbox>}
-                        {this.state.param.is_mentor ? <Row form>
-                          <Col className="col-md-12 col-xs-12 col-lg-12 project-detail-input-group">
-                            <div><label htmlFor="feEmail">Tags</label></div>
-                            {this.state.tags.map((item, idx) => {
-                              var index = this.state.param.tags.findIndex((value) => item.id == value)
-                              return index > -1 ? <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" checked value={this.state.param.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
-                                <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
-                            })}
-                          </Col>
-                        </Row> : ""} */}
                         {this.state.param.is_mentor ? 
                           <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
                           <FormCheckbox toggle checked className="instant-call-toggle custom-toggle" onChange={(e) => this.onChangeUser(e)}>
@@ -506,7 +505,7 @@ export default class MySharePage extends React.Component {
                           <Col className="col-md-12 col-xs-12 col-lg-12 project-detail-input-group">
                             <div><label htmlFor="feEmail">Tags</label></div>
                             {this.state.tags.map((item, idx) => {
-                              var index = this.state.param.tags.findIndex((value) => item.id == value)
+                              var index = this.state.param.tags.findIndex((value) => item.id === value)
                               return index > -1 ? <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" checked value={this.state.param.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
                                 <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
                             })}

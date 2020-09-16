@@ -28,7 +28,7 @@ const StudentWallet = ({ paymentCard, tHistory, columns }) => (
       <div className="card-container">
       {paymentCard.map((card, idx) => (
           <SmallCardPayment
-            id={idx}
+            key={idx}
             title={card.title}
             expireDate={card.expireDate}
             image={card.image}

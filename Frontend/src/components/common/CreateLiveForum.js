@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker, FormTextarea, FormSelect } from "shards-react";
+import MultiSelect from "react-multi-select-component";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
@@ -13,6 +14,8 @@ export default class CreateLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedUsers: [],
+      selectedTags: [],
       loading: false,
       displayday: '',
       foruminfo: {
@@ -96,9 +99,13 @@ export default class CreateLiveForum extends React.Component {
         this.setState({tags: result.data.data});
       } else {
         this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
     } catch(err) {
-        this.showFail(err);
+      this.showFail("Something Went wrong");
       }
   }
 
@@ -118,7 +125,7 @@ export default class CreateLiveForum extends React.Component {
         this.showSuccess("Create Schedule Success");
         window.location.href = "/scheduleLiveForum";
       } else {
-        if (result.data.type == 'require') {
+        if (result.data.type === 'require') {
           const {requiremessage} = this.state;
           let temp = requiremessage;
           if (result.data.message.title) {
@@ -131,13 +138,24 @@ export default class CreateLiveForum extends React.Component {
             requiremessage: temp
           });
         } else {
+          if (result.data.message === "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          }
         }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Create Schedule Fail");
+      this.showFail("Something Went wrong");
     };
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
   }
 
   onChangeDay = (e) => {
@@ -163,16 +181,20 @@ export default class CreateLiveForum extends React.Component {
     temp.to = e.target.value;
     this.setState({foruminfo: temp});
   };
+  
+  handleChange = (event) => {
+    const {personName} = this.state;
+    const temp = personName;
+    temp.push(event);
+    this.setState({personName: temp})
+  };
 
-  handleSelectChange (item) {
-    console.log('You\'ve selected:', value);
-    const { value } = this.state;
-    let temp = value;
-    temp.push(item);
-    this.setState({ value: temp });
-
-    console.log(value);
-	};
+  setSelected = (e) => {
+    const {selectedTags} = this.state;
+    var temp = selectedTags;
+    temp = e;
+    this.setState({selectedTags: temp})
+  }
 
   showSuccess(text) {
     store.addNotification({
@@ -210,31 +232,58 @@ export default class CreateLiveForum extends React.Component {
 
   render() {
     const { open } = this.props;
+    const { selectedUsers, selectedTags, tags } = this.state;
+    const options = [
+      { label: "Grapes 🍇", value: "grapes" },
+      { label: "Mango 🥭", value: "mango" },
+      { label: "Strawberry 🍓", value: "strawberry", disabled: true },
+      { label: "Watermelon 🍉", value: "watermelon" },
+      { label: "Pear 🍐", value: "pear" },
+      { label: "Apple 🍎", value: "apple" },
+      { label: "Tangerine 🍊", value: "tangerine" },
+      { label: "Pineapple 🍍", value: "pineapple" },
+      { label: "Peach 🍑", value: "peach" },
+    ];
     return (
       <div>
+        <ReactNotification />
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">
-          </h1>
+          <h1 className="content-center modal-header-class">Schedule live forum Information</h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
-            {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
-            {this.state.requiremessage.dtitle != '' && <FormInput className="profile-detail-input" placeholder="Title" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
-            {this.state.requiremessage.dtitle == '' && <FormInput className="profile-detail-input" placeholder="Title" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle !== '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
+            {this.state.requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" placeholder="Title" invalid autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle === '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Description</label>
-            {this.state.requiremessage.ddescription != '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
-            {this.state.requiremessage.ddescription != '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
-            {this.state.requiremessage.ddescription == '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription !== '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
+            {this.state.requiremessage.ddescription !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Tags</label><br></br>
             {this.state.tags.map((item, idx) => 
-              <FormCheckbox inline className="col-md-5 col-lg-5 col-xs-5" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>
+              <FormCheckbox key={idx} inline className="col-md-5 col-lg-5 col-xs-5" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>
             )}
           </div>
+          
+          <div><label htmlFor="fePassword">Users</label></div>
+          <MultiSelect
+            options={options}
+            value={selectedUsers}
+            onChange={(e) => this.setSelected(e)}
+            labelledBy={"Select"}
+          />
+          {/* <div><label htmlFor="fePassword">Tags</label></div>
+          <MultiSelect
+            options={tags}
+            value={selectedTags}
+            onChange={(e) => this.onChangeTags(e)}
+            labelledBy={"Select"}
+          /> */}
           <div><label htmlFor="fePassword">Day</label></div>
           <DatePicker
             md="6"
@@ -250,7 +299,7 @@ export default class CreateLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                <option value={item.value} >{item.str}</option>
+                <option key={idx} value={item.value} >{item.str}</option>
               );
             })}
           </FormSelect>
@@ -258,7 +307,7 @@ export default class CreateLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeTo(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                <option value={item.value} >{item.str}</option>
+                <option key={idx} value={item.value} >{item.str}</option>
               );
             })}
           </FormSelect>

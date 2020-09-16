@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "shards-react";
 import DataTable, { createTheme } from "react-data-table-component";
 
 class SubscriptionTable extends React.Component {

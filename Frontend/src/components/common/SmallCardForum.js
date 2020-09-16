@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
 
 import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
@@ -71,9 +71,9 @@ class SmallCardForum extends React.Component {
         <div style={{display: "flex"}}>
         {tag_name.map((item, idx) => {
           if (idx < 3)
-            return <p className="brainsshare-tag" title={item}>{item}</p>;
+            return <p key={idx} className="brainsshare-tag" title={item}>{item}</p>;
           else if (idx == 3)
-            return <a href="javascript:void(0)">More</a>
+            return <p key={idx} href="#!">{tag_name.length - 3} more</p>
           else 
             return <></>;
         })}
@@ -95,7 +95,7 @@ class SmallCardForum extends React.Component {
         <div className="forum-invited-student">
           <div style={{display: "flex"}}>
           {/* {avatar.map((item, idx) => 
-            <img src={avatar2} alt="avatar" className="forum-student-avatar"/>
+            <img key={idx} src={avatar2} alt="avatar" className="forum-student-avatar"/>
           )} */}
           <img src={avatar2} alt="avatar" className="forum-student-avatar"/>
           </div>

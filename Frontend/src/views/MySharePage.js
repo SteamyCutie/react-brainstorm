@@ -1,6 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
+import { Container, Row, Col, Card, CardBody } from "shards-react";
 import { mysharepage, getuserinfo } from '../api/api';
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
@@ -31,15 +30,19 @@ export default class MySharePage extends React.Component {
     try {
       this.setState({loading: true});
       const result = await mysharepage({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({infoList: result.data.data});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -47,15 +50,19 @@ export default class MySharePage extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getuserinfo({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({userInfo: result.data.data});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
   
@@ -69,10 +76,10 @@ export default class MySharePage extends React.Component {
     textField.remove();
   };
 
-  showSuccess() {
+  showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -86,10 +93,10 @@ export default class MySharePage extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -101,6 +108,13 @@ export default class MySharePage extends React.Component {
         pauseOnHover: false
       }
     });
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
   }
 
   render() {
@@ -130,8 +144,8 @@ export default class MySharePage extends React.Component {
                 </Col>
                 <Col xl="9" lg="12" className="subscription-mentor-videos">
                   <h6 className="profile-link-url">
-                    <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
-                    <a href="javascript:void(0)">www.brainsshare.com/kiannapress</a>
+                    <a href="#!" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
+                    <a href="#!">www.brainsshare.com/kiannapress</a>
                   </h6>
                   {this.state.infoList.map((item, idx) => 
                     <MentorVideo key={idx} item={item} />
