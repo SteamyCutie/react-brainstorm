@@ -8,6 +8,9 @@ import kurentoUtils from 'kurento-utils';
 import Facebook from '../../images/Facebook.svg'
 import Google from '../../images/Google.svg'
 import Close from '../../images/Close.svg'
+import Camera from '../../images/call-camera.svg'
+import Phone from '../../images/call-phone.svg'
+import Mic from '../../images/call-mic.svg'
 
 const NOT_REGISTERED = 0;
 const REGISTERING = 1;
@@ -27,6 +30,7 @@ export default class VideoCall extends React.Component {
       callState: 0,
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
+    this.handleStop = this.handleStop.bind(this);
   }
 
   componentDidMount() {
@@ -117,7 +121,7 @@ export default class VideoCall extends React.Component {
           var message = {
             id : 'call',
             from : localStorage.getItem('email'),
-            to : 'ddd',
+            to : that.props.to,
             sdpOffer : offerSdp
           };
           that.sendMessage(message);
@@ -129,12 +133,12 @@ export default class VideoCall extends React.Component {
 
   sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
-    console.log('Sending message: ' + jsonMessage);
+    // console.log('Sending message: ' + jsonMessage);
     this.ws.send(jsonMessage);
   }
 
   onIceCandidate(candidate) {
-    console.log("Local candidate" + JSON.stringify(candidate));
+    // console.log("Local candidate" + JSON.stringify(candidate));
 
     var message = {
       id: 'onIceCandidate',
@@ -144,6 +148,7 @@ export default class VideoCall extends React.Component {
   }
 
   handleStop = () => {
+    console.log("*************************STOP")
     this.props.stop();
   }
 
@@ -152,32 +157,32 @@ export default class VideoCall extends React.Component {
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
+          {/* <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button> */}
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                <Col xl="6">
-                  <video id="videoInput" autoplay="" width="320px" height="240px">
+                {/* <Col xl="6"> */}
+                <video id="videoOutput" autoplay="" width="1000px" height="600px" className="video-call-student">
                     Your browser does not support the video tag.
                   </video>
-                </Col>
-                <Col xl="6">
-                  <video id="videoOutput" autoplay="" width="320px" height="240px">
-                    Your browser does not support the video tag.
+                {/* </Col> */}
+                {/* <Col xl="6"> */}
+                  <video id="videoInput" autoplay="" width="200px" height="150px" className="video-call-mentor">
+                    {/* Your browser does not support the video tag. */}
                   </video>
-                </Col>
+                {/* </Col> */}
               </Row>
               
               <Row className="center btn-group-call">
-                <Button className="btn-video-call-mic-camera">
-                  Mic
+                {/* <Button className="btn-video-call-mic-camera">
+                  <img src={Mic} placeholder="Mic" />
+                </Button> */}
+                <Button className="btn-video-call-end" onClick={() => this.toggle()}>
+                  <img src={Phone} placeholder="Phone" />
                 </Button>
-                <Button className="btn-video-call-end" onclick={() => this.handleStop()}>
-                  End
-                </Button>
-                <Button className="btn-video-call-mic-camera">
-                  Camera
-                </Button>
+                {/* <Button className="btn-video-call-mic-camera">
+                  <img src={Camera} placeholder="Camera" />
+                </Button> */}
               </Row>
             </div>
           </ModalBody>

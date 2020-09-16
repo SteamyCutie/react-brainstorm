@@ -1,5 +1,8 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
+import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Form, FormGroup } from 'reactstrap';
+
+import VideoCall from "../common/VideoCall"
 
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
@@ -12,19 +15,61 @@ class MentorDetailCard extends React.Component {
   constructor(props) {
     super(props);
 
+    this.videoCallModal = React.createRef();
+
     this.state = {
       teaches: [
         "Algebra",
         "Mathematics",
       ],
+      call: false,
+      registerState: 0,
+      callState: 0,
+      videoCallModal: 0,
+      from: '',
+      modal_isOpen: 0,
     }
   }
 
   componentDidMount() {
   }
 
+  handleAvailableNow() {
+    console.log(this.props.mentorData.email, '+++++ ======');
+    this.props.call(this.props.mentorData.email);
+  }
+
+  toggle_videocall() {
+    this.setState({
+      videoCallModal: !this.state.videoCallModal
+    });
+    // if(!this.state.videoCallModal) {
+    //   this.videoCallModal.current.clearValidationErrors();
+    // }
+  }
+
+  toggle_modal() {
+    this.setState({
+      videoCallModal: !this.state.videoCallModal,
+    });
+    // if(!this.state.videoCallModal) {
+    //   this.videoCallModal.current.clearValidationErrors();
+    // }
+  }
+
+  handleBookCall() {
+    // alert("asdf;lkjasdf;klj");
+    this.setState({
+      modal_toggle: !this.state.modal_toggle
+    })
+  }
+
+  modal_toggle() {
+
+  }
+
   render() {
-    const {name, score, avatar, tag_name, online, description, hourly_price, instant_call} = this.props.mentorData;
+    const {name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
   
     return (
       <div className="mentor-detail-card">
@@ -43,7 +88,7 @@ class MentorDetailCard extends React.Component {
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
             {tag_name.map((teach, idk) => (
-              <p key={idk} className="brainsshare-tag">{teach}</p>
+              <p key={idk} className="brainsshare-tag" title={teach}>{teach}</p>
             ))
             }
           </Row>
@@ -52,8 +97,7 @@ class MentorDetailCard extends React.Component {
             <a className="read-more">Read more</a>
           </div>
           <div className="mentor-detail-video">
-            <img src={PlayIcon} alt="play-icon"/>
-              Video presentation
+              <a href={video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
             </div>
         </div>
         <div className="mentor-deatail-rate-buttons">
@@ -63,8 +107,8 @@ class MentorDetailCard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            {instant_call ? <Button className="btn-mentor-detail-instant">
-              <img src={Lightening} alt="Lightening" />
+            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleAvailableNow()}>
+              <img src={Lightening} alt="Lightening"/>
               Available now
             </Button> : <Button disabled className="btn-mentor-detail-instant">
               <img src={Lightening} alt="Lightening" />
@@ -72,12 +116,30 @@ class MentorDetailCard extends React.Component {
             </Button>}
           </Row>
           <Row className="center">
-            <Button className="btn-mentor-detail-book">
+            <Button className="btn-mentor-detail-book" onClick={() => this.handleBookCall()}>
               <img src={Clock} alt="Clock" />
               Book a session
             </Button>
           </Row>
         </div>
+        {this.state.call && 
+          // this.state.call && 
+          // this.state.videoCallModal && 
+          // <Redirect to={{pathname: '/call'}} />
+          <VideoCall ref={this.videoCallModal} open={!this.state.videoCallModal} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} 
+          from={this.props.from} callState={this.props.callState} ws={this.props.ws} setWebRtcPeer={this.props.setWebRtcPeer} stop={this.props.stop}/>
+          // <VideoCall />
+        }
+        {/* <Modal isOpen={this.state.modal_isOpen} toggle={this.modal_toggle()} backdrop="static">
+          <ModalHeader toggle={toggle}>Modal title</ModalHeader>
+          <ModalBody>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
+            <Button color="secondary" onClick={toggle}>Cancel</Button>
+          </ModalFooter>
+        </Modal> */}
       </div>
     );
   }

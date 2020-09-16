@@ -6,6 +6,7 @@ import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 import ReivewImage from "../../images/Review.jpg"
+import default_avatar from "../../images/avatar.jpg"
 
 class SmallCard3 extends React.Component {
   constructor(props) {
@@ -29,19 +30,22 @@ class SmallCard3 extends React.Component {
   }
 
   render() {
-    const {name, day, time, tag_name, avatar_url} = this.props.data
+    const {name, day, from_time, to_time, tag_name, avatar} = this.props.data
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
           <div style={{display: "flex", float: "left"}}>
-            <img src={ReivewImage} className="small-card3-avatar" alt="avatar" />
+            {avatar ? <img src={avatar} className="small-card3-avatar" alt="avatar" /> : <img src={default_avatar} className="small-card3-avatar" alt="avatar" />}
             <div>
               <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
                 {tag_name.map((tag, idx) => {
-                  return(
-                    <p className="brainsshare-tag" id={idx}>{tag}</p>
-                  );
+                  if (idx < 2)
+                    return <p className="brainsshare-tag" id={idx} title={tag}>{tag}</p>;
+                  else if (idx == 2)
+                    return <a href="javascript:void(0)">More</a>
+                  else
+                    return <></>;
                 })}
               </div>
             </div>
@@ -73,7 +77,7 @@ class SmallCard3 extends React.Component {
           <div style={{display: "flex", marginBottom: "5px"}}>
             <img src={Clock} alt="Clock" />
             <h6 style={{fontSize: "16px", paddingLeft: "10px"}} className="no-margin">
-              {time}
+              {from_time}~{to_time}
             </h6>
           </div>
         </div>

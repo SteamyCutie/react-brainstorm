@@ -126,10 +126,10 @@
 }
 
 .btn-video-call-mic-camera {
-  border-color: #04B5FA !important;
+  border-color: white !important;
   width: 80px;
-  height: 48px;
-  background-color: #04B5FA !important;
+  height: 80px;
+  background-color: white !important;
   font-size: 15px !important;
   border-radius: 7px !important;
 }
@@ -137,10 +137,21 @@
 .btn-video-call-end {
   margin-right: 30px;
   margin-left: 30px;
-  border-color: #04B5FA !important;
-  width: 160px;
-  height: 48px;
-  background-color: #04B5FA !important;
+  border-color: #F9364D !important;
+  width: 150px;
+  height: 80px;
+  background-color: #F9364D !important;
   font-size: 15px !important;
   border-radius: 7px !important;
+}
+
+.video-call-mentor {
+  position: absolute;
+  right: 150px;
+  top: 80px;
+  border-radius: 4px;
+}
+
+.video-call-student {
+
 }

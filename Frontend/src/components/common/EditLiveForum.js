@@ -1,16 +1,19 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker } from "shards-react";
+import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import ReactNotification from 'react-notifications-component';
+import LoadingModal from "./LoadingModal";
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import { gettags, editforum, getforum } from '../../api/api';
-
+import Timelinelist from '../../common/TimelistList';
 import Close from '../../images/Close.svg'
 
 export default class EditLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
+      displayday: '',
       displayfrom: '',
       displayto: '',
       foruminfo: {
@@ -19,7 +22,8 @@ export default class EditLiveForum extends React.Component {
         description: "",
         tags: [],
         from: '',
-        to: ''
+        to: '',
+        day: ''
       },
       tags: [],
       requiremessage: {
@@ -40,6 +44,10 @@ export default class EditLiveForum extends React.Component {
   }
 
   onChangeTitle = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 30) {
+      return;
+    }
     const {foruminfo} = this.state;
     let temp = foruminfo;
     temp.title = e.target.value;
@@ -47,6 +55,10 @@ export default class EditLiveForum extends React.Component {
   }
 
   onChangeDescription = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 500) {
+      return;
+    }
     const {foruminfo} = this.state;
     let temp = foruminfo;
     temp.description = e.target.value;
@@ -91,6 +103,7 @@ export default class EditLiveForum extends React.Component {
         temp.description = result.data.data.description;
         temp.from = result.data.data.from;
         temp.to = result.data.data.to;
+        temp.day = result.data.data.day;
         this.setState({foruminfo: temp});
       } else {
         this.showFail(result.data.message);
@@ -109,6 +122,7 @@ export default class EditLiveForum extends React.Component {
       requiremessage: temp
     });
     try {
+      this.setState({loading: true});
       const result = await editforum(this.state.foruminfo);
       if (result.data.result === "success") {
         this.toggle();
@@ -131,29 +145,35 @@ export default class EditLiveForum extends React.Component {
         }
         this.showFail("Create Schedule Fail");
       }
+      this.setState({loading: false});
     } catch(err) {
+      this.setState({loading: false});
       this.showFail("Create Schedule Fail");
     };
   }
 
-  onChangeFrom = (e) => {
+  onChangeDay = (e) => {
     const {foruminfo} = this.state;
     let temp = foruminfo;
     let date = new Date(e);
-    let displayfrom = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();
-    temp.from = displayfrom;
+    let displayday = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();
+    temp.day = displayday;
     this.setState({foruminfo: temp});
-    this.setState({displayfrom: date});
+    this.setState({displayday: date});
+  };
+
+  onChangeFrom = (e) => {
+    const {foruminfo} = this.state;
+    let temp = foruminfo;
+    temp.from = e.target.value;
+    this.setState({foruminfo: temp});
   };
 
   onChangeTo = (e) => {
     const {foruminfo} = this.state;
     let temp = foruminfo;
-    let date = new Date(e);
-    let displayto = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();
-    temp.to = displayto;
+    temp.to = e.target.value;
     this.setState({foruminfo: temp});
-    this.setState({displayto: date});
   };
 
   showSuccess(text) {
@@ -194,10 +214,10 @@ export default class EditLiveForum extends React.Component {
     const { open } = this.props;
     return (
       <div>
-        <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
+        <Modal size="lg" open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Input Information</h1>
+          <h1 className="content-center modal-header-class">Schedule live forum Information</h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
             {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
@@ -207,8 +227,8 @@ export default class EditLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Description</label>
             {this.state.requiremessage.ddescription != '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
-            {this.state.requiremessage.ddescription != '' && <FormInput className="profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
-            {this.state.requiremessage.ddescription == '' && <FormInput className="profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription != '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription == '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Tags</label><br></br>
@@ -222,29 +242,35 @@ export default class EditLiveForum extends React.Component {
           <DatePicker
             md="6"
             size="lg"
-            selected={this.state.displayfrom}
-            onChange={(e) => this.onChangeFrom(e)}
-            value={this.state.foruminfo.from}
+            selected={this.state.displayday}
+            onChange={(e) => this.onChangeDay(e)}
+            value={this.state.foruminfo.day}
             placeholderText="From"
             dropdownMode="select"
             className="text-center"
           />
-          <div><label htmlFor="fePassword">To</label></div>
-          <DatePicker
-            md="6"
-            size="lg"
-            selected={this.state.displayto}
-            onChange={(e) => this.onChangeTo(e)}
-            value={this.state.foruminfo.to}
-            placeholderText="To"
-            dropdownMode="select"
-            className="text-center"
-          />
+          <div><label htmlFor="fePassword">From~To</label></div>
+          <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
+            {Timelinelist.map((item, idx) => {
+              return (
+                item.value == this.state.foruminfo.from ? <option value={item.value} selected>{item.str}</option> : <option value={item.value}>{item.str}</option>
+              );
+            })}
+          </FormSelect>
+          ~
+          <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeTo(e)}>
+            {Timelinelist.map((item, idx) => {
+              return (
+                item.value == this.state.foruminfo.to ? <option value={item.value} selected>{item.str}</option> : <option value={item.value}>{item.str}</option>
+              );
+            })}
+          </FormSelect>
           <div className="content-center block-content-class button-text-group-class">
             <Button onClick={() => this.actionEdit()}>Edit</Button>
           </div>
           </ModalBody>
         </Modal>
+        {this.state.loading && <LoadingModal open={true} />}
       </div>
     );
   }

@@ -38,6 +38,7 @@ export default class DefaultLayout extends React.Component {
       callState: 0,
       videoCallModal: 0,
       from: '',
+      to: ''
     }
 
     this.handleClick = this.handleClick.bind(this);
@@ -46,6 +47,7 @@ export default class DefaultLayout extends React.Component {
     this.webRtcPeer = null;
     this.setWebRtcPeer = this.setWebRtcPeer.bind(this);
     this.stop = this.stop.bind(this);
+    this.call = this.call.bind(this);
   }
 
   componentWillMount() {
@@ -53,7 +55,7 @@ export default class DefaultLayout extends React.Component {
       window.location.href = '/';
       return;
     }
-    var wsUri = 'wss://44.225.65.218:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com:8443/one2one';
     this.setWebsocket(wsUri);
 
     Store.addChangeListener(this.onChange);
@@ -79,8 +81,10 @@ export default class DefaultLayout extends React.Component {
 
     const { filterType, mentorUrl, studentUrl } = this.state;
 
-    if ( !filterType ) this.props.history.push(mentorUrl);
-    else this.props.history.push(studentUrl);
+    if ( !filterType ) 
+      this.props.history.push(mentorUrl);
+    else 
+      this.props.history.push(studentUrl);
   }
 
   setWebsocket(wsUri) {
@@ -136,12 +140,13 @@ export default class DefaultLayout extends React.Component {
   }
 
   register(user) {
+    if(this.state.registerState === NOT_REGISTERED) {
       var message = {
         id: 'register',
         name: user
       };
-
-    this.sendMessage(message);
+      this.sendMessage(message);
+    }
   }
 
   resgisterResponse(message) {
@@ -150,20 +155,27 @@ export default class DefaultLayout extends React.Component {
         registerState: REGISTERED
       })
     } else {
-      this.setState({
-        registerState: NOT_REGISTERED
-      })
-      var errorMessage = message.message ? message.message
-          : 'Unknown reason for register rejection.';
-      console.log(errorMessage);
+      if(message.response == 'rejected ') {
+        this.setState({
+          registerState: REGISTERED
+        })
+      } else {
+        this.setState({
+          registerState: NOT_REGISTERED
+        })
+        var errorMessage = message.message ? message.message
+            : 'Unknown reason for register rejection.';
+        console.log(errorMessage);
+      }
     }
   }
 
   callResponse(message) {
     if (message.response != 'accepted') {
-      console.info('Call not accepted by peer. Closing call');
+      // console.info('Call not accepted by peer. Closing call');
+      alert(message.message);
       var errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
-      console.log(errorMessage);
+      // console.log(errorMessage);
       this.stop(true);
     } else {
       this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
@@ -191,6 +203,7 @@ export default class DefaultLayout extends React.Component {
   }
 
   incomingCall(message) {
+    console.log("++++++++++-----------------")
     // If bussy just reject without disturbing user
     if (this.state.callState != NO_CALL) {
       var response = {
@@ -255,10 +268,14 @@ export default class DefaultLayout extends React.Component {
     }
   }
 
-  call() {
+  call(to) {
+    console.log(to, '==============++++++++++++++');
     this.setState({
-      callState: OUTGOING_CALL
+      callState: OUTGOING_CALL,
+      call: true,
+      to: to
     })
+
     // if (document.getElementById('peer').value == '') {
     //   window.alert("You must specify the peer name");
     //   return;
@@ -273,7 +290,8 @@ export default class DefaultLayout extends React.Component {
 
   stop(message) {
     this.setState({
-      callState: NO_CALL
+      callState: NO_CALL,
+      call: 0,
     });
     if (this.webRtcPeer) {
       this.webRtcPeer.dispose();
@@ -290,12 +308,12 @@ export default class DefaultLayout extends React.Component {
 
   sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
-    console.log('Sending message: ' + jsonMessage);
+    // console.log('Sending message: ' + jsonMessage);
     this.ws.send(jsonMessage);
   }
 
   onIceCandidate(candidate) {
-    console.log("Local candidate" + JSON.stringify(candidate));
+    // console.log("Local candidate" + JSON.stringify(candidate));
 
     var message = {
       id: 'onIceCandidate',
@@ -309,7 +327,9 @@ export default class DefaultLayout extends React.Component {
   }
 
   setIceCandidate(candidate) {
-    this.webRtcPeer.addIceCandidate(candidate);
+    if (this.webRtcPeer) {
+      this.webRtcPeer.addIceCandidate(candidate);
+    }
   }
 
   onError() {
@@ -320,7 +340,7 @@ export default class DefaultLayout extends React.Component {
 
   toggle_videocall() {
     this.setState({
-      videoCallModal: !this.state.videoCallModal
+      call: !this.state.call
     });
     // if(!this.state.videoCallModal) {
     //   this.videoCallModal.current.clearValidationErrors();
@@ -329,7 +349,7 @@ export default class DefaultLayout extends React.Component {
 
   toggle_modal() {
     this.setState({
-      videoCallModal: !this.state.videoCallModal,
+      call: !this.state.call,
     });
     // if(!this.state.videoCallModal) {
     //   this.videoCallModal.current.clearValidationErrors();
@@ -340,6 +360,13 @@ export default class DefaultLayout extends React.Component {
     const {videoCallModal} = this.state;
     const { children } = this.props;
     const { noFooter, noNavbar, filterType } = this.state;
+    if (children.props.location.pathname == '/trending' || children.props.location.pathname == '/recomended') {
+      children.props.location.state = {};
+      children.props.location.state.callState = this.state.callState;
+      children.props.location.state.setWebRtcPeer = this.setWebRtcPeer;
+      children.props.location.state.stop = this.stop;
+      children.props.location.state.call = this.call;
+    }
 
     return (
       <Container fluid>
@@ -356,7 +383,7 @@ export default class DefaultLayout extends React.Component {
               // this.state.call && 
               // this.state.videoCallModal && 
               // <Redirect to={{pathname: '/call'}} />
-              <VideoCall ref={this.videoCallModal} open={!this.state.videoCallModal} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} from={this.state.from} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
+              <VideoCall ref={this.videoCallModal} open={this.state.call} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
               // <VideoCall />
             }
             {!noFooter && <MainFooter />}
