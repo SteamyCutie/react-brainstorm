@@ -288,6 +288,16 @@
     border: none;
 }
 
+.btn-available-time-add-delete:disabled {
+    background-color: white !important;
+    box-shadow: none;
+    border: none;
+}
+
+.disable-event {
+    pointer-events: none;
+}
+
 .available-time-input {
     color: #333333;
     font-size: 16px;
