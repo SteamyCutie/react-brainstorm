@@ -248,20 +248,46 @@ class SessionController extends Controller
     {
         $result_res = [];
         $email = $request['email'];
-        $user = User::select('id','name', 'avatar', 'is_mentor')->where('email', $email)->first();
-        $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '1')->get();
-        $current_date = date("Y/m/d h:i:s");
+        $tag_id = $request['tag_id'];
+        $req_time = $request['time'];
+        $user = User::select('id')->where( 'email', $email)->first();
+        if ($req_time != null || $req_time != "") {
+            $from_time = trim(explode('~', $req_time)[0]);
+            $to_time = trim(explode('~', $req_time)[1]);
+        } else {
+            $from_time = "";
+            $to_time = "";
+        }
         if ($user['is_mentor'] == 0) {
-            foreach ($session_infos as $session_key => $session_info)
+            $temp1 = [];
+            $result_infos = Session::where('user_id', '!=', $user->id)->get();
+            if ($tag_id == "" || $tag_id == null) {
+                $temp1 = $result_infos;
+            } else {
+                foreach ($result_infos as $tags_key => $result_info) {
+                    $tag_array = explode(',', $result_info['tags_id']);
+                    for ($j = 0; $j < count($tag_array); $j++) {
+                        if ($tag_id == trim($tag_array[$j])){
+                            $temp1[] = $result_info;
+                            break;
+                        }
+                    }
+                }
+            }
+            foreach ($temp1 as $key => $result) {
+                if ((date('y-m-d', strtotime($result->from)) >= date('y-m-d', strtotime($from_time)))
+                    && (date('y-m-d', strtotime($result->to)) <= date('y-m-d', strtotime($to_time)))) {
+                    $result_res[] = $result;
+                }
+            }
+            foreach ($result_res as $session_key => $session_info)
             {
                 $result_from = $session_info['from'];
                 $result_to = $session_info['to'];
                 $result_tag = $session_info['tags_id'];
                 $tags_id = explode(',',$result_tag);
-
                 $result_invited = $session_info['invited_id'];
                 $invited_id = explode(',', $result_invited);
-
                 // foreach ($invited_id as $invited_key => $invited_value) {
                     $temp = [];
                     // if (trim($invited_value) == $user['id'])
@@ -270,7 +296,6 @@ class SessionController extends Controller
                         $temp['day'] = date('d/m/y', strtotime($result_from));
                         $temp['from_time'] = date('h:i a', strtotime($result_from));
                         $temp['to_time'] = date('h:i a', strtotime($result_to));
-
                         $tag_names = [];
                         foreach ($tags_id as $tag_key => $tag_value) {
                             $tags = Tag::select('name')->where('id', $tag_value)->first();
@@ -285,8 +310,19 @@ class SessionController extends Controller
                 // }
             }
         } else if ($user['is_mentor'] == 1) {
-            $user = User::select('id','name', 'avatar', 'is_mentor')->where('email', $email)->first();
-            $result_res = Session::where('user_id', $user['id'])->get();
+            $result_tags = Session::where('user_id', $user['id'])->get();
+            if ($tag_id == "" || $tag_id == null) {
+                $result_res = $result_tags;
+            } else {
+                foreach ($result_tags as $tags_key => $tags_value) {
+                    $tag_array = explode(',', $tags_value->tags_id);
+                    for ($j = 0; $j < count($tag_array); $j++) {
+                        if ($tag_id == trim($tag_array[$j])){
+                            $result_res[] = $result_tags[$tags_key];
+                        }
+                    }
+                }
+            }
 
             for ($i = 0; $i < count($result_res); $i ++) {
                 $s_year = date("Y", strtotime($result_res[$i]['from']));
@@ -320,16 +356,10 @@ class SessionController extends Controller
             }
         }
 
-        if ($result_res == []) {
-            return response()->json([
-                'result'=> 'failed',
-                'message'=> 'Session Empty',
-            ]);
-        } else {
-            return response()->json([
-                'result'=> 'success',
-                'data'=> $result_res,
-            ]);
-        }
+        return response()->json([
+            'result'=> 'success',
+            'data'=> $result_res,
+        ]);
+
     }
 }
