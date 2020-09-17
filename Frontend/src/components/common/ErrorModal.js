@@ -5,7 +5,7 @@ import "../../assets/landingpage.css"
 import DeclineImg from '../../images/call-decline.svg'
 import AcceptImg from '../../images/call-accept.svg'
 
-export default class IncomingCall extends React.Component {
+export default class ErrorModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -45,20 +45,13 @@ export default class IncomingCall extends React.Component {
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333"}}>{this.props.name} is calling to you</label>
-              </Row>
-              <Row className="center">
-                <img src={this.props.avatarURL} style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
+                <label style={{fontSize: "13px", fontWeight: "bolder", color: "#333333"}}>{this.props.message} is calling to you</label>
               </Row>
               <Row className="center btn-group-call">
-                <Button className="btn-video-call-decline" onClick={() => this.toggle(true)}>
-                  <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}}/>
-                  Decline
-                </Button>
-                <Button className="btn-video-call-accept" onClick={() => this.toggle(false)}>
-                  <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}}/>
-                  Accept
-                </Button>
+              <Button className="btn-video-call-accept" onClick={this.props.handleClick()}>
+                <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}}/>
+                Accept
+              </Button>
               </Row>
             </div>
           </ModalBody>

@@ -1,10 +1,6 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
 
-import VideoCall from "../common/VideoCall"
-import IncomingCall from "../common/IncomingCall"
-import OutcomingCall from "./OutcomingCall"
-
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Online from "../../images/Online.svg";
@@ -40,30 +36,23 @@ class MentorDetailCard extends React.Component {
   }
 
   handleAvailableNow() {
-    console.log(this.props.mentorData.email, '+++++ ======');
-    this.props.call(this.props.mentorData.email);
+    this.toggle_outcomingCall_modal();console.log(this.props.mentorData.email);
+    this.props.sendUser(this.props.mentorData.email);
   }
 
   toggle_videocall() {
     this.setState({
       videoCallModal: !this.state.videoCallModal
     });
-    // if(!this.state.videoCallModal) {
-    //   this.videoCallModal.current.clearValidationErrors();
-    // }
   }
 
   toggle_modal() {
     this.setState({
       videoCallModal: !this.state.videoCallModal,
     });
-    // if(!this.state.videoCallModal) {
-    //   this.videoCallModal.current.clearValidationErrors();
-    // }
   }
 
   handleBookCall() {
-    // alert("asdf;lkjasdf;klj");
     this.setState({
       modal_toggle: !this.state.modal_toggle
     })
@@ -79,15 +68,23 @@ class MentorDetailCard extends React.Component {
     })
   }
 
-  toggle_outcomingCall() {
+  toggle_outcomingCall_modal() {
     this.setState({
       outcomingCallToggle: !this.state.outcomingCallToggle,
     })
+    if(this.state.outcomingCallToggle) {
+
+    } else {
+      
+    }
+  }
+
+  handleDecline() {
+    this.props.onDecline();
   }
 
   render() {
     const {name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
-    const {incomingCallToggle, outcomingCallToggle} = this.state;
 
     return (
       <div className="mentor-detail-card">
@@ -140,15 +137,6 @@ class MentorDetailCard extends React.Component {
             </Button>
           </Row>
         </div>
-        {this.state.call && 
-          // this.state.call && 
-          // this.state.videoCallModal && 
-          // <Redirect to={{pathname: '/call'}} />
-          <VideoCall ref={this.videoCallModal} open={!this.state.videoCallModal} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} 
-          from={this.props.from} callState={this.props.callState} ws={this.props.ws} setWebRtcPeer={this.props.setWebRtcPeer} stop={this.props.stop}/>
-          // <VideoCall />
-        }
-        <OutcomingCall open={outcomingCallToggle} toggle={() => this.toggle_outcomingCall()} />
       </div>
     );
   }

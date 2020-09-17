@@ -7,6 +7,8 @@ import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 import VideoCall from "../components/common/VideoCall";
 import IncomingCall from "../components/common/IncomingCall"
+import OutcomingCall from "../components/common/OutcomingCall"
+import ErrorModal from "../components/common/ErrorModal"
 
 
 import { Store } from "../flux";
@@ -25,7 +27,7 @@ export default class DefaultLayout extends React.Component {
   constructor(props) {
     super(props);
 
-    this.videoCallModal = React.createRef();
+    this.outcomingRef = React.createRef();
     
     this.state = {
       noNavbar: false,
@@ -40,8 +42,11 @@ export default class DefaultLayout extends React.Component {
       videoCallModal: 0,
       from: '',
       to: '',
-      incomingCalStatus: 0,
+      incomingCallStatus: 0,
+      outcomingCallStatus: 0,
+      errorModalStatus: 0,
       message: '',
+      isAccepted: 0,
     }
 
     this.handleClick = this.handleClick.bind(this);
@@ -51,6 +56,7 @@ export default class DefaultLayout extends React.Component {
     this.setWebRtcPeer = this.setWebRtcPeer.bind(this);
     this.stop = this.stop.bind(this);
     this.call = this.call.bind(this);
+    this.setUser = this.setUser.bind(this);
   }
 
   componentWillMount() {
@@ -58,7 +64,7 @@ export default class DefaultLayout extends React.Component {
       window.location.href = '/';
       return;
     }
-    var wsUri = 'wss://44.225.65.218:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com/one2one';
     this.setWebsocket(wsUri);
 
     Store.addChangeListener(this.onChange);
@@ -173,10 +179,22 @@ export default class DefaultLayout extends React.Component {
 
   callResponse(message) {
     if (message.response != 'accepted') {
-      // console.info('Call not accepted by peer. Closing call');
-      alert(message.message);
       var errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
-      // console.log(errorMessage);
+      this.setState({
+        isAccepted: 0,
+      })
+
+      // this.outcomingRef.current.setErrMsg(message.message);
+      this.setState({
+        errorMessage: message.message,
+      })
+      this.toggle_error_modal();
+      console.log("22222222222222222222",this.state.incomingCallStatus)
+      if(this.state.incomingCallStatus) {
+        console.log("1111111111111111111")
+        this.toggle_incomingCall_modal();
+      }
+
       this.stop(true);
     } else {
       this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
@@ -188,6 +206,10 @@ export default class DefaultLayout extends React.Component {
       //   call: true,
       //   sdpAnswer: message.sdpAnswer
       // })
+      this.setState({
+        isAccepted: 1,
+      })
+      this.toggle_outcomingCall_modal();
     }
   }
 
@@ -204,7 +226,6 @@ export default class DefaultLayout extends React.Component {
   }
 
   incomingCall(message) {
-    console.log("++++++++++-----------------")
     // If bussy just reject without disturbing user
     if (this.state.callState != NO_CALL) {
       var response = {
@@ -218,7 +239,7 @@ export default class DefaultLayout extends React.Component {
     }
 
     this.setState({
-      message: message,
+      from: message.from,
     })
 
     // that.ring = INCOMING_RING;
@@ -232,35 +253,35 @@ export default class DefaultLayout extends React.Component {
     //     from: message.from
     //   })
       
-      this.toggle_incomingCall_modal(message)
+    this.toggle_incomingCall_modal(message)
 
-      // var options = {
-      //   localVideo: videoInput,
-      //   remoteVideo: videoOutput,
-      //   onicecandidate: onIceCandidate
-      // }
+    // var options = {
+    //   localVideo: videoInput,
+    //   remoteVideo: videoOutput,
+    //   onicecandidate: onIceCandidate
+    // }
 
-      // webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
-      //   function (error) {
-      //     if (error) {
-      //       console.error(error);
-      //       setCallState(NO_CALL);
-      //     }
+    // webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
+    //   function (error) {
+    //     if (error) {
+    //       console.error(error);
+    //       setCallState(NO_CALL);
+    //     }
 
-      //     this.generateOffer(function (error, offerSdp) {
-      //       if (error) {
-      //         console.error(error);
-      //         setCallState(NO_CALL);
-      //       }
-      //       var response = {
-      //         id: 'incomingCallResponse',
-      //         from: message.from,
-      //         callResponse: 'accept',
-      //         sdpOffer: offerSdp
-      //       };
-      //       sendMessage(response);
-      //     });
-      //   });
+    //     this.generateOffer(function (error, offerSdp) {
+    //       if (error) {
+    //         console.error(error);
+    //         setCallState(NO_CALL);
+    //       }
+    //       var response = {
+    //         id: 'incomingCallResponse',
+    //         from: message.from,
+    //         callResponse: 'accept',
+    //         sdpOffer: offerSdp
+    //       };
+    //       sendMessage(response);
+    //     });
+    //   });
 
     // } else {
     //   var response = {
@@ -275,12 +296,15 @@ export default class DefaultLayout extends React.Component {
   }
 
   call(to) {
-    console.log(to, '==============++++++++++++++');
+    // console.log(to, '1111111111111111111111111');
     this.setState({
       callState: OUTGOING_CALL,
       call: true,
-      to: to
+      to: to,
+      callResponseSate: 0,
+      outcomingCallStatus: 0,
     })
+    this.toggle_outcomingCall_modal();
 
     // if (document.getElementById('peer').value == '') {
     //   window.alert("You must specify the peer name");
@@ -290,14 +314,15 @@ export default class DefaultLayout extends React.Component {
     // setCallState(PROCESSING_CALL);
 
     // showSpinner(videoInput, videoOutput);
-
-
   }
 
   stop(message) {
     this.setState({
       callState: NO_CALL,
+      incomingCallStatus: 0,
+      outcomingCallStatus: 0,
       call: 0,
+      isAccepted: 0,
     });
     if (this.webRtcPeer) {
       this.webRtcPeer.dispose();
@@ -314,13 +339,10 @@ export default class DefaultLayout extends React.Component {
 
   sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
-    // console.log('Sending message: ' + jsonMessage);
     this.ws.send(jsonMessage);
   }
 
   onIceCandidate(candidate) {
-    // console.log("Local candidate" + JSON.stringify(candidate));
-
     var message = {
       id: 'onIceCandidate',
       candidate: candidate
@@ -348,36 +370,73 @@ export default class DefaultLayout extends React.Component {
     this.setState({
       call: !this.state.call
     });
-    // if(!this.state.videoCallModal) {
-    //   this.videoCallModal.current.clearValidationErrors();
-    // }
-  }
 
-  toggle_modal() {
-    this.setState({
-      call: !this.state.call,
-    });
-    // if(!this.state.videoCallModal) {
-    //   this.videoCallModal.current.clearValidationErrors();
-    // }
+    if(!this.state.call) {
+      this.setState({
+        incomingCallStatus: 0,
+        outcomingCallStatus: 0,
+      })
+    }
   }
 
   toggle_incomingCall_modal(message) {
     this.setState({
       message: message,
-      incomingCalStatus: !this.state.incomingCalStatus,
+      incomingCallStatus: !this.state.incomingCallStatus,
     })
   }
 
-  handleDecline() {
+  toggle_outcomingCall_modal(message) {
+    this.setState({
+      message: message,
+      outcomingCallStatus: !this.state.outcomingCallStatus,
+    })
+  }
+
+  toggle_error_modal() {
+    // this.setState({
+    //   // message: message,
+    //   errorModalStatus: !this.state.errorModalStatus,
+    // })
+
+    if(this.state.outcomingCallStatus) {
+      this.toggle_outcomingCall_modal()
+    } else {
+      // this.toggle_incomingCall_modal()
+    }
+  }
+
+  incomingCallDecline() {
     var response = {
       id: 'incomingCallResponse',
-      from: this.state.message.from,
+      from: this.state.from,
       callResponse: 'reject',
       message: 'user declined'
     };
+
+    this.setState({
+      incomingCallStatus: 0,
+    })
+
     this.sendMessage(response);
-    this.toggle_incomingCall_modal();
+    // this.toggle_incomingCall_modal();
+    this.stop(true);
+  }
+
+  outcomingCallDecline() {
+    var response = {
+      id : 'incomingCallResponse',
+      to : this.state.to,
+      callResponse : 'reject',
+      // message : ''
+    };
+
+    this.setState({
+      outcomingCallStatus: 0,
+      isAccepted: 0,
+    })
+    this.sendMessage(response);
+    this.toggle_outcomingCall_modal();
     this.stop(true);
   }
 
@@ -392,8 +451,18 @@ export default class DefaultLayout extends React.Component {
     this.toggle_videocall()
   }
 
+  setUser(user) {
+    this.setState({
+      to: user,
+      outcomingCallStatus: 0,
+      incomingCallStatus: 0,
+      call: 0,
+    })
+    this.call(user);
+  }
+
   render() {
-    const {videoCallModal, incomingCalStatus} = this.state;
+    const { incomingCallStatus, outcomingCallStatus, errorModalStatus} = this.state;
     
     const { children } = this.props;
     const { noFooter, noNavbar, filterType } = this.state;
@@ -403,6 +472,7 @@ export default class DefaultLayout extends React.Component {
       children.props.location.state.setWebRtcPeer = this.setWebRtcPeer;
       children.props.location.state.stop = this.stop;
       children.props.location.state.call = this.call;
+      children.props.location.state.setUser = this.setUser;
     }
 
     return (
@@ -417,15 +487,17 @@ export default class DefaultLayout extends React.Component {
             {filterType && <SubMainNavbar/>}
             {children}
             {this.state.call && 
-              // this.state.call && 
-              // this.state.videoCallModal && 
-              // <Redirect to={{pathname: '/call'}} />
-              <VideoCall ref={this.videoCallModal} open={this.state.call} toggle={() => this.toggle_videocall()} toggle_modal={() => this.toggle_modal()} from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
-              // <VideoCall />
+              <VideoCall 
+                open={this.state.callState == INCOMING_CALL ? this.state.call : (this.state.call && this.state.isAccepted)} 
+                toggle={() => this.toggle_videocall()}
+                from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
             }
             {!noFooter && <MainFooter />}
-            <IncomingCall open={incomingCalStatus} toggle={() => this.toggle_incomingCall_modal()} 
-              onAccept={() => this.handleAccept()} onDecline={() => this.handleDecline()} name={this.state.from}/>
+            <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} 
+              onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.from}/>
+            <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
+              onDecline={() => this.outcomingCallDecline()} name={this.state.to}/>
+            
           </Col>
         </Row>
       </Container>
