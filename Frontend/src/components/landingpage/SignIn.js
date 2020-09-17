@@ -42,11 +42,6 @@ export default class SignIn extends React.Component {
     toggle();
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
-  }
-
   onChangeEmail = (e) => {
     this.setState({
       email: e.target.value,
@@ -189,7 +184,7 @@ export default class SignIn extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
-              <p>Don't have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign up</a></p>
+              <p>Don't have an account?&nbsp;<a href="#" onClick={() => this.toggle()}>Sign up</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />

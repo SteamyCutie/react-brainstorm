@@ -146,12 +146,6 @@ export default class StudentWallet extends React.Component {
     });
   }
 
-  toggle_modal() {
-    this.setState({
-      ModalOpen: !this.state.ModalOpen,
-    });
-  }
-
   addNewCard() {
 
   }
@@ -160,7 +154,7 @@ export default class StudentWallet extends React.Component {
     const {paymentCard, tHistory, columns, ModalOpen} = this.state;
     return (
       <>
-        <AddNewCard open={ModalOpen} toggle={() => this.toggle_add()} toggle_modal={() => this.toggle_modal()}></AddNewCard>
+        <AddNewCard open={ModalOpen} toggle={() => this.toggle_add()} ></AddNewCard>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col className="page-title">

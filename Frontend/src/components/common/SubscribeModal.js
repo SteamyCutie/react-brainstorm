@@ -37,11 +37,6 @@ export default class SubscribeModal extends React.Component {
     toggle();    
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
-  }
-
   handleSubscribe = async(mentor_id, sub_plan_fee) => {
     let param = {
       email: localStorage.getItem('email'),
@@ -130,6 +125,7 @@ export default class SubscribeModal extends React.Component {
 
   render() {
     const { open, item } = this.props;
+    const { loading, paymentCard } = this.state;
     return (
       <div>
         <ReactNotification />
@@ -143,7 +139,7 @@ export default class SubscribeModal extends React.Component {
             </div>
             <div className="subscribe-card-container">
             <h5 style={{float: "left", fontSize: "16px", fontWeight: "bold", color: "#333333", paddingBottom: "10px"}}>Choose card</h5>
-              {this.state.paymentCard.map((card, idx) => (
+              {paymentCard.map((card, idx) => (
                 <SmallCardPaymentSubscribe
                   key={idx}
                   type={card.type}
@@ -160,7 +156,7 @@ export default class SubscribeModal extends React.Component {
             </div>
           </ModalBody>
         </Modal>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
       </div>
     );
   }

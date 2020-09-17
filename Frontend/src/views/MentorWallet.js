@@ -151,17 +151,18 @@ export default class MentorWallet extends React.Component {
   }
 
   render() {
+    const {loading, tHistory, columns, smallCards} = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
-      <ReactNotification />
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
           </Row>
 
           <Row>
-            {this.state.smallCards.map((card, idx) => (
+            {smallCards.map((card, idx) => (
               <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
                 <SmallCard
                   id={idx}
@@ -174,7 +175,7 @@ export default class MentorWallet extends React.Component {
 
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">
-              <CustomDataTable title="Transaction history" data={this.state.tHistory} header={this.state.columns}/>
+              <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
             </Col>
           </Row>
         </Container>
