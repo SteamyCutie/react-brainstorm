@@ -17,9 +17,8 @@ class CreateSubscriptionsTable extends Migration
             $table->id();
             $table->integer('mentor_id');
             $table->integer('student_id');
-            $table->float('sub_plane_fee')->nullable();
-            $table->integer('status')->nullable();
-            $table->integer('card_type')->nullable();
+            $table->float('sub_plan_fee')->nullable();
+            $table->string('card_type')->nullable();
             $table->timestamps();
         });
     }
