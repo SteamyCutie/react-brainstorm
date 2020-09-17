@@ -75,12 +75,6 @@ class MentorDetailCard extends React.Component {
     });
   }
 
-  toggle_modalreview() {
-    this.setState({
-      ModalOpenReview: !this.state.ModalOpenReview,
-    });
-  }
-
   readMore() {
     this.setState({more: true});
   }
@@ -90,11 +84,11 @@ class MentorDetailCard extends React.Component {
   }
 
   render() {
-    const {id, name, score, avatar, tag_name, online, description, hourly_price, instant_call, video_url} = this.props.mentorData;
+    const {id, name, avatar, tag_name, online, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
     const {ModalOpenReview} = this.state;
     return (
       <div className="mentor-detail-card">
-        <MentorReview mentorid={id} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()} toggle_modal={() => this.toggle_modalreview()}></MentorReview>
+        <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview>
         <div style={{position: "relative"}} className="mentor-detail-avatar">
             {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
             {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
@@ -105,7 +99,7 @@ class MentorDetailCard extends React.Component {
         <div className="mentor-detail-desc">
           <Row className="metor-detail-name-score">
             <div className="mentor-detail-name">{name}</div>
-            <div><img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>{score}</div>
+            <div><img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>{average_mark}</div>
           </Row>
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>

@@ -13,23 +13,24 @@ class Review extends React.Component {
   }
 
   render() {
+    const {item} = this.props;
     return (
       <div className="subscription-review">
         <div className="subscription-review-desc">
           <div style={{display: "flex", float: "left"}}>
-            <img src={ReivewImage} className="subscription-review-avatar" alt="avatar" />
+            <img src={item.student.avatar} className="subscription-review-avatar" alt="avatar" />
             <div>
-              <h6 className="subscription-review-name">Kaylynn Curtis</h6>
+              <h6 className="subscription-review-name">{item.student.name}</h6>
               <h6 className="subscription-review-date">1 day ago</h6>
             </div>
           </div>
           <div className="review-score" style={{float: "right"}}>
             <img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>
-            <h6 style={{paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333"}}>4.8</h6>
+            <h6 style={{paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333"}}>{item.review.mark}</h6>
           </div>
         </div>
         <div className="review-text">
-            Lorem ipsum dolor sit amet, sollicitudin nec dapibus molestie risus eleifend augue, justo dui et est a pharetra, ut nullam gravida sed amet.
+          {item.review.review}
         </div>
       </div>
     );

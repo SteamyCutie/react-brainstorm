@@ -118,9 +118,10 @@ export default class MySharePage extends React.Component {
   }
 
   render() {
+    const {userInfo, infoList, loading} = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
+      {loading && <LoadingModal open={true} />}
       <ReactNotification />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Row noGutters className="page-header py-4">
@@ -133,12 +134,12 @@ export default class MySharePage extends React.Component {
               <Row>
                 <Col xl="3" className="subscription-mentor-detail">
                   <div>
-                    {this.state.userInfo.avatar && <img className="avatar" src={this.state.userInfo.avatar} alt="avatar"/>}
-                    {!this.state.userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
+                    {userInfo.avatar && <img className="avatar" src={userInfo.avatar} alt="avatar"/>}
+                    {!userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
                     <div style={{display: "flex", padding: "20px 0px"}}>
                       <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
                       <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                      <h6 className="no-margin"style={{fontWeight: "bold"}}>0</h6>
+                      <h6 className="no-margin"style={{fontWeight: "bold"}}>{userInfo.sub_count}</h6>
                     </div>
                   </div>
                 </Col>
@@ -147,7 +148,7 @@ export default class MySharePage extends React.Component {
                     <a href="#!" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
                     <a href="#!">www.brainsshare.com/kiannapress</a>
                   </h6>
-                  {this.state.infoList.map((item, idx) => 
+                  {infoList.map((item, idx) => 
                     <MentorVideo key={idx} item={item} />
                   )}
                 </Col>

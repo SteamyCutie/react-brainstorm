@@ -62,7 +62,7 @@ export default class Subscriptions extends React.Component {
           selector: 'edit',
           sortable: false,
           center: true,
-          cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? "Unsubscribe" : "Resubscribe"}</div>,
+          cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? <a href="#!">Unsubscribe</a> : <a href="#!">Resubscribe</a>}</div>,
         }
       ]
     };
@@ -74,7 +74,7 @@ export default class Subscriptions extends React.Component {
 
   handleClick(id) {
     const { history } = this.props;
-    history.push('/unsubscribe-specific/' + id);
+    history.push('/subscribe-specific/' + id);
   }
 
   getMentors = async() => {
@@ -168,14 +168,15 @@ export default class Subscriptions extends React.Component {
   }
 
   render() {
+    const {loading, mentors, columns} = this.state;
     return (
       <>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row className="wallet-data-table-class py-4">
             <Col lg="12" md="12" sm="12">
-              <SubscriptionTable data={this.state.mentors} header={this.state.columns}/>
+              <SubscriptionTable data={mentors} header={columns}/>
             </Col>
           </Row>
         </Container>

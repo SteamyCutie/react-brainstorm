@@ -170,7 +170,7 @@ export default class StudentSession extends React.Component {
                 Date:
               </label>
               <FormSelect style={{height: "30px", width: "200px", marginRight: "10px"}} onChange={(e) => this.onChangeDate(e)}>
-                <option>Select Date</option>
+                <option value="">Select Date</option>
                 {weekList.map((item, idx) =>
                   <option key={idx}>{item}</option>
                 )}
@@ -185,7 +185,7 @@ export default class StudentSession extends React.Component {
                 Category:
               </label>
               <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}} onChange={(e) => this.onChangeTags(e)}>
-                <option value="0">Select category</option>
+                <option value="">Select category</option>
                 {tags.map((item, idx) =>
                   <option key={idx} value={item.id}>{item.name}</option>
                 )}

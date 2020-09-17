@@ -1135,3 +1135,24 @@ body {
     color: #999999;
     padding: .9375rem 1.5625rem;
 }
+
+.invited-student-logo {
+    margin-right: 20px;
+    width: 70px;
+    border-radius: 50%;
+}
+
+.invited-student-desc {
+    color: #333333;
+    padding-left: 10px;
+    display: grid;
+    justify-content: left;
+    align-items: left;
+    width: 250px;
+}
+
+.invited-student-desc-desc {
+    color: #333333;
+    font-size: 14px !important;
+    text-align: left;
+}

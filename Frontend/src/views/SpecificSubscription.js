@@ -35,9 +35,9 @@ const SpecificSubscription = ({ subscriptionList, columns }) => (
             </div>
           </Col>
           <Col xl="9" lg="12" className="subscription-mentor-videos">
+            {/* <MentorVideo />
             <MentorVideo />
-            <MentorVideo />
-            <MentorVideo />
+            <MentorVideo /> */}
           </Col>
         </Row>
       </CardBody>
