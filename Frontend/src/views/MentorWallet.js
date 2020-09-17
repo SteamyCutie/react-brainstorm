@@ -143,6 +143,13 @@ export default class MentorWallet extends React.Component {
     });
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   render() {
     return (
       <>

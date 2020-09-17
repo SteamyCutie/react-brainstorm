@@ -79,10 +79,10 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   render() {
-    const { ModalOpen } = this.state;
+    const { ModalOpen, loading, forumInfos } = this.state;
     return (
       <div>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <CreateLiveForum open={ModalOpen} toggle={() => this.toggle_createliveforum()} toggle_modal={() => this.toggle_modal()}></CreateLiveForum>
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
@@ -93,7 +93,7 @@ export default class ScheduleLiveForum extends React.Component {
             </CardHeader>
             <CardBody>
               <Row>
-                {this.state.forumInfos.map((item, idx) => 
+                {forumInfos.map((item, idx) => 
                   <Col key={idx} xl="4" lg="4" sm="6">
                     <SmallCardForum key={idx} item={item} />
                   </Col>

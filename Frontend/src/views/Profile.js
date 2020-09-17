@@ -1,4 +1,5 @@
 import React from "react";
+import MultiSelect from "react-multi-select-component";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -17,6 +18,7 @@ export default class MySharePage extends React.Component {
     this.myRef = React.createRef();
 
     this.state = {
+      selectedTags: [],
       tags: [],
       loading: false,
       displaydate: '',
@@ -85,12 +87,26 @@ export default class MySharePage extends React.Component {
         temp.instantcall = result.data.data.instant_call;
         temp.is_mentor = result.data.data.is_mentor;
         temp.tags = result.data.data.tags;
+
+        let param1 = {
+          label: '',
+          value: 0
+        };
+
+        let params = [];
+        for (var i = 0; i < result.data.data.tags.length; i ++) {
+          param1.label = result.data.data.tags_name[i].trim();
+          param1.value = parseInt(result.data.data.tags[i].trim());
+          params.push(param1);
+          param1 = {};
+        }
         this.setState({
           param: temp,
           displaygethourlyprice: (parseFloat(result.data.data.hourly_price)*0.8).toFixed(2),
           displaycuthourlyprice: (parseFloat(result.data.data.hourly_price)*0.2).toFixed(2),
           displaygetplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.8).toFixed(2),
           displaycutplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.2).toFixed(2),
+          selectedTags: params
         });
       } else {
         this.showFail(result.data.message);
@@ -110,7 +126,20 @@ export default class MySharePage extends React.Component {
     try {
       const result = await gettags();
       if (result.data.result === "success") {
-        this.setState({tags: result.data.data});
+        let param = {
+          label: '',
+          value: ''
+        };
+
+        let params = [];
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          param.label = result.data.data[i].name;
+          param.value = result.data.data[i].id;
+          params.push(param);
+          param = {};
+        }
+        this.setState({tags: params});
       } else {
         this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
@@ -124,28 +153,42 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeTags = (e) => {
-    const {param} = this.state;
-    let temp = param;
+    const {selectedTags} = this.state;
+    let temp = selectedTags;
+    temp = e;
+    this.setState({selectedTags: temp});
 
-    if (temp.tags.indexOf(e.target.value) === -1)    
-      temp.tags.push(e.target.value);
-    else {
-      var index = temp.tags.indexOf(e.target.value);
-      if (index > -1)
-        temp.tags.splice(index, 1);
+    if (e.length > 0) {
+      let tag = e[e.length - 1].value;
+      const {param} = this.state;
+      let temp1 = param;
+
+      if (temp1.tags.indexOf(tag) === -1)    
+        temp1.tags.push(tag);
+      else {
+        var index = temp1.tags.indexOf(tag);
+        if (index > -1)
+          temp1.tags.splice(index, 1);
+      }
+      this.setState({param: temp1});
+    } else {
+      const {param} = this.state;
+      let temp1 = param;
+
+      temp1.tags = [];
+      this.setState({param: temp1});
     }
-    this.setState({param: temp});
   }
 
   onChangeUser = (e) => {
     const {param} = this.state;
     let temp = param;
-    temp.is_mentor = !this.state.param.is_mentor;
+    temp.is_mentor = !param.is_mentor;
     this.setState({param: temp});
   }
 
   actionSave = async() => {
-    const {requiremessage} = this.state;
+    const {requiremessage, param} = this.state;
     let temp = requiremessage;
     temp.dname = '';
     temp.demail = '';
@@ -159,11 +202,11 @@ export default class MySharePage extends React.Component {
     });
     try {
       this.setState({loading: true});
-      const result = await editprofile(this.state.param);
+      const result = await editprofile(param);
       if (result.data.result === "success") {
         this.setState({loading: false});
         this.showSuccess("Edit Profile Success");
-        localStorage.setItem('user-type', this.state.param.is_mentor);
+        localStorage.setItem('user-type', param.is_mentor);
       } else {
         if (result.data.type === "require") {
           const {requiremessage} = this.state;
@@ -309,7 +352,7 @@ export default class MySharePage extends React.Component {
   onChangeInstantCall = (e) => {
     const {param} = this.state;
     let temp = param;
-    temp.instantcall = !this.state.param.instantcall;
+    temp.instantcall = !param.instantcall;
     this.setState({param: temp});
   }
 
@@ -378,10 +421,18 @@ export default class MySharePage extends React.Component {
     });
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   render() {
+    const { selectedTags, tags, param, requiremessage, loading, displaydate, displaycuthourlyprice, displaycutplanfee, displaygethourlyprice, displaygetplanfee } = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
+      {loading && <LoadingModal open={true} />}
       <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="profile-setting-card">
@@ -391,8 +442,8 @@ export default class MySharePage extends React.Component {
                 <div>
                   <h2>Profile Setting</h2>
                   <div className="avatar-tooltip">
-                    {this.state.param.avatar && <img className="avatar" src={this.state.param.avatar} alt="avatar" onClick={() => this.onDrop()} />}
-                    {!this.state.param.avatar && <img className="avatar" src={avatar} alt="avatar" onClick={() => this.onDrop()} />}
+                    {param.avatar && <img className="avatar" src={param.avatar} alt="avatar" onClick={() => this.onDrop()} />}
+                    {!param.avatar && <img className="avatar" src={avatar} alt="avatar" onClick={() => this.onDrop()} />}
                     <span className="avatar-tooltiptext">Change your avatar</span>
                   </div>
                   <input type="file" hidden ref={this.myRef} onChange={(e) => this.onChangeAvatar(e)}></input>
@@ -400,7 +451,7 @@ export default class MySharePage extends React.Component {
               </Col>
               <Col xl="9" lg="12" className="profile-setting-detail">
                 <div className="right">
-                  {this.state.param.instantcall ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
+                  {param.instantcall ? <FormCheckbox toggle checked className="instant-call-toggle" onChange={(e) => this.onChangeInstantCall(e)}>
                     <img src={Icon} alt="icon" style={{paddingRight: "5px", paddingBottom: "5px"}}/>
                     Instant call
                     <img src={Tooltip} alt="icon" style={{paddingLeft: "5px", paddingBottom: "5px"}}/>
@@ -417,18 +468,18 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Full Name</label>
-                            {this.state.requiremessage.dname !== '' && <span className="require-message">{this.state.requiremessage.dname}</span>}
-                            {this.state.requiremessage.dname !== '' && <FormInput className="profile-detail-input" placeholder="Full Name" autoFocus="1" invalid onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
-                            {this.state.requiremessage.dname === '' && <FormInput className="profile-detail-input" placeholder="Full Name" autoFocus="1" onChange={(e) => this.onChangeFullName(e)} value={this.state.param.name}/>}
+                            {requiremessage.dname !== '' && <span className="require-message">{requiremessage.dname}</span>}
+                            {requiremessage.dname !== '' && <FormInput className="profile-detail-input" placeholder="Full Name" autoFocus="1" invalid onChange={(e) => this.onChangeFullName(e)} value={param.name}/>}
+                            {requiremessage.dname === '' && <FormInput className="profile-detail-input" placeholder="Full Name" autoFocus="1" onChange={(e) => this.onChangeFullName(e)} value={param.name}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <div><label htmlFor="fePassword">Date of birth</label></div>
                             <DatePicker
                               md="6"
                               size="lg"
-                              selected={this.state.displaydate}
+                              selected={displaydate}
                               onChange={(e) => this.onChangeBirthDay(e)}
-                              value={this.state.param.birthday}
+                              value={param.birthday}
                               placeholderText="Date of birth"
                               dropdownMode="select"
                               className="text-center"
@@ -438,16 +489,16 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Email</label>
-                            {this.state.requiremessage.demail !== '' && <span className="require-message">{this.state.requiremessage.demail}</span>}
-                            {this.state.requiremessage.demail !== '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
-                            {this.state.requiremessage.demail === '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={this.state.param.email}/>}
+                            {requiremessage.demail !== '' && <span className="require-message">{requiremessage.demail}</span>}
+                            {requiremessage.demail !== '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" invalid onChange={(e) => this.onChangeEmail(e)} value={param.email}/>}
+                            {requiremessage.demail === '' && <FormInput className="profile-detail-input" id="email" type="email" placeholder="Email" onChange={(e) => this.onChangeEmail(e)} value={param.email}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feInputState" className="profile-detail-important" >Expertise</label>
-                            {this.state.requiremessage.dexpertise !== '' && <span className="require-message">{this.state.requiremessage.dexpertise}</span>}
+                            {requiremessage.dexpertise !== '' && <span className="require-message">{requiremessage.dexpertise}</span>}
                             <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeExpertise(e)}>
                               {expertise.map((item, index) =>
-                                item.value === this.state.param.expertise ? <option value={item.value} selected>{item.name}</option> : <option value={item.value}>{item.name}</option>
+                                item.value === param.expertise ? <option value={item.value} selected>{item.name}</option> : <option value={item.value}>{item.name}</option>
                               )}
                             </FormSelect>
                           </Col>
@@ -455,44 +506,44 @@ export default class MySharePage extends React.Component {
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Hourly price</label>
-                            {this.state.requiremessage.dhourlyprice !== '' && <span className="require-message">{this.state.requiremessage.dhourlyprice}</span>}
-                            {this.state.requiremessage.dhourlyprice !== '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" invalid onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
-                            {this.state.requiremessage.dhourlyprice === '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={this.state.param.hourlyprice}/>}
+                            {requiremessage.dhourlyprice !== '' && <span className="require-message">{requiremessage.dhourlyprice}</span>}
+                            {requiremessage.dhourlyprice !== '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" invalid onChange={(e) => this.onChangeHourlyPrice(e)} value={param.hourlyprice}/>}
+                            {requiremessage.dhourlyprice === '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={param.hourlyprice}/>}
                             <label className="profile-detail-comment">
-                              <span>You get 80% of your price. ({this.state.displaygethourlyprice} $)</span><br></br>
-                              Remaining 20% goes to admin. ({this.state.displaycuthourlyprice} $)
+                              <span>You get 80% of your price. ({displaygethourlyprice} $)</span><br></br>
+                              Remaining 20% goes to admin. ({displaycuthourlyprice} $)
                             </label>
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Video url</label>
-                            {this.state.requiremessage.videourl !== '' && <span className="require-message">{this.state.requiremessage.videourl}</span>}
-                            {this.state.requiremessage.videourl !== '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" invalid onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
-                            {this.state.requiremessage.videourl === '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={this.state.param.videourl}/>}
+                            {requiremessage.videourl !== '' && <span className="require-message">{requiremessage.videourl}</span>}
+                            {requiremessage.videourl !== '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" invalid onChange={(e) => this.onChangeVideoUrl(e)} value={param.videourl}/>}
+                            {requiremessage.videourl === '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={param.videourl}/>}
                           </Col>
                         </Row>
                         <Row form>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="feEmailAddress" className="profile-detail-important">Subscription Page Name</label>
-                            {this.state.requiremessage.dsubpagename !== '' && <span className="require-message">{this.state.requiremessage.dsubpagename}</span>}
-                            {this.state.requiremessage.dsubpagename !== '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" invalid onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
-                            {this.state.requiremessage.dsubpagename === '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={this.state.param.subpagename}/>}
+                            {requiremessage.dsubpagename !== '' && <span className="require-message">{requiremessage.dsubpagename}</span>}
+                            {requiremessage.dsubpagename !== '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" invalid onChange={(e) => this.onChangeSubPageName(e)} value={param.subpagename}/>}
+                            {requiremessage.dsubpagename === '' && <FormInput className="profile-detail-input no-margin" placeholder="Subscription Page Name" onChange={(e) => this.onChangeSubPageName(e)} value={param.subpagename}/>}
                           </Col>
                           <Col md="6" className="project-detail-input-group">
                             <label htmlFor="fePassword" className="profile-detail-important">Subscription plan fee</label>
-                            {this.state.requiremessage.dsubplanfee !== '' && <span className="require-message">{this.state.requiremessage.dsubplanfee}</span>}
-                            {this.state.requiremessage.dsubplanfee !== '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" invalid onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
-                            {this.state.requiremessage.dsubplanfee === '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={this.state.param.subplanfee}/>}
+                            {requiremessage.dsubplanfee !== '' && <span className="require-message">{requiremessage.dsubplanfee}</span>}
+                            {requiremessage.dsubplanfee !== '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" invalid onChange={(e) => this.onChangeSubPlanFee(e)} value={param.subplanfee}/>}
+                            {requiremessage.dsubplanfee === '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Subscription plan fee" onChange={(e) => this.onChangeSubPlanFee(e)} value={param.subplanfee}/>}
                             <label className="profile-detail-comment">
-                              <span>You get 80% of your price. ({this.state.displaygetplanfee} $)</span><br></br>
-                              Remaining 20% goes to admin. ({this.state.displaycutplanfee} $)
+                              <span>You get 80% of your price. ({displaygetplanfee} $)</span><br></br>
+                              Remaining 20% goes to admin. ({displaycutplanfee} $)
                             </label>
                           </Col>
                         </Row>
                         <Row form>
                           <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
-                          <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={this.state.param.description}/>
+                          <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={param.description}/>
                         </Row>
-                        {this.state.param.is_mentor ? 
+                        {param.is_mentor ? 
                           <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
                           <FormCheckbox toggle checked className="instant-call-toggle custom-toggle" onChange={(e) => this.onChangeUser(e)}>
                           </FormCheckbox><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span> : 
@@ -501,16 +552,17 @@ export default class MySharePage extends React.Component {
                           <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
                           </FormCheckbox>
                           <span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span>}
-                        <Row form>
-                          <Col className="col-md-12 col-xs-12 col-lg-12 project-detail-input-group">
-                            <div><label htmlFor="feEmail">Tags</label></div>
-                            {this.state.tags.map((item, idx) => {
-                              var index = this.state.param.tags.findIndex((value) => item.id === value)
-                              return index > -1 ? <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" checked value={this.state.param.tags[index]} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox> : 
-                                <FormCheckbox inline className="col-md-2 col-xs-2 col-lg-2" value={item.id} onChange={(e) => this.onChangeTags(e)}>{item.name}</FormCheckbox>;
-                            })}
-                          </Col>
-                        </Row>
+                        {param.is_mentor ? 
+                        <>
+                          <div><label htmlFor="fePassword">Tags</label></div>
+                          <MultiSelect
+                            options={tags}
+                            value={selectedTags}
+                            onChange={(e) => this.onChangeTags(e)}
+                            labelledBy={"Select"}
+                          />
+                        </> : <></>
+                        }
                         <Row className="profile-detail-save center">
                           <Button className="btn-profile-detail-save" onClick={() => this.actionSave()}>Save</Button>
                         </Row>

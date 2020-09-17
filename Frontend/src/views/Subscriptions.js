@@ -62,7 +62,7 @@ export default class Subscriptions extends React.Component {
           selector: 'edit',
           sortable: false,
           center: true,
-          cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? "Unsubscribe" : "Resubscribe"}</div>,
+          cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? <a href="#!">Unsubscribe</a> : <a href="#!">Resubscribe</a>}</div>,
         }
       ]
     };
@@ -74,7 +74,7 @@ export default class Subscriptions extends React.Component {
 
   handleClick(id) {
     const { history } = this.props;
-    history.push('/unsubscribe-specific/' + id);
+    history.push('/subscribe-specific/' + id);
   }
 
   getMentors = async() => {

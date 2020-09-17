@@ -2,6 +2,12 @@ import React from "react";
 import { Button, Modal, ModalBody } from "shards-react";
 import "../../assets/landingpage.css"
 import SmallCardPaymentSubscribe from "../common/SmallCardPaymentSubscribe"
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import LoadingModal from "./LoadingModal";
+import { store } from 'react-notifications-component';
+
+import { subscribe } from '../../api/api';
 import Close from '../../images/Close.svg'
 
 export default class SubscribeModal extends React.Component {
@@ -41,27 +47,92 @@ export default class SubscribeModal extends React.Component {
       email: localStorage.getItem('email'),
       mentor_id: mentor_id,
       sub_plan_fee: sub_plan_fee,
-      type: 'visa'
+      card_type: 'visa'
     }
     try {
       this.setState({loading: true});
-      // const result = await subscribe(param);
-      // if (result.data.result == "success") {
-      // } else {
-      // }
+      const result = await subscribe(param);
+      if (result.data.result === "success") {
+        this.showSuccess("Create Schedule Success");
+        this.props.actionSuccess();
+        this.toggle();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Subscription already registered!") {
+          this.showWarning(result.data.message);
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
+      this.showFail("Something Went wrong");
     };
   }
 
   changeCard(type) {
   }
 
+  showSuccess(text) {
+    store.addNotification({
+      title: "Success",
+      message: text,
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
     const { open, item } = this.props;
     return (
       <div>
+        <ReactNotification />
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" alt="Close Image"/></Button>
           <ModalBody className="subscribe-modal">
@@ -89,6 +160,7 @@ export default class SubscribeModal extends React.Component {
             </div>
           </ModalBody>
         </Modal>
+        {this.state.loading && <LoadingModal open={true} />}
       </div>
     );
   }

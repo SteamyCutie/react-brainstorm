@@ -100,6 +100,8 @@ export default class MentorSession extends React.Component {
         var arr = {
           id: '',
           title: '',
+          name: '',
+          mentor_name: '',
           noOfPax: '',
           isBooked: '',
           start: 0,
@@ -109,6 +111,8 @@ export default class MentorSession extends React.Component {
         for (var i = 0; i < result.data.data.length; i ++) {
           arr.id = i;
           arr.title = result.data.data[i].title;
+          arr.name = result.data.data[i].name;
+          arr.mentor_name = result.data.data[i].mentor_name;
           arr.noOfPax = 10;
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
@@ -155,6 +159,13 @@ export default class MentorSession extends React.Component {
 
   showLoading = (value) => {
     this.setState({loading: value});
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
   }
 
   render() {
@@ -283,6 +294,8 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
         var data_arr = [];
         var arr = {
           id: '',
+          name: '',
+          mentor_name: '',
           title: '',
           noOfPax: '',
           isBooked: '',
@@ -293,6 +306,8 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
         for (var i = 0; i < result.data.data.length; i ++) {
           arr.id = i;
           arr.title = result.data.data[i].title;
+          arr.name = result.data.data[i].name;
+          arr.mentor_name = result.data.data[i].mentor_name;
           arr.noOfPax = 10;
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
@@ -305,7 +320,7 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
       } else {
         this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
-          this.removeSession();
+          removeSession();
           window.location.href = "/";
         }
       }
@@ -394,6 +409,8 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
         var arr = {
           id: '',
           title: '',
+          name: '',
+          mentor_name: '',
           noOfPax: '',
           isBooked: '',
           start: 0,
@@ -403,6 +420,8 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
         for (var i = 0; i < result.data.data.length; i ++) {
           arr.id = i;
           arr.title = result.data.data[i].title;
+          arr.name = result.data.data[i].name;
+          arr.mentor_name = result.data.data[i].mentor_name;
           arr.noOfPax = 10;
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
@@ -419,6 +438,13 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
     } catch(err) {
       showLoading(false);
     }
+  }
+
+  const removeSession = () => {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
   }
 
   return (
@@ -561,6 +587,7 @@ const CustomWeekHeader = props => {
 const CustomWeekEvent = props => {
 
   const checkWeekEventTime = () => {
+    console.log(props, "++++++");
     let hours = props.event.start.getHours();
     let startType = "am";
     let startHour = "";
@@ -589,14 +616,14 @@ const CustomWeekEvent = props => {
     if(minutes < 10) endMinute = `0${minutes}`;
     else endMinute = `${minutes}`;
 
-    let result = `${startHour}:${startMinute} ${startType} -${endHour}:${endMinute} ${endType}`;
+    let result = `${startHour}:${startMinute} ${startType} - ${endHour}:${endMinute} ${endType}`;
     return result;
   }
 
   return (
     <div className="week-event">
       <div className="week-event-time">{checkWeekEventTime()}</div>
-      <div className="week-event-content">{props.event.title}</div>
+      <div className="week-event-content">{props.event.mentor_name}</div>
     </div>
   );
 }

@@ -110,9 +110,10 @@ export default class Trending extends React.Component {
   }
 
   render() {
+    const {loading, smallCards, mentors} = this.state;
     return (
       <>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
@@ -122,7 +123,7 @@ export default class Trending extends React.Component {
           </Row>
           <Row>
             <div className="card-container">
-            {this.state.smallCards.map((card, idx) => (
+            {smallCards.map((card, idx) => (
                 <SmallCard2
                   key={idx}
                   title={card.title}
@@ -139,7 +140,7 @@ export default class Trending extends React.Component {
           </Row>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
-              {this.state.mentors.map((data, idx) =>(
+              {mentors.map((data, idx) =>(
                 <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} key={idx} onAvailableNow={() => this.handleAvailableNow()} call={this.call}/>
               ))}
             </Col>

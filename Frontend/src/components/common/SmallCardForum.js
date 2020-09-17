@@ -10,6 +10,7 @@ import ReivewImage from "../../images/Review.jpg"
 import avatar1 from "../../images/forum-avatar1.jpg"
 import avatar2 from "../../images/avatar.jpg"
 import EditLiveForum from "./EditLiveForum";
+import InvitedStudent from "./InvitedStudent";
 
 class SmallCardForum extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class SmallCardForum extends React.Component {
       open: false,
       forumInfos: [],
       ModalOpen: false,
+      ModalInviteOpen: false
     };
     this.toggle = this.toggle.bind(this);
   }
@@ -43,12 +45,19 @@ class SmallCardForum extends React.Component {
     });
   }
 
+  toggle_invite() {
+    this.setState({
+      ModalInviteOpen: !this.state.ModalInviteOpen
+    });
+  }
+
   render() {
     const {title, description, avatar, invited, tags, tag_name, day, from_time, to_time, id} = this.props.item;
-    const { ModalOpen } = this.state;
+    const { ModalOpen, ModalInviteOpen } = this.state;
     return (
       <div className="small-card-forum">
         <EditLiveForum open={ModalOpen} id={id} toggle={() => this.toggle_editliveforum()} toggle_modal={() => this.toggle_modal()}></EditLiveForum>
+        <InvitedStudent open={ModalInviteOpen} id={id} toggle={() => this.toggle_invite()} toggle_modal={() => this.toggle_modal()}></InvitedStudent>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
           <Dropdown open={this.state.open} toggle={this.toggle}>
@@ -62,8 +71,14 @@ class SmallCardForum extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem  onClick={() => this.toggle_editliveforum()}>
+              <DropdownItem>
+                Invite students
+              </DropdownItem>
+              <DropdownItem onClick={() => this.toggle_editliveforum()}>
                 Edit
+              </DropdownItem>
+              <DropdownItem>
+                Delete
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -97,7 +112,7 @@ class SmallCardForum extends React.Component {
           {/* {avatar.map((item, idx) => 
             <img key={idx} src={avatar2} alt="avatar" className="forum-student-avatar"/>
           )} */}
-          <img src={avatar2} alt="avatar" className="forum-student-avatar"/>
+            <a href="#!" onClick={() => this.toggle_invite()}><img src={avatar2} alt="avatar" className="forum-student-avatar"/></a>
           </div>
           <h6 className="forum-student-number no-margin">0 invited</h6>
         </div>
