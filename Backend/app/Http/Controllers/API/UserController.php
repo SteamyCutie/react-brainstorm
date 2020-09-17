@@ -377,11 +377,24 @@ class UserController extends Controller
   public function getallmentors(Request $request)
   {
     $email = $request['email'];
+    $all_marks = 0;
+    $count = 0;
     $users = User::all();
     $mentors = [];
+    
     for ($i = 0; $i < count($users); $i ++) {
+      $all_marks = 0;
       if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
         $mentors[] = $users[$i];
+        $res_mark = Review::select('mark')->where('mentor_id', $users[$i]['id'])->get();
+        if(count($res_mark) > 0){
+          for($j = 0; $j < count($res_mark); $j++){
+            $all_marks += $res_mark[$j]['mark'];
+          }
+          $mentors[$i]['average_mark'] = $all_marks/count($res_mark);
+        } else {
+          $mentors[$i]['average_mark'] = 0;
+        }
       }
     }
     
