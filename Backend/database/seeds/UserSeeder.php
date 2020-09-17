@@ -73,7 +73,7 @@ class UserSeeder extends Seeder
                 'sub_plan_fee' => 80, 'description' => 'description10', 'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '2'
             ],
             [
-                'id' => 11, 'name' => "dfasdf", 'email' => 'lucascholz@protonmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+                'id' => 11, 'name' => "Lucascholz", 'email' => 'lucascholz@protonmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
                 'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa', 'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png', 'dob' => '2020-09-08 08:02:06', 'two_factor_code' => '0',
                 'hourly_price' => 100, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => 'subpage10', 'tags_id' => "1, 3, 5", 'is_mentor' => 1,
                 'sub_plan_fee' => 80, 'description' => 'description10', 'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '2'
