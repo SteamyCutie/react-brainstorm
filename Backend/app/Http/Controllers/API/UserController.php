@@ -159,8 +159,11 @@ class UserController extends Controller
     $user['tags'] = $tag_names;
     $user['student'] = $res_students;
     $user['count_review'] = $count_review;
-    $user['average_review'] = (float)$average_review/$count_review;
-    
+    if ($count_review > 0) {
+      $user['average_review'] = (float)$average_review/$count_review;
+    } else {
+      $user['average_review'] = 0;
+    }
     return response()->json([
       'result'=> 'success',
       'data'=> $user,
@@ -383,29 +386,32 @@ class UserController extends Controller
     $mentors = [];
     
     for ($i = 0; $i < count($users); $i ++) {
-      $all_marks = 0;
+      
       if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
         $mentors[] = $users[$i];
-        $res_mark = Review::select('mark')->where('mentor_id', $users[$i]['id'])->get();
-        if(count($res_mark) > 0){
-          for($j = 0; $j < count($res_mark); $j++){
-            $all_marks += $res_mark[$j]['mark'];
-          }
-          $mentors[$i]['average_mark'] = $all_marks/count($res_mark);
-        } else {
-          $mentors[$i]['average_mark'] = 0;
-        }
+        
       }
     }
     
     for ($i = 0; $i < count($mentors); $i ++) {
       $tags_id = explode(',', $mentors[$i]['tags_id']);
       $tag_names = [];
+      $all_marks = 0;
       foreach ($tags_id as $tag_key => $tag_value) {
         $tags = Tag::where('id', $tag_value)->first();
         $tag_names[$tag_key] = $tags['name'];
       }
       $mentors[$i]['tag_name'] = $tag_names;
+      $res_mark = Review::select('mark')->where('mentor_id', $mentors[$i]['id'])->get();
+      if(count($res_mark) > 0){
+        for($j = 0; $j < count($res_mark); $j++){
+          $all_marks += $res_mark[$j]['mark'];
+        }
+        $mentors[$i]['average_mark'] = $all_marks/count($res_mark);
+      } else {
+        $mentors[$i]['average_mark'] = 0;
+      }
+      
     }
     
     return response()->json([
