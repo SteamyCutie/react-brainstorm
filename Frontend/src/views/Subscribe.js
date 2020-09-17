@@ -58,7 +58,6 @@ export default class Subscribe extends React.Component {
   }
 
   actionSuccess() {
-    alert("111");
   }
 
   showFail(text) {
