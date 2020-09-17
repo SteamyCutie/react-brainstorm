@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Session;
 use App\Models\Tag;
 use App\Models\User;
+use DateTime;
 
 class SessionController extends Controller
 {
@@ -250,7 +251,9 @@ class SessionController extends Controller
         $email = $request['email'];
         $tag_id = $request['tag_id'];
         $req_time = $request['time'];
-        $user = User::select('id')->where( 'email', $email)->first();
+        $user = User::select('id', 'is_mentor')->where( 'email', $email)->first();
+        $current_time = date("y-m-d h:i:s");
+
         if ($req_time != null || $req_time != "") {
             $from_time = trim(explode('~', $req_time)[0]);
             $to_time = trim(explode('~', $req_time)[1]);
@@ -260,7 +263,8 @@ class SessionController extends Controller
         }
         if ($user['is_mentor'] == 0) {
             $temp1 = [];
-            $result_infos = Session::where('user_id', '!=', $user->id)->get();
+            $temp2 = [];
+            $result_infos = Session::where('user_id', '!=', $user->id)->where('from','>=',date('y-m-d h:i:s', strtotime($current_time)))->get();
             if ($tag_id == "" || $tag_id == null) {
                 $temp1 = $result_infos;
             } else {
@@ -269,18 +273,23 @@ class SessionController extends Controller
                     for ($j = 0; $j < count($tag_array); $j++) {
                         if ($tag_id == trim($tag_array[$j])){
                             $temp1[] = $result_info;
-                            break;
                         }
                     }
                 }
             }
-            foreach ($temp1 as $key => $result) {
-                if ((date('y-m-d', strtotime($result->from)) >= date('y-m-d', strtotime($from_time)))
-                    && (date('y-m-d', strtotime($result->to)) <= date('y-m-d', strtotime($to_time)))) {
-                    $result_res[] = $result;
+
+            if ($from_time == "" || $to_time == "") {
+                $temp2 = $temp1;
+            }
+            else {
+                foreach ($temp1 as $key => $result) {
+                    if ((date('y-m-d', strtotime($result->from)) >= date('y-m-d', strtotime($from_time)))
+                        && (date('y-m-d', strtotime($result->to)) <= date('y-m-d', strtotime($to_time)))) {
+                        $temp2[] = $result;
+                    }
                 }
             }
-            foreach ($result_res as $session_key => $session_info)
+            foreach ($temp2 as $session_key => $session_info)
             {
                 $result_from = $session_info['from'];
                 $result_to = $session_info['to'];
@@ -310,7 +319,7 @@ class SessionController extends Controller
                 // }
             }
         } else if ($user['is_mentor'] == 1) {
-            $result_tags = Session::where('user_id', $user['id'])->get();
+            $result_tags = Session::where('user_id', $user['id'])->where('from','>=',date('y-m-d h:i:s', strtotime($current_time)))->get();
             if ($tag_id == "" || $tag_id == null) {
                 $result_res = $result_tags;
             } else {
@@ -360,6 +369,5 @@ class SessionController extends Controller
             'result'=> 'success',
             'data'=> $result_res,
         ]);
-
     }
 }
