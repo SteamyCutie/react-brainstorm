@@ -25,7 +25,7 @@ export default class FeaturedMentors extends React.Component {
   }
 
   componentWillMount() {
-    this.getMentors();
+    // this.getMentors();
   }
 
   getMentors = async() => {
