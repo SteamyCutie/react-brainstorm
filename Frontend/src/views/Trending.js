@@ -49,11 +49,11 @@ export default class Trending extends React.Component {
   }
 
   sendUser(to) {
-    this.props.location.state.setUser(to);
+    this.props.setUser(to);
   }
 
   onDecline() {
-    this.props.location.state.stop(true);
+    this.props.stop(true);
   }
 
   getMentors = async() => {
