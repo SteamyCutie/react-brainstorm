@@ -35,11 +35,6 @@ export default class MentorReview extends React.Component {
     toggle();    
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
-  }
-
   onChangeReview = (e) => {
     var array = e.target.value.split("");
     if (array.length > 500) {
@@ -142,14 +137,14 @@ export default class MentorReview extends React.Component {
   }
 
   render() {
-    const { open, mentorid } = this.props;
+    const { open, mentorid, mentorname } = this.props;
     return (
       <div>
         <ReactNotification />
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Review Mentor</h1>
+          <h1 className="content-center modal-header-class">Review {mentorname}</h1>
           <Rating name="size-large" defaultValue={0} size="large" onChange={(e, newValue) => this.onChangeMark(e, newValue)}/>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Review</label>

@@ -57,12 +57,6 @@ export default class Subscribe extends React.Component {
     });
   }
 
-  toggle_modal() {
-    this.setState({
-      subscriptionOpen: !this.state.subscriptionOpen,
-    });
-  }
-
   actionSuccess() {
     alert("111");
   }
@@ -188,7 +182,7 @@ export default class Subscribe extends React.Component {
             </Row>
           </CardBody>
         </Card>
-        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} actionSuccess={this.actionSuccess} toggle={() => this.toggle_unsubscribe()} toggle_modal={() => this.toggle_modal()} />
+        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} actionSuccess={this.actionSuccess} toggle={() => this.toggle_unsubscribe()} />
       </Container>
       </>
     );

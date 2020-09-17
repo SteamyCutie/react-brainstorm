@@ -36,11 +36,6 @@ export default class AddNewCard extends React.Component {
     toggle();    
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
-  }
-
   onChangeName = (e) => {
     var array = e.target.value.split("");
     if (array.length > 500) {
@@ -87,44 +82,6 @@ export default class AddNewCard extends React.Component {
 
   actionAdd = async() => {
     const {cardinfo} = this.state;
-    // const {requiremessage} = this.state;
-    // let temp = requiremessage;
-    // temp.dreview = '';
-    // this.setState({
-    //   requiremessage: temp
-    // });
-    // try {
-    //   this.setState({loading: true});
-    //   const result = await createforum(this.state.foruminfo);
-    //   if (result.data.result === "success") {
-    //     this.toggle();
-    //     this.showSuccess("Review Success");
-    //     window.location.href = "/scheduleLiveForum";
-    //   } else {
-    //     if (result.data.type === 'require') {
-    //       const {requiremessage} = this.state;
-    //       let temp = requiremessage;
-    //       if (result.data.message.title) {
-    //         temp.dtitle = result.data.message.title[0];
-    //       }
-    //       if (result.data.message.description) {
-    //         temp.ddescription = result.data.message.description[0];
-    //       }
-    //       this.setState({
-    //         requiremessage: temp
-    //       });
-    //     } else {
-    //       if (result.data.message === "Token is Expired") {
-    //         this.removeSession();
-    //         window.location.href = "/";
-    //       }
-    //     }
-    //   }
-    //   this.setState({loading: false});
-    // } catch(err) {
-    //   this.setState({loading: false});
-    //   this.showFail("Something Went wrong");
-    // };
   }
 
   removeSession() {
