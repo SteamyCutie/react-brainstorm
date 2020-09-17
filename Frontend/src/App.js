@@ -45,6 +45,8 @@ export default class App extends React.Component{
       message: '',
       isAccepted: 0,
     }
+
+    this.videoCallRef = React.createRef()
     
     // this.handleClick = this.handleClick.bind(this);
     // this.onChange = this.onChange.bind(this);
@@ -176,7 +178,8 @@ export default class App extends React.Component{
       this.setState({
         isAccepted: 1,
       })
-      this.toggle_outcomingCall_modal();
+      // 
+      // this.toggle_outcomingCall_modal();
     }
   }
 
@@ -271,7 +274,8 @@ export default class App extends React.Component{
       callResponseSate: 0,
       outcomingCallStatus: 0,
     })
-    this.toggle_outcomingCall_modal();
+    // 
+    // this.toggle_outcomingCall_modal();
 
     // if (document.getElementById('peer').value == '') {
     //   window.alert("You must specify the peer name");
@@ -367,7 +371,7 @@ export default class App extends React.Component{
     // })
 
     if(this.state.outcomingCallStatus) {
-      this.toggle_outcomingCall_modal()
+      // this.toggle_outcomingCall_modal()
     } else {
       // this.toggle_incomingCall_modal()
     }
@@ -403,7 +407,7 @@ export default class App extends React.Component{
       isAccepted: 0,
     })
     this.sendMessage(response);
-    this.toggle_outcomingCall_modal();
+    // this.toggle_outcomingCall_modal();
     this.stop(true);
   }
 
@@ -468,8 +472,9 @@ export default class App extends React.Component{
               );
           })}
           {this.state.call && 
-            <VideoCall 
-              open={this.state.callState == INCOMING_CALL ? this.state.call : (this.state.call && this.state.isAccepted)} 
+            <VideoCall
+              ref={this.videoCallRef} 
+              open={this.state.callState == INCOMING_CALL ? this.state.call : (true)} 
               toggle={() => this.toggle_videocall()}
               from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
           }

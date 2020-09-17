@@ -24,7 +24,8 @@ export default class VideoCall extends React.Component {
     this.state = {
       callState: 0,
       isCallingNow: 0,
-      isConnected: 0
+      isConnected: 0,
+      isDisplay: true,
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.handleStop = this.handleStop.bind(this);
@@ -32,6 +33,18 @@ export default class VideoCall extends React.Component {
 
   componentDidMount() {
 
+  }
+
+  isDisplay() {
+    if(this.state.isDisplay) {
+      document.getElementById("video-call-modal").setAttribute("style", "display: none");
+    } else {
+      document.getElementById("video-call-modal").removeAttribute("style");
+    }
+    
+    this.setState({
+      isDisplay: !this.state.isDisplay
+    })
   }
 
   toggle() {
@@ -136,7 +149,7 @@ export default class VideoCall extends React.Component {
   render() {
     const { open } = this.props;
     return (
-      <div>
+      <div id="video-call-modal">
         <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
