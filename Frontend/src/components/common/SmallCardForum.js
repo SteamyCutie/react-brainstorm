@@ -18,7 +18,6 @@ class SmallCardForum extends React.Component {
     this.state = {
       open: false,
       forumInfos: [],
-      ModalOpen: false,
       ModalInviteOpen: false
     };
     this.toggle = this.toggle.bind(this);
@@ -33,18 +32,6 @@ class SmallCardForum extends React.Component {
     });
   }
 
-  toggle_editliveforum() {
-    this.setState({
-      ModalOpen: !this.state.ModalOpen
-    });
-  }
-
-  toggle_modal() {
-    this.setState({
-      ModalOpen: !this.state.ModalOpen,
-    });
-  }
-
   toggle_invite() {
     this.setState({
       ModalInviteOpen: !this.state.ModalInviteOpen
@@ -53,11 +40,11 @@ class SmallCardForum extends React.Component {
 
   render() {
     const {title, description, avatar, invited, tags, tag_name, day, from_time, to_time, id} = this.props.item;
-    const { ModalOpen, ModalInviteOpen } = this.state;
+    const {toggle_editliveforum} = this.props;
+    const { ModalInviteOpen } = this.state;
     return (
       <div className="small-card-forum">
-        <EditLiveForum open={ModalOpen} id={id} toggle={() => this.toggle_editliveforum()} toggle_modal={() => this.toggle_modal()}></EditLiveForum>
-        <InvitedStudent open={ModalInviteOpen} id={id} toggle={() => this.toggle_invite()} toggle_modal={() => this.toggle_modal()}></InvitedStudent>
+        <InvitedStudent open={ModalInviteOpen} id={id} toggle={() => this.toggle_invite()}></InvitedStudent>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
           <Dropdown open={this.state.open} toggle={this.toggle}>
@@ -74,7 +61,7 @@ class SmallCardForum extends React.Component {
               <DropdownItem>
                 Invite students
               </DropdownItem>
-              <DropdownItem onClick={() => this.toggle_editliveforum()}>
+              <DropdownItem onClick={() => toggle_editliveforum(id)}>
                 Edit
               </DropdownItem>
               <DropdownItem>

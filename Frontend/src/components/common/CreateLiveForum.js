@@ -50,11 +50,6 @@ export default class CreateLiveForum extends React.Component {
     toggle();    
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
-  }
-
   onChangeTitle = (e) => {
     var array = e.target.value.split("");
     if (array.length > 30) {
