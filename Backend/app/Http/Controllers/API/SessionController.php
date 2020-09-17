@@ -204,7 +204,7 @@ class SessionController extends Controller
   
   function getHistory(Request $request)
   {
-    $result_res = null;
+    $result_res = [];
     $email = $request['email'];
     $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
     $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '3')->get();
@@ -237,18 +237,10 @@ class SessionController extends Controller
         }
       }
     }
-    
-    if ($result_res == null) {
-      return response()->json([
-        'result'=> 'failed',
-        'message'=> 'Current User Does Not Exist',
-      ]);
-    } else {
-      return response()->json([
-        'result'=> 'success',
-        'data'=> $result_res,
-      ]);
-    }
+    return response()->json([
+      'result'=> 'success',
+      'data'=> $result_res,
+    ]);
   }
   
   function getUpcomingSession(Request $request)
@@ -339,6 +331,7 @@ class SessionController extends Controller
         }
       }
       
+      $mentor = User::select('name')->where('id', $user->id)->first();
       for ($i = 0; $i < count($result_res); $i ++) {
         $s_year = date("Y", strtotime($result_res[$i]['from']));
         $s_month = date("m", strtotime($result_res[$i]['from']));
@@ -368,6 +361,7 @@ class SessionController extends Controller
         $result_res[$i]['from_time'] = date('h:i a', strtotime($result_res[$i]['from']));
         $result_res[$i]['to_time'] = date('h:i a', strtotime($result_res[$i]['to']));
         $result_res[$i]['avatar'] = $user['avatar'];
+        $result_res[$i]['mentor_name'] = $mentor->name;
       }
     }
     

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tag;
+use App\Models\Review;
 use JWTAuth;
 use Exception;
 
@@ -132,8 +133,21 @@ class UserController extends Controller
   public function getuserinfobyid(Request $request)
   {
     $id = $request['id'];
-    
+    $average_review = 0;
+    $count_review = 0;
+    $res_students = Review::where('mentor_id', $id)->get();
     $user = User::where('id', $id)->first();
+    $temp = [];
+    foreach ($res_students as $review_key => $review_value) {
+      $res_student = User::where('id', $review_value->student_id)->first();
+      $temp['student'] = $res_student;
+      $temp['review'] = $review_value;
+      $res_students[$review_key] = $temp;
+      $count_review++;
+      $average_review += $review_value->mark;
+    }
+    
+    
     $newDate = date("Y-m-d", strtotime($user['dob']));
     $user['dob'] = $newDate;
     $tags_id = explode(',', $user['tags_id']);
@@ -141,7 +155,12 @@ class UserController extends Controller
       $tags = Tag::where('id', $tag_value)->first();
       $tag_names[$tag_key] = $tags['name'];
     }
+    
     $user['tags'] = $tag_names;
+    $user['student'] = $res_students;
+    $user['count_review'] = $count_review;
+    $user['average_review'] = (float)$average_review/$count_review;
+    
     return response()->json([
       'result'=> 'success',
       'data'=> $user,

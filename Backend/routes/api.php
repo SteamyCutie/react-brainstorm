@@ -55,4 +55,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getsubscription', 'SubscriptionController@getsubscription');
   Route::post('/editsubscription', 'SubscriptionController@editsubscription');
   
+  Route::post('/setreview', 'ReviewController@setreview');
+  
 });

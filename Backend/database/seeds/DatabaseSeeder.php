@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             WalletSeeder::class,
             TagSeeder::class,
             SessionSeeder::class,
-            SubscriptionSeeder::class
+            SubscriptionSeeder::class,
+            ReviewSeeder::class
         ]);
     }
 }
