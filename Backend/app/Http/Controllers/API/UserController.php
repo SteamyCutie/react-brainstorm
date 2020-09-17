@@ -105,7 +105,7 @@ class UserController extends Controller
 		public function getuserinfo(Request $request)
 		{
 			$email = $request['email'];
-
+			$temp_names = [];
 			$user = User::where('email', $email)->first();
 			if ($user['dob'] == null || $user['dob'] == "") {
 				$user['dob'] = '2020-01-01';	
@@ -118,6 +118,11 @@ class UserController extends Controller
 			else
 				$tags_id = explode(',', $user['tags_id']);
 			$user['tags'] = $tags_id;
+			foreach ($tags_id as $tag_key=> $tag_id) {
+				$tag_names = Tag::select('name')->where('id', $tag_id)->first();
+				$temp_names[] = $tag_names->name;
+			}
+			$user['tags_name'] = $temp_names;
 			return response()->json([
 					'result'=> 'success',
 					'data'=> $user,
@@ -125,23 +130,23 @@ class UserController extends Controller
 		}
 
 		public function getuserinfobyid(Request $request)
-	    {
-	        $id = $request['id'];
+		{
+			$id = $request['id'];
 
-	        $user = User::where('id', $id)->first();
-	        $newDate = date("Y-m-d", strtotime($user['dob']));
-	        $user['dob'] = $newDate;
-	        $tags_id = explode(',', $user['tags_id']);
-	        foreach ($tags_id as $tag_key => $tag_value) {
-	            $tags = Tag::where('id', $tag_value)->first();
-	            $tag_names[$tag_key] = $tags['name'];
-	        }
-	        $user['tags'] = $tag_names;
-	        return response()->json([
-	            'result'=> 'success',
-	            'data'=> $user,
-	        ]);
-	    }
+			$user = User::where('id', $id)->first();
+			$newDate = date("Y-m-d", strtotime($user['dob']));
+			$user['dob'] = $newDate;
+			$tags_id = explode(',', $user['tags_id']);
+			foreach ($tags_id as $tag_key => $tag_value) {
+				$tags = Tag::where('id', $tag_value)->first();
+				$tag_names[$tag_key] = $tags['name'];
+			}
+			$user['tags'] = $tag_names;
+			return response()->json([
+				'result'=> 'success',
+				'data'=> $user,
+			]);
+		}
 
 		public function editprofile(Request $request)
 		{

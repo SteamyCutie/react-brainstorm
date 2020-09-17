@@ -60,13 +60,19 @@ class SessionController extends Controller
     function getforum(Request $request)
     {
         $id = $request['id'];
+        $temp_names = [];
         $forum = Session::where('id', $id)->first();
         if ($forum['tags_id'] == null || $forum['tags_id'] == '')
             $tags_id = [];
         else
             $tags_id = explode(',', $forum['tags_id']);
-        $forum['tags'] = $tags_id;
 
+        $forum['tags'] = $tags_id;
+        foreach ($tags_id as $tag_key=> $tag_id) {
+            $tag_names = Tag::select('name')->where('id', $tag_id)->first();
+            $temp_names[] = $tag_names->name;
+        }
+        $forum['tags_name'] = $temp_names;
         if ($forum['from'] == "" || $forum['from'] == null) {
             $from = "";
             $day = "";
