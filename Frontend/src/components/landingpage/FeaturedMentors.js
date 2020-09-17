@@ -270,7 +270,7 @@ FeaturedMentors.defaultProps = {
 //                 </Row>
 //                 <div className="carousel-component-body-desc-class">
 //                   {this.state.more ? <p>{data.description}</p> : <p>{data.description.slice(0,100)}...</p>}
-//                   {this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>}
+//                   {this.state.more ? <a href="#!" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="#!" className="read-more" onClick={() => this.readMore()}>Read more</a>}
 //                 </div>
 //                 <div className="carousel-component-body-play-class">
 //                   <a href={data.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>

@@ -54,12 +54,11 @@ export default class SignUp extends React.Component {
   actionSignup = async() => {
     try {
       const result = await signup(this.state);
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('password', this.state.password);
         window.location.href = '/verification';
       } else {
-        // alert(result.data.message)
         this.setState({
           signUpError: result.data.message
         })
@@ -154,7 +153,7 @@ export default class SignUp extends React.Component {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
           formIsValid = false;
           errors["email"] = "Email is incorrect";
         }

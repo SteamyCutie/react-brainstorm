@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
@@ -94,22 +93,26 @@ export default class MentorWallet extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getwallets({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({tHistory: result.data.data});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
-  showSuccess() {
+  showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -123,10 +126,10 @@ export default class MentorWallet extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -138,6 +141,13 @@ export default class MentorWallet extends React.Component {
         pauseOnHover: false
       }
     });
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
   }
 
   render() {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody, CardHeader } from "shards-react";
 import SmallCardForum from "../components/common/SmallCardForum";
 import CreateLiveForum from "../components/common/CreateLiveForum";
 import LoadingModal from "../components/common/LoadingModal";
@@ -38,39 +38,26 @@ export default class ScheduleLiveForum extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getforums({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({forumInfos: result.data.data});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
-  showSuccess() {
-    store.addNotification({
-      title: "Success",
-      message: "Action Success!",
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -84,11 +71,18 @@ export default class ScheduleLiveForum extends React.Component {
     });
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   render() {
-    const { ModalOpen } = this.state;
+    const { ModalOpen, loading, forumInfos } = this.state;
     return (
       <div>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <CreateLiveForum open={ModalOpen} toggle={() => this.toggle_createliveforum()} toggle_modal={() => this.toggle_modal()}></CreateLiveForum>
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
@@ -99,8 +93,8 @@ export default class ScheduleLiveForum extends React.Component {
             </CardHeader>
             <CardBody>
               <Row>
-                {this.state.forumInfos.map((item, idx) => 
-                  <Col xl="4" lg="4" sm="6">
+                {forumInfos.map((item, idx) => 
+                  <Col key={idx} xl="4" lg="4" sm="6">
                     <SmallCardForum key={idx} item={item} />
                   </Col>
                 )}

@@ -25,9 +25,10 @@ class NavbarDropdown extends React.Component {
   }
 
   toggle(which) {
-    const newState = { ...this.state };
-    newState[which] = !this.state[which];
-    this.setState(newState);
+    // const newState = { ...this.state };
+    // newState[which] = !this.state[which];
+    // this.setState(newState);
+    this.setState({dropdown1: !this.state.dropdown1});
   }
 
   toggle_signin() {
@@ -76,6 +77,7 @@ class NavbarDropdown extends React.Component {
         <DropdownMenu small right>
             <DropdownItem className="btn-dropdown-item">Become a mentor</DropdownItem>
             <DropdownItem className="btn-dropdown-item">Find a mentor</DropdownItem>
+            <DropdownItem className="btn-dropdown-item">{this.state.signInOpen.toString()}</DropdownItem>
             <DropdownItem className="btn-dropdown-item" onClick={() => this.toggle_signup()}>Sign up</DropdownItem>
             <DropdownItem className="btn-dropdown-item" onClick={() => this.toggle_signin()}>Sign in</DropdownItem>
         </DropdownMenu>
