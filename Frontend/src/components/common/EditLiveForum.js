@@ -37,7 +37,12 @@ export default class EditLiveForum extends React.Component {
 
   componentWillMount() {
     this.getAllTags();
-    this.getSession(this.props.id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.id && this.props.id != nextProps.id) {
+      this.getSession(nextProps.id);
+    }
   }
 
   toggle() {
