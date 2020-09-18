@@ -1,6 +1,3 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-
 import { DefaultLayout, LandingPageLayout, ExtraPageLayout } from "./layouts";
 
 import MentorSession from "./views/MentorSession";
@@ -15,7 +12,7 @@ import StudentWallet from "./views/StudentWallet";
 import Trending from "./views/Trending";
 import Subscriptions from "./views/Subscriptions";
 import SpecificSubscription from "./views/SpecificSubscription";
-import Unsubscribe from "./views/Unsubscribe";
+import Subscribe from "./views/Subscribe";
 import Library from "./views/Library";
 import History from "./views/History";
 import Recommended from "./views/Recommended";
@@ -23,7 +20,6 @@ import EmailVerify from "./views/EmailVerify"
 import ForgetPassword from "./views/ForgetPassword"
 import ResetPassword from "./views/ResetPassword"
 import EmailSent from "./views/EmailSent"
-import VideoCall from "./views/VideoCall"
 
 export default [
   {
@@ -83,14 +79,14 @@ export default [
     component: Subscriptions
   },
   {
-    path: "/subscription-specific", /* specific must be user id on this system */
+    path: "/unsubscription-specific", /* specific must be user id on this system */
     layout: DefaultLayout,
     component: SpecificSubscription
   },
   {
-    path: "/unsubscribe-specific/:id", /* specific must be user id on this system */
+    path: "/subscribe-specific/:id", /* specific must be user id on this system */
     layout: DefaultLayout,
-    component: Unsubscribe
+    component: Subscribe
   },
   {
     path: "/library",
@@ -126,10 +122,5 @@ export default [
     path: "/emailsent",
     layout: ExtraPageLayout,
     component: EmailSent
-  },
-  {
-    path: "/call",
-    layout: ExtraPageLayout,
-    component: VideoCall
-  },
+  }
 ];

@@ -1,14 +1,7 @@
 import React from "react";
-import { Button, Modal, ModalBody, FormInput } from "shards-react";
+import { Modal } from "shards-react";
 import "../../assets/landingpage.css"
-import { Link } from "react-router-dom";
-import { signin } from '../../api/api';
 import Loader from 'react-loader-spinner';
-
-import Facebook from '../../images/Facebook.svg'
-import Google from '../../images/Google.svg'
-import Close from '../../images/Close.svg'
-
 export default class SignIn extends React.Component {
   constructor(props) {
     super(props);

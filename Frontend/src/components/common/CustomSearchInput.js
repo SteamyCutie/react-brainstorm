@@ -18,7 +18,7 @@ class CustomSearchInput extends React.Component {
       <InputGroup seamless>
         <InputGroupAddon type="prepend">
           <InputGroupText>
-            <FontAwesomeIcon icon={["fab", "twitter"]} />
+            {/* <FontAwesomeIcon icon={["fab", "twitter"]} /> */}
           </InputGroupText>
         </InputGroupAddon>
         <FormInput />

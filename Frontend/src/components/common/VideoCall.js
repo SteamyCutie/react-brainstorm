@@ -1,13 +1,8 @@
 import React from "react";
-import { Button, Modal, ModalBody, Card, CardBody, Row, Col } from "shards-react";
+import { Button, Modal, ModalBody,  Row, Col } from "shards-react";
 import "../../assets/landingpage.css"
-import { Link } from "react-router-dom";
-import { signin } from '../../api/api';
 import kurentoUtils from 'kurento-utils';
 
-import Facebook from '../../images/Facebook.svg'
-import Google from '../../images/Google.svg'
-import Close from '../../images/Close.svg'
 import Camera from '../../images/call-camera.svg'
 import Phone from '../../images/call-phone.svg'
 import Mic from '../../images/call-mic.svg'
@@ -28,30 +23,34 @@ export default class VideoCall extends React.Component {
     this.emailInput = React.createRef();
     this.state = {
       callState: 0,
+      isCallingNow: 0,
+      isConnected: 0,
+      isDisplay: true,
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.handleStop = this.handleStop.bind(this);
   }
 
   componentDidMount() {
-    // document.getElementById("email-input").focus();
+
   }
 
-  clearValidationErrors() {
-    // this.setState({
-      
-    // })
+  isDisplay() {
+    if(this.state.isDisplay) {
+      document.getElementById("video-call-modal").setAttribute("style", "display: none");
+    } else {
+      document.getElementById("video-call-modal").removeAttribute("style");
+    }
+    
+    this.setState({
+      isDisplay: !this.state.isDisplay
+    })
   }
 
   toggle() {
     const { toggle } = this.props;
     this.handleStop();
     toggle();
-  }
-
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
   }
 
   componentDidMount() {
@@ -95,8 +94,7 @@ export default class VideoCall extends React.Component {
           });
         });
       this.props.setWebRtcPeer(this.webRtcPeer);
-    }
-    else if (this.props.callState == OUTGOING_CALL) {
+    } else if (this.props.callState == OUTGOING_CALL) {
       var options = {
         localVideo : this.videoInput,
         remoteVideo : this.videoOutput,
@@ -133,13 +131,10 @@ export default class VideoCall extends React.Component {
 
   sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
-    // console.log('Sending message: ' + jsonMessage);
     this.ws.send(jsonMessage);
   }
 
   onIceCandidate(candidate) {
-    // console.log("Local candidate" + JSON.stringify(candidate));
-
     var message = {
       id: 'onIceCandidate',
       candidate: candidate
@@ -148,29 +143,23 @@ export default class VideoCall extends React.Component {
   }
 
   handleStop = () => {
-    console.log("*************************STOP")
     this.props.stop();
   }
 
   render() {
     const { open } = this.props;
     return (
-      <div>
+      <div id="video-call-modal">
         <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
-          {/* <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button> */}
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                {/* <Col xl="6"> */}
                 <video id="videoOutput" autoplay="" width="1000px" height="600px" className="video-call-student">
-                    Your browser does not support the video tag.
-                  </video>
-                {/* </Col> */}
-                {/* <Col xl="6"> */}
-                  <video id="videoInput" autoplay="" width="200px" height="150px" className="video-call-mentor">
-                    {/* Your browser does not support the video tag. */}
-                  </video>
-                {/* </Col> */}
+                  Your browser does not support the video tag.
+                </video>
+                <video id="videoInput" autoplay="" width="200px" height="150px" className="video-call-mentor">
+                  Your browser does not support the video tag.
+                </video>
               </Row>
               
               <Row className="center btn-group-call">

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+  return $request->user();
 });
 
 Route::post('/signin', 'UserController@login');
@@ -25,28 +25,36 @@ Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
 
+
 Route::group(['middleware' => 'jwt.verify'], function () {
-    Route::post('/signout', 'UserController@logout');
-    Route::post('/editprofile', 'UserController@editprofile');
-    Route::post('/mysharepage', 'MediaController@getMediaShare');
-    Route::post('/scheduleliveforum', 'SessionController@getSession');
-    Route::post('/createforum', 'SessionController@createforum');
-    Route::post('/gethistory', 'SessionController@getHistory');
-    Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
-    Route::post('/setavailabletimes', 'AvailableTimesController@setavailabletimes');
-    Route::post('/getavailabletimes', 'AvailableTimesController@getavailabletimes');
-    Route::post('/getuserinfo', 'UserController@getuserinfo');
-    Route::post('/getuserinfobyid', 'UserController@getuserinfobyid');
-    Route::post('/getwallets', 'WalletController@index');
-    Route::post('/gettags', 'TagController@index');
-    Route::get('/test', 'UserController@test');
-    Route::post('/uploadimage', 'FileController@uploadimage');
-    Route::post('/uploadvideo', 'FileController@uploadvideo');
-
-    Route::post('/getallmentors', 'UserController@getallmentors');
-    Route::post('/createshareinfo', 'MediaController@createshareinfo');
-    Route::post('/editforum', 'SessionController@editforum');
-    Route::post('/getforum', 'SessionController@getforum');
-
-    Route::post('/getweekdata', 'DayController@index');
+  Route::post('/signout', 'UserController@logout');
+  Route::post('/editprofile', 'UserController@editprofile');
+  Route::post('/mysharepage', 'MediaController@getMediaShare');
+  Route::post('/scheduleliveforum', 'SessionController@getSession');
+  Route::post('/createforum', 'SessionController@createforum');
+  Route::post('/gethistory', 'SessionController@getHistory');
+  Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
+  Route::post('/setavailabletimes', 'AvailableTimesController@setavailabletimes');
+  Route::post('/getavailabletimes', 'AvailableTimesController@getavailabletimes');
+  Route::post('/getuserinfo', 'UserController@getuserinfo');
+  Route::post('/getuserinfobyid', 'UserController@getuserinfobyid');
+  Route::post('/getwallets', 'WalletController@index');
+  Route::post('/gettags', 'TagController@index');
+  Route::get('/test', 'UserController@test');
+  Route::post('/uploadimage', 'FileController@uploadimage');
+  Route::post('/uploadvideo', 'FileController@uploadvideo');
+  
+  Route::post('/getallmentors', 'UserController@getallmentors');
+  Route::post('/createshareinfo', 'MediaController@createshareinfo');
+  Route::post('/editforum', 'SessionController@editforum');
+  Route::post('/getforum', 'SessionController@getforum');
+  
+  Route::post('/getweekdata', 'DayController@index');
+  
+  Route::post('/setsubscription', 'SubscriptionController@setsubscription');
+  Route::post('/getsubscription', 'SubscriptionController@getsubscription');
+  Route::post('/editsubscription', 'SubscriptionController@editsubscription');
+  
+  Route::post('/setreview', 'ReviewController@setreview');
+  
 });

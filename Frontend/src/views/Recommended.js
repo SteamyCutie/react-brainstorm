@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
 import MentorDetailCard from "./../components/common/MentorDetailCard"
@@ -28,17 +27,22 @@ export default class Recommended extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getallmentors({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({
           loading: false,
           mentors: result.data.data
         });
       } else {
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Edit Profile Fail");
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -59,10 +63,10 @@ export default class Recommended extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -76,10 +80,18 @@ export default class Recommended extends React.Component {
     });
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   render() {
     return (
       <>
         {this.state.loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">

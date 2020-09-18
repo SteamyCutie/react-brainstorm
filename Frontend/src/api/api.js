@@ -377,4 +377,42 @@ export const getweekdata = (param) => {
 }
 //---------WeekController-------------
 
+//SubscribeController
+
+export const subscribe = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        // 'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/setsubscription', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+//---------SubscribeController-------------
+
+//ReviewController
+
+export const setreview = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        // 'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/setreview', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+//---------ReviewController-------------
+
 //Backend Apis

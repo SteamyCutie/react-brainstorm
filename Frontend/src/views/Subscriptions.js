@@ -1,9 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
-
-import { Link } from "react-router-dom";
-
 import SubscriptionTable from "./../components/common/SubscriptionTable";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
@@ -32,7 +28,7 @@ export default class Subscriptions extends React.Component {
           cell: row => 
           <div>
             <img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              <a href="javascript:void(0)" onClick={() => this.handleClick(row.id)}>{row.mentorName}</a>
+              <a href="#!" onClick={() => this.handleClick(row.id)}>{row.mentorName}</a>
           </div>,
         },
         {
@@ -66,7 +62,7 @@ export default class Subscriptions extends React.Component {
           selector: 'edit',
           sortable: false,
           center: true,
-          cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? "Unsubscribe" : "Resubscribe"}</div>,
+          cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? <a href="#!">Unsubscribe</a> : <a href="#!">Resubscribe</a>}</div>,
         }
       ]
     };
@@ -78,14 +74,14 @@ export default class Subscriptions extends React.Component {
 
   handleClick(id) {
     const { history } = this.props;
-    history.push('/unsubscribe-specific/' + id);
+    history.push('/subscribe-specific/' + id);
   }
 
   getMentors = async() => {
     try {
       this.setState({loading: true});
       const result = await getallmentors({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         var data_arr = [];
         var arr = {
           id: '',
@@ -99,7 +95,7 @@ export default class Subscriptions extends React.Component {
         };
         for (var i = 0; i < result.data.data.length; i ++) {
           arr.id = result.data.data[i].id;
-          if (result.data.data[i].avatar == undefined || result.data.data[i].avatar == "" || result.data.data[i].avatar == null)
+          if (result.data.data[i].avatar === undefined || result.data.data[i].avatar === "" || result.data.data[i].avatar == null)
             arr.avatar = require("../images/avatar.jpg");
           else 
             arr.avatar = result.data.data[i].avatar;
@@ -117,11 +113,16 @@ export default class Subscriptions extends React.Component {
         });
 
       } else {
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Edit Profile Fail");
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -142,10 +143,10 @@ export default class Subscriptions extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -158,14 +159,24 @@ export default class Subscriptions extends React.Component {
       }
     });
   }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   render() {
+    const {loading, mentors, columns} = this.state;
     return (
       <>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row className="wallet-data-table-class py-4">
             <Col lg="12" md="12" sm="12">
-              <SubscriptionTable data={this.state.mentors} header={this.state.columns}/>
+              <SubscriptionTable data={mentors} header={columns}/>
             </Col>
           </Row>
         </Container>

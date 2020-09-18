@@ -7,7 +7,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
+import { Container, Row, Col, Card, CardBody } from "shards-react";
 import LibrarySavedContent from "../components/common/LibrarySavedContent"
 import SmallCard3 from "../components/common/SmallCard3"
 
@@ -52,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Library() {
-  const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 

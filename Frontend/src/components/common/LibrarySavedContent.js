@@ -31,7 +31,7 @@ class LibrarySavedContent extends React.Component {
             </div>
           </div>
           <Button className="btn-video-desc-more no-padding">
-            <img src={MoreButtonImage} />
+            <img src={MoreButtonImage} alt="more"/>
           </Button>
         </div>
         <div>
