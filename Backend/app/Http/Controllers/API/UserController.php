@@ -138,19 +138,25 @@ class UserController extends Controller
     $id = $request['id'];
     $average_review = 0;
     $count_review = 0;
+    $tag_names = [];
+    
     $res_students = Review::where('mentor_id', $id)->get();
     $user = User::where('id', $id)->first();
     $temp = [];
     foreach ($res_students as $review_key => $review_value) {
       $res_student = User::where('id', $review_value->student_id)->first();
+      $created_at = date('Y-m-d', strtotime($review_value->created_at));
+      $current = date('Y-m-d');
+      $date1 = date_create($created_at);
+      $date2 = date_create($current);
+      $diff = date_diff($date1,$date2);
       $temp['student'] = $res_student;
       $temp['review'] = $review_value;
+      $temp['review']['day_diff'] = $diff->format('%a');
       $res_students[$review_key] = $temp;
       $count_review++;
       $average_review += $review_value->mark;
     }
-    
-    
     $newDate = date("Y-m-d", strtotime($user['dob']));
     $user['dob'] = $newDate;
     $tags_id = explode(',', $user['tags_id']);
@@ -158,7 +164,6 @@ class UserController extends Controller
       $tags = Tag::where('id', $tag_value)->first();
       $tag_names[$tag_key] = $tags['name'];
     }
-    
     $user['tags'] = $tag_names;
     $user['student'] = $res_students;
     $user['count_review'] = $count_review;
