@@ -201,11 +201,11 @@ export default class CreateMyShare extends React.Component {
             {this.state.requiremessage.ddescription == '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
-            <label htmlFor="feEmail">Video</label>
-            <DropzoneArea onChange={(e) => this.onChnageVideo(e)}/>
+            <label htmlFor="feEmail">Photo/Video</label>
+            <DropzoneArea acceptedFiles={['video/mp4']} onChange={(e) => this.onChnageVideo(e)}/>
           </div>
           <div className="content-center block-content-class button-text-group-class">
-            <Button onClick={() => this.actionSave()}>Save</Button>
+            <Button onClick={() => this.actionSave()}>Upload</Button>
           </div>
           </ModalBody>
         </Modal>

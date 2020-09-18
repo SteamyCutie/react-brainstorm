@@ -182,10 +182,10 @@ export default class StudentSession extends React.Component {
                 <option>All</option>
               </FormSelect> */}
               <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
-                Category:
+                Tag:
               </label>
               <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}} onChange={(e) => this.onChangeTags(e)}>
-                <option value="">Select category</option>
+                <option value="">Select tag</option>
                 {tags.map((item, idx) =>
                   <option key={idx} value={item.id}>{item.name}</option>
                 )}

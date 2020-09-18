@@ -119,7 +119,7 @@ export default function Library() {
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
               <Row>
-                <Col xl="4" lg="4" sm="6">
+                {/* <Col xl="4" lg="4" sm="6">
                   <SmallCard3 />
                 </Col>
                 <Col xl="4" lg="4" sm="6">
@@ -139,7 +139,7 @@ export default function Library() {
                 </Col>
                 <Col xl="4" lg="4" sm="6">
                   <SmallCard3 />
-                </Col>
+                </Col> */}
               </Row>
             </TabPanel>
           </SwipeableViews>

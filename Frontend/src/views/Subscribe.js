@@ -7,6 +7,7 @@ import 'react-notifications-component/dist/theme.css';
 import Review from "../components/common/Review"
 import SubscribeModal from "../components/common/SubscribeModal"
 import LoadingModal from "../components/common/LoadingModal";
+import AddNewCard from "../components/common/AddNewCard";
 
 import StarIcon from "../images/star_icon.svg";
 import Lightening from "../images/Lightening.svg";
@@ -23,6 +24,7 @@ export default class Subscribe extends React.Component {
     this.state = {
       loading: false,
       subscriptionOpen: false,
+      addnewcardModal: false,
       mentorData: {} 
     }
   }
@@ -54,6 +56,19 @@ export default class Subscribe extends React.Component {
   toggle_unsubscribe() {
     this.setState({
       subscriptionOpen: !this.state.subscriptionOpen
+    });
+  }
+
+  toggle_modal() {
+    this.setState({
+      addnewcardModal: !this.state.addnewcardModal,
+      subscriptionOpen: !this.state.subscriptionOpen
+    });
+  }
+
+  toggle_addnewcardmodal() {
+    this.setState({
+      addnewcardModal: !this.state.addnewcardModal,
     });
   }
 
@@ -181,7 +196,8 @@ export default class Subscribe extends React.Component {
             </Row>
           </CardBody>
         </Card>
-        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} actionSuccess={this.actionSuccess} toggle={() => this.toggle_unsubscribe()} />
+        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
+        <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
       </Container>
       </>
     );

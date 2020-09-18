@@ -37,6 +37,11 @@ export default class SubscribeModal extends React.Component {
     toggle();    
   }
 
+  toggle_modal() {
+    const { toggle_modal } = this.props;
+    toggle_modal();    
+  }
+
   handleSubscribe = async(mentor_id, sub_plan_fee) => {
     let param = {
       email: localStorage.getItem('email'),
@@ -149,7 +154,7 @@ export default class SubscribeModal extends React.Component {
                   changeCard={this.changeCard}
                 />
               ))}
-              <h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Add new card</h5>
+              <a href="#!" onClick={() => this.toggle_modal()}><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Add new card</h5></a>
             </div>
             <div className="content-center block-content-class button-text-group-class" style={{marginBottom: "40px"}}>
               <Button className="center" onClick={() => this.handleSubscribe(item.id, item.sub_plan_fee)}>Subscribe</Button>
