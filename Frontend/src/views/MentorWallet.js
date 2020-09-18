@@ -85,7 +85,7 @@ export default class MentorWallet extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getWallets();
   }
 

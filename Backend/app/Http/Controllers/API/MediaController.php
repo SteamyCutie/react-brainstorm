@@ -38,7 +38,7 @@ class MediaController extends Controller
         }
     }
 
-    public function createshareinfo(Request $request)
+    public function createShareInfo(Request $request)
     {
         $email = $request['email'];
         $title = $request['title'];

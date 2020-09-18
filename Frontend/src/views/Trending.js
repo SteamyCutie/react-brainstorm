@@ -19,6 +19,8 @@ export default class Trending extends React.Component {
     this.state = {
       loading: false,
       mentors: [],
+      isCallingNow: 0,
+      isConneced: 0,
       smallCards: [
         {
           title: "Act science",
@@ -37,15 +39,25 @@ export default class Trending extends React.Component {
         }
       ],
     };
-    this.call = this.call.bind(this);
+
+    this.sendUser = this.sendUser.bind(this);
+    this.onDecline = this.onDecline.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
    this.getMentors();
   }
 
   call(to) {
     this.props.location.state.call(to);
+  }
+  
+  sendUser(to) {
+    this.props.setUser(to);
+  }
+
+  onDecline() {
+    this.props.stop(true);
   }
 
   getMentors = async() => {
@@ -105,10 +117,6 @@ export default class Trending extends React.Component {
     });
   }
 
-  handleAvailableNow() {
-    // this.mentorRef
-  }
-
   render() {
     const {loading, smallCards, mentors} = this.state;
     return (
@@ -141,7 +149,7 @@ export default class Trending extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} key={idx} onAvailableNow={() => this.handleAvailableNow()} call={this.call}/>
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} key={idx} sendUser={this.sendUser} onDecline={this.onDecline}/>
               ))}
             </Col>
           </Row>
@@ -149,11 +157,4 @@ export default class Trending extends React.Component {
       </>
     )
   };
-};
-
-Trending.propTypes = {
-  smallCards: PropTypes.array,
-  tHistory: PropTypes.array,
-  columns: PropTypes.array,
-  mentorData: PropTypes.array,
 };

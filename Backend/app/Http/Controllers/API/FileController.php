@@ -16,7 +16,7 @@ class FileController extends Controller
 
     }
 
-    public function uploadimage(Request $request)
+    public function uploadImage(Request $request)
     {
         $file = $request['files'];
         $file_origin_name = $file[0]->getClientOriginalName();
@@ -39,7 +39,7 @@ class FileController extends Controller
         }
     }
 
-    public function uploadvideo(Request $request)
+    public function uploadVideo(Request $request)
     {
         $file = $request['files'];
         $file_origin_name = $file[0]->getClientOriginalName();

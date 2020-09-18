@@ -19,7 +19,7 @@ export default class ResetPassword extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let vCode = this.props.location.pathname.split('/')[2];
     this.setState({
       vCode: vCode

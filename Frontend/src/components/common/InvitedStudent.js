@@ -29,7 +29,7 @@ export default class InvitedStudent extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
   }
 
   toggle() {

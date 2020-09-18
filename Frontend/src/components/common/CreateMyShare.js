@@ -31,7 +31,7 @@ export default class CreateMyShare extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {foruminfo} = this.state;
     let temp = foruminfo;
     temp.email = localStorage.getItem('email');

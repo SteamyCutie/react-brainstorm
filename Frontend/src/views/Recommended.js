@@ -19,7 +19,7 @@ export default class Recommended extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
    this.getMentors();
   }
 

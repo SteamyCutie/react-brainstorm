@@ -21,11 +21,10 @@ export default class MySharePage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getMyInformation();
     this.getuserinfo();
   }
-
   getMyInformation = async() => {
     try {
       this.setState({loading: true});

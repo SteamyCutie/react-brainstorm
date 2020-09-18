@@ -68,7 +68,7 @@ class SetAvailability extends React.Component {
     this.handleUpdatefrom = this.handleUpdatefrom.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getTimeListData();
   }
 

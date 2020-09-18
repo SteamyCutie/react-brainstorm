@@ -8,7 +8,7 @@ export default class EmailSent extends React.Component {
     
   }
 
-  componentWillMount() {
+  componentDidMount() {
     
   }
 

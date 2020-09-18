@@ -35,7 +35,7 @@ export default class EditLiveForum extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getAllTags();
   }
 

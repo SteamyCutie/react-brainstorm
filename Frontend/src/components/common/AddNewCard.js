@@ -28,7 +28,7 @@ export default class AddNewCard extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
   }
 
   toggle() {

@@ -24,8 +24,9 @@ export default class UserActions extends React.Component {
     this.toggle = this.toggle.bind(this);
   }
 
-  componentWillMount() {
-    this.getUserInformation();
+  componentDidMount() {
+    // this.getUserInformation();
+    this.setState({avatar: localStorage.getItem('avatar')});
   }
 
   getUserInformation = async() => {

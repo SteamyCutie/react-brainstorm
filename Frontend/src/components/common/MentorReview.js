@@ -27,7 +27,7 @@ export default class MentorReview extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
   }
 
   toggle() {

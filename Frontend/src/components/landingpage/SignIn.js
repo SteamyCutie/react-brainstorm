@@ -122,6 +122,7 @@ export default class SignIn extends React.Component {
         localStorage.setItem('email', this.state.email);
         localStorage.setItem('is_mentor', result.data.user.is_mentor);
         localStorage.setItem('user_id', result.data.user.id);
+        localStorage.setItem('avatar', result.data.user.avatar);
         window.location.href = '/mentorSession';
       } else {
         this.setState({

@@ -136,7 +136,7 @@ export default class StudentWallet extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
 
   }
 

@@ -24,7 +24,7 @@ export default class StudentSession extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getSessionList();
     this.getTags();
     this.getWeekData();
