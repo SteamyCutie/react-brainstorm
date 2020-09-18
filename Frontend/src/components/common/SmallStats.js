@@ -13,7 +13,7 @@ class SmallStats extends React.Component {
     this.canvasRef = React.createRef();
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const chartOptions = {
       ...{
         maintainAspectRatio: true,

@@ -20,7 +20,7 @@ class MainSidebar extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     Store.addChangeListener(this.onChange);
   }
 

@@ -35,7 +35,7 @@ class SubscriptionTable extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     createTheme('solarized', {
       text: {
         primary: '#268bd2',
@@ -59,7 +59,7 @@ class SubscriptionTable extends React.Component {
     });
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

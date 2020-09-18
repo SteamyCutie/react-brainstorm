@@ -21,7 +21,7 @@ export default class MySharePage extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getMyInformation();
     this.getuserinfo();
   }

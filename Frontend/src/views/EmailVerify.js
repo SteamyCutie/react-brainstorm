@@ -12,7 +12,7 @@ export default class EmailVerify extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     
   }
 

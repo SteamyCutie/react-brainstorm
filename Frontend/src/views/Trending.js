@@ -44,7 +44,7 @@ export default class Trending extends React.Component {
     this.onDecline = this.onDecline.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
    this.getMentors();
   }
 

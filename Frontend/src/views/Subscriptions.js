@@ -71,7 +71,7 @@ export default class Subscriptions extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
    this.getMentors();
   }
 

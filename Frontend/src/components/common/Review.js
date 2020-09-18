@@ -9,7 +9,7 @@ class Review extends React.Component {
     super(props);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

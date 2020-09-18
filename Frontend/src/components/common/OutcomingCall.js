@@ -11,7 +11,7 @@ export default class IncomingCall extends React.Component {
     this.handleDecline = this.props.onDecline;
   }
 
-  componentDidMount() {
+  componentWillMount() {
     
   }
 

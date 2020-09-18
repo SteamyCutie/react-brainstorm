@@ -23,7 +23,7 @@ export default class ScheduleLiveForum extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getForums();  
   }
 

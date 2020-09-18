@@ -13,7 +13,7 @@ export default class SubMainNavbar extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   toggle_openmodal() {

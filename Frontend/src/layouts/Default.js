@@ -59,7 +59,7 @@ export default class DefaultLayout extends React.Component {
     // this.setUser = this.setUser.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     if(!localStorage.getItem('token')) {
       window.location.href = '/';
       return;

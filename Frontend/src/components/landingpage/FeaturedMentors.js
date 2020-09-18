@@ -63,7 +63,7 @@ export default class FeaturedMentors extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     // this.getMentors();
   }
 
@@ -216,7 +216,7 @@ FeaturedMentors.defaultProps = {
 //     };
 //   }
 
-//   componentDidMount() {
+//   componentWillMount() {
 //     this.getMentors();
 //   }
 

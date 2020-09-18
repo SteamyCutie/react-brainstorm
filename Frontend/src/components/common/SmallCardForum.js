@@ -23,7 +23,7 @@ class SmallCardForum extends React.Component {
     this.toggle = this.toggle.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   toggle() {

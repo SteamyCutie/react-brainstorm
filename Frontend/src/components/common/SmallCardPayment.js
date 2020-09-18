@@ -9,7 +9,7 @@ class SmallCardPayment extends React.Component {
     super(props);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

@@ -23,7 +23,7 @@ export default class SignIn extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     // document.getElementById("email-input").focus();
   }
 

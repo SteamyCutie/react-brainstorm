@@ -83,7 +83,7 @@ export default class MentorSession extends React.Component {
     });
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getSessionList();
   }
 

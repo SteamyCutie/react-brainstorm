@@ -10,7 +10,7 @@ export default class UserType extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const { filterType } = this.props;
     let tmp_ali = "left";
     if (filterType === false) tmp_ali = "right";

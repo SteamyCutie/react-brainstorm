@@ -15,7 +15,7 @@ export default class ForgetPassword extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     
   }
 

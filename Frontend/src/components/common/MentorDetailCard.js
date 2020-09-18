@@ -33,7 +33,7 @@ class MentorDetailCard extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   handleAvailableNow() {

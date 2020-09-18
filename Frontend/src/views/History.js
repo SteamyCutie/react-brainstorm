@@ -17,7 +17,7 @@ export default class History extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getHistoryList();
   }
 

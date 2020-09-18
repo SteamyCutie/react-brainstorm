@@ -54,7 +54,7 @@ export default class MySharePage extends React.Component {
     this.onDrop = this.onDrop.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const {param} = this.state;
     let temp = param;
     temp.email = localStorage.getItem('email');

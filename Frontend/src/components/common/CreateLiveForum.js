@@ -34,7 +34,7 @@ export default class CreateLiveForum extends React.Component {
 
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const {foruminfo} = this.state;
     let temp = foruminfo;
     temp.email = localStorage.getItem('email');
