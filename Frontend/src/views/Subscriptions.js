@@ -21,14 +21,14 @@ export default class Subscriptions extends React.Component {
         {
           name: 'Mentor',
           selector: 'mentorName',
-          sortable: false,
+          sortable: true,
           style: {
-            fontSize: "16px",
+            fontSize: "16px"
           },
           cell: row => 
           <div>
             <img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              <a href="#!" onClick={() => this.handleClick(row.id)}>{row.mentorName}</a>
+              {row.mentorName}
           </div>,
         },
         {
@@ -42,7 +42,7 @@ export default class Subscriptions extends React.Component {
         {
           name: 'Subscription plan fee',
           selector: 'planFee',
-          sortable: false,
+          sortable: true,
           style: {
             fontSize: "16px",
           },
@@ -62,7 +62,10 @@ export default class Subscriptions extends React.Component {
           selector: 'edit',
           sortable: false,
           center: true,
-          cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? <a href="#!">Unsubscribe</a> : <a href="#!">Resubscribe</a>}</div>,
+          cell: row => 
+            <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>
+              {/* {row.sub_id.indexOf(localStorage.getItem('user_id')) === -1 ? <a href="#!" onClick={() => this.handleSub(row.id)}>Subscripbe</a> : <a href="#!" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
+            </div>,
         }
       ]
     };
@@ -72,7 +75,12 @@ export default class Subscriptions extends React.Component {
    this.getMentors();
   }
 
-  handleClick(id) {
+  handleSub(id) {
+    const { history } = this.props;
+    history.push('/subscribe-specific/' + id);
+  }
+
+  handleUnsub(id) {
     const { history } = this.props;
     history.push('/subscribe-specific/' + id);
   }
