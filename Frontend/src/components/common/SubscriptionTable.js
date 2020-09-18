@@ -59,7 +59,7 @@ class SubscriptionTable extends React.Component {
     });
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

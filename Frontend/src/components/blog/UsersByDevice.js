@@ -19,7 +19,7 @@ class UsersByDevice extends React.Component {
     this.canvasRef = React.createRef();
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const chartConfig = {
       type: "pie",
       data: this.props.chartData,

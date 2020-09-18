@@ -47,5 +47,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getallmentors', 'UserController@getAllMentors');
   Route::post('/createshareinfo', 'MediaController@createShareInfo');
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
+  Route::post('/deletesubscription', 'SubscriptionController@deleteSubscription');
   Route::post('/setreview', 'ReviewController@setReview');
 });
