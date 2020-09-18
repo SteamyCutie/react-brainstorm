@@ -53,7 +53,7 @@ export default class VideoCall extends React.Component {
     toggle();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const that = this;
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
