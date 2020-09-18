@@ -20,10 +20,7 @@ class MentorDetailCard extends React.Component {
     this.state = {
       more: false,
       ModalOpenReview: false,
-      teaches: [
-        "Algebra",
-        "Mathematics",
-      ],
+      teaches: [],
       call: false,
       registerState: 0,
       callState: 0,
@@ -136,7 +133,7 @@ class MentorDetailCard extends React.Component {
             </Button>}
           </Row>
           <Row className="center">
-            <Button className="btn-mentor-detail-book" onClick={() => this.handleBookCall()}>
+            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookCall()}>
               <img src={Clock} alt="Clock" />
               Book a session
             </Button>
