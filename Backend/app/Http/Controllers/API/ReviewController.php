@@ -10,7 +10,7 @@ use App\Models\User;
 
 class ReviewController extends Controller
 {
-    function setreview(Request $request) {
+    function setReview(Request $request) {
       $email = $request->email;
       $mentor_id = $request->mentor_id;
       $mark = $request->mark;
