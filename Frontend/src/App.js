@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import routes from "./Routes";
 import withTracker from "./withTracker";
@@ -15,16 +15,13 @@ import "../src/assets/common.css";
 import VideoCall from "../src/components/common/VideoCall";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
-import ErrorModal from "../src/components/common/ErrorModal"
-
-import Video from "./video/video.mp4"
 
 const NOT_REGISTERED = 0;
-const REGISTERING = 1;
+// const REGISTERING = 1;
 const REGISTERED = 2;
 
 const NO_CALL = 0;
-const IN_CALL = 1;
+// const IN_CALL = 1;
 const INCOMING_CALL = 2;
 const OUTGOING_CALL = 3;
 
@@ -127,12 +124,12 @@ export default class App extends React.Component{
   }
 
   resgisterResponse(message) {
-    if (message.response == 'accepted') {
+    if (message.response === 'accepted') {
       this.setState({
         registerState: REGISTERED
       })
     } else {
-      if(message.response == 'rejected ') {
+      if(message.response === 'rejected ') {
         this.setState({
           registerState: REGISTERED
         })
@@ -148,14 +145,13 @@ export default class App extends React.Component{
   }
 
   callResponse(message) {
-    if (message.response != 'accepted') {
-      var errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
+    if (message.response !== 'accepted') {
       this.setState({
         isAccepted: false,
       })
 
       // console.log("REJECT******************************");
-      if(message.response == 'rejected') {
+      if(message.response === 'rejected') {
         this.setState({
           errorMessage: "Call Rejected",
         })
@@ -198,7 +194,7 @@ export default class App extends React.Component{
 
   incomingCall(message) {
     // If bussy just reject without disturbing user
-    if (this.state.callState != NO_CALL) {
+    if (this.state.callState !== NO_CALL) {
       var response = {
         id : 'incomingCallResponse',
         from : message.from,
@@ -302,10 +298,10 @@ export default class App extends React.Component{
       this.webRtcPeer = null;
 
       if (!message) {
-        var message = {
+        var response = {
           id : 'stop'
         }
-        this.sendMessage(message);
+        this.sendMessage(response);
       }
     }
   }
@@ -442,13 +438,13 @@ export default class App extends React.Component{
   }
 
   render() {
-    const { incomingCallStatus, outcomingCallStatus, errorModalStatus} = this.state;
+    const { incomingCallStatus, outcomingCallStatus } = this.state;
 
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
           {routes.map((route, index) => {
-            if (route.path != '/trending')
+            if (route.path !== '/trending')
               return (
                 <Route
                   key={index}

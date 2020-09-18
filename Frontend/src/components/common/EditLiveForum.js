@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker, FormTextarea, FormSelect } from "shards-react";
+import { Modal, ModalBody, Button, FormInput,  DatePicker, FormTextarea, FormSelect } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
@@ -40,7 +40,7 @@ export default class EditLiveForum extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.id && this.props.id != nextProps.id) {
+    if (nextProps.id && this.props.id !== nextProps.id) {
       this.getSession(nextProps.id);
     }
   }
@@ -183,7 +183,6 @@ export default class EditLiveForum extends React.Component {
   }
 
   getSession = async(id) => {
-    let {selectedTags} = this.state;
     try {
       const result = await getforum({id: id});
       if (result.data.result === "success") {
@@ -333,14 +332,14 @@ export default class EditLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                item.value == this.state.foruminfo.from ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
+                item.value === this.state.foruminfo.from ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>
           <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeTo(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                item.value == this.state.foruminfo.to ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
+                item.value === this.state.foruminfo.to ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>

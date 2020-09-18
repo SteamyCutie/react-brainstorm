@@ -71,7 +71,7 @@ export default class CreateLiveForum extends React.Component {
   }
 
   getAllTags = async() => {
-    const {toggle_createsuccess, toggle_createfail} = this.props;
+    const {toggle_createfail} = this.props;
     try {
       const result = await gettags();
       if (result.data.result === "success") {
@@ -223,18 +223,8 @@ export default class CreateLiveForum extends React.Component {
   
   render() {
     const { open } = this.props;
-    const { selectedUsers, selectedTags, tags, foruminfo, requiremessage, displayday, loading } = this.state;
-    const options = [
-      { label: "Grapes 🍇", value: "grapes" },
-      { label: "Mango 🥭", value: "mango" },
-      { label: "Strawberry 🍓", value: "strawberry", disabled: true },
-      { label: "Watermelon 🍉", value: "watermelon" },
-      { label: "Pear 🍐", value: "pear" },
-      { label: "Apple 🍎", value: "apple" },
-      { label: "Tangerine 🍊", value: "tangerine" },
-      { label: "Pineapple 🍍", value: "pineapple" },
-      { label: "Peach 🍑", value: "peach" },
-    ];
+    const { selectedTags, tags, foruminfo, requiremessage, displayday, loading } = this.state;
+
     return (
       <div>
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">

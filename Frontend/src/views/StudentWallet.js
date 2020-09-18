@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col, Button } from "shards-react";
 
 import SmallCardPayment from "../components/common/SmallCardPayment";

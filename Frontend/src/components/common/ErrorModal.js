@@ -1,8 +1,7 @@
 import React from "react";
-import { Button, Modal, ModalBody,  Row, Col } from "shards-react";
+import { Button, Modal, ModalBody,  Row, } from "shards-react";
 import "../../assets/landingpage.css"
 
-import DeclineImg from '../../images/call-decline.svg'
 import AcceptImg from '../../images/call-accept.svg'
 
 export default class ErrorModal extends React.Component {
@@ -30,7 +29,7 @@ export default class ErrorModal extends React.Component {
               </Row>
               <Row className="center btn-group-call">
               <Button className="btn-video-call-accept" onClick={this.props.toggle()}>
-                <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}}/>
+                <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Error"/>
                 OK
               </Button>
               </Row>

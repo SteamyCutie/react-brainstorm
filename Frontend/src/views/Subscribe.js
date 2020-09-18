@@ -114,7 +114,7 @@ export default class Subscribe extends React.Component {
                   {mentorData.avatar && <img src={mentorData.avatar} style={{width: "206px", height: "206px"}} alt="User Avatar"/>}
                   {!mentorData.avatar && <img src={avatar} style={{width: "206px", height: "206px"}} alt="User Avatar"/>}
                   <div style={{display: "flex", padding: "20px 0px"}}>
-                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}  alt="Subscribe Image"/>
+                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}  alt="Subscribe"/>
                     <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
                     <h6 className="no-margin"style={{fontWeight: "bold"}}>{mentorData.sub_count}</h6>
                   </div>
@@ -154,7 +154,7 @@ export default class Subscribe extends React.Component {
                       <p>{mentorData.description}...</p>
                     </div>
                     <div className="mentor-detail-video">
-                      <a href={mentorData.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
+                      <a href={mentorData.video_url} target="_blank" rel="noopener noreferrer"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
                     </div>
                   </div>
                   <div className="mentor-deatail-rate-buttons">

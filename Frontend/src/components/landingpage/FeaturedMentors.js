@@ -10,7 +10,7 @@ import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
-import { getallmentors } from '../../api/api';
+// import { getallmentors } from '../../api/api';
 
 const AutoplaySlider = withAutoplay(AwesomeSlider);
 
@@ -108,7 +108,7 @@ export default class FeaturedMentors extends React.Component {
                 </Row>
                 <div className="carousel-component-body-desc-class">
                   <p>{data.description.slice(0,214)}...</p>
-                  <a className="read-more">Read more</a>
+                  <label className="read-more">Read more</label>
                 </div>
                 <div className="carousel-component-body-play-class">
                   <img src={PlayIcon} alt="play-icon"/>

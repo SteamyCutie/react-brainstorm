@@ -4,7 +4,6 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
 import { store } from 'react-notifications-component';
-import { createforum, gettags } from '../../api/api';
 
 import Close from '../../images/Close.svg'
 
@@ -81,7 +80,7 @@ export default class AddNewCard extends React.Component {
   }
 
   actionAdd = async() => {
-    const {cardinfo} = this.state;
+    // const {cardinfo} = this.state;
   }
 
   removeSession() {

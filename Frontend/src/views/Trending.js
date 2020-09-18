@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 
 import SmallCard2 from "./../components/common/SmallCard2";
@@ -149,7 +148,7 @@ export default class Trending extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} key={idx} sendUser={this.sendUser} onDecline={this.onDecline}/>
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} onDecline={this.onDecline}/>
               ))}
             </Col>
           </Row>

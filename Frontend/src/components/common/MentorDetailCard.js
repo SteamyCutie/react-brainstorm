@@ -133,7 +133,7 @@ class MentorDetailCard extends React.Component {
             {this.state.more ? <a href="#!" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="#!" className="read-more" onClick={() => this.readMore()}>Read more</a>}
           </div>
           <div className="mentor-detail-video">
-              <a href={video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
+              <a href={video_url} target="_blank" rel="noopener noreferrer" ><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
             </div>
         </div>
         <div className="mentor-deatail-rate-buttons">

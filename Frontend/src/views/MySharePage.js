@@ -136,7 +136,7 @@ export default class MySharePage extends React.Component {
                     {userInfo.avatar && <img className="avatar" src={userInfo.avatar} alt="avatar"/>}
                     {!userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
                     <div style={{display: "flex", padding: "20px 0px"}}>
-                      <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
+                      <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
                       <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
                       <h6 className="no-margin"style={{fontWeight: "bold"}}>{userInfo.sub_count}</h6>
                     </div>

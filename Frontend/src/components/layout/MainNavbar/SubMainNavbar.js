@@ -29,7 +29,7 @@ export default class SubMainNavbar extends React.Component {
   }
 
   render() {
-    const { ModalOpen, ModalOpenReview } = this.state;
+    const { ModalOpen } = this.state;
     return (
       <div className="main-navbar bg-white sub-main-nav-bar-class">
         <CreateMyShare open={ModalOpen} toggle={() => this.toggle_openmodal()} toggle_modal={() => this.toggle_modal()}></CreateMyShare>

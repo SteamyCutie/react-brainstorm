@@ -195,7 +195,7 @@ export default class SignUp extends React.Component {
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
+          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close"/></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Sign up</h1>
             <div className="content-center block-content-class modal-input-group-class">
@@ -238,7 +238,6 @@ export default class SignUp extends React.Component {
               <FormInput
                 id="confirm"
                 type="confirm-password"
-                type="password"
                 placeholder="Confirm password"
                 onChange={(e) => this.onChangeConfirmPassword(e)}
                 onKeyDown={(e) => this.handleConfirmKeyDown(e)}
@@ -249,7 +248,7 @@ export default class SignUp extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
-              <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
+              <p>Already have an account?&nbsp;<a href="/#" onClick={() => this.toggle_modal()}>Sign in</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />
@@ -257,10 +256,10 @@ export default class SignUp extends React.Component {
               <hr />
             </div>
             <div className="content-center">
-              <Button className="sign-with-facebook"><img src={Facebook} placeholder="Facebook Image" />Sign In with Facebook</Button>
+              <Button className="sign-with-facebook"><img src={Facebook} alt="Facebook" />Sign In with Facebook</Button>
             </div>
             <div className="content-center">
-              <Button className="sign-with-google"><img src={Google} placeholder="Google Image" />Sign In with Google</Button>
+              <Button className="sign-with-google"><img src={Google} alt="Google" />Sign In with Google</Button>
             </div>
           </ModalBody>
         </Modal>

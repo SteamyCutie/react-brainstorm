@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
 import { Link } from "react-router-dom";
 
-import MentorVideo from "../components/common/MentorVideo";
-
 import MentorAvatar from "../images/Rectangle_Kianna_big.png"
 import SubscriperImg from "../images/Users.svg"
 
@@ -23,9 +21,9 @@ const SpecificSubscription = ({ subscriptionList, columns }) => (
           <Col xl="3" className="subscription-mentor-detail">
             <div>
               <h2>Kianna Press</h2>
-              <img src={MentorAvatar} />
+              <img src={MentorAvatar}  alt="avatar"/>
               <div style={{display: "flex", padding: "20px 0px"}}>
-                <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
+                <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
                 <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
                 <h6 className="no-margin"style={{fontWeight: "bold"}}>24</h6>
               </div>
@@ -97,7 +95,7 @@ SpecificSubscription.defaultProps = {
       style: {
         fontSize: "16px",
       },
-      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><a href="#" class="scription-to-specific">{row.mentorName}</a></div>,
+      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" alt="avatar"/><a href="/#" class="scription-to-specific">{row.mentorName}</a></div>,
     },
     {
       name: 'Subscription page name',

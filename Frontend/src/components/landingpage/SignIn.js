@@ -157,7 +157,7 @@ export default class SignIn extends React.Component {
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
+          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Sign in</h1>
             <div className="content-center block-content-class modal-input-group-class">
@@ -177,7 +177,7 @@ export default class SignIn extends React.Component {
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="fePassword">Password</label>
-              <a href="#" htmlFor="feForgot" className="forgot-class" onClick={() => this.handleforgetPassword()}>Forgot password?</a>
+              <a href="/#" htmlFor="feForgot" className="forgot-class" onClick={() => this.handleforgetPassword()}>Forgot password?</a>
               <FormInput
                 id="password-input"
                 type="password"
@@ -192,7 +192,7 @@ export default class SignIn extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
-              <p>Don't have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign up</a></p>
+              <p>Don't have an account?&nbsp;<a href="/#" onClick={() => this.toggle_modal()}>Sign up</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />
@@ -200,10 +200,10 @@ export default class SignIn extends React.Component {
               <hr />
             </div>
             <div className="content-center">
-              <Button className="sign-with-facebook"><img src={Facebook} placeholder="Facebook Image" />Sign In with Facebook</Button>
+              <Button className="sign-with-facebook"><img src={Facebook} alt="Facebook" />Sign In with Facebook</Button>
             </div>
             <div className="content-center">
-              <Button className="sign-with-google"><img src={Google} placeholder="Google Image" />Sign In with Google</Button>
+              <Button className="sign-with-google"><img src={Google} alt="Google" />Sign In with Google</Button>
             </div>
           </ModalBody>
         </Modal>
