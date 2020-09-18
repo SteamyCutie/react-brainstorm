@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
             AvailableTimeListSeeder::class,
             WalletSeeder::class,
             TagSeeder::class,
-            SessionSeeder::class
+            SessionSeeder::class,
+            SubscriptionSeeder::class,
+            ReviewSeeder::class
         ]);
     }
 }
