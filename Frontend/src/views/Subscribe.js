@@ -16,7 +16,7 @@ import SubscriperImg from "../images/Users.svg"
 import avatar from "../images/avatar.jpg"
 import { getuserinfobyid } from '../api/api';
 
-export default class Unsubscribe extends React.Component {
+export default class Subscribe extends React.Component {
   
   constructor(props) {
     super(props);
@@ -27,23 +27,27 @@ export default class Unsubscribe extends React.Component {
     }
   }
 
-  componentWillMount() {
-    this.getUserInfo(this.props.location.query);
+  componentDidMount() {
+    this.getUserInfo(this.props.match.params.id);
   }
 
   getUserInfo = async(id) => {
     try {
       this.setState({loading: true});
       const result = await getuserinfobyid({id: id});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({mentorData: result.data.data});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -53,44 +57,24 @@ export default class Unsubscribe extends React.Component {
     });
   }
 
-  toggle_modal() {
-    this.setState({
-      subscriptionOpen: !this.state.subscriptionOpen,
-    });
-  }
-
-  showSuccess(text) {
-    // store.addNotification({
-    //   title: "Success",
-    //   message: text,
-    //   type: "success",
-    //   insert: "top",
-    //   container: "top-right",
-    //   dismiss: {
-    //     duration: 500,
-    //     onScreen: false,
-    //     waitForAnimation: false,
-    //     showIcon: false,
-    //     pauseOnHover: false
-    //   },
-    // });
+  actionSuccess() {
   }
 
   showFail(text) {
-    // store.addNotification({
-    //   title: "Fail",
-    //   message: text,
-    //   type: "danger",
-    //   insert: "top",
-    //   container: "top-right",
-    //   dismiss: {
-    //     duration: 500,
-    //     onScreen: false,
-    //     waitForAnimation: false,
-    //     showIcon: false,
-    //     pauseOnHover: false
-    //   }
-    // });
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   render() {
@@ -112,12 +96,12 @@ export default class Unsubscribe extends React.Component {
             <Row>
               <Col xl="3" className="subscription-mentor-detail">
                 <div>
-                  {mentorData.avatar && <img src={mentorData.avatar} style={{width: "206px", height: "206px"}}/>}
-                  {!mentorData.avatar && <img src={avatar} style={{width: "206px", height: "206px"}}/>}
+                  {mentorData.avatar && <img src={mentorData.avatar} style={{width: "206px", height: "206px"}} alt="User Avatar"/>}
+                  {!mentorData.avatar && <img src={avatar} style={{width: "206px", height: "206px"}} alt="User Avatar"/>}
                   <div style={{display: "flex", padding: "20px 0px"}}>
-                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
+                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}  alt="Subscribe Image"/>
                     <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                    <h6 className="no-margin"style={{fontWeight: "bold"}}>0</h6>
+                    <h6 className="no-margin"style={{fontWeight: "bold"}}>{mentorData.sub_count}</h6>
                   </div>
                   <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
                     Subscription ${mentorData.sub_plan_fee}/month
@@ -131,19 +115,27 @@ export default class Unsubscribe extends React.Component {
                       <div className="mentor-detail-name" style={{fontSize: "30px"}}>{mentorData.name}</div>
                       <div style={{fontSize: "20px", fontWeight: "bold", display: "flex" }}>
                         <img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>
-                        <h6 style={{paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333"}}>{mentorData.score}</h6>
-                        <h6 style={{paddingTop: "10px", fontSize: "18px", paddingLeft: "5px", color: "#333333"}}>({mentorData.reviewCount} reviews)</h6>
+                        <h6 style={{paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333"}}>{mentorData.average_review}</h6>
+                        <h6 style={{paddingTop: "10px", fontSize: "18px", paddingLeft: "5px", color: "#333333"}}>({mentorData.count_review} reviews)</h6>
                       </div>
                     </Row>
                     <Row className="mentor-detail-subject-tag">
                       <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-                      {/* {
-                        mentorData.tags.map((tag, idk) => (
-                          <p key={idk} className="brainsshare-tag">{tag}</p>
+                      {mentorData.tags && 
+                        mentorData.tags.map((tag, idx) => (
+                          <p key={idx} className="brainsshare-tag">{tag}</p>
                         ))
-                      } */}
+                      }
                     </Row>
-                    <div className="mentor-detail-myself">
+                    <Row className="mentor-detail-subject-tag">
+                      <h5 className="tag-title mentor-detail-subject-title">Level: </h5>
+                      
+                    </Row>
+                    <Row className="mentor-detail-subject-tag">
+                      <h5 className="tag-title mentor-detail-subject-title" style={{width: 150}}>Mentor Since: </h5>
+                      
+                    </Row>
+                    <div className="mentor-detail-myself" style={{marginTop: 30}}>
                       <p>{mentorData.description}...</p>
                     </div>
                     <div className="mentor-detail-video">
@@ -157,10 +149,13 @@ export default class Unsubscribe extends React.Component {
                       </p>
                     </Row>
                     <Row className="center">
-                      <Button className="btn-mentor-detail-instant">
+                      {mentorData.instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleAvailableNow()}>
+                        <img src={Lightening} alt="Lightening"/>
+                        Available now
+                      </Button> : <Button disabled className="btn-mentor-detail-instant">
                         <img src={Lightening} alt="Lightening" />
                         Available now
-                      </Button>
+                      </Button>}
                     </Row>
                     <Row className="center">
                       <Button className="btn-mentor-detail-book">
@@ -173,20 +168,20 @@ export default class Unsubscribe extends React.Component {
                 <div style={{display: "flex", paddingLeft: "30px", paddingTop: "20px"}}>
                   <h6 style={{paddingTop: "10px", paddingRight: "20px", fontSize: "20px", fontWeight: "bold", color: "#333333"}}>Review</h6>
                   <img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>
-                  <h6 style={{paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333"}}>{mentorData.score}</h6>
+                  <h6 style={{paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333"}}>{mentorData.average_review}</h6>
                 </div>
                 <div className="reviews-container">
-                  <Review />
-                  <Review />
-                  <Review />
-                  <Review />
-                  <Review />
+                {mentorData.student && 
+                  mentorData.student.map((item, idx) => (
+                    <Review key={idx} item={item}/>
+                  ))
+                }
                 </div>
               </Col>
             </Row>
           </CardBody>
         </Card>
-        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} toggle={() => this.toggle_unsubscribe()} toggle_modal={() => this.toggle_modal()} />
+        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} actionSuccess={this.actionSuccess} toggle={() => this.toggle_unsubscribe()} />
       </Container>
       </>
     );

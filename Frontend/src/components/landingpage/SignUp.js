@@ -30,11 +30,6 @@ export default class SignUp extends React.Component {
     toggle();    
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
-  }
-
   onChangeName = (e) => {
     this.setState({name: e.target.value});
   }
@@ -54,12 +49,11 @@ export default class SignUp extends React.Component {
   actionSignup = async() => {
     try {
       const result = await signup(this.state);
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('password', this.state.password);
         window.location.href = '/verification';
       } else {
-        // alert(result.data.message)
         this.setState({
           signUpError: result.data.message
         })
@@ -154,7 +148,7 @@ export default class SignUp extends React.Component {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
           formIsValid = false;
           errors["email"] = "Email is incorrect";
         }
@@ -208,7 +202,7 @@ export default class SignUp extends React.Component {
                 onChange={(e) => this.onChangeName(e)}
                 onKeyDown={(e) => this.handleNameKeyDown(e)}
               />
-              <label class="password-validation-err">{this.state.validationError['name']}</label>
+              <label className="password-validation-err">{this.state.validationError['name']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Email</label>
@@ -220,7 +214,7 @@ export default class SignUp extends React.Component {
                 onKeyDown={(e) => this.handleEmailKeyDown(e)}
                 autoComplete="email"
               />
-              <label class="password-validation-err">{this.state.validationError['email']}</label>
+              <label className="password-validation-err">{this.state.validationError['email']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Create password</label>
@@ -232,7 +226,7 @@ export default class SignUp extends React.Component {
                 onKeyDown={(e) => this.handlePasswordKeyDown(e)}
                 autoComplete="password"
               />
-              <label class="password-validation-err">{this.state.validationError['password']}</label>
+              <label className="password-validation-err">{this.state.validationError['password']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Confirm password</label>
@@ -245,12 +239,12 @@ export default class SignUp extends React.Component {
                 onKeyDown={(e) => this.handleConfirmKeyDown(e)}
                 autoComplete="password"
               />
-              <label class="password-validation-err">{this.state.validationError['confirm']}</label>
+              <label className="password-validation-err">{this.state.validationError['confirm']}</label>
             </div>
             <div className="content-center block-content-class button-text-group-class">
-              <label class="password-validation-err">{this.state.signUpError}</label>
+              <label className="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
-              <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
+              <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle()}>Sign in</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />

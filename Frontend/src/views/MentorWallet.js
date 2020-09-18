@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
@@ -94,22 +93,26 @@ export default class MentorWallet extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getwallets({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({tHistory: result.data.data});
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
-  showSuccess() {
+  showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -123,10 +126,10 @@ export default class MentorWallet extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -140,18 +143,26 @@ export default class MentorWallet extends React.Component {
     });
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
+  }
+
   render() {
+    const {loading, tHistory, columns, smallCards} = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
-      <ReactNotification />
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
           </Row>
 
           <Row>
-            {this.state.smallCards.map((card, idx) => (
+            {smallCards.map((card, idx) => (
               <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
                 <SmallCard
                   id={idx}
@@ -164,7 +175,7 @@ export default class MentorWallet extends React.Component {
 
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">
-              <CustomDataTable title="Transaction history" data={this.state.tHistory} header={this.state.columns}/>
+              <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
             </Col>
           </Row>
         </Container>

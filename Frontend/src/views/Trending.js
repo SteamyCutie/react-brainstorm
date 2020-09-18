@@ -48,6 +48,10 @@ export default class Trending extends React.Component {
    this.getMentors();
   }
 
+  call(to) {
+    this.props.location.state.call(to);
+  }
+  
   sendUser(to) {
     this.props.setUser(to);
   }
@@ -60,17 +64,22 @@ export default class Trending extends React.Component {
     try {
       this.setState({loading: true});
       const result = await getallmentors({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({
           loading: false,
           mentors: result.data.data
         });
       } else {
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Edit Profile Fail");
+      this.showFail("Something Went wrong");
     };
   }
 
@@ -91,10 +100,10 @@ export default class Trending extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
       title: "Fail",
-      message: "Action Fail!",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -109,21 +118,22 @@ export default class Trending extends React.Component {
   }
 
   render() {
+    const {loading, smallCards, mentors} = this.state;
     return (
       <>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Trending</h3>
             </Col>
           </Row>
-
           <Row>
             <div className="card-container">
-            {this.state.smallCards.map((card, idx) => (
+            {smallCards.map((card, idx) => (
                 <SmallCard2
-                  id={idx}
+                  key={idx}
                   title={card.title}
                   content={card.content}
                   image={card.image}
@@ -131,18 +141,15 @@ export default class Trending extends React.Component {
             ))}
             </div>
           </Row>
-
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>
             </Col>
           </Row>
-
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
-              {this.state.mentors.map((data, idx) =>(
-                <MentorDetailCard ref={this.mentorRef} mentorData={data} key={idx}
-                  sendUser={this.sendUser} onDecline={this.onDecline} />
+              {mentors.map((data, idx) =>(
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} key={idx} sendUser={this.sendUser} onDecline={this.onDecline}/>
               ))}
             </Col>
           </Row>

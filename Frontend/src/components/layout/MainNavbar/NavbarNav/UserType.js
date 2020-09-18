@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 
 export default class UserType extends React.Component {
@@ -9,7 +8,6 @@ export default class UserType extends React.Component {
     this.state = {
       alignment: "left",
     }
-
   }
 
   componentWillMount() {

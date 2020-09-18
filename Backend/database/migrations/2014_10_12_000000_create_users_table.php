@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->integer('two_factor_code')->nullable();
             $table->integer('is_active')->nullable();
             $table->integer('expertise')->nullable();
+            $table->integer('sub_count')->nullable();
             $table->timestamp('dob')->nullable();
             $table->string('tags_id')->nullable();
             $table->integer('is_mentor')->nullable();
