@@ -38,4 +38,26 @@ class SubscriptionController extends Controller
       ]);
     }
   }
+  
+  function deleteSubscription(Request $request) {
+    $mentor_id = $request->mentor_id;
+    $email = $request->email;
+    $student = User::select('id')->where('email', $email)->first();
+    $res_sub = null;
+    $res_del = Subscription::where('mentor_id', $mentor_id)->where('student_id', $student->id)->delete();
+    if ($res_del) {
+      $sub_count = User::select('sub_count')->where('id', $mentor_id)->first();
+      $res_dec = User::where('id', $mentor_id)->update(['sub_count' => $sub_count->sub_count - 1]);
+      if($res_dec) {
+        return response()->json([
+          'result'=> 'success',
+        ]);
+      }
+    } else {
+      return response()->json([
+        'result' => 'failed',
+        'message' => 'Subscription already unregistered!'
+      ]);
+    }
+  }
 }
