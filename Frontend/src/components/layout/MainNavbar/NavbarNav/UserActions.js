@@ -25,7 +25,8 @@ export default class UserActions extends React.Component {
   }
 
   componentWillMount() {
-    this.getUserInformation();
+    // this.getUserInformation();
+    this.setState({avatar: localStorage.getItem('avatar')});
   }
 
   getUserInformation = async() => {

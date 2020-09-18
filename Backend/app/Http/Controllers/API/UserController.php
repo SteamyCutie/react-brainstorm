@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
+use App\Models\Subscription;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -103,13 +105,14 @@ class UserController extends Controller
     }
   }
   
-  public function getuserinfo(Request $request)
+  public function getUserInfo(Request $request)
   {
     $email = $request['email'];
     $temp_names = [];
     $user = User::where('email', $email)->first();
     if ($user['dob'] == null || $user['dob'] == "") {
-      $user['dob'] = '2020-01-01';
+      $currentDate = date('Y-m-d');
+      $user['dob'] = $currentDate;
     } else {
       $newDate = date("Y-m-d", strtotime($user['dob']));
       $user['dob'] = $newDate;
@@ -130,24 +133,30 @@ class UserController extends Controller
     ]);
   }
   
-  public function getuserinfobyid(Request $request)
+  public function getUserInfoById(Request $request)
   {
     $id = $request['id'];
     $average_review = 0;
     $count_review = 0;
+    $tag_names = [];
+    
     $res_students = Review::where('mentor_id', $id)->get();
     $user = User::where('id', $id)->first();
     $temp = [];
     foreach ($res_students as $review_key => $review_value) {
       $res_student = User::where('id', $review_value->student_id)->first();
+      $created_at = date('Y-m-d', strtotime($review_value->created_at));
+      $current = date('Y-m-d');
+      $date1 = date_create($created_at);
+      $date2 = date_create($current);
+      $diff = date_diff($date1,$date2);
       $temp['student'] = $res_student;
       $temp['review'] = $review_value;
+      $temp['review']['day_diff'] = $diff->format('%a');
       $res_students[$review_key] = $temp;
       $count_review++;
       $average_review += $review_value->mark;
     }
-    
-    
     $newDate = date("Y-m-d", strtotime($user['dob']));
     $user['dob'] = $newDate;
     $tags_id = explode(',', $user['tags_id']);
@@ -155,12 +164,11 @@ class UserController extends Controller
       $tags = Tag::where('id', $tag_value)->first();
       $tag_names[$tag_key] = $tags['name'];
     }
-    
     $user['tags'] = $tag_names;
     $user['student'] = $res_students;
     $user['count_review'] = $count_review;
     if ($count_review > 0) {
-      $user['average_review'] = (float)$average_review/$count_review;
+      $user['average_review'] = round($average_review/$count_review, 1);
     } else {
       $user['average_review'] = 0;
     }
@@ -170,7 +178,7 @@ class UserController extends Controller
     ]);
   }
   
-  public function editprofile(Request $request)
+  public function editProfile(Request $request)
   {
     $name = $request['name'];
     $birthday = $request['birthday'];
@@ -377,19 +385,15 @@ class UserController extends Controller
     ]);
   }
   
-  public function getallmentors(Request $request)
+  public function getAllMentors(Request $request)
   {
     $email = $request['email'];
-    $all_marks = 0;
-    $count = 0;
     $users = User::all();
     $mentors = [];
     
     for ($i = 0; $i < count($users); $i ++) {
-      
       if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
         $mentors[] = $users[$i];
-        
       }
     }
     
@@ -407,11 +411,18 @@ class UserController extends Controller
         for($j = 0; $j < count($res_mark); $j++){
           $all_marks += $res_mark[$j]['mark'];
         }
-        $mentors[$i]['average_mark'] = $all_marks/count($res_mark);
+        $mentors[$i]['average_mark'] = round($all_marks/count($res_mark), 1);
       } else {
         $mentors[$i]['average_mark'] = 0;
       }
-      
+      $temp = [];
+      $sub_id = Subscription::select('student_id')->where('mentor_id', $mentors[$i]['id'])->get();
+      if(count($sub_id) > 0) {
+        for ($k = 0; $k < count($sub_id); $k++){
+          $temp[] = $sub_id[$k]['student_id'];
+        }
+      }
+      $mentors[$i]['sub_id'] = $temp;
     }
     
     return response()->json([

@@ -8,14 +8,19 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Session;
 use App\Models\Tag;
 use App\Models\User;
-use DateTime;
 
 class SessionController extends Controller
 {
-  function getSession(Request $request)
+  function getAllForum(Request $request)
   {
     $email = $request['email'];
-    $user_id = User::select('id')->where('email', $email)->first();
+    $user_id = User::select('id', 'is_mentor')->where('email', $email)->first();
+    if ($user_id->is_mentor == 0){
+      return response()->json([
+        'result'=> 'success',
+        'data'=> [],
+      ]);
+    }
     $session_info = Session::where('user_id', $user_id['id'])->get();
     foreach ($session_info as $key => $value) {
       $from_date = $value['from'];
@@ -57,7 +62,7 @@ class SessionController extends Controller
     }
   }
   
-  function getforum(Request $request)
+  function getForum(Request $request)
   {
     $id = $request['id'];
     $temp_names = [];
@@ -95,7 +100,7 @@ class SessionController extends Controller
     ]);
   }
   
-  function createforum(Request $request)
+  function createForum(Request $request)
   {
     $email = $request['email'];
     $user_id = User::select('id')->where('email', $email)->first();
@@ -145,7 +150,7 @@ class SessionController extends Controller
     ]);
   }
   
-  function editforum(Request $request)
+  function editForum(Request $request)
   {
     
     $id = $request['id'];
@@ -198,6 +203,20 @@ class SessionController extends Controller
       return response()->json([
         'result'=> 'success',
         'data'=> $forum,
+      ]);
+    }
+  }
+  
+  function  deleteForum(Request $request) {
+    $session_id = $request['id'];
+    $res = Session::where('id', $session_id)->delete();
+    if ($res) {
+      return response()->json([
+        'result'=> 'success',
+      ]);
+    } else {
+      return response()->json([
+        'result'=> 'failed',
       ]);
     }
   }

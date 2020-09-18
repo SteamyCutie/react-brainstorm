@@ -7,7 +7,7 @@ class SmallCard2 extends React.Component {
     super(props);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

@@ -25,7 +25,6 @@ export default class MySharePage extends React.Component {
     this.getMyInformation();
     this.getuserinfo();
   }
-
   getMyInformation = async() => {
     try {
       this.setState({loading: true});

@@ -9,48 +9,29 @@ export default class ErrorModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.emailInput = React.createRef();
     this.state = {
 
     };
-    
-    this.onAccept = this.props.onAccept
-    this.onDecline = this.props.onDecline
   }
 
-  componentDidMount() {
+  componentWillMount() {
 
-  }
-
-  toggle(accepted) {
-    const { toggle } = this.props;
-    if(accepted){
-      this.onDecline()
-    } else {
-      this.onAccept()
-    }
-    toggle();
-  }
-
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
   }
 
   render() {
     const { open } = this.props;
     return (
       <div>
-        <Modal open={open} toggle={() => this.toggle()} className="modal-incoming-call center" backdrop={true} backdropClassName="backdrop-class">
+        <Modal open={open} toggle={() => this.props.toggle()} className="modal-incoming-call center" backdrop={true} backdropClassName="backdrop-class">
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
                 <label style={{fontSize: "13px", fontWeight: "bolder", color: "#333333"}}>{this.props.message} is calling to you</label>
               </Row>
               <Row className="center btn-group-call">
-              <Button className="btn-video-call-accept" onClick={this.props.handleClick()}>
+              <Button className="btn-video-call-accept" onClick={this.props.toggle()}>
                 <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}}/>
-                Accept
+                OK
               </Button>
               </Row>
             </div>

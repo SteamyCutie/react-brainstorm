@@ -31,7 +31,7 @@ export default class VideoCall extends React.Component {
     this.handleStop = this.handleStop.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
 
   }
 
@@ -53,7 +53,7 @@ export default class VideoCall extends React.Component {
     toggle();
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const that = this;
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
@@ -147,17 +147,19 @@ export default class VideoCall extends React.Component {
   }
 
   render() {
-    const { open } = this.props;
+    const { open, accepted, callState } = this.props;
     return (
-      <div id="video-call-modal">
+      <div className={
+        (callState == INCOMING_CALL) ? "video-call-modal-enable"
+        : (callState == OUTGOING_CALL && accepted) ? "video-call-modal-enable" : "video-call-modal-disable"}>
         <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                <video id="videoOutput" autoplay="" width="1000px" height="600px" className="video-call-student">
+                <video id="videoOutput" autoPlay width="1000px" height="600px" className="video-call-student">
                   Your browser does not support the video tag.
                 </video>
-                <video id="videoInput" autoplay="" width="200px" height="150px" className="video-call-mentor">
+                <video id="videoInput" autoPlay width="200px" height="150px" className="video-call-mentor">
                   Your browser does not support the video tag.
                 </video>
               </Row>

@@ -158,10 +158,3 @@ export default class Trending extends React.Component {
     )
   };
 };
-
-Trending.propTypes = {
-  smallCards: PropTypes.array,
-  tHistory: PropTypes.array,
-  columns: PropTypes.array,
-  mentorData: PropTypes.array,
-};

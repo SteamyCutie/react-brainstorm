@@ -88,6 +88,7 @@ export default class MentorSession extends React.Component {
   }
 
   getSessionList = async() => {
+    console.log(localStorage.getItem('user'), "++++++");
     let param = {
       email: localStorage.getItem('email'),
       tag_id: ''
@@ -494,8 +495,8 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
           </div> */}
           <div className="toolbar-select-label">
             <label className="">Tag: </label>
-            <FormSelect className="profile-detail-input" onChange={(e) => onChangeTag(e)}>
-              <option>select tag</option>
+            <FormSelect id="feInputState" onChange={(e) => onChangeTag(e)}>
+              <option value="">select tag</option>
               {tags.map((item, idx) =>                 
                 <option key={idx} value={item.id}>{item.name}</option>
               )}
@@ -503,7 +504,7 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
           </div>
           {/* <div className="toolbar-select-label">
             <label className="">Student: </label>
-            <FormSelect className="profile-detail-input" onChange={(e) => onChangeStudent(e)}>
+            <FormSelect className="profile-detail-input">
               <option>select student</option>
             </FormSelect>
           </div> */}

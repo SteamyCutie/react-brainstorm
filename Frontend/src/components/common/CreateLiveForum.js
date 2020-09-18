@@ -1,10 +1,8 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import MultiSelect from "react-multi-select-component";
-import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
-import { store } from 'react-notifications-component';
 import { createforum, gettags } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 
@@ -25,7 +23,7 @@ export default class CreateLiveForum extends React.Component {
         tags: [],
         from: '00:00',
         to: '00:00',
-        day: '2020-01-01'
+        day: new Date().toISOString().slice(0,10)
       },
       tags: [],
       requiremessage: {
@@ -73,6 +71,7 @@ export default class CreateLiveForum extends React.Component {
   }
 
   getAllTags = async() => {
+    const {toggle_createsuccess, toggle_createfail} = this.props;
     try {
       const result = await gettags();
       if (result.data.result === "success") {
@@ -91,19 +90,23 @@ export default class CreateLiveForum extends React.Component {
         }
         this.setState({tags: params});
       } else {
-        this.showFail(result.data.message);
+        toggle_createfail(result.data.message);
         if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
           this.removeSession();
           window.location.href = "/";
         }
       }
     } catch(err) {
-      this.showFail("Something Went wrong");
+      toggle_createfail("Something Went wrong");
       }
   }
 
   actionSave = async() => {
     const {requiremessage} = this.state;
+    const {toggle_createsuccess, toggle_createfail} = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
     temp.description = '';
@@ -115,8 +118,8 @@ export default class CreateLiveForum extends React.Component {
       const result = await createforum(this.state.foruminfo);
       if (result.data.result === "success") {
         this.toggle();
-        this.showSuccess("Create Schedule Success");
         window.location.href = "/scheduleLiveForum";
+        toggle_createsuccess("Create Forum Success");
       } else {
         if (result.data.type === 'require') {
           const {requiremessage} = this.state;
@@ -134,14 +137,14 @@ export default class CreateLiveForum extends React.Component {
           if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
-          }
+          } 
         }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Something Went wrong");
-    };
+      toggle_createfail("Create Forum Fail");
+    }
   }
 
   removeSession() {
@@ -190,6 +193,7 @@ export default class CreateLiveForum extends React.Component {
   // }
 
   setSelectedTags = (e) => {
+    console.log(e, "+++++++++");
     const {selectedTags} = this.state;
     let temp = selectedTags;
     temp = e;
@@ -216,41 +220,7 @@ export default class CreateLiveForum extends React.Component {
       this.setState({foruminfo: temp1});
     }
   }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
+  
   render() {
     const { open } = this.props;
     const { selectedUsers, selectedTags, tags, foruminfo, requiremessage, displayday, loading } = this.state;
@@ -267,7 +237,6 @@ export default class CreateLiveForum extends React.Component {
     ];
     return (
       <div>
-        <ReactNotification />
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
@@ -281,26 +250,29 @@ export default class CreateLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Description</label>
             {requiremessage.ddescription !== '' && <span className="require-message">{requiremessage.ddescription}</span>}
-            {requiremessage.ddescription !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description}/>}
-            {requiremessage.ddescription === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description}/>}
+            {requiremessage.ddescription !== '' && <FormTextarea style={{marginBottom: 20}} className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description}/>}
+            {requiremessage.ddescription === '' && <FormTextarea style={{marginBottom: 20}} className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description}/>}
           </div>
           
-          <div><label htmlFor="fePassword">Tags</label></div>
-          <MultiSelect
-            options={tags}
-            value={selectedTags}
-            onChange={(e) => this.setSelectedTags(e)}
-            labelledBy={"Select"}
-          />
-
-          <div><label htmlFor="fePassword">Users</label></div>
+          <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
+            <label htmlFor="feEmail">Tags</label>
+            <MultiSelect
+              options={tags}
+              value={selectedTags}
+              onChange={(e) => this.setSelectedTags(e)}
+              labelledBy={"Select"}
+            />
+          </div>
+          {/* <div><label htmlFor="fePassword">Users</label></div>
           <MultiSelect
             options={options}
             value={selectedUsers}
             onChange={(e) => this.setSelectedOptions(e)}
             labelledBy={"Select"}
-          />
-          <div><label htmlFor="fePassword">Day</label></div>
+          /> */}
+          <div className="content-center block-content-class modal-input-group-class">
+            <label htmlFor="feEmail">Date</label>
+          </div>
           <DatePicker
             md="6"
             size="lg"
@@ -310,17 +282,20 @@ export default class CreateLiveForum extends React.Component {
             placeholderText="Select Date"
             dropdownMode="select"
             className="text-center"
+            style={{marginBottom: 20}}
           />
-          <div><label htmlFor="fePassword">From~To</label></div>
-          <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
+
+          <div className="content-center block-content-class modal-input-group-class" style={{marginTop: 20}}>
+            <label htmlFor="feEmail">From~To</label>
+          </div>
+          <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
             {Timelinelist.map((item, idx) => {
               return (
                 <option key={idx} value={item.value} >{item.str}</option>
               );
             })}
           </FormSelect>
-          ~
-          <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeTo(e)}>
+          <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeTo(e)}>
             {Timelinelist.map((item, idx) => {
               return (
                 <option key={idx} value={item.value} >{item.str}</option>

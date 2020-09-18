@@ -60,7 +60,7 @@ class CustomDataTable extends React.Component {
     });
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

@@ -11,7 +11,7 @@ class LibrarySavedContent extends React.Component {
     super(props);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

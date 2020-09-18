@@ -13,7 +13,7 @@ class SmallCardPaymentSubscribe extends React.Component {
     this.changeCard = this.changeCard.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   changeCard(type) {
