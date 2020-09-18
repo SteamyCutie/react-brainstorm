@@ -30,6 +30,11 @@ export default class SignUp extends React.Component {
     toggle();    
   }
 
+  toggle_modal() {
+    const { toggle_modal } = this.props;
+    toggle_modal();    
+  }
+
   onChangeName = (e) => {
     this.setState({name: e.target.value});
   }
@@ -244,7 +249,7 @@ export default class SignUp extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
-              <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle()}>Sign in</a></p>
+              <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />

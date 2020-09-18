@@ -184,6 +184,12 @@ export default class MySharePage extends React.Component {
     const {param} = this.state;
     let temp = param;
     temp.is_mentor = !param.is_mentor;
+    if (!param.is_mentor == true) {
+      localStorage.setItem('is_mentor', 0);
+    } else {
+      localStorage.setItem('is_mentor', 1);
+    }
+    
     this.setState({param: temp});
   }
 
@@ -497,8 +503,8 @@ export default class MySharePage extends React.Component {
                             <label htmlFor="feInputState" className="profile-detail-important" >Expertise</label>
                             {requiremessage.dexpertise !== '' && <span className="require-message">{requiremessage.dexpertise}</span>}
                             <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeExpertise(e)}>
-                              {expertise.map((item, index) =>
-                                item.value === param.expertise ? <option value={item.value} selected>{item.name}</option> : <option value={item.value}>{item.name}</option>
+                              {expertise.map((item, idx) =>
+                                item.value === param.expertise ? <option key={idx} value={item.value} selected>{item.name}</option> : <option key={idx} value={item.value}>{item.name}</option>
                               )}
                             </FormSelect>
                           </Col>

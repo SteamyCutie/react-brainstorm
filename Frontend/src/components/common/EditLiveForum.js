@@ -132,6 +132,7 @@ export default class EditLiveForum extends React.Component {
 
   actionEdit = async() => {
     const {requiremessage} = this.state;
+    const {toggle_editsuccess, toggle_editfail} = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
     temp.description = '';
@@ -144,7 +145,7 @@ export default class EditLiveForum extends React.Component {
       const result = await editforum(this.state.foruminfo);
       if (result.data.result === "success") {
         this.toggle();
-        this.showSuccess("Edit Schedule Success");
+        toggle_editsuccess("Edit Forum Success");
         window.location.href = "/scheduleLiveForum";
       } else {
         if (result.data.type === 'require') {
@@ -160,7 +161,7 @@ export default class EditLiveForum extends React.Component {
             requiremessage: temp
           });
         } else {
-          this.showFail(result.data.message);
+          toggle_editfail("Edit Forum Fail");
           if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
@@ -170,7 +171,7 @@ export default class EditLiveForum extends React.Component {
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      toggle_editfail("Edit Forum Fail");
     };
   }
 
@@ -304,14 +305,18 @@ export default class EditLiveForum extends React.Component {
             {this.state.requiremessage.ddescription !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
             {this.state.requiremessage.ddescription === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
-          <div><label htmlFor="fePassword">Tags</label></div>
-          <MultiSelect
-            options={tags}
-            value={selectedTags}
-            onChange={(e) => this.setSelectedTags(e)}
-            labelledBy={"Select"}
-          />
-          <div><label htmlFor="fePassword">From</label></div>
+          <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
+            <label htmlFor="feEmail">Tags</label>
+            <MultiSelect
+              options={tags}
+              value={selectedTags}
+              onChange={(e) => this.setSelectedTags(e)}
+              labelledBy={"Select"}
+            />
+          </div>
+          <div className="content-center block-content-class modal-input-group-class">
+            <label htmlFor="feEmail">Date</label>
+          </div>
           <DatePicker
             md="6"
             size="lg"
@@ -322,16 +327,17 @@ export default class EditLiveForum extends React.Component {
             dropdownMode="select"
             className="text-center"
           />
-          <div><label htmlFor="fePassword">From~To</label></div>
-          <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
+          <div className="content-center block-content-class modal-input-group-class" style={{marginTop: 20}}>
+            <label htmlFor="feEmail">From~To</label>
+          </div>
+          <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
             {Timelinelist.map((item, idx) => {
               return (
                 item.value == this.state.foruminfo.from ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>
-          ~
-          <FormSelect id="feInputState" className="col-md-5 available-time-input" onChange={(e) => this.onChangeTo(e)}>
+          <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeTo(e)}>
             {Timelinelist.map((item, idx) => {
               return (
                 item.value == this.state.foruminfo.to ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>

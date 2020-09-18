@@ -9,7 +9,7 @@ use App\Models\User;
 
 class SubscriptionController extends Controller
 {
-  function setsubscription(Request $request) {
+  function setSubscription(Request $request) {
     $mentor_id = $request->mentor_id;
     $sub_plan_fee = $request->sub_plan_fee;
     $card_type = $request->card_type;
@@ -35,50 +35,6 @@ class SubscriptionController extends Controller
       return response()->json([
         'result' => 'failed',
         'message' => 'Subscription already registered!'
-      ]);
-    }
-  }
-  
-  function getsubscription(Request $request) {
-    $student = $request->student_id;
-    $res_sub = Subscription::where('student_id', $student);
-    if($res_sub) {
-      return response()->json([
-        'result'=> 'success',
-        'data' => $res_sub,
-      ]);
-    } else {
-      return response()->json([
-        'result' => 'failed',
-        'message' => 'can not get the data',
-      ]);
-    }
-  }
-  
-  function editsubscription(Request $request) {
-    $mentor_id = $request->mentor_id;
-    $student = $request->student_id;
-    $sub_plan_fee = $request->sub_plan_fee;
-    $status = $request->status;
-    $card_type = $request->card_type;
-    $res_sub = null;
-  
-    $res_sub = Subscription::where(['mentor_id' => $mentor_id, 'student_id' => $student])->update(array(
-      'mentor_id' => $mentor_id,
-      'student_id' => $student,
-      'sub_plan_fee' => $sub_plan_fee,
-      'status' => $status,
-      'card_type' => $card_type
-    ));
-    
-    if ($res_sub == null) {
-      return response()->json([
-        'result' => 'failed',
-        'message' => 'can not edit the data',
-      ]);
-    } else {
-      return response()->json([
-        'result'=> 'success',
       ]);
     }
   }
