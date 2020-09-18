@@ -39,11 +39,12 @@ export default class App extends React.Component{
       videoCallModal: 0,
       from: '',
       to: '',
-      incomingCallStatus: 0,
-      outcomingCallStatus: 0,
+      incomingCallStatus: false,
+      outcomingCallStatus: false,
       errorModalStatus: 0,
+      videoCallStatus: false,
       message: '',
-      isAccepted: 0,
+      isAccepted: false,
     }
 
     this.videoCallRef = React.createRef()
@@ -150,18 +151,18 @@ export default class App extends React.Component{
     if (message.response != 'accepted') {
       var errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
       this.setState({
-        isAccepted: 0,
+        isAccepted: false,
       })
 
-      // this.outcomingRef.current.setErrMsg(message.message);
-      this.setState({
-        errorMessage: message.message,
-      })
-      this.toggle_error_modal();
-      console.log("22222222222222222222",this.state.incomingCallStatus)
-      if(this.state.incomingCallStatus) {
-        console.log("1111111111111111111")
-        this.toggle_incomingCall_modal();
+      // console.log("REJECT******************************");
+      if(message.response == 'rejected') {
+        this.setState({
+          errorMessage: "Call Rejected",
+        })
+      } else {
+        this.setState({
+          errorMessage: message.message,
+        })
       }
 
       this.stop(true);
@@ -176,10 +177,10 @@ export default class App extends React.Component{
       //   sdpAnswer: message.sdpAnswer
       // })
       this.setState({
-        isAccepted: 1,
+        isAccepted: true,
       })
       // 
-      // this.toggle_outcomingCall_modal();
+      this.toggle_outcomingCall_modal();
     }
   }
 
@@ -272,10 +273,10 @@ export default class App extends React.Component{
       call: true,
       to: to,
       callResponseSate: 0,
-      outcomingCallStatus: 0,
+      // outcomingCallStatus: false,
     })
     // 
-    // this.toggle_outcomingCall_modal();
+    this.toggle_outcomingCall_modal();
 
     // if (document.getElementById('peer').value == '') {
     //   window.alert("You must specify the peer name");
@@ -290,10 +291,11 @@ export default class App extends React.Component{
   stop(message) {
     this.setState({
       callState: NO_CALL,
-      incomingCallStatus: 0,
-      outcomingCallStatus: 0,
+      incomingCallStatus: false,
+      message: message,
+      videoCallStatus: false,
       call: false,
-      isAccepted: 0,
+      isAccepted: false,
     });
     if (this.webRtcPeer) {
       this.webRtcPeer.dispose();
@@ -344,8 +346,8 @@ export default class App extends React.Component{
 
     if(!this.state.call) {
       this.setState({
-        incomingCallStatus: 0,
-        outcomingCallStatus: 0,
+        incomingCallStatus: false,
+        outcomingCallStatus: false,
       })
     }
   }
@@ -361,14 +363,20 @@ export default class App extends React.Component{
     this.setState({
       message: message,
       outcomingCallStatus: !this.state.outcomingCallStatus,
+      
     })
+    if(!this.state.videoCallStatus) {
+      this.setState({
+        videoCallStatus: !this.state.videoCallStatus,
+      })
+    }
   }
 
   toggle_error_modal() {
-    // this.setState({
-    //   // message: message,
-    //   errorModalStatus: !this.state.errorModalStatus,
-    // })
+    this.setState({
+      // message: message,
+      errorModalStatus: !this.state.errorModalStatus,
+    })
 
     if(this.state.outcomingCallStatus) {
       // this.toggle_outcomingCall_modal()
@@ -386,7 +394,7 @@ export default class App extends React.Component{
     };
 
     this.setState({
-      incomingCallStatus: 0,
+      incomingCallStatus: false,
     })
 
     this.sendMessage(response);
@@ -403,8 +411,9 @@ export default class App extends React.Component{
     };
 
     this.setState({
-      outcomingCallStatus: 0,
-      isAccepted: 0,
+      outcomingCallStatus: false,
+      isAccepted: false,
+      errorMessage: ''
     })
     this.sendMessage(response);
     // this.toggle_outcomingCall_modal();
@@ -425,8 +434,8 @@ export default class App extends React.Component{
   setUser(user) {
     this.setState({
       to: user,
-      outcomingCallStatus: 0,
-      incomingCallStatus: 0,
+      outcomingCallStatus: false,
+      incomingCallStatus: false,
       call: false,
     })
     this.call(user);
@@ -473,15 +482,19 @@ export default class App extends React.Component{
           })}
           {this.state.call && 
             <VideoCall
+              accepted={this.state.isAccepted}
               ref={this.videoCallRef} 
-              open={this.state.callState == INCOMING_CALL ? this.state.call : (true)} 
+              open={true} 
               toggle={() => this.toggle_videocall()}
-              from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}/>
+              from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+            />
           }
+              
           <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} 
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.from}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
-            onDecline={() => this.outcomingCallDecline()} name={this.state.to}/>
+            onDecline={() => this.outcomingCallDecline()} name={this.state.to} errMsg={this.state.errorMessage}/>
+          {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
         </div>
       </Router>
     );
