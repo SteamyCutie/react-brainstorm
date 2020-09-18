@@ -28,7 +28,7 @@ export default class Subscriptions extends React.Component {
           cell: row => 
           <div>
             <img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              {row.mentorName}
+              <a href="#!" onClick={() => this.handleSub(row.id)}>{row.mentorName}</a>
           </div>,
         },
         {

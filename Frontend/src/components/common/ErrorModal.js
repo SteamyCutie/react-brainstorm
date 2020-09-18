@@ -14,7 +14,7 @@ export default class ErrorModal extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
 
   }
 

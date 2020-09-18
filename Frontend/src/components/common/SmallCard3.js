@@ -11,7 +11,7 @@ class SmallCard3 extends React.Component {
     this.toggle = this.toggle.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   edit() {

@@ -31,7 +31,7 @@ export default class VideoCall extends React.Component {
     this.handleStop = this.handleStop.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
 
   }
 
@@ -53,7 +53,7 @@ export default class VideoCall extends React.Component {
     toggle();
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const that = this;
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');

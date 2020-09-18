@@ -59,7 +59,7 @@ export default class App extends React.Component{
     this.setUser = this.setUser.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     var wsUri = 'wss://media.brainsshare.com/one2one';
     this.setWebsocket(wsUri);
   }

@@ -29,7 +29,7 @@ export default class Subscribe extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getUserInfo(this.props.match.params.id);
   }
 
