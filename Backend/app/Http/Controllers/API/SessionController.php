@@ -103,13 +103,7 @@ class SessionController extends Controller
   function createForum(Request $request)
   {
     $email = $request['email'];
-    $user_id = User::select('id','is_mentor')->where('email', $email)->first();
-    if ($user_id->is_mentor == 0){
-      return response()->json([
-        'result'=> 'success',
-        'data'=> []
-      ]);
-    }
+    $user_id = User::select('id')->where('email', $email)->first();
     $title = $request['title'];
     $description = $request['description'];
     $tags = implode(",", $request['tags']);
