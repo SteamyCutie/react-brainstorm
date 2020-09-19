@@ -195,7 +195,7 @@ export default class App extends React.Component{
       incomingCallStatus: false,
     })
     // console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
-    this.toggle_incomingCall_modal();
+    // this.toggle_incomingCall_modal();
   }
 
   startCommunication(message) {
