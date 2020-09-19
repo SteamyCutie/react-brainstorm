@@ -11,7 +11,7 @@ import Phone from '../../images/call-phone.svg'
 // const REGISTERING = 1;
 // const REGISTERED = 2;
 
-const NO_CALL = 0;
+// const NO_CALL = 0;
 const IN_CALL = 1;
 const INCOMING_CALL = 2;
 const OUTGOING_CALL = 3;
@@ -72,17 +72,18 @@ export default class VideoCall extends React.Component {
         function (error) {
           if (error) {
             console.error(error);
-            this.setState({
-              callState: NO_CALL
-            })
+            // this.setState({
+            //   callState: NO_CALL
+            // })
+            that.props.sendErrorMsg("You have no webcam or microphone");
           }
   
           this.generateOffer(function (error, offerSdp) {
             if (error) {
               console.error(error);
-              that.setState({
-                callState: NO_CALL
-              })
+              // that.setState({
+              //   callState: NO_CALL
+              // })
             }
             var response = {
               id: 'incomingCallResponse',
@@ -97,18 +98,19 @@ export default class VideoCall extends React.Component {
     } else if (this.props.callState === OUTGOING_CALL) {
       this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
         if (error) {
-          console.error(error);
-          that.setState({
-            callState: NO_CALL
-          })
+          console.error(error, "11111111111111111111");
+          // that.setState({
+          //   callState: NO_CALL
+          // })
+          that.props.sendErrorMsg("You have no webcam or microphone");
         }
 
         this.generateOffer(function(error, offerSdp) {
           if (error) {
             console.error(error);
-            that.setState({
-              callState: NO_CALL
-            })
+            // that.setState({
+            //   callState: NO_CALL
+            // })
           }
           var message = {
             id : 'call',

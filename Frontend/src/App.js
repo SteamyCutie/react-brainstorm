@@ -15,6 +15,7 @@ import "../src/assets/common.css";
 import VideoCall from "../src/components/common/VideoCall";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
+// import { message } from "antd";
 
 const NOT_REGISTERED = 0;
 // const REGISTERING = 1;
@@ -42,6 +43,7 @@ export default class App extends React.Component{
       videoCallStatus: false,
       message: '',
       isAccepted: false,
+      errorMsg: '',
     }
 
     this.videoCallRef = React.createRef()
@@ -54,10 +56,12 @@ export default class App extends React.Component{
     this.stop = this.stop.bind(this);
     this.call = this.call.bind(this);
     this.setUser = this.setUser.bind(this);
+    this.sendErrorMsg = this.sendErrorMsg.bind(this);
   }
 
   componentWillMount() {
-    var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://media.brainsshare.com/one2one';
+    var wsUri = 'wss://192.168.105.47:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -79,6 +83,9 @@ export default class App extends React.Component{
           break;
         case 'callResponse':
           that.callResponse(parsedMessage);
+          break;
+        case 'callRejected':
+          that.callRejected(parsedMessage);
           break;
         case 'incomingCall':
           that.incomingCall(parsedMessage);
@@ -153,31 +160,42 @@ export default class App extends React.Component{
       // console.log("REJECT******************************");
       if(message.response === 'rejected') {
         this.setState({
-          errorMessage: "Call Rejected",
+          errorMsg: "Call Rejected",
         })
       } else {
         this.setState({
-          errorMessage: message.message,
+          errorMsg: message.message,
         })
       }
 
       this.stop(true);
     } else {
-      this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
-        if (error)
-          return console.error(error);
-      });
-      // this.setState({
-      //   callState: IN_CALL,
-      //   call: true,
-      //   sdpAnswer: message.sdpAnswer
-      // })
-      this.setState({
-        isAccepted: true,
-      })
-      // 
-      this.toggle_outcomingCall_modal();
+      if(this.state.callState) {
+        this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
+          if (error)
+            return console.error(error);
+        });
+        // this.setState({
+        //   callState: IN_CALL,
+        //   call: true,
+        //   sdpAnswer: message.sdpAnswer
+        // })
+        this.setState({
+          isAccepted: true,
+        })
+        // 
+        this.toggle_outcomingCall_modal();
+      }
     }
+  }
+  
+  callRejected(message) {
+    this.setState({
+      errorMsg: message,
+      incomingCallStatus: false,
+    })
+    // console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
+    this.toggle_incomingCall_modal();
   }
 
   startCommunication(message) {
@@ -351,6 +369,7 @@ export default class App extends React.Component{
   toggle_incomingCall_modal(message) {
     this.setState({
       message: message,
+      errorMsg: '',
       incomingCallStatus: !this.state.incomingCallStatus,
     })
   }
@@ -358,6 +377,7 @@ export default class App extends React.Component{
   toggle_outcomingCall_modal(message) {
     this.setState({
       message: message,
+      errorMsg: '',
       outcomingCallStatus: !this.state.outcomingCallStatus,
       
     })
@@ -394,24 +414,24 @@ export default class App extends React.Component{
     })
 
     this.sendMessage(response);
-    // this.toggle_incomingCall_modal();
+    this.toggle_incomingCall_modal();
     this.stop(true);
   }
 
   outcomingCallDecline() {
-    var response = {
-      id : 'incomingCallResponse',
+    var message = {
+      id : 'callReject',
+      from : localStorage.getItem('email'),
       to : this.state.to,
-      callResponse : 'reject',
-      // message : ''
     };
+    this.sendMessage(message);
 
     this.setState({
       outcomingCallStatus: false,
       isAccepted: false,
-      errorMessage: ''
+      errorMsg: ''
     })
-    this.sendMessage(response);
+    // this.sendMessage(response);
     // this.toggle_outcomingCall_modal();
     this.stop(true);
   }
@@ -435,6 +455,13 @@ export default class App extends React.Component{
       call: false,
     })
     this.call(user);
+  }
+
+  sendErrorMsg(message) {
+    this.setState({
+      errorMsg: message,
+    })
+    console.log(this.state.errorMsg)
   }
 
   render() {
@@ -482,14 +509,15 @@ export default class App extends React.Component{
               ref={this.videoCallRef} 
               open={true} 
               toggle={() => this.toggle_videocall()}
+              sendErrorMsg={this.sendErrorMsg}
               from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
             />
           }
               
-          <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} 
+          <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} errMsg={this.state.errorMsg} 
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.from}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
-            onDecline={() => this.outcomingCallDecline()} name={this.state.to} errMsg={this.state.errorMessage}/>
+            onDecline={() => this.outcomingCallDecline()} name={this.state.to} errMsg={this.state.errorMsg} />
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
         </div>
       </Router>

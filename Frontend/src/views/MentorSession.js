@@ -88,7 +88,7 @@ export default class MentorSession extends React.Component {
   }
 
   getSessionList = async() => {
-    console.log(localStorage.getItem('user'), "++++++");
+    // console.log(localStorage.getItem('user'), "++++++");
     let param = {
       email: localStorage.getItem('email'),
       tag_id: ''
@@ -580,7 +580,7 @@ const CustomWeekHeader = props => {
 const CustomWeekEvent = props => {
 
   const checkWeekEventTime = () => {
-    console.log(props, "++++++");
+    // console.log(props, "++++++");
     let hours = props.event.start.getHours();
     let startType = "am";
     let startHour = "";

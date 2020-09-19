@@ -237,7 +237,7 @@ export default class SignUp extends React.Component {
               <label htmlFor="feEmail">Confirm password</label>
               <FormInput
                 id="confirm"
-                type="confirm-password"
+                type="password"
                 placeholder="Confirm password"
                 onChange={(e) => this.onChangeConfirmPassword(e)}
                 onKeyDown={(e) => this.handleConfirmKeyDown(e)}

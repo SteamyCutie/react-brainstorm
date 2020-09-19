@@ -193,7 +193,7 @@ export default class CreateLiveForum extends React.Component {
   // }
 
   setSelectedTags = (e) => {
-    console.log(e, "+++++++++");
+    // console.log(e, "+++++++++");
     const {selectedTags} = this.state;
     let temp = selectedTags;
     temp = e;
