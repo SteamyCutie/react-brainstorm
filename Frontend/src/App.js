@@ -46,10 +46,6 @@ export default class App extends React.Component{
       errorMsg: '',
     }
 
-    this.videoCallRef = React.createRef()
-    
-    // this.handleClick = this.handleClick.bind(this);
-    // this.onChange = this.onChange.bind(this);
     this.ws = null;
     this.webRtcPeer = null;
     this.setWebRtcPeer = this.setWebRtcPeer.bind(this);
@@ -506,7 +502,6 @@ export default class App extends React.Component{
           {this.state.call && 
             <VideoCall
               accepted={this.state.isAccepted}
-              ref={this.videoCallRef} 
               open={true} 
               toggle={() => this.toggle_videocall()}
               sendErrorMsg={this.sendErrorMsg}

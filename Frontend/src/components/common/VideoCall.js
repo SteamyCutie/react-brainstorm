@@ -35,18 +35,6 @@ export default class VideoCall extends React.Component {
 
   }
 
-  isDisplay() {
-    if(this.state.isDisplay) {
-      document.getElementById("video-call-modal").setAttribute("style", "display: none");
-    } else {
-      document.getElementById("video-call-modal").removeAttribute("style");
-    }
-    
-    this.setState({
-      isDisplay: !this.state.isDisplay
-    })
-  }
-
   toggle() {
     const { toggle } = this.props;
     this.handleStop();
@@ -98,7 +86,7 @@ export default class VideoCall extends React.Component {
     } else if (this.props.callState === OUTGOING_CALL) {
       this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
         if (error) {
-          console.error(error, "11111111111111111111");
+          // console.error(error, "11111111111111111111");
           // that.setState({
           //   callState: NO_CALL
           // })
