@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody } from "shards-react";
-import { mysharepage, getuserinfo } from '../api/api';
+import { getuserinfobyid } from '../api/api';
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -16,46 +16,31 @@ export default class MySharePage extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      infoList: [],
       userInfo: []
     };
   }
 
   componentWillMount() {
-    this.getMyInformation();
     this.getuserinfo();
-  }
-  getMyInformation = async() => {
-    try {
-      this.setState({loading: true});
-      const result = await mysharepage({email: localStorage.getItem('email')});
-      if (result.data.result === "success") {
-        this.setState({infoList: result.data.data});
-      } else {
-        this.showFail(result.data.message);
-        if (result.data.message === "Token is Expired") {
-          this.removeSession();
-          window.location.href = "/";
-        }
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
-    };
   }
 
   getuserinfo = async() => {
+    let param = {
+      id: localStorage.getItem('user_id')
+    }
     try {
       this.setState({loading: true});
-      const result = await getuserinfo({email: localStorage.getItem('email')});
+      const result = await getuserinfobyid(param);
       if (result.data.result === "success") {
         this.setState({userInfo: result.data.data});
+      } else if (result.datat.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -109,6 +94,23 @@ export default class MySharePage extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreeen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   removeSession() {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
@@ -117,7 +119,7 @@ export default class MySharePage extends React.Component {
   }
 
   render() {
-    const {userInfo, infoList, loading} = this.state;
+    const {userInfo, loading} = this.state;
     return (
       <>
       {loading && <LoadingModal open={true} />}
@@ -147,7 +149,7 @@ export default class MySharePage extends React.Component {
                     <a href="#!" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
                     <a href="#!">www.brainsshare.com/kiannapress</a>
                   </h6>
-                  {infoList.map((item, idx) => 
+                  {userInfo.share_info && userInfo.share_info.map((item, idx) => 
                     <MentorVideo key={idx} item={item} />
                   )}
                 </Col>

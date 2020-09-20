@@ -53,16 +53,16 @@ export default class SubscribeModal extends React.Component {
       this.setState({loading: true});
       const result = await subscribe(param);
       if (result.data.result === "success") {
-        this.showSuccess("Create Schedule Success");
+        this.showSuccess("Subscribe Success");
         this.props.actionSuccess();
         this.toggle();
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
-        } else if (result.data.message === "Subscription already registered!") {
-          this.showWarning(result.data.message);
         } else {
           this.showFail(result.data.message);
         }
@@ -113,7 +113,7 @@ export default class SubscribeModal extends React.Component {
 
   showWarning(text) {
     store.addNotification({
-      title: "Fail",
+      title: "Warning",
       message: text,
       type: "warning",
       insert: "top",

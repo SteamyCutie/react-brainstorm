@@ -28,7 +28,8 @@ export default class Subscriptions extends React.Component {
           cell: row => 
           <div>
             <img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              <a href="#!" onClick={() => this.handleSub(row.id)}>{row.mentorName}</a>
+              {/* <a href="#!" onClick={() => this.handleSub(row.id)} style={{color: 'black'}}>{row.mentorName}</a> */}
+              <span>{row.mentorName}</span>
           </div>,
         },
         {
@@ -63,8 +64,8 @@ export default class Subscriptions extends React.Component {
           sortable: false,
           center: true,
           cell: row => 
-            <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>
-              {/* {row.sub_id.indexOf(localStorage.getItem('user_id')) === -1 ? <a href="#!" onClick={() => this.handleSub(row.id)}>Subscripbe</a> : <a href="#!" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
+            <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe" }>
+              {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="#!" onClick={() => this.handleSub(row.id)} style={{color: '#999999'}}>Subscripbe</a> : <a href="#!" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>}
             </div>,
         }
       ]
@@ -82,7 +83,7 @@ export default class Subscriptions extends React.Component {
 
   handleUnsub(id) {
     const { history } = this.props;
-    history.push('/subscribe-specific/' + id);
+    history.push('/unsubscription-specific/' + id);
   }
 
   getMentors = async() => {
@@ -99,7 +100,8 @@ export default class Subscriptions extends React.Component {
           planFee: 0,
           status: false,
           edit: false,
-          subscribe: false
+          subscribe: false,
+          sub_id: []
         };
         for (var i = 0; i < result.data.data.length; i ++) {
           arr.id = result.data.data[i].id;
@@ -111,6 +113,7 @@ export default class Subscriptions extends React.Component {
           arr.pageName = result.data.data[i].sub_page_name;
           arr.planFee = result.data.data[i].sub_plan_fee;
           arr.status = result.data.data[i].status;
+          arr.sub_id = result.data.data[i].sub_id;
 
           data_arr.push(arr);
           arr = {};
@@ -120,11 +123,14 @@ export default class Subscriptions extends React.Component {
           mentors: data_arr
         });
 
+      } else if (result.data.result === "warning") {
+          this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -156,6 +162,23 @@ export default class Subscriptions extends React.Component {
       title: "Fail",
       message: text,
       type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
       insert: "top",
       container: "top-right",
       dismiss: {

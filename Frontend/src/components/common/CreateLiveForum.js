@@ -90,13 +90,14 @@ export default class CreateLiveForum extends React.Component {
         }
         this.setState({tags: params});
       } else {
-        toggle_createfail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
         } else if (result.data.message === "Token is Invalid") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          toggle_createfail(result.data.message);
         }
       }
     } catch(err) {
@@ -120,6 +121,8 @@ export default class CreateLiveForum extends React.Component {
         this.toggle();
         window.location.href = "/scheduleLiveForum";
         toggle_createsuccess("Create Forum Success");
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         if (result.data.type === 'require') {
           const {requiremessage} = this.state;
@@ -137,7 +140,9 @@ export default class CreateLiveForum extends React.Component {
           if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
-          } 
+          } else {
+            toggle_createfail("Create Forum Fail");
+          }
         }
       }
       this.setState({loading: false});
@@ -193,7 +198,6 @@ export default class CreateLiveForum extends React.Component {
   // }
 
   setSelectedTags = (e) => {
-    console.log(e, "+++++++++");
     const {selectedTags} = this.state;
     let temp = selectedTags;
     temp = e;

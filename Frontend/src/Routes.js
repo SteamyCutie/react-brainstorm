@@ -79,7 +79,7 @@ export default [
     component: Subscriptions
   },
   {
-    path: "/unsubscription-specific", /* specific must be user id on this system */
+    path: "/unsubscription-specific/:id", /* specific must be user id on this system */
     layout: DefaultLayout,
     component: SpecificSubscription
   },

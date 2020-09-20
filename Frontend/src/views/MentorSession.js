@@ -88,7 +88,6 @@ export default class MentorSession extends React.Component {
   }
 
   getSessionList = async() => {
-    console.log(localStorage.getItem('user'), "++++++");
     let param = {
       email: localStorage.getItem('email'),
       tag_id: ''
@@ -123,11 +122,14 @@ export default class MentorSession extends React.Component {
           arr = {};
         }
         this.setState({events: data_arr});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -152,6 +154,23 @@ export default class MentorSession extends React.Component {
         pauseOnHover: false
       }
     });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    })
   }
 
   changeMonth = (value) => {
@@ -319,10 +338,11 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
         }
         changeMonth(data_arr);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       showLoading(false);
@@ -588,7 +608,6 @@ const CustomWeekHeader = props => {
 const CustomWeekEvent = props => {
 
   const checkWeekEventTime = () => {
-    console.log(props, "++++++");
     let hours = props.event.start.getHours();
     let startType = "am";
     let startHour = "";

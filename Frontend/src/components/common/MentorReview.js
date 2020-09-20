@@ -71,6 +71,8 @@ export default class MentorReview extends React.Component {
         this.toggle();
         this.showSuccess("Review Success");
         window.location.href = "/trending";
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         if (result.data.type === 'require') {
           const {requiremessage} = this.state;
@@ -85,6 +87,8 @@ export default class MentorReview extends React.Component {
           if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
           }
         }
       }
@@ -124,6 +128,23 @@ export default class MentorReview extends React.Component {
       title: "Fail",
       message: text,
       type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
       insert: "top",
       container: "top-right",
       dismiss: {

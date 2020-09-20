@@ -109,6 +109,21 @@ export const getallmentors = (param) => {
         }
     });
 }
+
+export const getallstudents = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getallstudents', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 //-------UserController------------
 
 
@@ -146,21 +161,6 @@ export const setAvailableTimes = (param) => {
 
 
 //MediaController
-export const mysharepage = (param) => {
-    return new Promise(async(resolve, reject) => {
-        try {
-            const token = localStorage.getItem('token');
-            const header = {
-                'Authorization': 'bearer ' + token
-            }
-            const response = await axios.post(SERVER_URL+'/api/mysharepage', param, {headers: header});
-            resolve(response);
-        } catch(error) {
-            reject(error);
-        }
-    });
-};
-
 export const createshareinfo = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -403,6 +403,22 @@ export const subscribe = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
             const response = await axios.post(SERVER_URL+'/api/setsubscription', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const unsubscription = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        // 'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/unsubscription', param, {headers: header});
             resolve(response);
         }  catch(error) {
             reject(error);
