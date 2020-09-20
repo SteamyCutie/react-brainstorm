@@ -16,6 +16,7 @@ import VideoCall from "../src/components/common/VideoCall";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
+import incomingSound from '../src/audio/incoming.mp3'
 
 const NOT_REGISTERED = 0;
 // const REGISTERING = 1;
@@ -183,6 +184,10 @@ export default class App extends React.Component{
         this.toggle_outcomingCall_modal();
       }
     }
+
+    const ring = document.getElementById("outgoing-ring");
+    ring.pause();
+    ring.currentTime = 0;
   }
   
   callRejected(message) {
@@ -190,6 +195,11 @@ export default class App extends React.Component{
       errorMsg: message,
       incomingCallStatus: false,
     })
+
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.pause();
+    ring.currentTime = 0;
     // console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
     // this.toggle_incomingCall_modal();
   }
@@ -218,6 +228,11 @@ export default class App extends React.Component{
       };
       return this.sendMessage(response);
     }
+
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.play();
+    console.log("11111111111111111111")
 
     this.setState({
       from: message.from,
@@ -286,6 +301,10 @@ export default class App extends React.Component{
       // outcomingCallStatus: false,
     })
     // 
+    const ring = document.getElementById("outgoing-ring");
+    ring.loop = true;
+    ring.play();
+
     this.toggle_outcomingCall_modal();
 
     // if (document.getElementById('peer').value == '') {
@@ -409,6 +428,11 @@ export default class App extends React.Component{
       incomingCallStatus: false,
     })
 
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.pause();
+    ring.currentTime = 0;
+
     this.sendMessage(response);
     this.toggle_incomingCall_modal();
     this.stop(true);
@@ -427,6 +451,11 @@ export default class App extends React.Component{
       isAccepted: false,
       errorMsg: ''
     })
+
+    const ring = document.getElementById("outgoing-ring");
+    ring.pause();
+    ring.currentTime = 0;
+
     // this.sendMessage(response);
     // this.toggle_outcomingCall_modal();
     this.stop(true);
@@ -438,6 +467,11 @@ export default class App extends React.Component{
       call: true,
       from: this.state.message.from
     })
+
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.pause();
+    ring.currentTime = 0;
 
     this.toggle_incomingCall_modal();
     this.toggle_videocall()
@@ -514,6 +548,16 @@ export default class App extends React.Component{
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.to} errMsg={this.state.errorMsg} />
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
+          <audio id="incoming-ring">
+            <source src={incomingSound} type="audio/mpeg" />
+            {/* <source src="horse.mp3" type="audio/mpeg" /> */}
+            Your browser does not support the audio element.
+          </audio>
+          <audio id="outgoing-ring">
+            <source src={incomingSound} type="audio/mpeg" />
+            {/* <source src="horse.mp3" type="audio/mpeg" /> */}
+            Your browser does not support the audio element.
+          </audio>
         </div>
       </Router>
     );

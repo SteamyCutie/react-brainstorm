@@ -18,8 +18,6 @@ export default class Trending extends React.Component {
     this.state = {
       loading: false,
       mentors: [],
-      isCallingNow: 0,
-      isConneced: 0,
       smallCards: [
         {
           title: "Act science",
@@ -40,23 +38,14 @@ export default class Trending extends React.Component {
     };
 
     this.sendUser = this.sendUser.bind(this);
-    this.onDecline = this.onDecline.bind(this);
   }
 
   componentWillMount() {
    this.getMentors();
   }
 
-  call(to) {
-    this.props.location.state.call(to);
-  }
-  
   sendUser(to) {
     this.props.setUser(to);
-  }
-
-  onDecline() {
-    this.props.stop(true);
   }
 
   getMentors = async() => {
@@ -148,7 +137,7 @@ export default class Trending extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} onDecline={this.onDecline}/>
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} />
               ))}
             </Col>
           </Row>

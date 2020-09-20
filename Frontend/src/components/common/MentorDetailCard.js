@@ -37,7 +37,6 @@ class MentorDetailCard extends React.Component {
   }
 
   handleAvailableNow() {
-    this.toggle_outcomingCall_modal();console.log(this.props.mentorData.email);
     this.props.sendUser(this.props.mentorData.email);
   }
 
@@ -81,21 +80,6 @@ class MentorDetailCard extends React.Component {
     this.setState({
       incomingCallToggle: !this.state.incomingCallToggle,
     })
-  }
-
-  toggle_outcomingCall_modal() {
-    this.setState({
-      outcomingCallToggle: !this.state.outcomingCallToggle,
-    })
-    if(this.state.outcomingCallToggle) {
-
-    } else {
-      
-    }
-  }
-
-  handleDecline() {
-    this.props.onDecline();
   }
 
   render() {
