@@ -152,6 +152,7 @@ export default class App extends React.Component{
     if (message.response !== 'accepted') {
       this.setState({
         isAccepted: false,
+        callState: NO_CALL,
       })
 
       // console.log("REJECT******************************");
@@ -439,26 +440,28 @@ export default class App extends React.Component{
   }
 
   outcomingCallDecline() {
-    var message = {
-      id : 'callReject',
-      from : localStorage.getItem('email'),
-      to : this.state.to,
-    };
-    this.sendMessage(message);
+    if (this.state.callState !== NO_CALL) {
+      var message = {
+        id : 'callReject',
+        from : localStorage.getItem('email'),
+        to : this.state.to,
+      };
+      this.sendMessage(message);
 
-    this.setState({
-      outcomingCallStatus: false,
-      isAccepted: false,
-      errorMsg: ''
-    })
+      this.setState({
+        outcomingCallStatus: false,
+        isAccepted: false,
+        errorMsg: ''
+      })
 
-    const ring = document.getElementById("outgoing-ring");
-    ring.pause();
-    ring.currentTime = 0;
+      const ring = document.getElementById("outgoing-ring");
+      ring.pause();
+      ring.currentTime = 0;
 
-    // this.sendMessage(response);
-    // this.toggle_outcomingCall_modal();
-    this.stop(true);
+      // this.sendMessage(response);
+      // this.toggle_outcomingCall_modal();
+      this.stop(true);
+    }
   }
 
   handleAccept() {
