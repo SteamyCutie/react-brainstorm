@@ -39,7 +39,7 @@ export default class VideoCall extends React.Component {
 
   toggle() {
     const { toggle } = this.props;
-    timeout.clearTimeout();
+    // timeout.clearTimeout();
     this.handleStop();
     toggle();
   }
@@ -116,11 +116,11 @@ export default class VideoCall extends React.Component {
       });
       this.props.setWebRtcPeer(this.webRtcPeer);
 
-      timeout = setTimeout(function() {
-        that.props.onDecline();
-        clearTimeout(timeout);
-        console.log("time out *********************")
-      }, 30000)
+      // timeout = setTimeout(function() {
+      //   that.props.onDecline();
+      //   clearTimeout(timeout);
+      //   console.log("time out *********************")
+      // }, 30000)
     }
   }
 
