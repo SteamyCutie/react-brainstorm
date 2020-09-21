@@ -45,6 +45,8 @@ export default class App extends React.Component{
       message: '',
       isAccepted: false,
       errorMsg: '',
+      toAvatar: '',
+      fromName: '', 
     }
 
     this.ws = null;
@@ -237,6 +239,8 @@ export default class App extends React.Component{
 
     this.setState({
       from: message.from,
+      fromName: message.name, 
+      avatarURL: message.avatarURL,
     })
 
     // that.ring = INCOMING_RING;
@@ -480,12 +484,13 @@ export default class App extends React.Component{
     this.toggle_videocall()
   }
 
-  setUser(user) {
+  setUser(user, avatar) {
     this.setState({
       to: user,
       outcomingCallStatus: false,
       incomingCallStatus: false,
       call: false,
+      toAvatar: avatar, 
     })
     this.call(user);
   }
@@ -548,9 +553,9 @@ export default class App extends React.Component{
           }
               
           <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} errMsg={this.state.errorMsg} 
-            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.from}/>
+            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
-            onDecline={() => this.outcomingCallDecline()} name={this.state.to} errMsg={this.state.errorMsg} />
+            onDecline={() => this.outcomingCallDecline()} name={localStorage.getItem("user_name")} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />

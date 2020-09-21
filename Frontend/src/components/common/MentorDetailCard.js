@@ -37,7 +37,7 @@ class MentorDetailCard extends React.Component {
   }
 
   handleAvailableNow() {
-    this.props.sendUser(this.props.mentorData.email);
+    this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar);
   }
 
   toggle_videocall() {

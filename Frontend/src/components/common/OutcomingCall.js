@@ -33,7 +33,7 @@ export default class IncomingCall extends React.Component {
                 <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333", textAlign: "center"}}>Calling to {this.props.name}</label>
               </Row>
               <Row className="center">
-                <img src={Avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
+                <img src={this.props.avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
               </Row>
               <Row className="center">
                 <label style={{fontSize: "15px", fontWeight: "bolder", color: "#333333", textAlign: "center", height: "20px"}}>{this.props.errMsg}</label>

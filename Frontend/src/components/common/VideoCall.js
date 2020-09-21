@@ -102,7 +102,9 @@ export default class VideoCall extends React.Component {
           }
           var message = {
             id : 'call',
-            from : localStorage.getItem('email'),
+            from : localStorage.getItem("email"),
+            name: localStorage.getItem("user_name"),
+            avatarURL: localStorage.getItem("avatar"),
             to : that.props.to,
             sdpOffer : offerSdp
           };
