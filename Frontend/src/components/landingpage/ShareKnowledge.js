@@ -32,8 +32,7 @@ const ShareKnowledge = () => (
           <img
             className="img-mentor-active"
             src={MentorActiveImage}
-            placeholder="Mentor Active Image"
-            alt="Mentor Active Image"
+            alt="Mentor Active"
           />
         </Col>
       </Row>

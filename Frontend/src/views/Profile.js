@@ -190,7 +190,7 @@ export default class MySharePage extends React.Component {
     const {param} = this.state;
     let temp = param;
     temp.is_mentor = !param.is_mentor;
-    if (!param.is_mentor == true) {
+    if (!param.is_mentor === true) {
       localStorage.setItem('is_mentor', 0);
     } else {
       localStorage.setItem('is_mentor', 1);

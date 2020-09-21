@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import routes from "./Routes";
 import withTracker from "./withTracker";
@@ -15,16 +15,15 @@ import "../src/assets/common.css";
 import VideoCall from "../src/components/common/VideoCall";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
-import ErrorModal from "../src/components/common/ErrorModal"
-
-import Video from "./video/video.mp4"
+// import { message } from "antd";
+import incomingSound from '../src/audio/incoming.mp3'
 
 const NOT_REGISTERED = 0;
-const REGISTERING = 1;
+// const REGISTERING = 1;
 const REGISTERED = 2;
 
 const NO_CALL = 0;
-const IN_CALL = 1;
+// const IN_CALL = 1;
 const INCOMING_CALL = 2;
 const OUTGOING_CALL = 3;
 
@@ -45,22 +44,24 @@ export default class App extends React.Component{
       videoCallStatus: false,
       message: '',
       isAccepted: false,
+      errorMsg: '',
+      toAvatar: '',
+      fromName: '', 
+      toName: '', 
     }
 
-    this.videoCallRef = React.createRef()
-    
-    // this.handleClick = this.handleClick.bind(this);
-    // this.onChange = this.onChange.bind(this);
     this.ws = null;
     this.webRtcPeer = null;
     this.setWebRtcPeer = this.setWebRtcPeer.bind(this);
     this.stop = this.stop.bind(this);
     this.call = this.call.bind(this);
     this.setUser = this.setUser.bind(this);
+    this.sendErrorMsg = this.sendErrorMsg.bind(this);
   }
 
   componentWillMount() {
     var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://192.168.105.47:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -82,6 +83,9 @@ export default class App extends React.Component{
           break;
         case 'callResponse':
           that.callResponse(parsedMessage);
+          break;
+        case 'callRejected':
+          that.callRejected(parsedMessage);
           break;
         case 'incomingCall':
           that.incomingCall(parsedMessage);
@@ -117,71 +121,91 @@ export default class App extends React.Component{
   }
 
   register(user) {
-    if(this.state.registerState === NOT_REGISTERED) {
+    // if(this.state.registerState === NOT_REGISTERED) {
       var message = {
         id: 'register',
         name: user
       };
       this.sendMessage(message);
-    }
+    // }
   }
 
   resgisterResponse(message) {
-    if (message.response == 'accepted') {
-      this.setState({
-        registerState: REGISTERED
-      })
+    if (message.response === 'accepted') {
+      // this.setState({
+      //   registerState: REGISTERED
+      // })
     } else {
-      if(message.response == 'rejected ') {
-        this.setState({
-          registerState: REGISTERED
-        })
-      } else {
-        this.setState({
-          registerState: NOT_REGISTERED
-        })
-        var errorMessage = message.message ? message.message
-            : 'Unknown reason for register rejection.';
-        console.log(errorMessage);
-      }
+      // if(message.response === 'rejected ') {
+      //   this.setState({
+      //     registerState: REGISTERED
+      //   })
+      // } else {
+      //   this.setState({
+      //     registerState: NOT_REGISTERED
+      //   })
+      //   var errorMessage = message.message ? message.message
+      //       : 'Unknown reason for register rejection.';
+      //   console.log(errorMessage);
+      // }
     }
   }
 
   callResponse(message) {
-    if (message.response != 'accepted') {
-      var errorMessage = message.message ? message.message : 'Unknown reason for call rejection.';
+    if (message.response !== 'accepted') {
       this.setState({
         isAccepted: false,
+        callState: NO_CALL,
       })
 
       // console.log("REJECT******************************");
-      if(message.response == 'rejected') {
+      if(message.response === 'rejected') {
         this.setState({
-          errorMessage: "Call Rejected",
+          errorMsg: "Call Rejected",
         })
       } else {
         this.setState({
-          errorMessage: message.message,
+          errorMsg: message.message,
         })
       }
 
       this.stop(true);
     } else {
-      this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
-        if (error)
-          return console.error(error);
-      });
-      // this.setState({
-      //   callState: IN_CALL,
-      //   call: true,
-      //   sdpAnswer: message.sdpAnswer
-      // })
-      this.setState({
-        isAccepted: true,
-      })
-      // 
-      this.toggle_outcomingCall_modal();
+      if(this.state.callState) {
+        this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
+          if (error)
+            return console.error(error);
+        });
+        // this.setState({
+        //   callState: IN_CALL,
+        //   call: true,
+        //   sdpAnswer: message.sdpAnswer
+        // })
+        this.setState({
+          isAccepted: true,
+        })
+        // 
+        this.toggle_outcomingCall_modal();
+      }
     }
+
+    const ring = document.getElementById("outgoing-ring");
+    ring.pause();
+    ring.currentTime = 0;
+  }
+  
+  callRejected(message) {
+    this.setState({
+      errorMsg: message,
+      incomingCallStatus: false,
+    })
+
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.pause();
+    ring.currentTime = 0;
+    // console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
+    // this.toggle_incomingCall_modal();
   }
 
   startCommunication(message) {
@@ -198,7 +222,7 @@ export default class App extends React.Component{
 
   incomingCall(message) {
     // If bussy just reject without disturbing user
-    if (this.state.callState != NO_CALL) {
+    if (this.state.callState !== NO_CALL) {
       var response = {
         id : 'incomingCallResponse',
         from : message.from,
@@ -209,8 +233,15 @@ export default class App extends React.Component{
       return this.sendMessage(response);
     }
 
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.play();
+    console.log("11111111111111111111")
+
     this.setState({
       from: message.from,
+      fromName: message.name, 
+      avatarURL: message.avatarURL,
     })
 
     // that.ring = INCOMING_RING;
@@ -276,6 +307,10 @@ export default class App extends React.Component{
       // outcomingCallStatus: false,
     })
     // 
+    const ring = document.getElementById("outgoing-ring");
+    ring.loop = true;
+    ring.play();
+
     this.toggle_outcomingCall_modal();
 
     // if (document.getElementById('peer').value == '') {
@@ -302,10 +337,10 @@ export default class App extends React.Component{
       this.webRtcPeer = null;
 
       if (!message) {
-        var message = {
+        var response = {
           id : 'stop'
         }
-        this.sendMessage(message);
+        this.sendMessage(response);
       }
     }
   }
@@ -355,6 +390,7 @@ export default class App extends React.Component{
   toggle_incomingCall_modal(message) {
     this.setState({
       message: message,
+      errorMsg: '',
       incomingCallStatus: !this.state.incomingCallStatus,
     })
   }
@@ -362,6 +398,7 @@ export default class App extends React.Component{
   toggle_outcomingCall_modal(message) {
     this.setState({
       message: message,
+      errorMsg: '',
       outcomingCallStatus: !this.state.outcomingCallStatus,
       
     })
@@ -397,27 +434,39 @@ export default class App extends React.Component{
       incomingCallStatus: false,
     })
 
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.pause();
+    ring.currentTime = 0;
+
     this.sendMessage(response);
-    // this.toggle_incomingCall_modal();
+    this.toggle_incomingCall_modal();
     this.stop(true);
   }
 
   outcomingCallDecline() {
-    var response = {
-      id : 'incomingCallResponse',
-      to : this.state.to,
-      callResponse : 'reject',
-      // message : ''
-    };
+    if (this.state.callState !== NO_CALL) {
+      var message = {
+        id : 'callReject',
+        from : localStorage.getItem('email'),
+        to : this.state.to,
+      };
+      this.sendMessage(message);
 
-    this.setState({
-      outcomingCallStatus: false,
-      isAccepted: false,
-      errorMessage: ''
-    })
-    this.sendMessage(response);
-    // this.toggle_outcomingCall_modal();
-    this.stop(true);
+      this.setState({
+        outcomingCallStatus: false,
+        isAccepted: false,
+        errorMsg: ''
+      })
+
+      const ring = document.getElementById("outgoing-ring");
+      ring.pause();
+      ring.currentTime = 0;
+
+      // this.sendMessage(response);
+      // this.toggle_outcomingCall_modal();
+      this.stop(true);
+    }
   }
 
   handleAccept() {
@@ -427,22 +476,36 @@ export default class App extends React.Component{
       from: this.state.message.from
     })
 
+    const ring = document.getElementById("incoming-ring");
+    ring.loop = true;
+    ring.pause();
+    ring.currentTime = 0;
+
     this.toggle_incomingCall_modal();
     this.toggle_videocall()
   }
 
-  setUser(user) {
+  setUser(user, avatar, name) {
     this.setState({
       to: user,
       outcomingCallStatus: false,
       incomingCallStatus: false,
       call: false,
+      toAvatar: avatar,
+      toName: name,  
     })
     this.call(user);
   }
 
+  sendErrorMsg(message) {
+    this.setState({
+      errorMsg: message,
+    })
+    console.log(this.state.errorMsg)
+  }
+
   render() {
-    const { incomingCallStatus, outcomingCallStatus, errorModalStatus} = this.state;
+    const { incomingCallStatus, outcomingCallStatus } = this.state;
 
     console.log(this.state);
 
@@ -450,7 +513,7 @@ export default class App extends React.Component{
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
           {routes.map((route, index) => {
-            if (route.path != '/trending')
+            if (route.path !== '/trending')
               return (
                 <Route
                   key={index}
@@ -485,18 +548,29 @@ export default class App extends React.Component{
           {this.state.call && 
             <VideoCall
               accepted={this.state.isAccepted}
-              ref={this.videoCallRef} 
               open={true} 
               toggle={() => this.toggle_videocall()}
+              onDecline={() => this.outcomingCallDecline()}
+              sendErrorMsg={this.sendErrorMsg}
               from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
             />
           }
               
-          <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} 
-            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.from}/>
+          <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} errMsg={this.state.errorMsg} 
+            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
-            onDecline={() => this.outcomingCallDecline()} name={this.state.to} errMsg={this.state.errorMessage}/>
+            onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
+          <audio id="incoming-ring">
+            <source src={incomingSound} type="audio/mpeg" />
+            {/* <source src="horse.mp3" type="audio/mpeg" /> */}
+            Your browser does not support the audio element.
+          </audio>
+          <audio id="outgoing-ring">
+            <source src={incomingSound} type="audio/mpeg" />
+            {/* <source src="horse.mp3" type="audio/mpeg" /> */}
+            Your browser does not support the audio element.
+          </audio>
         </div>
       </Router>
     );

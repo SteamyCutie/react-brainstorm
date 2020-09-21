@@ -6,9 +6,6 @@ import UserActions from "./UserActions";
 import UserType from "./UserType";
 
 export default class NavbarNav extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   toggleType() {
     const { toggleType } = this.props;

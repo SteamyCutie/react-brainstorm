@@ -1,12 +1,7 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
-import { verifyCode } from '../api/api';
+import { Container, Card, CardBody, CardHeader, CardFooter, Button } from "shards-react";
 
 export default class EmailSent extends React.Component {
-  constructor(props) {
-    super(props);
-    
-  }
 
   componentWillMount() {
     

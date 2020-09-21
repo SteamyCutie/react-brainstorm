@@ -23,11 +23,17 @@ Route::post('/signup', 'UserController@signup');
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
+Route::post('/test', 'UserController@test');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
   Route::post('/editprofile', 'UserController@editProfile');
-  Route::post('/mysharepage', 'MediaController@getMediaShare');
+  Route::post('/getuserinfo', 'UserController@getUserInfo');
+  Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
+  Route::post('/getallmentors', 'UserController@getAllMentors');
+  Route::post('/findmentors', 'UserController@findMentors');
+  Route::post('/getallstudents', 'UserController@getAllStudents');
+  Route::post('/createshareinfo', 'MediaController@createShareInfo');
   Route::post('/scheduleliveforum', 'SessionController@getAllForum');
   Route::post('/createforum', 'SessionController@createForum');
   Route::post('/gethistory', 'SessionController@getHistory');
@@ -38,14 +44,11 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getweekdata', 'DayController@index');
   Route::post('/setavailabletimes', 'AvailableTimesController@setAvailableTimes');
   Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
-  Route::post('/getuserinfo', 'UserController@getUserInfo');
-  Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
   Route::post('/getwallets', 'WalletController@index');
   Route::post('/gettags', 'TagController@index');
   Route::post('/uploadimage', 'FileController@uploadImage');
   Route::post('/uploadvideo', 'FileController@uploadVideo');
-  Route::post('/getallmentors', 'UserController@getAllMentors');
-  Route::post('/createshareinfo', 'MediaController@createShareInfo');
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
+  Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   Route::post('/setreview', 'ReviewController@setReview');
 });

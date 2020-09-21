@@ -10,13 +10,19 @@ use App\Models\User;
 
 class TagController extends Controller
 {
-    function index(Request $request)
-    {
-        $all_tags = Tag::all();
-
-        return response()->json([
-            'result'=> 'success',
-            'data'=> $all_tags,
-        ]);
+  function index(Request $request)
+  {
+    try{
+      $all_tags = Tag::all();
+      return response()->json([
+        'result'=> 'success',
+        'data'=> $all_tags,
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'data'=> $th,
+      ]);
     }
+  }
 }

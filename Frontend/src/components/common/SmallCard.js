@@ -3,9 +3,6 @@ import PropTypes from "prop-types";
 import { Card, CardBody } from "shards-react";
 
 class SmallCard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount() {
   }
