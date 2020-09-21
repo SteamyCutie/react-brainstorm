@@ -1,75 +1,87 @@
 import React from "react";
 import { Container, Row, Col } from "shards-react";
-import Pagination from '@material-ui/lab/Pagination';
-
-import SmallCard2 from "./../components/common/SmallCard2";
-import MentorDetailCard from "./../components/common/MentorDetailCard"
+import MainNavbar from "../components/layout/SearchNavbar/MainNavbar";
+import MainSidebar from "../components/layout/SearchSidebar/MainSidebar";
+import MainFooter from "../components/layout/MainFooter";
+import SearchResult from "../views/SearchResult";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
+import { findmentors } from '../api/api';
 
-import { getallmentors } from '../api/api';
-export default class Trending extends React.Component {
+import { Store } from "../flux";
+import { Dispatcher, Constants } from "../flux";
+
+export default class SearchLayout extends React.Component {
   constructor(props) {
     super(props);
 
-    this.mentorRef = React.createRef();
-
+    this.outcomingRef = React.createRef();
+    
     this.state = {
+      id: 1,
       totalCnt: 0,
       loading: false,
       mentors: [],
-      isCallingNow: 0,
-      isConneced: 0,
-      smallCards: [
-        {
-          title: "Act science",
-          content: "Mentors",
-          image: require ("../images/act-science.svg")
-        },
-        {
-          title: "English",
-          content: "Mentors",
-          image: require("../images/english.svg")
-        },
-        {
-          title: "Cooking",
-          content: "Mentors",
-          image: require("../images/cooking.svg")
-        }
-      ],
-    };
+      noNavbar: false,
+      filterType: Store.getUserType(),
+      mentorUrl: Store.getMentorHistory(),
+      studentUrl: Store.getStudentHistory(),
+      noFooter: true,
+    }
 
-    this.sendUser = this.sendUser.bind(this);
-    this.onDecline = this.onDecline.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentWillMount() {
-   this.getMentors(1);
+    if(!localStorage.getItem('token')) {
+      window.location.href = '/';
+      return;
+    }
+
+    Store.addChangeListener(this.onChange);
+    this.menuClicked("", 1);
   }
 
-  call(to) {
-    this.props.location.state.call(to);
-  }
-  
-  sendUser(to) {
-    this.props.setUser(to);
+  componentWillUnmount() {
+    Store.removeChangeListener(this.onChange);
   }
 
-  onDecline() {
-    this.props.stop(true);
+  onChange() {
+    this.setState({
+      ...this.state,
+      filterType: Store.getUserType(),
+      mentorUrl: Store.getMentorHistory(),
+      studentUrl: Store.getStudentHistory(),
+    });
   }
 
-  getMentors = async(pageNo) => {
+  handleClick() {
+    Dispatcher.dispatch({
+      actionType: Constants.TOGGLE_USER_TYPE,
+    });
+
+    const { filterType, mentorUrl, studentUrl } = this.state;
+
+    if ( !filterType ) 
+      this.props.history.push(mentorUrl);
+    else 
+      this.props.history.push(studentUrl);
+  }
+
+  menuClicked = async(id, pageNo) => {
+    this.setState({id: id});
     let param = {
-      email: localStorage.getItem('email'),
+      tag_id: id,
+      name: "",
       page: pageNo,
       rowsPerPage: 10
     }
     try {
       this.setState({loading: true});
-      const result = await getallmentors(param);
+      const result = await findmentors(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
@@ -88,13 +100,15 @@ export default class Trending extends React.Component {
       }
       this.setState({loading: false});
     } catch(err) {
+      console.log(err);
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     };
   }
 
-  onChangePagination(e, value) {
-    this.getMentors(value);
+  onChangePagination(pageNo) {
+    const {id} = this.state;
+    this.menuClicked(id, pageNo);
   }
 
   removeSession() {
@@ -157,46 +171,29 @@ export default class Trending extends React.Component {
   }
 
   render() {
-    const {loading, smallCards, mentors, totalCnt} = this.state;
+    const { children } = this.props;
+    const { noFooter, filterType, mentors, loading, totalCnt } = this.state;
+
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
-        <Container fluid className="main-content-container px-4 main-content-container-class">
-          <Row noGutters className="page-header py-4">
-            <Col xs="12" sm="12" className="page-title">
-              <h3>Trending</h3>
-            </Col>
-          </Row>
+        <Container fluid>
           <Row>
-            <div className="card-container">
-            {smallCards.map((card, idx) => (
-                <SmallCard2
-                  key={idx}
-                  title={card.title}
-                  content={card.content}
-                  image={card.image}
-                />
-            ))}
-            </div>
-          </Row>
-          <Row noGutters className="page-header py-4">
-            <Col xs="12" sm="12" className="page-title">
-              <h3>Top Brainsshare mentors</h3>
+            <MainSidebar menuClicked={(id) => this.menuClicked(id)} filterType={filterType}/>
+            <Col
+              className="main-content p-0 main-content-class"
+              tag="main"
+            >
+              <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} />
+              {/* {children} */}
+              <SearchResult item={mentors} count={totalCnt} pagination={(pageNo) => this.onChangePagination(pageNo)}></SearchResult>
+              
+              {!noFooter && <MainFooter />}
             </Col>
           </Row>
-          <Row className="no-padding">
-            <Col lg="12" md="12" sm="12">
-              {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} key={idx} sendUser={this.sendUser} onDecline={this.onDecline}/>
-              ))}
-            </Col>
-          </Row>
-          {mentors.length > 0 && <Row className="pagination-center">
-            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
-          </Row>}
         </Container>
       </>
-    )
-  };
-};
+    );
+  }
+}

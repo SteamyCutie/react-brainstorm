@@ -1,4 +1,4 @@
-import { DefaultLayout, LandingPageLayout, ExtraPageLayout } from "./layouts";
+import { DefaultLayout, LandingPageLayout, ExtraPageLayout, SearchLayout } from "./layouts";
 
 import MentorSession from "./views/MentorSession";
 import Profile from "./views/Profile";
@@ -13,6 +13,7 @@ import Trending from "./views/Trending";
 import Subscriptions from "./views/Subscriptions";
 import SpecificSubscription from "./views/SpecificSubscription";
 import Subscribe from "./views/Subscribe";
+import SearchResult from "./views/SearchResult";
 import Library from "./views/Library";
 import History from "./views/History";
 import Recommended from "./views/Recommended";
@@ -122,5 +123,11 @@ export default [
     path: "/emailsent",
     layout: ExtraPageLayout,
     component: EmailSent
+  },
+  {
+    path: "/findmentor",
+    layout: SearchLayout,
+    component: SearchResult
   }
+
 ];

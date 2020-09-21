@@ -77,6 +77,14 @@ export default class SubscribeModal extends React.Component {
   changeCard(type) {
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",

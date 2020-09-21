@@ -11,8 +11,7 @@ export default class landingpage extends React.Component{
   constructor(props) {
     super(props);
   }
-
-
+  
   render() {
     
     return (

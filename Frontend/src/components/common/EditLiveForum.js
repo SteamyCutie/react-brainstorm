@@ -5,7 +5,7 @@ import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { gettags, editforum, getforum } from '../../api/api';
+import { gettags, editforum, getforum, getallstudents } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Close from '../../images/Close.svg'
 
@@ -22,12 +22,15 @@ export default class EditLiveForum extends React.Component {
         title: "",
         description: "",
         tags: [],
+        students: [],
         from: '',
         to: '',
         day: ''
       },
       tags: [],
+      students: [],
       selectedTags: [],
+      selectedUsers: [],
       requiremessage: {
         dtitle: '',
         ddescription: '',
@@ -37,6 +40,7 @@ export default class EditLiveForum extends React.Component {
 
   componentWillMount() {
     this.getAllTags();
+    this.getAllStudents();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,6 +74,35 @@ export default class EditLiveForum extends React.Component {
     let temp = foruminfo;
     temp.description = e.target.value;
     this.setState({foruminfo: temp});
+  }
+
+  setSelectedUsers = (e) => {
+    const {selectedUsers} = this.state;
+    var temp = selectedUsers;
+    temp = e;
+    this.setState({selectedUsers: temp});
+
+    if (e.length > 0) {
+      let user = e[e.length - 1].value.toString();
+      console.log(user);
+      const {foruminfo} = this.state;
+      let temp1 = foruminfo;
+
+      if (temp1.students.indexOf(user) === -1) 
+        temp1.students.push(user);
+      else {
+        var index = temp1.students.indexOf(user);
+        if (index > -1)
+          temp1.students.splice(index, 1);
+      }
+      this.setState({foruminfo: temp1});
+    } else {
+      const {foruminfo} = this.state;
+      let temp1 = foruminfo;
+
+      temp1.tags = [];
+      this.setState({foruminfo: temp1});
+    }
   }
 
   setSelectedTags = (e) => {
@@ -133,6 +166,43 @@ export default class EditLiveForum extends React.Component {
       }
   }
 
+  getAllStudents = async() => {
+    let param = {
+      email: localStorage.getItem('email')
+    }
+    try {
+      const result = await getallstudents(param);
+      if (result.data.result === "success") {
+        let param = {
+          label: '',
+          value: ''
+        };
+
+        let params = [];
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          param.label = result.data.data[i].email;
+          param.value = result.data.data[i].id;
+          params.push(param);
+          param = {};
+        }
+        this.setState({students: params});
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token in Invalid") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+    } catch (err) {
+      this.showFail("Something Went wrong");
+    }
+  }
+
   actionEdit = async() => {
     const {requiremessage} = this.state;
     const {toggle_editsuccess, toggle_editfail} = this.props;
@@ -183,6 +253,7 @@ export default class EditLiveForum extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
@@ -194,6 +265,7 @@ export default class EditLiveForum extends React.Component {
         const {foruminfo} = this.state;
         let temp = foruminfo;
         temp.tags = result.data.data.tags;
+        temp.students = result.data.data.students;
         temp.id = result.data.data.id;
         temp.title = result.data.data.title;
         temp.description = result.data.data.description;
@@ -207,14 +279,29 @@ export default class EditLiveForum extends React.Component {
           value: 0
         };
 
-        let params = [];
+        let param1 = {
+          label: '',
+          value: 0
+        };
+
+        let params = [], params1 = [];
         for (var i = 0; i < result.data.data.tags.length; i ++) {
           param.label = result.data.data.tags_name[i].trim();
           param.value = parseInt(result.data.data.tags[i].trim());
           params.push(param);
           param = {};
         }
-        this.setState({selectedTags: params});
+
+        for (var i = 0; i < result.data.data.students.length; i ++) {
+          param1.label = result.data.data.students[i].email;
+          param1.value = result.data.data.students[i].id;
+          params1.push(param1);
+          param1 = {};
+        }
+        this.setState({
+          selectedUsers: params1,
+          selectedTags: params
+        });
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -307,7 +394,7 @@ export default class EditLiveForum extends React.Component {
 
   render() {
     const { open } = this.props;
-    const { tags, selectedTags } = this.state;
+    const { tags, students, selectedTags, selectedUsers } = this.state;
     return (
       <div>
         <ReactNotification />
@@ -333,6 +420,15 @@ export default class EditLiveForum extends React.Component {
               options={tags}
               value={selectedTags}
               onChange={(e) => this.setSelectedTags(e)}
+              labelledBy={"Select"}
+            />
+          </div>
+          <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
+            <label htmlFor="feEmail">Students</label> 
+            <MultiSelect
+              options={students}
+              value={selectedUsers}
+              onChange={(e) => this.setSelectedUsers(e)}
               labelledBy={"Select"}
             />
           </div>

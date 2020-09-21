@@ -1,34 +1,48 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
 import SmallCard3 from "../components/common/SmallCard3"
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getHistory } from '../api/api';
+import { getHistory, getweekdata, gettags, getallmentors } from '../api/api';
 
 export default class History extends React.Component {
   constructor(props) {
     super(props);
     
     this.state = {
+      totalCnt: 0,
       loading: false,
-      historyData: []
+      historyData: [],
+      weekList: [],
+      tags: [],
+      mentors: []
     }
   }
 
   componentWillMount() {
-    this.getHistoryList();
+    this.getHistoryList(1);
+    this.getWeekData();
+    this.getTags();
+    this.getMentors();
   }
 
-  getHistoryList = async() => {
+  getHistoryList = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
     try {
       this.setState({loading: true});
-      const result = await getHistory({email: localStorage.getItem('email')});
+      const result = await getHistory(param);
       if(result.data.result === "success") {
         var historyTemp = result.data.data;
         this.setState({
           historyData: historyTemp,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
@@ -45,6 +59,89 @@ export default class History extends React.Component {
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     }
+  }
+
+  getWeekData = async() => {
+    try {
+      const result = await getweekdata();
+      if (result.data.result === "success") {
+        this.setState({weekList: result.data.data});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+    } catch(err) {
+      this.showFail("Something Went wrong");
+    };
+  }
+
+  getTags = async() => {
+    try {
+      const result = await gettags();
+      if (result.data.result === "success") {
+        this.setState({tags: result.data.data});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+    } catch(err) {
+      this.showFail("Something Went wrong");
+    };
+  }
+
+  getMentors = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
+    try {
+      this.setState({loading: true});
+      const result = await getallmentors(param);
+      if (result.data.result === "success") {
+        this.setState({
+          loading: false,
+          mentors: result.data.data,
+        });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
+  }
+
+  getHistoryList(e, value) {
+    this.getMentors(value);
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
   }
 
   showSuccess(text) {
@@ -99,9 +196,10 @@ export default class History extends React.Component {
   }
 
   render() {
+    const {loading, historyData, weekList, tags, totalCnt, mentors} = this.state;
     return (
       <>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Row noGutters className="page-header py-4">
@@ -117,8 +215,10 @@ export default class History extends React.Component {
                   Date:
                 </label>
                 <FormSelect style={{height: "30px", width: "180px", marginRight: "10px"}}>
-                  <option>Augut 10 - August 16</option>
-                  <option>...</option>
+                  <option>Select Date</option>
+                  {weekList.map((item, idx) =>
+                    <option key={idx}>{item}</option>
+                  )}
                 </FormSelect>
                 <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                   Sessions:
@@ -132,20 +232,24 @@ export default class History extends React.Component {
                 </label>
                 <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}}>
                   <option>Select category</option>
-                  <option>...</option>
+                  {tags.map((item, idx) =>
+                    <option key={idx}>{item}</option>
+                  )}
                 </FormSelect>
                 <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                   Mentor:
                 </label>
                 <FormSelect style={{height: "30px", width: "120px", marginRight: "10px"}}>
                   <option>Select mentor</option>
-                  <option>...</option>
+                  {mentors && mentors.map((item, idx) =>
+                    <option key={idx} value={item.name}>{item.name}</option>
+                  )}
                 </FormSelect>
               </div>
             </CardHeader>
             <CardBody>
               <Row>
-                {this.state.historyData.map((history, idx) => {
+                {historyData.map((history, idx) => {
                   return (
                     <Col xl="4" lg="4" sm="6">
                       <SmallCard3 id={idx} data={history} />
@@ -155,6 +259,9 @@ export default class History extends React.Component {
               </Row>
             </CardBody>
           </Card>    
+          {historyData.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )

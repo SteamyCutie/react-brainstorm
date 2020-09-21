@@ -60,6 +60,14 @@ export default class UserActions extends React.Component {
     window.location.href = "/";
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   showFail(text) {
     store.addNotification({
       title: "Fail",

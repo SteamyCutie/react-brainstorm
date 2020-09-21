@@ -1,5 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
+
 import SubscriptionTable from "./../components/common/SubscriptionTable";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
@@ -13,10 +15,9 @@ export default class Subscriptions extends React.Component {
     super(props);
 
     this.state = {
+      totalCnt: 0,
       loading: false,
-      mentors: [
-        
-      ],
+      mentors: [],
       columns: [
         {
           name: 'Mentor',
@@ -73,7 +74,7 @@ export default class Subscriptions extends React.Component {
   }
 
   componentWillMount() {
-   this.getMentors();
+   this.getMentors(1);
   }
 
   handleSub(id) {
@@ -86,10 +87,15 @@ export default class Subscriptions extends React.Component {
     history.push('/unsubscription-specific/' + id);
   }
 
-  getMentors = async() => {
+  getMentors = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
     try {
       this.setState({loading: true});
-      const result = await getallmentors({email: localStorage.getItem('email')});
+      const result = await getallmentors(param);
       if (result.data.result === "success") {
         var data_arr = [];
         var arr = {
@@ -120,7 +126,8 @@ export default class Subscriptions extends React.Component {
         }
         this.setState({
           loading: false,
-          mentors: data_arr
+          mentors: data_arr,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
 
       } else if (result.data.result === "warning") {
@@ -138,6 +145,10 @@ export default class Subscriptions extends React.Component {
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     };
+  }
+
+  onChangePagination(e, value) {
+    this.getMentors(value);
   }
 
   showSuccess(text) {
@@ -195,11 +206,12 @@ export default class Subscriptions extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
   render() {
-    const {loading, mentors, columns} = this.state;
+    const {loading, mentors, columns, totalCnt} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -210,6 +222,9 @@ export default class Subscriptions extends React.Component {
               <SubscriptionTable data={mentors} header={columns}/>
             </Col>
           </Row>
+          {mentors.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )

@@ -3,7 +3,7 @@ import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSele
 import MultiSelect from "react-multi-select-component";
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
-import { createforum, gettags } from '../../api/api';
+import { createforum, gettags, getallstudents } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 
 import Close from '../../images/Close.svg'
@@ -21,11 +21,13 @@ export default class CreateLiveForum extends React.Component {
         description: "",
         email: "",
         tags: [],
+        students: [],
         from: '00:00',
         to: '00:00',
         day: new Date().toISOString().slice(0,10)
       },
       tags: [],
+      students: [],
       requiremessage: {
         dtitle: '',
         ddescription: '',
@@ -41,6 +43,7 @@ export default class CreateLiveForum extends React.Component {
     this.setState({foruminfo: temp});
 
     this.getAllTags();
+    this.getAllStudents();
   }
 
   toggle() {
@@ -105,8 +108,46 @@ export default class CreateLiveForum extends React.Component {
       }
   }
 
+  getAllStudents = async() => {
+    const {toggle_createsuccess, toggle_createfail} = this.props;
+    let param = {
+      email: localStorage.getItem('email')
+    }
+    try {
+      const result = await getallstudents(param);
+      if (result.data.result === "success") {
+        let param = {
+          label: '',
+          value: ''
+        };
+
+        let params = [];
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          param.label = result.data.data[i].email;
+          param.value = result.data.data[i].id;
+          params.push(param);
+          param = {};
+        }
+        this.setState({students: params});
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token in Invalid") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          toggle_createfail(result.data.message);
+        }
+      }
+    } catch (err) {
+      toggle_createfail("Something Went wrong");
+    }
+  }
+
   actionSave = async() => {
-    const {requiremessage} = this.state;
+    const {requiremessage, foruminfo} = this.state;
     const {toggle_createsuccess, toggle_createfail} = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
@@ -116,7 +157,7 @@ export default class CreateLiveForum extends React.Component {
     });
     try {
       this.setState({loading: true});
-      const result = await createforum(this.state.foruminfo);
+      const result = await createforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
         window.location.href = "/scheduleLiveForum";
@@ -156,6 +197,7 @@ export default class CreateLiveForum extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
@@ -190,12 +232,34 @@ export default class CreateLiveForum extends React.Component {
     this.setState({personName: temp})
   };
 
-  // setSelectedOptions = (e) => {
-  //   const {selectedTags} = this.state;
-  //   var temp = selectedTags;
-  //   temp = e;
-  //   this.setState({selectedTags: temp})
-  // }
+  setSelectedUsers = (e) => {
+    const {selectedUsers} = this.state;
+    var temp = selectedUsers;
+    temp = e;
+    this.setState({selectedUsers: temp});
+
+    if (e.length > 0) {
+      let user = e[e.length - 1].value.toString();
+      console.log(user);
+      const {foruminfo} = this.state;
+      let temp1 = foruminfo;
+
+      if (temp1.students.indexOf(user) === -1) 
+        temp1.students.push(user);
+      else {
+        var index = temp1.students.indexOf(user);
+        if (index > -1)
+          temp1.students.splice(index, 1);
+      }
+      this.setState({foruminfo: temp1});
+    } else {
+      const {foruminfo} = this.state;
+      let temp1 = foruminfo;
+
+      temp1.tags = [];
+      this.setState({foruminfo: temp1});
+    }
+  }
 
   setSelectedTags = (e) => {
     const {selectedTags} = this.state;
@@ -227,18 +291,8 @@ export default class CreateLiveForum extends React.Component {
   
   render() {
     const { open } = this.props;
-    const { selectedUsers, selectedTags, tags, foruminfo, requiremessage, displayday, loading } = this.state;
-    const options = [
-      { label: "Grapes 🍇", value: "grapes" },
-      { label: "Mango 🥭", value: "mango" },
-      { label: "Strawberry 🍓", value: "strawberry", disabled: true },
-      { label: "Watermelon 🍉", value: "watermelon" },
-      { label: "Pear 🍐", value: "pear" },
-      { label: "Apple 🍎", value: "apple" },
-      { label: "Tangerine 🍊", value: "tangerine" },
-      { label: "Pineapple 🍍", value: "pineapple" },
-      { label: "Peach 🍑", value: "peach" },
-    ];
+    const { selectedUsers, selectedTags, tags, students, foruminfo, requiremessage, displayday, loading } = this.state;
+    
     return (
       <div>
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
@@ -267,13 +321,15 @@ export default class CreateLiveForum extends React.Component {
               labelledBy={"Select"}
             />
           </div>
-          {/* <div><label htmlFor="fePassword">Users</label></div>
-          <MultiSelect
-            options={options}
-            value={selectedUsers}
-            onChange={(e) => this.setSelectedOptions(e)}
-            labelledBy={"Select"}
-          /> */}
+          <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
+            <label htmlFor="feEmail">Students</label> 
+            <MultiSelect
+              options={students}
+              value={selectedUsers}
+              onChange={(e) => this.setSelectedUsers(e)}
+              labelledBy={"Select"}
+            />
+          </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Date</label>
           </div>
