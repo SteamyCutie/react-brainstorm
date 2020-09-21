@@ -121,33 +121,33 @@ export default class App extends React.Component{
   }
 
   register(user) {
-    if(this.state.registerState === NOT_REGISTERED) {
+    // if(this.state.registerState === NOT_REGISTERED) {
       var message = {
         id: 'register',
         name: user
       };
       this.sendMessage(message);
-    }
+    // }
   }
 
   resgisterResponse(message) {
     if (message.response === 'accepted') {
-      this.setState({
-        registerState: REGISTERED
-      })
+      // this.setState({
+      //   registerState: REGISTERED
+      // })
     } else {
-      if(message.response === 'rejected ') {
-        this.setState({
-          registerState: REGISTERED
-        })
-      } else {
-        this.setState({
-          registerState: NOT_REGISTERED
-        })
-        var errorMessage = message.message ? message.message
-            : 'Unknown reason for register rejection.';
-        console.log(errorMessage);
-      }
+      // if(message.response === 'rejected ') {
+      //   this.setState({
+      //     registerState: REGISTERED
+      //   })
+      // } else {
+      //   this.setState({
+      //     registerState: NOT_REGISTERED
+      //   })
+      //   var errorMessage = message.message ? message.message
+      //       : 'Unknown reason for register rejection.';
+      //   console.log(errorMessage);
+      // }
     }
   }
 
