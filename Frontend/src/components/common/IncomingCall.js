@@ -51,13 +51,13 @@ export default class IncomingCall extends React.Component {
                 <img src={this.props.avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
               </Row>
               <Row className="center btn-group-call">
-                <Button className="btn-video-call-decline" onClick={() => this.toggle(true)}>
-                  <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Decline"/>
-                  Decline
-                </Button>
                 <Button className="btn-video-call-accept" onClick={() => this.toggle(false)}>
                   <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Accept"/>
                   Accept
+                </Button>
+                <Button className="btn-video-call-decline" onClick={() => this.toggle(true)}>
+                  <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Decline"/>
+                  Decline
                 </Button>
               </Row>
             </div>

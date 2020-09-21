@@ -552,7 +552,8 @@ export default class App extends React.Component{
               toggle={() => this.toggle_videocall()}
               onDecline={() => this.outcomingCallDecline()}
               sendErrorMsg={this.sendErrorMsg}
-              from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+              from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+              callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
             />
           }
               
