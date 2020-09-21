@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Badge, Button, FormSelect } from "shards-react";
+import { Container, Row, Button, FormSelect } from "shards-react";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
@@ -237,10 +237,6 @@ export default class MentorSession extends React.Component {
 }
 
 class CustomMonthEvent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  
   render() {
     return (
       <div style={{position: "relative"}} className="Hello">
@@ -250,9 +246,9 @@ class CustomMonthEvent extends React.Component {
   }
 }
 
-const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
+const ToolBar = ({changeMonth, showLoading}) => props => {
   const [alignment, setAlignment] = React.useState("right");
-  const [tags, setTags] = React.useState([
+  const [tags] = React.useState([
     {id: 1, name: 'Algebra'}, 
     {id: 2, name: 'Mathematics'},
     {id: 3, name: 'Act'},
@@ -551,7 +547,7 @@ const CustomMonthDateHeader = ({events}) => props => {
   }
 
   const consoleFunction2 = (date, view, e) => {
-    const { onDrillDown, drilldownView } = props;
+    // const { onDrillDown, drilldownView } = props;
     // onDrillDown(date, view, drilldownView);
     // props.onView(view);
   }
@@ -562,7 +558,7 @@ const CustomMonthDateHeader = ({events}) => props => {
         {consoleFunction() && props.date.getDate()}
       </div>
       <div className="month-date">
-        {calcRecordCound() > 0 && <a className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
+        {calcRecordCound() > 0 && <a href="/#" className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
           {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`}
         </a>}
       </div>
@@ -572,10 +568,6 @@ const CustomMonthDateHeader = ({events}) => props => {
 
 
 class CustomMonthHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     let d = this.props.date;

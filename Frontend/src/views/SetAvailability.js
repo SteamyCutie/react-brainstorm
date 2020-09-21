@@ -9,7 +9,7 @@ import DeleteButtonImage from "../images/Delete.svg"
 import AddButtonImage from "../images/Add.svg"
 
 import { getAvailableTimes } from '../api/api';
-import { setAvailableTimes } from '../api/api';
+// import { setAvailableTimes } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
 import Timelinelist from '../common/TimelistList';
 
@@ -136,10 +136,7 @@ class SetAvailability extends React.Component {
   }
 
   makeParam() {
-    const {availableTimeList} = this.state;
-    let temp = availableTimeList;
 
-    // temp.map((time, ))
   }
 
   handleSave = async() => {
@@ -230,7 +227,8 @@ class SetAvailability extends React.Component {
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
-        if (result.data.message == "Token is Expired") {
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -308,15 +306,16 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.forEach(element => {
           element.setAttribute("disabled", true);
           element.classList.add("disable-event");
-        });
+        })
+
       } else {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.setAttribute("disabled", true);
           element.classList.add("disable-event");
         });
@@ -326,7 +325,7 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.removeAttribute("disabled");
           element.classList.remove("disable-event")
         });
@@ -334,7 +333,7 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.removeAttribute("disabled");
           element.classList.remove("disable-event")
         });

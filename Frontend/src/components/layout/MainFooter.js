@@ -14,24 +14,25 @@ const MainFooter = () => (
           <img
             className="footer-logo"
             src={logo}
+            alt="logo"
           />
 
         </Col>
         <Col>
-          <Row><a className="footer-link" href="#">Become a mentor</a></Row>
-          <Row><a className="footer-link" href="#">Find a mentor</a></Row>
-          <Row><a className="footer-link" href="#">Sign in</a></Row>
-          <Row><a className="footer-link" href="#">Sign up</a></Row>
+          <Row><a className="footer-link" href="/#">Become a mentor</a></Row>
+          <Row><a className="footer-link" href="/#">Find a mentor</a></Row>
+          <Row><a className="footer-link" href="/#">Sign in</a></Row>
+          <Row><a className="footer-link" href="/#">Sign up</a></Row>
         </Col>
         <Col>
-          <Row><a className="footer-link" href="#">User Regulations</a></Row>
-          <Row><a className="footer-link" href="#">Mentor's Regulations</a></Row>
-          <Row><a className="footer-link" href="#">Privacy Policy</a></Row>
+          <Row><a className="footer-link" href="/#">User Regulations</a></Row>
+          <Row><a className="footer-link" href="/#">Mentor's Regulations</a></Row>
+          <Row><a className="footer-link" href="/#">Privacy Policy</a></Row>
         </Col>
         <Col className="external-site-icon">
-          <a href="http://www.facebook.com"><img src={facebookIcon} className="footer-icon" /></a>
-          <a href="http://www.twitter.com"><img src={twitterIcon} className="footer-icon" /></a>
-          <a href="http://www.youtube.com"><img src={youtubeIcon} className="footer-icon" /></a>
+          <a href="http://www.facebook.com"><img src={facebookIcon} className="footer-icon" alt="facebook"/></a>
+          <a href="http://www.twitter.com"><img src={twitterIcon} className="footer-icon" alt="twitter"/></a>
+          <a href="http://www.youtube.com"><img src={youtubeIcon} className="footer-icon" alt="youtube"/></a>
         </Col>
       </Row>
       <Row className="copy-right-txt center">

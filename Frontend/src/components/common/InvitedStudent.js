@@ -1,10 +1,9 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
+import { Modal, ModalBody, Button, Col, Row } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
 import { store } from 'react-notifications-component';
-import { createforum, gettags } from '../../api/api';
 
 import Close from '../../images/Close.svg'
 import Recycle from '../../images/Recycle.svg'
@@ -39,11 +38,11 @@ export default class InvitedStudent extends React.Component {
   }
 
   actionSave = async() => {
-    const {cardinfo} = this.state;
+    // const {cardinfo} = this.state;
   }
 
   actionRemove = async() => {
-    const {cardinfo} = this.state;
+    // const {cardinfo} = this.state;
   }
 
   removeSession() {
@@ -90,7 +89,7 @@ export default class InvitedStudent extends React.Component {
 
   render() {
     const { open } = this.props;
-    const { cardinfo, requiremessage, loading } = this.state;
+    const { loading } = this.state;
     return (
       <div>
         <ReactNotification />

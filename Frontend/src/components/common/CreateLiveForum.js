@@ -74,7 +74,7 @@ export default class CreateLiveForum extends React.Component {
   }
 
   getAllTags = async() => {
-    const {toggle_createsuccess, toggle_createfail} = this.props;
+    const {toggle_createfail} = this.props;
     try {
       const result = await gettags();
       if (result.data.result === "success") {
