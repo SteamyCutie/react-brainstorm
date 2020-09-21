@@ -9,7 +9,7 @@ import DeleteButtonImage from "../images/Delete.svg"
 import AddButtonImage from "../images/Add.svg"
 
 import { getAvailableTimes } from '../api/api';
-import { setAvailableTimes } from '../api/api';
+// import { setAvailableTimes } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
 import Timelinelist from '../common/TimelistList';
 
@@ -19,6 +19,7 @@ class SetAvailability extends React.Component {
 
     this.state = {
       loading: false,
+      timezone: '',
       currentUserId: '',
       availableTimeList: [
         {
@@ -135,18 +136,22 @@ class SetAvailability extends React.Component {
   }
 
   makeParam() {
-    const {availableTimeList} = this.state;
-    let temp = availableTimeList;
 
-    // temp.map((time, ))
   }
 
   handleSave = async() => {
+    const {availableTimeList, dayOfWeekStatus, timezone} = this.state;
+    for (var i = 0; i < availableTimeList.length; i ++) {
+      availableTimeList[i].status = dayOfWeekStatus[i];
+    }
+
     let param = {
       email: localStorage.getItem('email'),
       data: this.state.availableTimeList,
-      status: this.state.dayOfWeekStatus
+      timezone: timezone
     }
+
+    console.log(param, "++++");
     // try {
     //   this.setState({loading: true});
     //   this.makeParam();
@@ -155,6 +160,8 @@ class SetAvailability extends React.Component {
     //   if (result.data.result === "success") {
     //     this.getTimeListData();
     //     this.showSuccess("Set Availability Success");
+    //   } else if (result.data.result === "warning") {
+    //     this.showWarning(result.data.message);
     //   } else {
     //     this.showFail(result.data.message);
     //     if (result.data.message == "Token is Expired") {
@@ -217,11 +224,15 @@ class SetAvailability extends React.Component {
         this.setState({
           availableTimeList: availableTimeListTemp,
         });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         this.showFail(result.data.message);
-        if (result.data.message == "Token is Expired") {
+        if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -232,6 +243,7 @@ class SetAvailability extends React.Component {
   }
 
   onChangeTimeZone = (e) => {
+    this.setState({timezone: e.target.value});
   }
 
   showSuccess(text) {
@@ -268,6 +280,23 @@ class SetAvailability extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   handleChange(e, dayIdx, dayOfWeek) {
     const {dayOfWeekStatus} = this.state;
     let temp = dayOfWeekStatus;
@@ -277,15 +306,16 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.forEach(element => {
           element.setAttribute("disabled", true);
           element.classList.add("disable-event");
-        });
+        })
+
       } else {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.setAttribute("disabled", true);
           element.classList.add("disable-event");
         });
@@ -295,7 +325,7 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.removeAttribute("disabled");
           element.classList.remove("disable-event")
         });
@@ -303,7 +333,7 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.removeAttribute("disabled");
           element.classList.remove("disable-event")
         });
@@ -319,6 +349,7 @@ class SetAvailability extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
   

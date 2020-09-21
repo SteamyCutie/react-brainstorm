@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Player } from 'video-react';
 import "video-react/dist/video-react.css";
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
 import background from "../../images/background.jpeg"
 
 class MentorVideo extends React.Component {
@@ -12,7 +11,7 @@ class MentorVideo extends React.Component {
     this.toggleActions = this.toggleActions.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   toggleActions() {
@@ -26,7 +25,7 @@ class MentorVideo extends React.Component {
   }
 
   render() {
-    const {title, description, media_url, media_type, day, time} = this.props.item;
+    const { description, media_url, day, time } = this.props.item;
     return (
       <div className="mentor-desc-video">
         <div className="mentor-desc-video-header">

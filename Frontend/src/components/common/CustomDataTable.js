@@ -60,9 +60,6 @@ class CustomDataTable extends React.Component {
     });
   }
 
-  componentDidMount() {
-  }
-
   render() {
     const { title, data, header } = this.props;
     const { noHeader, subHeader, subHeaderAlign, customStyles } = this.state;

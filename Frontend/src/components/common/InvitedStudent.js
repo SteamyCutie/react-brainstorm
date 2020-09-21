@@ -1,12 +1,12 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
+import { Modal, ModalBody, Button, Col, Row } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
 import { store } from 'react-notifications-component';
-import { createforum, gettags } from '../../api/api';
 
 import Close from '../../images/Close.svg'
+import Recycle from '../../images/Recycle.svg'
 import avatar2 from "../../images/avatar.jpg"
 
 export default class InvitedStudent extends React.Component {
@@ -38,17 +38,18 @@ export default class InvitedStudent extends React.Component {
   }
 
   actionSave = async() => {
-    const {cardinfo} = this.state;
+    // const {cardinfo} = this.state;
   }
 
   actionRemove = async() => {
-    const {cardinfo} = this.state;
+    // const {cardinfo} = this.state;
   }
 
   removeSession() {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
@@ -88,7 +89,7 @@ export default class InvitedStudent extends React.Component {
 
   render() {
     const { open } = this.props;
-    const { cardinfo, requiremessage, loading } = this.state;
+    const { loading } = this.state;
     return (
       <div>
         <ReactNotification />
@@ -113,7 +114,10 @@ export default class InvitedStudent extends React.Component {
             </Col>
             <Col md="2" className="modal-input-group-class">
               <div className="content-center block-content-class button-text-group-class">
-                <Button onClick={() => this.actionRemove()}>Remove</Button>
+                <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.actionRemove()}>
+                  <img src={Recycle} alt="Clock" />
+                  Remove
+                </Button>
               </div>
             </Col>
           </Row>

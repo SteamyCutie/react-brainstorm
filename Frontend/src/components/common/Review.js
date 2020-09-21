@@ -1,15 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import ReivewImage from "../../images/Review.jpg"
 import StarIcon from "../../images/star_icon.svg";
 
 class Review extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {
@@ -21,7 +17,7 @@ class Review extends React.Component {
             <img src={item.student.avatar} className="subscription-review-avatar" alt="avatar" />
             <div>
               <h6 className="subscription-review-name">{item.student.name}</h6>
-              <h6 className="subscription-review-date">1 day ago</h6>
+              <h6 className="subscription-review-date">{item.review.day_diff} day ago</h6>
             </div>
           </div>
           <div className="review-score" style={{float: "right"}}>

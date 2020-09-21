@@ -62,6 +62,10 @@ class NavbarDropdown extends React.Component {
     }
   }
 
+  findMentor() {
+    window.location.href = "/findmentor";
+  }
+
   render() {
     const { signInOpen, signUpOpen } = this.state;
     return (
@@ -76,7 +80,7 @@ class NavbarDropdown extends React.Component {
         <DropdownToggle caret className="btn-dropdown-toogle">Go to ...</DropdownToggle>
         <DropdownMenu small right>
             <DropdownItem className="btn-dropdown-item">Become a mentor</DropdownItem>
-            <DropdownItem className="btn-dropdown-item">Find a mentor</DropdownItem>
+            <DropdownItem className="btn-dropdown-item" onClick={() => this.findMentor()}>Find a mentor</DropdownItem>
             <DropdownItem className="btn-dropdown-item" onClick={() => this.toggle_signup()}>Sign up</DropdownItem>
             <DropdownItem className="btn-dropdown-item" onClick={() => this.toggle_signin()}>Sign in</DropdownItem>
         </DropdownMenu>
