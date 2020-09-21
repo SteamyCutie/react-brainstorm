@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -15,6 +16,7 @@ export default class MentorWallet extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      totalCnt: 0,
       smallCards: [
         {
           value: "$0",
@@ -86,20 +88,32 @@ export default class MentorWallet extends React.Component {
   }
 
   componentWillMount() {
-    this.getWallets();
+    this.getHistory(1);
   }
 
-  getWallets = async() => {
+  getHistory = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
     try {
       this.setState({loading: true});
-      const result = await getwallets({email: localStorage.getItem('email')});
+      const result = await getwallets(param);
       if (result.data.result === "success") {
-        this.setState({tHistory: result.data.data});
+        this.setState({
+          loading: false,
+          tHistory: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -143,15 +157,33 @@ export default class MentorWallet extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   removeSession() {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
   render() {
-    const {loading, tHistory, columns, smallCards} = this.state;
+    const {loading, tHistory, columns, smallCards, totalCnt} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -178,6 +210,9 @@ export default class MentorWallet extends React.Component {
               <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
             </Col>
           </Row>
+          {tHistory.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )

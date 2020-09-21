@@ -53,16 +53,16 @@ export default class SubscribeModal extends React.Component {
       this.setState({loading: true});
       const result = await subscribe(param);
       if (result.data.result === "success") {
-        this.showSuccess("Create Schedule Success");
+        this.showSuccess("Subscribe Success");
         this.props.actionSuccess();
         this.toggle();
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
-        } else if (result.data.message === "Subscription already registered!") {
-          this.showWarning(result.data.message);
         } else {
           this.showFail(result.data.message);
         }
@@ -75,6 +75,14 @@ export default class SubscribeModal extends React.Component {
   }
 
   changeCard(type) {
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
   }
 
   showSuccess(text) {
@@ -113,7 +121,7 @@ export default class SubscribeModal extends React.Component {
 
   showWarning(text) {
     store.addNotification({
-      title: "Fail",
+      title: "Warning",
       message: text,
       type: "warning",
       insert: "top",
@@ -135,7 +143,7 @@ export default class SubscribeModal extends React.Component {
       <div>
         <ReactNotification />
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" alt="Close Image"/></Button>
+          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close"/></Button>
           <ModalBody className="subscribe-modal">
             <h1 className="content-center modal-header-class">Subscribe mentor {item.name}</h1>
             <div style={{width: "100%"}}>

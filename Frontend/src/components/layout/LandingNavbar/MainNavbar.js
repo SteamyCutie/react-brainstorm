@@ -57,6 +57,15 @@ export default class MainNavbar extends React.Component{
     }
   }
 
+  becomeMentor() {
+    console.log("become a mentor");
+  }
+
+  findMentor() {
+    window.location.href = '/findmentor';
+    console.log("find a mentor");
+  }
+
   render() {
 
     const { signInOpen, signUpOpen } = this.state;
@@ -74,10 +83,10 @@ export default class MainNavbar extends React.Component{
             />
             <NavbarSearch />
             <div className="btn-group-header">
-              <Button theme="light" className="mb-2 white-background btn-landingpage" style={{boxShadow: "none !important" }}>
+              <Button theme="light" className="mb-2 white-background btn-landingpage" style={{boxShadow: "none !important" }} onClick={() => this.becomeMentor()}>
                 Become a mentor
               </Button>
-              <Button theme="light" className="mb-2 btn-landingpage white-background">
+              <Button theme="light" className="mb-2 btn-landingpage white-background" onClick={() => this.findMentor()}>
                 Find a mentor
               </Button>
               <Button theme="light" className="mb-2 btn-landingpage white-background" onClick={() => this.toggle_signup()}>

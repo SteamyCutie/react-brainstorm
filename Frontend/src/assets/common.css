@@ -187,9 +187,13 @@
 }
 
 .video-call-modal-disable {
-  visibility: hidden;
+  /* visibility: hidden; */
+  position: relative;
+  z-index: -1;
 }
 
 .video-call-modal-enable {
-  visibility: visible;
+  /* visibility: visible; */
+  position: relative;
+  z-index: auto;
 }

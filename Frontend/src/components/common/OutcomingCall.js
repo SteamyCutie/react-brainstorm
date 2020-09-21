@@ -1,8 +1,9 @@
 import React from "react";
-import { Button, Modal, ModalBody, Row, Col } from "shards-react";
+import { Button, Modal, ModalBody, Row } from "shards-react";
 import "../../assets/landingpage.css"
 
 import DeclineImg from '../../images/call-decline.svg'
+import Avatar from '../../images/avatar.jpg'
 
 export default class IncomingCall extends React.Component {
   constructor(props) {
@@ -11,7 +12,7 @@ export default class IncomingCall extends React.Component {
     this.handleDecline = this.props.onDecline;
   }
 
-  componentDidMount() {
+  componentWillMount() {
     
   }
 
@@ -32,14 +33,14 @@ export default class IncomingCall extends React.Component {
                 <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333", textAlign: "center"}}>Calling to {this.props.name}</label>
               </Row>
               <Row className="center">
-                <img src={this.props.avatarURL} style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
+                <img src={this.props.avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
               </Row>
               <Row className="center">
                 <label style={{fontSize: "15px", fontWeight: "bolder", color: "#333333", textAlign: "center", height: "20px"}}>{this.props.errMsg}</label>
               </Row>
               <Row className="center btn-group-call">
                 <Button className="btn-video-call-decline" onClick={() => this.toggle()}>
-                  <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}}/>
+                  <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Decline"/>
                   Decline
                 </Button>
               </Row>

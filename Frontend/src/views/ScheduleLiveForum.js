@@ -76,11 +76,14 @@ export default class ScheduleLiveForum extends React.Component {
       const result = await getforums({email: localStorage.getItem('email')});
       if (result.data.result === "success") {
         this.setState({forumInfos: result.data.data});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -124,10 +127,28 @@ export default class ScheduleLiveForum extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   removeSession() {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
@@ -144,7 +165,7 @@ export default class ScheduleLiveForum extends React.Component {
           <Card small className="schedule-forum-card">
             <CardHeader className="live-forum-header">
               <h5 className="live-forum-header-title no-margin">Schedule live forum</h5>
-              {localStorage.getItem('is_mentor') == 1 && <Button className="live-forum-header-button" onClick={() => this.toggle_createliveforum()}>Create live forum</Button>}
+              {localStorage.getItem('is_mentor') === 1 && <Button className="live-forum-header-button" onClick={() => this.toggle_createliveforum()}>Create live forum</Button>}
             </CardHeader>
             <CardBody>
               <Row>

@@ -9,7 +9,7 @@ export default class SignIn extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

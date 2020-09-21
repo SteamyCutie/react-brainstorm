@@ -89,7 +89,7 @@ class AvailableTimes extends React.Component {
      this.handleDelete = this.handleDelete.bind(this);
     }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   handleAdd() {

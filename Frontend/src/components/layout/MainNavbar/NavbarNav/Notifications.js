@@ -1,15 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Badge,
-  Collapse,
-  NavItem,
-  NavLink
-} from "shards-react";
+import { Dropdown, DropdownToggle } from "shards-react";
 
 export default class Notifications extends React.Component {
   constructor(props) {

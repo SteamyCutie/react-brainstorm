@@ -14,7 +14,7 @@ class SmallCard4 extends React.Component {
     this.toggleActions = this.toggleActions.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   toggleActions() {
