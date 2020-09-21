@@ -4,7 +4,6 @@ import "../../assets/landingpage.css"
 
 import DeclineImg from '../../images/call-decline.svg'
 import AcceptImg from '../../images/call-accept.svg'
-import Avatar from '../../images/avatar.jpg'
 
 export default class IncomingCall extends React.Component {
   constructor(props) {

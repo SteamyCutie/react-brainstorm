@@ -171,7 +171,7 @@ export default class SearchLayout extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    // const { children } = this.props;
     const { noFooter, filterType, mentors, loading, totalCnt } = this.state;
 
     return (

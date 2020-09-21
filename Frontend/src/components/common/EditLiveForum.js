@@ -291,7 +291,7 @@ export default class EditLiveForum extends React.Component {
           param = {};
         }
 
-        for (var i = 0; i < result.data.data.students.length; i ++) {
+        for (i = 0; i < result.data.data.students.length; i ++) {
           param1.label = result.data.data.students[i].email;
           param1.value = result.data.data.students[i].id;
           params1.push(param1);

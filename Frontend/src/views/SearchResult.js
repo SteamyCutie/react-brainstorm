@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
+import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 import MentorDetailCard from "../components/common/MentorDetailCard"
 
@@ -35,7 +35,7 @@ export default class SearchResult extends React.Component {
 
       return (
         <>
-          <img src={background} className="search-background"></img>
+          <img src={background} className="search-background" alt="background"></img>
           <Container fluid className="px-4 pb-4 page-basic-margin">
             <h3 className="search-title">Brainshare Mentors</h3>
             <Button style={{marginBottom: 10}} className="search-btn">

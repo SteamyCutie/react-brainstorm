@@ -3,7 +3,6 @@ import { Button, Modal, ModalBody, Row } from "shards-react";
 import "../../assets/landingpage.css"
 
 import DeclineImg from '../../images/call-decline.svg'
-import Avatar from '../../images/avatar.jpg'
 
 export default class IncomingCall extends React.Component {
   constructor(props) {

@@ -18,9 +18,9 @@ import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
 import incomingSound from '../src/audio/incoming.mp3'
 
-const NOT_REGISTERED = 0;
+// const NOT_REGISTERED = 0;
 // const REGISTERING = 1;
-const REGISTERED = 2;
+// const REGISTERED = 2;
 
 const NO_CALL = 0;
 // const IN_CALL = 1;

@@ -109,7 +109,7 @@ export default class CreateLiveForum extends React.Component {
   }
 
   getAllStudents = async() => {
-    const {toggle_createsuccess, toggle_createfail} = this.props;
+    const { toggle_createfail } = this.props;
     let param = {
       email: localStorage.getItem('email')
     }

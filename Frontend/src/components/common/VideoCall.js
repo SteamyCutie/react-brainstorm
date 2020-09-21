@@ -16,7 +16,7 @@ const IN_CALL = 1;
 const INCOMING_CALL = 2;
 const OUTGOING_CALL = 3;
 
-let timeout = null;
+// let timeout = null;
 
 export default class VideoCall extends React.Component {
   constructor(props) {
