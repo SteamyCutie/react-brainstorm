@@ -541,6 +541,7 @@ export default class App extends React.Component{
               accepted={this.state.isAccepted}
               open={true} 
               toggle={() => this.toggle_videocall()}
+              onDecline={() => this.outcomingCallDecline()}
               sendErrorMsg={this.sendErrorMsg}
               from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
             />

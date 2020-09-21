@@ -110,6 +110,10 @@ export default class VideoCall extends React.Component {
         });
       });
       this.props.setWebRtcPeer(this.webRtcPeer);
+
+      setTimeout(function() {
+        that.props.onDecline();
+      }, 30000)
     }
   }
 

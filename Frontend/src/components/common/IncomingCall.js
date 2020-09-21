@@ -4,6 +4,7 @@ import "../../assets/landingpage.css"
 
 import DeclineImg from '../../images/call-decline.svg'
 import AcceptImg from '../../images/call-accept.svg'
+import Avatar from '../../images/avatar.jpg'
 
 export default class IncomingCall extends React.Component {
   constructor(props) {
@@ -48,7 +49,7 @@ export default class IncomingCall extends React.Component {
                 <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333"}}>{this.props.name} is calling to you</label>
               </Row>
               <Row className="center">
-                <img src={this.props.avatarURL} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
+                <img src={Avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
               </Row>
               <Row className="center btn-group-call">
                 <Button className="btn-video-call-decline" onClick={() => this.toggle(true)}>
