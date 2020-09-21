@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
+use App\Models\Session;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
@@ -12,6 +13,7 @@ use App\Models\Review;
 use App\Models\Media;
 use JWTAuth;
 use Exception;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -404,14 +406,70 @@ class UserController extends Controller
     ]);
   }
   
+  public function findMentors(Request $request) {
+    try{
+      $tag_id = $request['tag_id'];
+      $mentor_name = $request['name'];
+      $rowsPerPage = $request['rowsPerPage'];
+      $total = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
+      $totalRows = count($total);
+//    $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->paginate($rowsPerPage);
+      $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
+      $result_res = [];
+      if (count($mentors) > 0) {
+        if ($tag_id != null || $tag_id != "" || $tag_id != 0) {
+          for ($i = 0; $i < count($mentors); $i++) {
+            $tags_id = $mentors[$i]->tags_id;
+            $tag_rows = explode(',', $tags_id);
+            $temp_tag = [];
+            $flag = false;
+            for ($j = 0; $j < count($tag_rows); $j++) {
+              $tags_name = Tag::where('id', $tag_rows[$j])->first();
+              $temp_tag[$j] = $tags_name->name;
+              if ($tag_id == trim($tag_rows[$j])) {
+                $flag = true;
+              }
+            }
+            if ($flag == true) {
+              $mentors[$i]['tag_name'] = $temp_tag;
+              $result_res[] = $mentors[$i];
+            }
+          }
+        } else {
+          for ( $i = 0; $i < count($mentors); $i++) {
+            $tags_id = $mentors[$i]->tags_id;
+            $tag_rows = explode(',', $tags_id);
+            $temp_tag = [];
+            for ($j = 0; $j < count($tag_rows); $j++) {
+              $tag_name = Tag::where('id', $tag_rows[$j])->first();
+              $temp_tag[$j] = $tag_name->name;
+            }
+            $mentors[$i]['tag_name'] = $temp_tag;
+          }
+          $result_res = $mentors;
+        }
+      }
+      return response()->json([
+        'result'=> 'success',
+        'data'=> $result_res,
+        'totalRows'=> $totalRows,
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'data'=> $th,
+      ]);
+    }
+  }
+  
   public function getAllMentors(Request $request)
   {
     try{
-      uest['email'];
+      $email = $request['mail'];
       $rowsPerPage = $request['rowsPerPage'];
       $page = $request['page'];
       $totalRows = User::where('email', '!=', $email)->get();
-      $users = User::paginate($rowsPerPage);
+      $users = User::where('email', '!=', $email)->paginate($rowsPerPage);
       $mentors = [];
   
       for ($i = 0; $i < count($users); $i ++) {
@@ -446,7 +504,6 @@ class UserController extends Controller
         }
         $mentors[$i]['sub_id'] = $temp;
       }
-  
       return response()->json([
         'result'=> 'success',
         'data'=> $mentors,
@@ -481,6 +538,54 @@ class UserController extends Controller
         'data'=> $th,
       ]);
     }
+  }
+  
+  function test(Request $request) {
+    $tag_id = $request['tag_id'];
+    $mentor_name = $request['name'];
+    $rowsPerPage = $request['rowsPerPage'];
+    $total = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
+    $totalRows = count($total);
+    $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
+    $result_res = [];
+    if (count($mentors) > 0) {
+      if ($tag_id != null || $tag_id != "" || $tag_id != 0) {
+        for ($i = 0; $i < count($mentors); $i++) {
+          $tags_id = $mentors[$i]->tags_id;
+          $tag_rows = explode(',', $tags_id);
+          $temp_tag = [];
+          $flag = false;
+          for ($j = 0; $j < count($tag_rows); $j++) {
+            $tags_name = Tag::where('id', $tag_rows[$j])->first();
+            $temp_tag[$j] = $tags_name->name;
+            if ($tag_id == trim($tag_rows[$j])) {
+              $flag = true;
+            }
+          }
+          if ($flag == true) {
+            $mentors[$i]['tag_name'] = $temp_tag;
+            $result_res[] = $mentors[$i];
+          }
+        }
+      } else {
+        for ( $i = 0; $i < count($mentors); $i++) {
+          $tags_id = $mentors[$i]->tags_id;
+          $tag_rows = explode(',', $tags_id);
+          $temp_tag = [];
+          for ($j = 0; $j < count($tag_rows); $j++) {
+            $tag_name = Tag::where('id', $tag_rows[$j])->first();
+            $temp_tag[$j] = $tag_name->name;
+          }
+          $mentors[$i]['tag_name'] = $temp_tag;
+        }
+        $result_res = $mentors;
+      }
+    }
+    return response()->json([
+      'result'=> 'success',
+      'data'=> $result_res,
+      'totalRows'=> $totalRows,
+    ]);
   }
 }
 
