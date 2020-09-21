@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
 
 import SmallCard2 from "./../components/common/SmallCard2";
 import MentorDetailCard from "./../components/common/MentorDetailCard"
@@ -16,6 +17,7 @@ export default class Trending extends React.Component {
     this.mentorRef = React.createRef();
 
     this.state = {
+      totalCnt: 0,
       loading: false,
       mentors: [],
       smallCards: [
@@ -41,27 +43,36 @@ export default class Trending extends React.Component {
   }
 
   componentWillMount() {
-   this.getMentors();
+   this.getMentors(1);
   }
 
   sendUser(to, avatar, name) {
     this.props.setUser(to, avatar, name);
   }
 
-  getMentors = async() => {
+  getMentors = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
     try {
       this.setState({loading: true});
-      const result = await getallmentors({email: localStorage.getItem('email')});
+      const result = await getallmentors(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
-          mentors: result.data.data
+          mentors: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -69,6 +80,18 @@ export default class Trending extends React.Component {
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     };
+  }
+
+  onChangePagination(e, value) {
+    this.getMentors(value);
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
   }
 
   showSuccess(text) {
@@ -105,8 +128,25 @@ export default class Trending extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
-    const {loading, smallCards, mentors} = this.state;
+    const {loading, smallCards, mentors, totalCnt} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -141,6 +181,9 @@ export default class Trending extends React.Component {
               ))}
             </Col>
           </Row>
+          {mentors.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )

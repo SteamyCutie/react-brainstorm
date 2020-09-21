@@ -6,6 +6,10 @@ import "animate.css/animate.min.css";
 import MentorActiveImage from '../../images/fastResultImage.jpg'
 import "../../assets/landingpage.css"
 
+const findMentor = () => {
+  window.location.href = "/findmentor";
+}
+
 const ShareKnowledge = () => (
   <div className="get-fast-results">
     <ScrollAnimation animateIn='ltor'
@@ -16,7 +20,7 @@ const ShareKnowledge = () => (
       animateOnce={true}>
       <div className="get-fast-results-desc">
         <h1 className="desc-title-fast-results">Get fast results with professional online mentor.</h1>
-        <Button theme="primary" className="mb-2 mr-3 btn-fast-results">
+        <Button theme="primary" className="mb-2 mr-3 btn-fast-results" onClick={findMentor}>
           Find a mentor
         </Button>
       </div>

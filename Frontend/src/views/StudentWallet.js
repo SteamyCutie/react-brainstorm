@@ -1,15 +1,23 @@
 import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
 
 import SmallCardPayment from "../components/common/SmallCardPayment";
 import CustomDataTable from "../components/common/CustomDataTable";
 import AddNewCard from "../components/common/AddNewCard";
+import LoadingModal from "../components/common/LoadingModal";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
+import { getwallets } from '../api/api';
 import { Badge } from "shards-react";
 
 export default class StudentWallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
+      totalCnt: 0,
       ModalOpen: false,
       paymentCard: [
         {
@@ -130,13 +138,67 @@ export default class StudentWallet extends React.Component {
           conferenceTime: 41,
           amount: 31,
           status: 1,
+        },
+        {
+          id: 7,
+          lId: "843EAGSR392",
+          lDate: "08/08/20",
+          sName: "Rayna Carder",
+          conferenceTime: 41,
+          amount: 31,
+          status: 1,
+        },
+        {
+          id: 8,
+          lId: "843EAGSR392",
+          lDate: "08/08/20",
+          sName: "Rayna Carder",
+          conferenceTime: 41,
+          amount: 31,
+          status: 1,
+        },
+        {
+          id: 9,
+          lId: "843EAGSR392",
+          lDate: "08/08/20",
+          sName: "Rayna Carder",
+          conferenceTime: 41,
+          amount: 31,
+          status: 1,
+        },
+        {
+          id: 10,
+          lId: "843EAGSR392",
+          lDate: "08/08/20",
+          sName: "Rayna Carder",
+          conferenceTime: 41,
+          amount: 31,
+          status: 1,
+        },
+        {
+          id: 11,
+          lId: "843EAGSR392",
+          lDate: "08/08/20",
+          sName: "Rayna Carder",
+          conferenceTime: 41,
+          amount: 31,
+          status: 1,
+        },
+        {
+          id: 12,
+          lId: "843EAGSR392",
+          lDate: "08/08/20",
+          sName: "Rayna Carder",
+          conferenceTime: 41,
+          amount: 31,
+          status: 1,
         }
       ]
     }
   }
 
   componentWillMount() {
-
+    this.getHistory(1);
   }
 
   toggle_add() {
@@ -145,14 +207,111 @@ export default class StudentWallet extends React.Component {
     });
   }
 
+  getHistory = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
+    try {
+      this.setState({loading: true});
+      const result = await getwallets(param);
+      if (result.data.result === "success") {
+        this.setState({
+          loading: false,
+          tHistory: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
+  }
+
   addNewCard() {
 
   }
 
+  onChangePagination(e, value) {
+    this.getHistory(value);
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
+  showSuccess(text) {
+    store.addNotification({
+      title: "Success",
+      message: text,
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
-    const {paymentCard, tHistory, columns, ModalOpen} = this.state;
+    const {paymentCard, tHistory, columns, ModalOpen, loading, totalCnt} = this.state;
     return (
       <>
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <AddNewCard open={ModalOpen} toggle={() => this.toggle_add()} ></AddNewCard>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
@@ -181,6 +340,9 @@ export default class StudentWallet extends React.Component {
               <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
             </Col>
           </Row>
+          {tHistory.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )

@@ -39,11 +39,14 @@ export default class Subscribe extends React.Component {
       const result = await getuserinfobyid({id: id});
       if (result.data.result === "success") {
         this.setState({mentorData: result.data.data});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -75,11 +78,36 @@ export default class Subscribe extends React.Component {
   actionSuccess() {
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   showFail(text) {
     store.addNotification({
       title: "Fail",
       message: text,
       type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
       insert: "top",
       container: "top-right",
       dismiss: {

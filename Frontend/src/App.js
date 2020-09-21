@@ -507,6 +507,8 @@ export default class App extends React.Component{
   render() {
     const { incomingCallStatus, outcomingCallStatus } = this.state;
 
+    console.log(this.state);
+
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>

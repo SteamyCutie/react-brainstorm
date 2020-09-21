@@ -108,11 +108,14 @@ export default class MySharePage extends React.Component {
           displaycutplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.2).toFixed(2),
           selectedTags: params
         });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -140,11 +143,14 @@ export default class MySharePage extends React.Component {
           param = {};
         }
         this.setState({tags: params});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
     } catch(err) {
@@ -213,6 +219,8 @@ export default class MySharePage extends React.Component {
         this.setState({loading: false});
         this.showSuccess("Edit Profile Success");
         localStorage.setItem('user-type', param.is_mentor);
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         if (result.data.type === "require") {
           const {requiremessage} = this.state;
@@ -242,10 +250,11 @@ export default class MySharePage extends React.Component {
             requiremessage: temp
           });
         } else {
-          this.showFail(result.data.message);
           if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
           }
         }
       }
@@ -379,11 +388,14 @@ export default class MySharePage extends React.Component {
         temp.avatar = result.data.data;
         this.setState({param: temp});
         this.showSuccess("Change Avatar Success");
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -427,10 +439,28 @@ export default class MySharePage extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration : 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   removeSession() {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 

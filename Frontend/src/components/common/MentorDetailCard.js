@@ -103,7 +103,7 @@ class MentorDetailCard extends React.Component {
           </Row>
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-            {tag_name.map((teach, idx) => {
+            {tag_name && tag_name.map((teach, idx) => {
               if (idx < 5)
                 return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
               else if (idx === 5)

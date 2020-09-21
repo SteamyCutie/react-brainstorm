@@ -19,6 +19,7 @@ class SetAvailability extends React.Component {
 
     this.state = {
       loading: false,
+      timezone: '',
       currentUserId: '',
       availableTimeList: [
         {
@@ -139,11 +140,18 @@ class SetAvailability extends React.Component {
   }
 
   handleSave = async() => {
-    // let param = {
-    //   email: localStorage.getItem('email'),
-    //   data: this.state.availableTimeList,
-    //   status: this.state.dayOfWeekStatus
-    // }
+    const {availableTimeList, dayOfWeekStatus, timezone} = this.state;
+    for (var i = 0; i < availableTimeList.length; i ++) {
+      availableTimeList[i].status = dayOfWeekStatus[i];
+    }
+
+    let param = {
+      email: localStorage.getItem('email'),
+      data: this.state.availableTimeList,
+      timezone: timezone
+    }
+
+    console.log(param, "++++");
     // try {
     //   this.setState({loading: true});
     //   this.makeParam();
@@ -152,6 +160,8 @@ class SetAvailability extends React.Component {
     //   if (result.data.result === "success") {
     //     this.getTimeListData();
     //     this.showSuccess("Set Availability Success");
+    //   } else if (result.data.result === "warning") {
+    //     this.showWarning(result.data.message);
     //   } else {
     //     this.showFail(result.data.message);
     //     if (result.data.message == "Token is Expired") {
@@ -214,11 +224,15 @@ class SetAvailability extends React.Component {
         this.setState({
           availableTimeList: availableTimeListTemp,
         });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -229,6 +243,7 @@ class SetAvailability extends React.Component {
   }
 
   onChangeTimeZone = (e) => {
+    this.setState({timezone: e.target.value});
   }
 
   showSuccess(text) {
@@ -253,6 +268,23 @@ class SetAvailability extends React.Component {
       title: "Fail",
       message: text,
       type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
       insert: "top",
       container: "top-right",
       dismiss: {
@@ -317,6 +349,7 @@ class SetAvailability extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
   
