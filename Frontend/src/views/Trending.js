@@ -44,8 +44,8 @@ export default class Trending extends React.Component {
    this.getMentors();
   }
 
-  sendUser(to, avatar) {
-    this.props.setUser(to, avatar);
+  sendUser(to, avatar, name) {
+    this.props.setUser(to, avatar, name);
   }
 
   getMentors = async() => {
