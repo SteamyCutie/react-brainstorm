@@ -58,12 +58,10 @@ export default class MainNavbar extends React.Component{
   }
 
   becomeMentor() {
-    console.log("become a mentor");
   }
 
   findMentor() {
     window.location.href = '/findmentor';
-    console.log("find a mentor");
   }
 
   render() {
@@ -76,11 +74,6 @@ export default class MainNavbar extends React.Component{
         <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()}/>
         <Container className="p-0 fix-position">
           <Navbar type="light" className="align-items-stretch flex-md-nowrap p-0">
-            <img
-              alt="Project logo"
-              src={projectLogo}
-              className="logo-image"
-            />
             <NavbarSearch />
             <div className="btn-group-header">
               <Button theme="light" className="mb-2 white-background btn-landingpage" style={{boxShadow: "none !important" }} onClick={() => this.becomeMentor()}>

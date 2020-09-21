@@ -78,6 +78,8 @@ export default class CreateMyShare extends React.Component {
         this.toggle();
         this.showSuccess("Action Successful");
         window.location.reload();
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         if (result.data.type == 'require') {
           const {requiremessage} = this.state;
@@ -92,10 +94,11 @@ export default class CreateMyShare extends React.Component {
             requiremessage: temp
           });
         } else {
-          this.showFail(result.data.message);
           if (result.data.message == "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
           }
         }
       }
@@ -111,6 +114,7 @@ export default class CreateMyShare extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
@@ -128,7 +132,6 @@ export default class CreateMyShare extends React.Component {
           let temp = foruminfo;
           temp.media_url = result.data.data;
           this.setState({foruminfo: temp});
-          console.log(this.state);
           this.showSuccess("Upload Video Success");
         } else {
           this.showFail();
@@ -163,6 +166,23 @@ export default class CreateMyShare extends React.Component {
       title: "Fail",
       message: "Action Fail!",
       type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNOtification({
+      title: "Warning",
+      message: text,
+      type: "warning",
       insert: "top",
       container: "top-right",
       dismiss: {

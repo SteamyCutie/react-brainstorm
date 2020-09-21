@@ -6,7 +6,12 @@ import MentorActiveImage from '../../images/Mentor_ active session full screen 1
 import "../../assets/landingpage.css"
 import "animate.css/animate.min.css";
 
+const findMentor= () => {
+  window.location.href = "/findmentor"
+};
+
 const ShareKnowledge = () => (
+
   <div className="share-knowledge">
     <ScrollAnimation animateIn='animation-class'
       delay={1000}
@@ -18,7 +23,7 @@ const ShareKnowledge = () => (
           <div className="share-knowledge-desc share-animation-ltor">
             <h1 className="desc-title">Share your knowledge</h1>
             <h5>Language learning and Private Lessons online</h5>
-            <Button theme="primary" className="mb-2 mr-3 btn-find-mentor">
+            <Button theme="primary" className="mb-2 mr-3 btn-find-mentor" onClick={findMentor}>
               Find a mentor
             </Button>
           </div>
