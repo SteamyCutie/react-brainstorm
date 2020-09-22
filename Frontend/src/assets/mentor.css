@@ -401,6 +401,23 @@
     height: 360px;
 }
 
+.search-background-title {
+    position: absolute;
+    left: 50px;
+    top: 250px;
+    font-size: 40px;
+    color: white;
+    font-weight: bold;
+}
+
+.search-background-sub-title {
+    position: absolute;
+    left: 50px;
+    top: 320px;
+    font-size: 22px;
+    color: white;
+}
+
 .search-title {
     color: #333333 !important;
     font-weight: 800;
@@ -437,4 +454,8 @@
 .search-category {
     color: #333333 !important;
     list-style-image: url('../images/category-icon.svg');
+}
+
+button:focus {
+    outline: none !important;
 }
