@@ -36,6 +36,7 @@ class AvailableTimesController extends Controller
   {
     try{
       $email = $request['email'];
+      $timeZone = $request['timezone'];
       $user = User::where('email', $email)->first();
       $timeList = $request['data'];
       AvailableTimes::where('user_id', $user['id'])->delete();
@@ -46,6 +47,8 @@ class AvailableTimesController extends Controller
             'day_of_week' => $timeList[$i]['dayOfWeek'],
             'fromTime' => $timeList[$i]['timeList'][$j]['from'],
             'toTime' => $timeList[$i]['timeList'][$j]['to'],
+            'status' => $timeList[$i]['status'],
+            'timezone' => $timeZone,
           ]);
         }
       }

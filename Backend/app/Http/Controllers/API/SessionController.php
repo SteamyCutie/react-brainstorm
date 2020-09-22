@@ -17,6 +17,7 @@ class SessionController extends Controller
     try{
       $email = $request['email'];
       $user_id = User::select('id', 'is_mentor')->where('email', $email)->first();
+      
       if ($user_id->is_mentor == 0){
         return response()->json([
           'result'=> 'success',
@@ -24,23 +25,22 @@ class SessionController extends Controller
         ]);
       }
       $session_info = Session::where('user_id', $user_id['id'])->get();
+      
       foreach ($session_info as $key => $value) {
         $from_date = $value['from'];
         $to_date = $value['to'];
         $session_info[$key]['day'] = date('d/m/y', strtotime($from_date));
         $session_info[$key]['from_time'] = date('h:i a', strtotime($from_date));
         $session_info[$key]['to_time'] = date('h:i a', strtotime($to_date));
-    
-        $str_invited = $value['invited_id'];
-        $invited_id = explode(',',$str_invited);
-        $session_info[$key]['invited'] = $invited_id;
-    
-        foreach ($invited_id as $user_key => $user_value) {
-          $avatar = User::select('avatar')->where('id', $user_value)->first();
-          $avatar_url[$user_key] = $avatar['avatar'];
+        
+        $res_students = Invited::select('student_id')->where('session_id', $value->id)->get();
+        $temp_st = [];
+        foreach ($res_students as $st_key => $st_value) {
+          $res_st = User::where('id', $st_value->student_id)->first();
+          $temp_st[$st_key] = $res_st;
         }
-        $session_info[$key]['avatar'] = $avatar_url;
-    
+        $session_info[$key]['student_info'] = $temp_st;
+        
         $str_tags = $value['tags_id'];
         $tags_id = explode(',',$str_tags);
         $session_info[$key]['tags'] = $tags_id;
@@ -99,10 +99,24 @@ class SessionController extends Controller
         $to = "";
       else
         $to = date("h:i", strtotime($forum['to']));
-  
+      
+      $temp_email = [];
+      $temp_id = [];
+      $temp_st = [];
+      $m_inviteds = Invited::where('mentor_id', $forum->user_id)->get();
+      foreach ($m_inviteds as $invited_key => $invited) {
+        $st_info = User::where('id', $invited->student_id)->first();
+        $temp_email[$invited_key] = $st_info->email;
+        $temp_id[$invited_key] = $invited->student_id;
+        $temp_st[$invited_key] = $st_info;
+      }
+      
       $forum['day'] = $day;
       $forum['from'] = $from;
       $forum['to'] = $to;
+      $forum['students_email'] = $temp_email;
+      $forum['students_id'] = $temp_id;
+      $forum['students'] = $temp_st;
       return response()->json([
         'result'=> 'success',
         'data'=> $forum,
@@ -166,11 +180,12 @@ class SessionController extends Controller
         'status' => 0,
       ]);
   
-      $students = explode(",", $request['students']);
+//      $students = explode(",", $request['students']);
+      $students = $request['students'];
       for ($i = 0; $i < count($students); $i++) {
         Invited::create([
           'mentor_id' => $user_id->id,
-          'student_id' => 2,
+          'student_id' => $students[$i],
           'session_id' => $res_session->id,
         ]);
       }
@@ -192,15 +207,16 @@ class SessionController extends Controller
     try{
       $id = $request['id'];
       $title = $request['title'];
+      $students = $request['students'];
       $description = $request['description'];
       $tags = implode(",", $request['tags']);
-  
+
       $from = $request['from'];
       $to = $request['to'];
       $day = $request['day'];
       $from_arr = explode(":", $from);
       $to_arr = explode(":", $to);
-  
+
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
       $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
       $rules = array(
@@ -211,7 +227,7 @@ class SessionController extends Controller
         'required' => 'This field is required.',
       );
       $validator = Validator::make( $request->all(), $rules, $messages );
-  
+
       if ($validator->fails())
       {
         return [
@@ -221,9 +237,16 @@ class SessionController extends Controller
         ];
       }
   
-      $forum = Session::where('id', $id)->get();
-  
-      if ($forum == null || count($forum) == 0) {
+      $forum = Session::where('id', $id)->first();
+      Invited::where('mentor_id', $forum->user_id)->where('session_id', $id)->delete();
+      for ($j = 0; $j < count($students); $j++ ){
+        Invited::create([
+          'mentor_id' => $forum->user_id,
+          'session_id' => $id,
+          'student_id' => $students[$j]
+        ]);
+      }
+      if ($forum == null || $forum == "") {
         return response()->json([
           'result'=> 'failed',
           'message'=> 'Current User Does Not Exist',
@@ -236,7 +259,6 @@ class SessionController extends Controller
           'from' => $from_day_str,
           'to' => $to_day_str
         ));
-    
         return response()->json([
           'result'=> 'success',
           'data'=> $forum,
@@ -254,7 +276,8 @@ class SessionController extends Controller
     try{
       $session_id = $request['id'];
       $res = Session::where('id', $session_id)->delete();
-      if ($res) {
+      $res_invite = Invited::where('session_id', $session_id)->delete();
+      if ($res && $res_invite) {
         return response()->json([
           'result'=> 'success',
         ]);
@@ -316,6 +339,7 @@ class SessionController extends Controller
         'result'=> 'failed',
         'data'=> $th,
       ]);
+      
     }
   }
   
