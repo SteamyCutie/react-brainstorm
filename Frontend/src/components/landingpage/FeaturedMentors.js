@@ -57,10 +57,10 @@ export default class FeaturedMentors extends React.Component {
         <AutoplaySlider cssModule={AwesomeSliderStyles} bullets={false} play={true} cancelOnInteraction={false} interval={3000} showTimer={false}>
           {carouselDatas.map((data, idx) => (
             <div className="carousel-component" key={idx}>
-              <div style={{position: "relative"}}>
-                <img src={data.avatar} alt={data.name} className="carousel-component-img-class" />
+              <div style={{position: "relative"}} key={idx}>
+                <img key={idx} src={data.avatar} alt={data.name} className="carousel-component-img-class" />
                 {
-                  data.online && <div className="carousel-component-online-class"></div>
+                  data.online && <div key={idx} className="carousel-component-online-class"></div>
                 }
               </div>
               <div className="carousel-component-body-class">
