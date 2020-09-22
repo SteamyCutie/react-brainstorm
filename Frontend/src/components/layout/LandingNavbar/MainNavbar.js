@@ -23,6 +23,7 @@ export default class MainNavbar extends React.Component{
     this.state = {
       signInOpen: false,
       signUpOpen: false,
+      isMentor: true, 
     }
   }
 
@@ -58,7 +59,14 @@ export default class MainNavbar extends React.Component{
   }
 
   becomeMentor() {
-    console.log("become a mentor");
+    this.setState({
+      signUpOpen: !this.state.signUpOpen, 
+      isMentor: true, 
+    });
+    
+    if(!this.state.signUpOpen) {
+      this.signUpElement.current.clearValidationErrors();
+    }
   }
 
   findMentor() {
@@ -73,7 +81,7 @@ export default class MainNavbar extends React.Component{
     return (
       <div className={classes}>
         <SignIn ref={this.signInElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
-        <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()}/>
+        <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} isMentor={this.state.isMentor}/>
         <Container className="p-0 fix-position">
           <Navbar type="light" className="align-items-stretch flex-md-nowrap p-0">
             <img
