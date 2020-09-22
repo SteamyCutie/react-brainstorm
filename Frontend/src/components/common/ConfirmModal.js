@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
+import { Modal, ModalBody, Button, Col, Row } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
@@ -21,7 +21,7 @@ export default class AddNewCard extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.id && this.props.id != nextProps.id) {
+    if (nextProps.id && this.props.id !== nextProps.id) {
       this.setState({id: nextProps.id});
     }
   }

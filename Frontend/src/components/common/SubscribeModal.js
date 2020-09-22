@@ -143,7 +143,7 @@ export default class SubscribeModal extends React.Component {
       <div>
         <ReactNotification />
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" alt="Close Image"/></Button>
+          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close"/></Button>
           <ModalBody className="subscribe-modal">
             <h1 className="content-center modal-header-class">Subscribe mentor {item.name}</h1>
             <div style={{width: "100%"}}>

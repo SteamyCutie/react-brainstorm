@@ -1,13 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import ReivewImage from "../../images/Review.jpg"
 import StarIcon from "../../images/star_icon.svg";
 
 class Review extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount() {
   }

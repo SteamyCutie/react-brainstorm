@@ -1,20 +1,22 @@
 import React from "react";
-import { Button, Modal, ModalBody,  Row, Col } from "shards-react";
+import { Button, Modal, ModalBody, Row } from "shards-react";
 import "../../assets/landingpage.css"
 import kurentoUtils from 'kurento-utils';
 
-import Camera from '../../images/call-camera.svg'
+// import Camera from '../../images/call-camera.svg'
 import Phone from '../../images/call-phone.svg'
-import Mic from '../../images/call-mic.svg'
+// import Mic from '../../images/call-mic.svg'
 
-const NOT_REGISTERED = 0;
-const REGISTERING = 1;
-const REGISTERED = 2;
+// const NOT_REGISTERED = 0;
+// const REGISTERING = 1;
+// const REGISTERED = 2;
 
-const NO_CALL = 0;
+// const NO_CALL = 0;
 const IN_CALL = 1;
 const INCOMING_CALL = 2;
 const OUTGOING_CALL = 3;
+
+let timeout = null;
 
 export default class VideoCall extends React.Component {
   constructor(props) {
@@ -35,25 +37,14 @@ export default class VideoCall extends React.Component {
 
   }
 
-  isDisplay() {
-    if(this.state.isDisplay) {
-      document.getElementById("video-call-modal").setAttribute("style", "display: none");
-    } else {
-      document.getElementById("video-call-modal").removeAttribute("style");
-    }
-    
-    this.setState({
-      isDisplay: !this.state.isDisplay
-    })
-  }
-
   toggle() {
     const { toggle } = this.props;
+    // timeout.clearTimeout();
     this.handleStop();
     toggle();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const that = this;
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
@@ -64,7 +55,7 @@ export default class VideoCall extends React.Component {
       onicecandidate: this.onIceCandidate
     }
 
-    if (this.props.callState == INCOMING_CALL) {
+    if (this.props.callState === INCOMING_CALL) {
       this.setState({
         callState: IN_CALL
       })
@@ -72,17 +63,18 @@ export default class VideoCall extends React.Component {
         function (error) {
           if (error) {
             console.error(error);
-            this.setState({
-              callState: NO_CALL
-            })
+            // this.setState({
+            //   callState: NO_CALL
+            // })
+            that.props.sendErrorMsg("You have no webcam or microphone");
           }
   
           this.generateOffer(function (error, offerSdp) {
             if (error) {
               console.error(error);
-              that.setState({
-                callState: NO_CALL
-              })
+              // that.setState({
+              //   callState: NO_CALL
+              // })
             }
             var response = {
               id: 'incomingCallResponse',
@@ -94,31 +86,28 @@ export default class VideoCall extends React.Component {
           });
         });
       this.props.setWebRtcPeer(this.webRtcPeer);
-    } else if (this.props.callState == OUTGOING_CALL) {
-      var options = {
-        localVideo : this.videoInput,
-        remoteVideo : this.videoOutput,
-        onicecandidate : this.onIceCandidate
-      }
-
+    } else if (this.props.callState === OUTGOING_CALL) {
       this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
         if (error) {
-          console.error(error);
-          that.setState({
-            callState: NO_CALL
-          })
+          // console.error(error, "11111111111111111111");
+          // that.setState({
+          //   callState: NO_CALL
+          // })
+          that.props.sendErrorMsg("You have no webcam or microphone");
         }
 
         this.generateOffer(function(error, offerSdp) {
           if (error) {
             console.error(error);
-            that.setState({
-              callState: NO_CALL
-            })
+            // that.setState({
+            //   callState: NO_CALL
+            // })
           }
           var message = {
             id : 'call',
-            from : localStorage.getItem('email'),
+            from : localStorage.getItem("email"),
+            name: localStorage.getItem("user_name"),
+            avatarURL: localStorage.getItem("avatar"),
             to : that.props.to,
             sdpOffer : offerSdp
           };
@@ -126,6 +115,12 @@ export default class VideoCall extends React.Component {
         });
       });
       this.props.setWebRtcPeer(this.webRtcPeer);
+
+      // timeout = setTimeout(function() {
+      //   that.props.onDecline();
+      //   clearTimeout(timeout);
+      //   console.log("time out *********************")
+      // }, 30000)
     }
   }
 
@@ -150,8 +145,8 @@ export default class VideoCall extends React.Component {
     const { open, accepted, callState } = this.props;
     return (
       <div className={
-        (callState == INCOMING_CALL) ? "video-call-modal-enable"
-        : (callState == OUTGOING_CALL && accepted) ? "video-call-modal-enable" : "video-call-modal-disable"}>
+        (callState === INCOMING_CALL) ? "video-call-modal-enable"
+        : (callState === OUTGOING_CALL && accepted) ? "video-call-modal-enable" : "video-call-modal-disable"}>
         <Modal open={open} toggle={() => this.toggle()} className="modal-video-call-container center" backdrop={true} backdropClassName="backdrop-class">
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
@@ -169,7 +164,7 @@ export default class VideoCall extends React.Component {
                   <img src={Mic} placeholder="Mic" />
                 </Button> */}
                 <Button className="btn-video-call-end" onClick={() => this.toggle()}>
-                  <img src={Phone} placeholder="Phone" />
+                  <img src={Phone} placeholder="Phone" alt="phone"/>
                 </Button>
                 {/* <Button className="btn-video-call-mic-camera">
                   <img src={Camera} placeholder="Camera" />

@@ -59,9 +59,6 @@ class SubscriptionTable extends React.Component {
     });
   }
 
-  componentWillMount() {
-  }
-
   render() {
     const { data, header } = this.props;
     const { noHeader, subHeader, subHeaderAlign, customStyles } = this.state;

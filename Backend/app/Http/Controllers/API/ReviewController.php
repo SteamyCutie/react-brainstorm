@@ -10,12 +10,13 @@ use App\Models\User;
 
 class ReviewController extends Controller
 {
-    function setReview(Request $request) {
+  function setReview(Request $request) {
+    try{
       $email = $request->email;
       $mentor_id = $request->mentor_id;
       $mark = $request->mark;
       $review = $request->review;
-      
+  
       $rules = array(
         'review' => 'required'
       );
@@ -47,5 +48,12 @@ class ReviewController extends Controller
           'message' => 'Can not add review!'
         ]);
       }
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'data'=> $th,
+      ]);
     }
+    
+  }
 }
