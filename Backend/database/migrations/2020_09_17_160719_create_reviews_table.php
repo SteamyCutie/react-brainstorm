@@ -17,7 +17,7 @@ class CreateReviewsTable extends Migration
             $table->id();
             $table->integer('mentor_id');
             $table->integer('student_id');
-            $table->integer('mark')->nullable();
+            $table->float('mark')->nullable();
             $table->string('review')->nullable();
             $table->timestamps();
         });

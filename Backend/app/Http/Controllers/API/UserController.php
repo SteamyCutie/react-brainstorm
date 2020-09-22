@@ -154,7 +154,7 @@ class UserController extends Controller
       $average_review = 0;
       $count_review = 0;
       $tag_names = [];
-  
+      
       $res_students = Review::where('mentor_id', $id)->get();
       $user = User::where('id', $id)->first();
       $temp = [];
@@ -239,7 +239,7 @@ class UserController extends Controller
         'required' => 'This field is required.',
       );
       $validator = Validator::make( $request->all(), $rules, $messages );
-  
+      
       if ($validator->fails())
       {
         return [
@@ -248,9 +248,9 @@ class UserController extends Controller
           'message' => $validator->messages()
         ];
       }
-  
+      
       $user = User::where('email', $email)->get();
-  
+      
       if ($user == null || count($user) == 0) {
         return response()->json([
           'result'=> 'failed',
@@ -273,7 +273,7 @@ class UserController extends Controller
           'is_mentor' => $is_mentor,
           'tags_id' => $tags
         ));
-    
+        
         return response()->json([
           'result'=> 'success',
           'data'=> $user,
@@ -439,7 +439,7 @@ class UserController extends Controller
                 }
               }
             }
-        
+            
             $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
             $all_marks = 0;
             if (count($res_marks) > 0){
@@ -451,7 +451,7 @@ class UserController extends Controller
               $mentors[$i]['average_mark'] = 0;
             }
             if ($mentors[$i]['description'] == null){
-              $mentors[$i]['description'] == "";
+              $mentors[$i]['description'] = "";
             }
             if ($flag == true) {
               $mentors[$i]['tag_name'] = $temp_tag;
@@ -469,7 +469,7 @@ class UserController extends Controller
                 $temp_tag[$j] = $tag_name->name;
               }
             }
-        
+            
             $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
             $all_marks = 0;
             if (count($res_marks) > 0){
@@ -481,7 +481,7 @@ class UserController extends Controller
               $mentors[$i]['average_mark'] = 0;
             }
             if ($mentors[$i]['description'] == null){
-              $mentors[$i]['description'] == "";
+              $mentors[$i]['description'] = "";
             }
             $mentors[$i]['tag_name'] = $temp_tag;
           }
@@ -501,6 +501,53 @@ class UserController extends Controller
     }
   }
   
+  public function featuredMentors(Request $request) {
+//    try{
+    $users = User::select('id')->get();
+    foreach ($users as $user_key => $user_value) {
+      $user_marks = Review::select('mark')->where('mentor_id', $user_value->id)->get();
+      $sum_marks = 0;
+      foreach ($user_marks as $mentor_key => $mentor_value) {
+        $sum_marks += $mentor_value->mark;
+      }
+      if (count($user_marks) > 0) {
+        $average_marks = round($sum_marks/count($user_marks), 1);
+      } else {
+        $average_marks = 0;
+      }
+      
+      User::where('id', $user_value->id)->update(['average_mark' => $average_marks]);
+    }
+    
+    $top_mentors = User::orderBy('average_mark', 'DESC')->take(5)->get();
+  
+    foreach ($top_mentors as $top_key => $top_value) {
+      if ($top_value->description == null) {
+        $top_value->description = "";
+      }
+      $temp_tag = [];
+      $tags = explode(',', $top_value->tags_id);
+      foreach ($tags as $tag_key => $tag_value){
+        if($tag_value != ""){
+          $tag_name = Tag::select('name')->where('id', $tag_value)->first();
+          $temp_tag[$tag_key] = $tag_name->name;
+        }
+      }
+      $top_value['tags_name'] = $temp_tag;
+    }
+    
+    return response()->json([
+      'result'=> 'success',
+      'data'=> $top_mentors,
+    ]);
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result'=> 'failed',
+//        'data'=> $th,
+//      ]);
+//    }
+  }
+  
   public function getAllMentors(Request $request)
   {
     try{
@@ -510,7 +557,7 @@ class UserController extends Controller
       $totalRows = User::where('email', '!=', $email)->get();
       $users = User::where('email', '!=', $email)->paginate($rowsPerPage);
       $mentors = [];
-  
+      
       for ($i = 0; $i < count($users); $i ++) {
         if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
           $mentors[] = $users[$i];
@@ -542,7 +589,7 @@ class UserController extends Controller
           }
         }
         if ($mentors[$i]['description'] == null){
-          $mentors[$i]['description'] == "";
+          $mentors[$i]['description'] = "";
         }
         $mentors[$i]['sub_id'] = $temp;
       }
@@ -628,7 +675,7 @@ class UserController extends Controller
             $tag_name = Tag::where('id', $tag_rows[$j])->first();
             $temp_tag[$j] = $tag_name->name;
           }
-  
+          
           $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
           $all_marks = 0;
           if (count($res_marks) > 0){

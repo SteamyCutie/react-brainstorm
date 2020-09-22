@@ -36,6 +36,7 @@ class CreateUsersTable extends Migration
       $table->boolean('instant_call')->nullable();
       $table->integer('status')->nullable();
       $table->string('timezone')->nullable();
+      $table->float('average_mark')->nullable();
       $table->rememberToken();
       $table->timestamps();
     });
