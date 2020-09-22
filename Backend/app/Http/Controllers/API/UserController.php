@@ -206,6 +206,7 @@ class UserController extends Controller
       $name = $request['name'];
       $birthday = $request['birthday'];
       $email = $request['email'];
+      
       $description = $request['description'];
       $expertise = $request['expertise'];
       $hourlyprice = $request['hourlyprice'];
@@ -215,8 +216,8 @@ class UserController extends Controller
       $instantcall = $request['instantcall'];
       $avatar = $request['avatar'];
       $is_mentor = $request['is_mentor'];
+      
       $tags = implode(",", $request['tags']);
-  
       $rules = array(
         'name' => 'required',
         'email' => 'required|email',
@@ -411,9 +412,8 @@ class UserController extends Controller
       $tag_id = $request['tag_id'];
       $mentor_name = $request['name'];
       $rowsPerPage = $request['rowsPerPage'];
-      $total = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
-      $totalRows = count($total);
-//    $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->paginate($rowsPerPage);
+//    $total = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
+//    $totalRows = count($total);
       $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
       $result_res = [];
       if (count($mentors) > 0) {
@@ -430,6 +430,18 @@ class UserController extends Controller
                 $flag = true;
               }
             }
+        
+            $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
+            $all_marks = 0;
+            if (count($res_marks) > 0){
+              foreach ($res_marks as $m_mark) {
+                $all_marks += $m_mark->mark;
+              }
+              $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
+            } else {
+              $mentors[$i]['average_mark'] = 0;
+            }
+        
             if ($flag == true) {
               $mentors[$i]['tag_name'] = $temp_tag;
               $result_res[] = $mentors[$i];
@@ -444,6 +456,18 @@ class UserController extends Controller
               $tag_name = Tag::where('id', $tag_rows[$j])->first();
               $temp_tag[$j] = $tag_name->name;
             }
+        
+            $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
+            $all_marks = 0;
+            if (count($res_marks) > 0){
+              foreach ($res_marks as $m_mark) {
+                $all_marks += $m_mark->mark;
+              }
+              $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
+            } else {
+              $mentors[$i]['average_mark'] = 0;
+            }
+        
             $mentors[$i]['tag_name'] = $temp_tag;
           }
           $result_res = $mentors;
@@ -452,7 +476,7 @@ class UserController extends Controller
       return response()->json([
         'result'=> 'success',
         'data'=> $result_res,
-        'totalRows'=> $totalRows,
+        'totalRows'=> count($result_res),
       ]);
     } catch (Exception $th) {
       return response()->json([
@@ -465,10 +489,10 @@ class UserController extends Controller
   public function getAllMentors(Request $request)
   {
     try{
-      $email = $request['mail'];
+      $email = $request['email'];
       $rowsPerPage = $request['rowsPerPage'];
       $page = $request['page'];
-      $totalRows = User::where('email', '!=', $email)->get();
+      $totalRows = User::where('email', $email)->get();
       $users = User::where('email', '!=', $email)->paginate($rowsPerPage);
       $mentors = [];
   
@@ -544,8 +568,6 @@ class UserController extends Controller
     $tag_id = $request['tag_id'];
     $mentor_name = $request['name'];
     $rowsPerPage = $request['rowsPerPage'];
-    $total = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
-    $totalRows = count($total);
     $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
     $result_res = [];
     if (count($mentors) > 0) {
@@ -562,6 +584,18 @@ class UserController extends Controller
               $flag = true;
             }
           }
+          
+          $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
+          $all_marks = 0;
+          if (count($res_marks) > 0){
+            foreach ($res_marks as $m_mark) {
+              $all_marks += $m_mark->mark;
+            }
+            $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
+          } else {
+            $mentors[$i]['average_mark'] = 0;
+          }
+          
           if ($flag == true) {
             $mentors[$i]['tag_name'] = $temp_tag;
             $result_res[] = $mentors[$i];
@@ -576,15 +610,28 @@ class UserController extends Controller
             $tag_name = Tag::where('id', $tag_rows[$j])->first();
             $temp_tag[$j] = $tag_name->name;
           }
+  
+          $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
+          $all_marks = 0;
+          if (count($res_marks) > 0){
+            foreach ($res_marks as $m_mark) {
+              $all_marks += $m_mark->mark;
+            }
+            $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
+          } else {
+            $mentors[$i]['average_mark'] = 0;
+          }
+          
           $mentors[$i]['tag_name'] = $temp_tag;
         }
         $result_res = $mentors;
       }
     }
+    
     return response()->json([
       'result'=> 'success',
       'data'=> $result_res,
-      'totalRows'=> $totalRows,
+      'totalRows'=> count($result_res),
     ]);
   }
 }

@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
 //            MediaSeeder::class,
 //            AvailableTimeListSeeder::class,
 //            WalletSeeder::class,
-//            TagSeeder::class,
+            TagSeeder::class,
 //            SessionSeeder::class,
 //            SubscriptionSeeder::class,
 //            ReviewSeeder::class
