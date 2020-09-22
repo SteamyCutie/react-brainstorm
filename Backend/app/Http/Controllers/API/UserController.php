@@ -75,6 +75,11 @@ class UserController extends Controller
       $user = new User();
       $user->name = $name;
       $user->email = $email;
+      if ($request['is_mentor']){
+        $user->is_mentor = $request['is_mentor'];
+      } else {
+        $user->is_mentor = 0;
+      }
       $user->password = bcrypt($password);
       $user->save();
       $user->generateTwoFactorCode();
@@ -122,6 +127,8 @@ class UserController extends Controller
       else
         $tags_id = explode(',', $user['tags_id']);
       $user['tags'] = $tags_id;
+      if ($user->description == null)
+        $user->description = "";
       foreach ($tags_id as $tag_key=> $tag_id) {
         if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()){
           $temp_names[] = $tag_names->name;
@@ -187,7 +194,8 @@ class UserController extends Controller
       } else {
         $user['average_review'] = 0;
       }
-  
+      if ($user->description == null)
+        $user->description = "";
       return response()->json([
         'result'=> 'success',
         'data'=> $user,
@@ -304,10 +312,11 @@ class UserController extends Controller
         ]);
       }
       $user->update(['two_factor_code' => "0"]);
-      return response()->json([
-        'result'=> 'success',
-        'message' => 'verified code',
-      ]);
+      return $this->login($request);
+//      return response()->json([
+//        'result'=> 'success',
+//        'message' => 'verified code',
+//      ]);
     } catch (\Throwable $th) {
       return response()->json([
         'result'=> 'failed',
@@ -494,7 +503,7 @@ class UserController extends Controller
       $email = $request['email'];
       $rowsPerPage = $request['rowsPerPage'];
       $page = $request['page'];
-      $totalRows = User::where('email', $email)->get();
+      $totalRows = User::where('email', '!=', $email)->get();
       $users = User::where('email', '!=', $email)->paginate($rowsPerPage);
       $mentors = [];
   
@@ -527,6 +536,9 @@ class UserController extends Controller
           for ($k = 0; $k < count($sub_id); $k++){
             $temp[] = $sub_id[$k]['student_id'];
           }
+        }
+        if ($mentors[$i]['description'] == null){
+          $mentors[$i]['description'] == "";
         }
         $mentors[$i]['sub_id'] = $temp;
       }
