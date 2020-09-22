@@ -6,8 +6,6 @@ import NavbarDropdown from "./NavbarDropdown";
 import SignIn from "../../landingpage/SignIn";
 import SignUp from "../../landingpage/SignUp";
 
-import projectLogo from '../../../images/logo.svg'
-
 const classes = classNames(
   "main-navbar",
   "bg-white",

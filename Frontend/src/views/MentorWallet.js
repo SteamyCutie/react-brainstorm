@@ -91,6 +91,12 @@ export default class MentorWallet extends React.Component {
     this.getHistory(1);
   }
 
+  componentDidMount() {
+    if(localStorage.getItem('is_mentor') && localStorage.getItem('pay_verified')) {
+      this.showFail("You must verify at payment.");
+    }
+  }
+
   getHistory = async(pageNo) => {
     let param = {
       email: localStorage.getItem('email'),

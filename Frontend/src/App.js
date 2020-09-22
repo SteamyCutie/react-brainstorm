@@ -18,9 +18,9 @@ import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
 import incomingSound from '../src/audio/incoming.mp3'
 
-const NOT_REGISTERED = 0;
+// const NOT_REGISTERED = 0;
 // const REGISTERING = 1;
-const REGISTERED = 2;
+// const REGISTERED = 2;
 
 const NO_CALL = 0;
 // const IN_CALL = 1;
@@ -549,7 +549,8 @@ export default class App extends React.Component{
               toggle={() => this.toggle_videocall()}
               onDecline={() => this.outcomingCallDecline()}
               sendErrorMsg={this.sendErrorMsg}
-              from={this.state.from} to={this.state.to} callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+              from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+              callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
             />
           }
               

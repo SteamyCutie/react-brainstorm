@@ -21,7 +21,8 @@ export default class SignUp extends React.Component {
         password: '',
         confirm: '',
       },
-      signUpError: ''
+      signUpError: '', 
+      isMentor: false, 
     };
   }
 
@@ -186,6 +187,9 @@ export default class SignUp extends React.Component {
 
   handleSignup() {
     if(this.handleValidation()) {
+      this.setState({
+        isMentor: this.props.isMentor, 
+      })
       this.actionSignup();
     }
   }
