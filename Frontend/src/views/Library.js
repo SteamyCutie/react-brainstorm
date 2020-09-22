@@ -90,7 +90,7 @@ export default function Library() {
             onChangeIndex={handleChangeIndex}
           >
             <TabPanel value={value} index={0} dir={theme.direction}>
-              <Row>
+              {/* <Row> */}
                 {/* <Col xl="4" lg="4" sm="6">
                   <LibrarySavedContent />
                 </Col>
@@ -115,10 +115,10 @@ export default function Library() {
                 <Col xl="4" lg="4" sm="6">
                   <LibrarySavedContent />
                 </Col> */}
-              </Row>
+              {/* </Row> */}
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
-              <Row>
+              {/* <Row> */}
                 {/* <Col xl="4" lg="4" sm="6">
                   <SmallCard3 />
                 </Col>
@@ -140,7 +140,7 @@ export default function Library() {
                 <Col xl="4" lg="4" sm="6">
                   <SmallCard3 />
                 </Col> */}
-              </Row>
+              {/* </Row> */}
             </TabPanel>
           </SwipeableViews>
         </CardBody>

@@ -148,7 +148,7 @@ export default class CreateLiveForum extends React.Component {
 
   actionSave = async() => {
     const {requiremessage, foruminfo} = this.state;
-    const {toggle_createsuccess, toggle_createfail} = this.props;
+    const {toggle_createsuccess, toggle_createfail, toggle_createwarning} = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
     temp.description = '';
@@ -163,7 +163,7 @@ export default class CreateLiveForum extends React.Component {
         window.location.href = "/scheduleLiveForum";
         toggle_createsuccess("Create Forum Success");
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        toggle_createwarning(result.data.message);
       } else {
         if (result.data.type === 'require') {
           const {requiremessage} = this.state;
@@ -239,24 +239,17 @@ export default class CreateLiveForum extends React.Component {
     this.setState({selectedUsers: temp});
 
     if (e.length > 0) {
-      let user = e[e.length - 1].value.toString();
-      console.log(user);
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
-      if (temp1.students.indexOf(user) === -1) 
-        temp1.students.push(user);
-      else {
-        var index = temp1.students.indexOf(user);
-        if (index > -1)
-          temp1.students.splice(index, 1);
+      temp1.students = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.students.push(e[i].value);
       }
       this.setState({foruminfo: temp1});
     } else {
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
-      temp1.tags = [];
+      temp1.students = [];
       this.setState({foruminfo: temp1});
     }
   }
@@ -268,22 +261,16 @@ export default class CreateLiveForum extends React.Component {
     this.setState({selectedTags: temp});
 
     if (e.length > 0) {
-      let tag = e[e.length - 1].value.toString();
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
-      if (temp1.tags.indexOf(tag) === -1)    
-        temp1.tags.push(tag);
-      else {
-        var index = temp1.tags.indexOf(tag);
-        if (index > -1)
-          temp1.tags.splice(index, 1);
+      temp1.tags = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.tags.push(e[i].value);
       }
       this.setState({foruminfo: temp1});
     } else {
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
       temp1.tags = [];
       this.setState({foruminfo: temp1});
     }

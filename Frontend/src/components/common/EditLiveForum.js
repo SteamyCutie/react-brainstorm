@@ -83,51 +83,39 @@ export default class EditLiveForum extends React.Component {
     this.setState({selectedUsers: temp});
 
     if (e.length > 0) {
-      let user = e[e.length - 1].value.toString();
-      console.log(user);
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
-      if (temp1.students.indexOf(user) === -1) 
-        temp1.students.push(user);
-      else {
-        var index = temp1.students.indexOf(user);
-        if (index > -1)
-          temp1.students.splice(index, 1);
+      temp1.students = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.students.push(e[i].value);
       }
       this.setState({foruminfo: temp1});
     } else {
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
-      temp1.tags = [];
+      temp1.students = [];
       this.setState({foruminfo: temp1});
     }
   }
 
   setSelectedTags = (e) => {
+    console.log(e, "tags");
     const {selectedTags} = this.state;
     let temp = selectedTags;
     temp = e;
     this.setState({selectedTags: temp});
     
     if (e.length > 0) {
-      let tag = e[e.length - 1].value.toString();
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
-      if (temp1.tags.indexOf(tag) === -1)    
-        temp1.tags.push(tag);
-      else {
-        var index = temp1.tags.indexOf(tag);
-        if (index > -1)
-          temp1.tags.splice(index, 1);
+      temp1.tags = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.tags.push(e[i].value);
       }
       this.setState({foruminfo: temp1});
     } else {
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
       temp1.tags = [];
       this.setState({foruminfo: temp1});
     }
@@ -204,7 +192,7 @@ export default class EditLiveForum extends React.Component {
   }
 
   actionEdit = async() => {
-    const {requiremessage} = this.state;
+    const {requiremessage, foruminfo} = this.state;
     const {toggle_editsuccess, toggle_editfail} = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
@@ -212,10 +200,9 @@ export default class EditLiveForum extends React.Component {
     this.setState({
       requiremessage: temp
     });
-
     try {
       this.setState({loading: true});
-      const result = await editforum(this.state.foruminfo);
+      const result = await editforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
         toggle_editsuccess("Edit Forum Success");
@@ -265,7 +252,7 @@ export default class EditLiveForum extends React.Component {
         const {foruminfo} = this.state;
         let temp = foruminfo;
         temp.tags = result.data.data.tags;
-        temp.students = result.data.data.students;
+        temp.students = result.data.data.students_id;
         temp.id = result.data.data.id;
         temp.title = result.data.data.title;
         temp.description = result.data.data.description;
@@ -273,7 +260,6 @@ export default class EditLiveForum extends React.Component {
         temp.to = result.data.data.to;
         temp.day = result.data.data.day;
         this.setState({foruminfo: temp});
-
         let param = {
           label: '',
           value: 0
@@ -293,8 +279,8 @@ export default class EditLiveForum extends React.Component {
         }
 
         for (var i = 0; i < result.data.data.students.length; i ++) {
-          param1.label = result.data.data.students[i].email;
-          param1.value = result.data.data.students[i].id;
+          param1.label = result.data.data.students_email[i].trim();
+          param1.value = result.data.data.students_id[i];
           params1.push(param1);
           param1 = {};
         }
@@ -302,6 +288,8 @@ export default class EditLiveForum extends React.Component {
           selectedUsers: params1,
           selectedTags: params
         });
+        
+        console.log(foruminfo, "---");
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -313,6 +301,7 @@ export default class EditLiveForum extends React.Component {
         }
       }
     } catch(err) {
+      console.log(err);
       this.showFail("Something Went wrong");
     }
   }

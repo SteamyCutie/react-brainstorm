@@ -232,8 +232,8 @@ export default class History extends React.Component {
                 </label>
                 <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}}>
                   <option>Select category</option>
-                  {tags.map((item, idx) =>
-                    <option key={idx}>{item}</option>
+                  {tags && tags.map((item, idx) =>
+                    <option key={idx}>{item.name}</option>
                   )}
                 </FormSelect>
                 <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>

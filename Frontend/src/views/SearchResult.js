@@ -36,6 +36,8 @@ export default class SearchResult extends React.Component {
       return (
         <>
           <img src={background} className="search-background"></img>
+          <span className="search-background-title">Share your knowledge</span>
+          <span className="search-background-sub-title">Language learning and Private Lessons online</span>
           <Container fluid className="px-4 pb-4 page-basic-margin">
             <h3 className="search-title">Brainshare Mentors</h3>
             <Button style={{marginBottom: 10}} className="search-btn">

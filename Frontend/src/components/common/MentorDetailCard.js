@@ -129,7 +129,8 @@ class MentorDetailCard extends React.Component {
             })}
           </Row>
           <div className="mentor-detail-myself">
-            {this.state.more ? <p>{description}</p> : <p>{description.slice(0,200)}...</p>}
+            {!this.state.more && (description.length > 200 ? <p>{description.slice(0,200)}...</p> : <p>{description}</p>)}
+            {this.state.more && <p>{description}</p>}
             {this.state.more ? <a href="#!" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="#!" className="read-more" onClick={() => this.readMore()}>Read more</a>}
           </div>
           <div className="mentor-detail-video">
