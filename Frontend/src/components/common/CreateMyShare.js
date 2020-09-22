@@ -1,8 +1,7 @@
-import React, {Fragment} from "react";
-import { Modal, ModalBody, Button, FormInput,  FormCheckbox } from "shards-react";
-import { uploadvideo, uploadimage, createshareinfo } from '../../api/api';
+import React from "react";
+import { Modal, ModalBody, Button, FormInput } from "shards-react";
+import { uploadvideo, createshareinfo } from '../../api/api';
 import {DropzoneArea} from 'material-ui-dropzone';
-import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import LoadingModal from "./LoadingModal";
@@ -78,8 +77,10 @@ export default class CreateMyShare extends React.Component {
         this.toggle();
         this.showSuccess("Action Successful");
         window.location.reload();
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        if (result.data.type == 'require') {
+        if (result.data.type === 'require') {
           const {requiremessage} = this.state;
           let temp = requiremessage;
           if (result.data.message.title) {
@@ -93,9 +94,11 @@ export default class CreateMyShare extends React.Component {
           });
         } else {
           this.showFail(result.data.message);
-          if (result.data.message == "Token is Expired") {
+          if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
           }
         }
       }
@@ -111,11 +114,12 @@ export default class CreateMyShare extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
   onChnageVideo = async(e) => {
-    if (e[0] == null || e[0] == undefined)
+    if (e[0] === null || e[0] === undefined)
       return;
     else {
       const formData = new FormData();
@@ -123,12 +127,11 @@ export default class CreateMyShare extends React.Component {
       try {
         this.setState({loading: true});
         const result = await uploadvideo(formData);
-        if (result.data.result == "success") {
+        if (result.data.result === "success") {
           const {foruminfo} = this.state;
           let temp = foruminfo;
           temp.media_url = result.data.data;
           this.setState({foruminfo: temp});
-          console.log(this.state);
           this.showSuccess("Upload Video Success");
         } else {
           this.showFail();
@@ -175,13 +178,26 @@ export default class CreateMyShare extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNOtification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
     const { open } = this.props;
-    const previewStyle = {
-      display: 'inline',
-      width: 100,
-      height: 100,
-    };
+    
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
@@ -190,15 +206,15 @@ export default class CreateMyShare extends React.Component {
           <h1 className="content-center modal-header-class">Upload photo/video</h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
-            {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
-            {this.state.requiremessage.dtitle != '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
-            {this.state.requiremessage.dtitle == '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle !== '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
+            {this.state.requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle === '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Description</label>
-            {this.state.requiremessage.ddescription != '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
-            {this.state.requiremessage.ddescription != '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
-            {this.state.requiremessage.ddescription == '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription !== '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
+            {this.state.requiremessage.ddescription !== '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription === '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Photo/Video</label>

@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { Container, Row, Col, Card, CardBody } from "shards-react";
-import LibrarySavedContent from "../components/common/LibrarySavedContent"
-import SmallCard3 from "../components/common/SmallCard3"
+// import LibrarySavedContent from "../components/common/LibrarySavedContent"
+// import SmallCard3 from "../components/common/SmallCard3"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -44,12 +44,12 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    width: 500,
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     backgroundColor: theme.palette.background.paper,
+//     width: 500,
+//   },
+// }));
 
 export default function Library() {
   const theme = useTheme();
@@ -90,7 +90,7 @@ export default function Library() {
             onChangeIndex={handleChangeIndex}
           >
             <TabPanel value={value} index={0} dir={theme.direction}>
-              <Row>
+              {/* <Row> */}
                 {/* <Col xl="4" lg="4" sm="6">
                   <LibrarySavedContent />
                 </Col>
@@ -115,10 +115,10 @@ export default function Library() {
                 <Col xl="4" lg="4" sm="6">
                   <LibrarySavedContent />
                 </Col> */}
-              </Row>
+              {/* </Row> */}
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
-              <Row>
+              {/* <Row> */}
                 {/* <Col xl="4" lg="4" sm="6">
                   <SmallCard3 />
                 </Col>
@@ -140,7 +140,7 @@ export default function Library() {
                 <Col xl="4" lg="4" sm="6">
                   <SmallCard3 />
                 </Col> */}
-              </Row>
+              {/* </Row> */}
             </TabPanel>
           </SwipeableViews>
         </CardBody>

@@ -108,11 +108,14 @@ export default class MySharePage extends React.Component {
           displaycutplanfee: (parseFloat(result.data.data.sub_plan_fee)*0.2).toFixed(2),
           selectedTags: params
         });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -140,11 +143,14 @@ export default class MySharePage extends React.Component {
           param = {};
         }
         this.setState({tags: params});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
     } catch(err) {
@@ -159,22 +165,16 @@ export default class MySharePage extends React.Component {
     this.setState({selectedTags: temp});
 
     if (e.length > 0) {
-      let tag = e[e.length - 1].value;
-      const {param} = this.state;
+      const { param } = this.state;
       let temp1 = param;
-
-      if (temp1.tags.indexOf(tag) === -1)    
-        temp1.tags.push(tag);
-      else {
-        var index = temp1.tags.indexOf(tag);
-        if (index > -1)
-          temp1.tags.splice(index, 1);
+      temp1.tags = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.tags.push(e[i].value);
       }
       this.setState({param: temp1});
     } else {
-      const {param} = this.state;
+      const { param } = this.state;
       let temp1 = param;
-
       temp1.tags = [];
       this.setState({param: temp1});
     }
@@ -184,7 +184,7 @@ export default class MySharePage extends React.Component {
     const {param} = this.state;
     let temp = param;
     temp.is_mentor = !param.is_mentor;
-    if (!param.is_mentor == true) {
+    if (!param.is_mentor === true) {
       localStorage.setItem('is_mentor', 0);
     } else {
       localStorage.setItem('is_mentor', 1);
@@ -213,6 +213,8 @@ export default class MySharePage extends React.Component {
         this.setState({loading: false});
         this.showSuccess("Edit Profile Success");
         localStorage.setItem('user-type', param.is_mentor);
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
         if (result.data.type === "require") {
           const {requiremessage} = this.state;
@@ -242,10 +244,11 @@ export default class MySharePage extends React.Component {
             requiremessage: temp
           });
         } else {
-          this.showFail(result.data.message);
           if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
           }
         }
       }
@@ -379,11 +382,14 @@ export default class MySharePage extends React.Component {
         temp.avatar = result.data.data;
         this.setState({param: temp});
         this.showSuccess("Change Avatar Success");
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -427,10 +433,28 @@ export default class MySharePage extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration : 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   removeSession() {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 

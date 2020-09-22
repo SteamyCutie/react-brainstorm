@@ -13,13 +13,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            MediaSeeder::class,
-            AvailableTimeListSeeder::class,
-            WalletSeeder::class,
+//            MediaSeeder::class,
+//            AvailableTimeListSeeder::class,
+//            WalletSeeder::class,
             TagSeeder::class,
-            SessionSeeder::class,
-            SubscriptionSeeder::class,
-            ReviewSeeder::class
+//            SessionSeeder::class,
+//            SubscriptionSeeder::class,
+//            ReviewSeeder::class
         ]);
     }
 }

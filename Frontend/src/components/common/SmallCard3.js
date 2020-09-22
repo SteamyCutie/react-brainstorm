@@ -37,7 +37,7 @@ class SmallCard3 extends React.Component {
                 {tag_name.map((tag, idx) => {
                   if (idx < 2)
                     return <p className="brainsshare-tag" key={idx} title={tag}>{tag}</p>;
-                  else if (idx == 2)
+                  else if (idx === 2)
                     return <p key={idx} href="#!">{tag_name.length - 2} more</p>
                   else
                     return <></>;

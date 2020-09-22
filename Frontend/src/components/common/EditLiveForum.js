@@ -1,11 +1,11 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput,  FormCheckbox, DatePicker, FormTextarea, FormSelect } from "shards-react";
+import { Modal, ModalBody, Button, FormInput,  DatePicker, FormTextarea, FormSelect } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { gettags, editforum, getforum } from '../../api/api';
+import { gettags, editforum, getforum, getallstudents } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Close from '../../images/Close.svg'
 
@@ -22,12 +22,15 @@ export default class EditLiveForum extends React.Component {
         title: "",
         description: "",
         tags: [],
+        students: [],
         from: '',
         to: '',
         day: ''
       },
       tags: [],
+      students: [],
       selectedTags: [],
+      selectedUsers: [],
       requiremessage: {
         dtitle: '',
         ddescription: '',
@@ -37,10 +40,11 @@ export default class EditLiveForum extends React.Component {
 
   componentWillMount() {
     this.getAllTags();
+    this.getAllStudents();
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.id && this.props.id != nextProps.id) {
+    if (nextProps.id && this.props.id !== nextProps.id) {
       this.getSession(nextProps.id);
     }
   }
@@ -72,29 +76,46 @@ export default class EditLiveForum extends React.Component {
     this.setState({foruminfo: temp});
   }
 
+  setSelectedUsers = (e) => {
+    const {selectedUsers} = this.state;
+    var temp = selectedUsers;
+    temp = e;
+    this.setState({selectedUsers: temp});
+
+    if (e.length > 0) {
+      const { foruminfo } = this.state;
+      let temp1 = foruminfo;
+      temp1.students = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.students.push(e[i].value);
+      }
+      this.setState({foruminfo: temp1});
+    } else {
+      const { foruminfo } = this.state;
+      let temp1 = foruminfo;
+      temp1.students = [];
+      this.setState({foruminfo: temp1});
+    }
+  }
+
   setSelectedTags = (e) => {
+    console.log(e, "tags");
     const {selectedTags} = this.state;
     let temp = selectedTags;
     temp = e;
     this.setState({selectedTags: temp});
     
     if (e.length > 0) {
-      let tag = e[e.length - 1].value.toString();
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
-      if (temp1.tags.indexOf(tag) === -1)    
-        temp1.tags.push(tag);
-      else {
-        var index = temp1.tags.indexOf(tag);
-        if (index > -1)
-          temp1.tags.splice(index, 1);
+      temp1.tags = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.tags.push(e[i].value);
       }
       this.setState({foruminfo: temp1});
     } else {
-      const {foruminfo} = this.state;
+      const { foruminfo } = this.state;
       let temp1 = foruminfo;
-
       temp1.tags = [];
       this.setState({foruminfo: temp1});
     }
@@ -118,11 +139,14 @@ export default class EditLiveForum extends React.Component {
           param = {};
         }
         this.setState({tags: params});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
     } catch(err) {
@@ -130,8 +154,45 @@ export default class EditLiveForum extends React.Component {
       }
   }
 
+  getAllStudents = async() => {
+    let param = {
+      email: localStorage.getItem('email')
+    }
+    try {
+      const result = await getallstudents(param);
+      if (result.data.result === "success") {
+        let param = {
+          label: '',
+          value: ''
+        };
+
+        let params = [];
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          param.label = result.data.data[i].email;
+          param.value = result.data.data[i].id;
+          params.push(param);
+          param = {};
+        }
+        this.setState({students: params});
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token in Invalid") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+    } catch (err) {
+      this.showFail("Something Went wrong");
+    }
+  }
+
   actionEdit = async() => {
-    const {requiremessage} = this.state;
+    const {requiremessage, foruminfo} = this.state;
     const {toggle_editsuccess, toggle_editfail} = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
@@ -139,10 +200,9 @@ export default class EditLiveForum extends React.Component {
     this.setState({
       requiremessage: temp
     });
-
     try {
       this.setState({loading: true});
-      const result = await editforum(this.state.foruminfo);
+      const result = await editforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
         toggle_editsuccess("Edit Forum Success");
@@ -161,10 +221,11 @@ export default class EditLiveForum extends React.Component {
             requiremessage: temp
           });
         } else {
-          toggle_editfail("Edit Forum Fail");
           if (result.data.message === "Token is Expired") {
             this.removeSession();
             window.location.href = "/";
+          } else {
+            toggle_editfail("Edit Forum Fail");
           }
         }
       }
@@ -179,17 +240,18 @@ export default class EditLiveForum extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
   getSession = async(id) => {
-    let {selectedTags} = this.state;
     try {
       const result = await getforum({id: id});
       if (result.data.result === "success") {
         const {foruminfo} = this.state;
         let temp = foruminfo;
         temp.tags = result.data.data.tags;
+        temp.students = result.data.data.students_id;
         temp.id = result.data.data.id;
         temp.title = result.data.data.title;
         temp.description = result.data.data.description;
@@ -197,13 +259,17 @@ export default class EditLiveForum extends React.Component {
         temp.to = result.data.data.to;
         temp.day = result.data.data.day;
         this.setState({foruminfo: temp});
-
         let param = {
           label: '',
           value: 0
         };
 
-        let params = [];
+        let param1 = {
+          label: '',
+          value: 0
+        };
+
+        let params = [], params1 = [];
         for (var i = 0; i < result.data.data.tags.length; i ++) {
           param.label = result.data.data.tags_name[i].trim();
           param.value = parseInt(result.data.data.tags[i].trim());
@@ -211,16 +277,30 @@ export default class EditLiveForum extends React.Component {
           param = {};
         }
 
-        this.setState({selectedTags: params});
-
+        for (var i = 0; i < result.data.data.students.length; i ++) {
+          param1.label = result.data.data.students_email[i].trim();
+          param1.value = result.data.data.students_id[i];
+          params1.push(param1);
+          param1 = {};
+        }
+        this.setState({
+          selectedUsers: params1,
+          selectedTags: params
+        });
+        
+        console.log(foruminfo, "---");
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
     } catch(err) {
+      console.log(err);
       this.showFail("Something Went wrong");
     }
   }
@@ -283,9 +363,26 @@ export default class EditLiveForum extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
     const { open } = this.props;
-    const { tags, selectedTags } = this.state;
+    const { tags, students, selectedTags, selectedUsers } = this.state;
     return (
       <div>
         <ReactNotification />
@@ -314,6 +411,15 @@ export default class EditLiveForum extends React.Component {
               labelledBy={"Select"}
             />
           </div>
+          <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
+            <label htmlFor="feEmail">Students</label> 
+            <MultiSelect
+              options={students}
+              value={selectedUsers}
+              onChange={(e) => this.setSelectedUsers(e)}
+              labelledBy={"Select"}
+            />
+          </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Date</label>
           </div>
@@ -333,14 +439,14 @@ export default class EditLiveForum extends React.Component {
           <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                item.value == this.state.foruminfo.from ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
+                item.value === this.state.foruminfo.from ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>
           <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeTo(e)}>
             {Timelinelist.map((item, idx) => {
               return (
-                item.value == this.state.foruminfo.to ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
+                item.value === this.state.foruminfo.to ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
               );
             })}
           </FormSelect>

@@ -37,8 +37,7 @@ class MentorDetailCard extends React.Component {
   }
 
   handleAvailableNow() {
-    this.toggle_outcomingCall_modal();console.log(this.props.mentorData.email);
-    this.props.sendUser(this.props.mentorData.email);
+    this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name);
   }
 
   toggle_videocall() {
@@ -83,21 +82,6 @@ class MentorDetailCard extends React.Component {
     })
   }
 
-  toggle_outcomingCall_modal() {
-    this.setState({
-      outcomingCallToggle: !this.state.outcomingCallToggle,
-    })
-    if(this.state.outcomingCallToggle) {
-
-    } else {
-      
-    }
-  }
-
-  handleDecline() {
-    this.props.onDecline();
-  }
-
   render() {
     const {id, name, avatar, tag_name, online, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
     const {ModalOpenReview} = this.state;
@@ -119,7 +103,7 @@ class MentorDetailCard extends React.Component {
           </Row>
           <Row className="mentor-detail-subject-tag">
             <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-            {tag_name.map((teach, idx) => {
+            {tag_name && tag_name.map((teach, idx) => {
               if (idx < 5)
                 return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
               else if (idx === 5)
@@ -129,11 +113,12 @@ class MentorDetailCard extends React.Component {
             })}
           </Row>
           <div className="mentor-detail-myself">
-            {this.state.more ? <p>{description}</p> : <p>{description.slice(0,200)}...</p>}
+            {!this.state.more && (description.length > 200 ? <p>{description.slice(0,200)}...</p> : <p>{description}</p>)}
+            {this.state.more && <p>{description}</p>}
             {this.state.more ? <a href="#!" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="#!" className="read-more" onClick={() => this.readMore()}>Read more</a>}
           </div>
           <div className="mentor-detail-video">
-              <a href={video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
+              <a href={video_url} target="_blank" rel="noopener noreferrer" ><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
             </div>
         </div>
         <div className="mentor-deatail-rate-buttons">

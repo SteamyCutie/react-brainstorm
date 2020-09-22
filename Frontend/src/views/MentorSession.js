@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Badge, Button, FormSelect } from "shards-react";
+import { Container, Row, Button, FormSelect } from "shards-react";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
@@ -88,7 +88,6 @@ export default class MentorSession extends React.Component {
   }
 
   getSessionList = async() => {
-    console.log(localStorage.getItem('user'), "++++++");
     let param = {
       email: localStorage.getItem('email'),
       tag_id: ''
@@ -123,11 +122,14 @@ export default class MentorSession extends React.Component {
           arr = {};
         }
         this.setState({events: data_arr});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -154,6 +156,23 @@ export default class MentorSession extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    })
+  }
+
   changeMonth = (value) => {
     this.setState({events: value});
   }
@@ -166,6 +185,7 @@ export default class MentorSession extends React.Component {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
     localStorage.removeItem('ws');
   }
 
@@ -217,10 +237,6 @@ export default class MentorSession extends React.Component {
 }
 
 class CustomMonthEvent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  
   render() {
     return (
       <div style={{position: "relative"}} className="Hello">
@@ -230,9 +246,9 @@ class CustomMonthEvent extends React.Component {
   }
 }
 
-const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
+const ToolBar = ({changeMonth, showLoading}) => props => {
   const [alignment, setAlignment] = React.useState("right");
-  const [tags, setTags] = React.useState([
+  const [tags] = React.useState([
     {id: 1, name: 'Algebra'}, 
     {id: 2, name: 'Mathematics'},
     {id: 3, name: 'Act'},
@@ -319,10 +335,11 @@ const ToolBar = ({setCurrentDate, changeMonth, showLoading}) => props => {
         }
         changeMonth(data_arr);
       } else {
-        this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
           removeSession();
           window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       showLoading(false);
@@ -530,7 +547,7 @@ const CustomMonthDateHeader = ({events}) => props => {
   }
 
   const consoleFunction2 = (date, view, e) => {
-    const { onDrillDown, drilldownView } = props;
+    // const { onDrillDown, drilldownView } = props;
     // onDrillDown(date, view, drilldownView);
     // props.onView(view);
   }
@@ -541,7 +558,7 @@ const CustomMonthDateHeader = ({events}) => props => {
         {consoleFunction() && props.date.getDate()}
       </div>
       <div className="month-date">
-        {calcRecordCound() > 0 && <a className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
+        {calcRecordCound() > 0 && <a href="/#" className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
           {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`}
         </a>}
       </div>
@@ -551,10 +568,6 @@ const CustomMonthDateHeader = ({events}) => props => {
 
 
 class CustomMonthHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     let d = this.props.date;
@@ -588,7 +601,6 @@ const CustomWeekHeader = props => {
 const CustomWeekEvent = props => {
 
   const checkWeekEventTime = () => {
-    console.log(props, "++++++");
     let hours = props.event.start.getHours();
     let startType = "am";
     let startHour = "";

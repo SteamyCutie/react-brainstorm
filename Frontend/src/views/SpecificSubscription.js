@@ -1,138 +1,185 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
 import { Link } from "react-router-dom";
-
+import { getuserinfobyid, unsubscription } from '../api/api';
 import MentorVideo from "../components/common/MentorVideo";
+import LoadingModal from "../components/common/LoadingModal";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 
-import MentorAvatar from "../images/Rectangle_Kianna_big.png"
+import avatar from "../images/avatar.jpg"
 import SubscriperImg from "../images/Users.svg"
 
-const SpecificSubscription = ({ subscriptionList, columns }) => (
-  <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
-    <Card small className="specific-subsciption-card">
-      <CardBody>
-        <Row>
-          <Link to="/subscriptions" className="hidden-underline">
-            <Button className="btn-back-scriptions">
-              Back
-            </Button>
-          </Link>
-        </Row>
-        <Row>
-          <Col xl="3" className="subscription-mentor-detail">
-            <div>
-              <h2>Kianna Press</h2>
-              <img src={MentorAvatar} />
-              <div style={{display: "flex", padding: "20px 0px"}}>
-                <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
-                <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                <h6 className="no-margin"style={{fontWeight: "bold"}}>24</h6>
-              </div>
-              <Button className="btn-subscription-unsubscribe">
-                Unsubscribe
-              </Button>
-            </div>
-          </Col>
-          <Col xl="9" lg="12" className="subscription-mentor-videos">
-            {/* <MentorVideo />
-            <MentorVideo />
-            <MentorVideo /> */}
-          </Col>
-        </Row>
-      </CardBody>
-    </Card>    
-  </Container>
-);
+export default class SpecificSubscription extends React.Component {
+  constructor(props) {
+    super(props);
 
-SpecificSubscription.propTypes = {
-  subscriptionList: PropTypes.array,
-  columns: PropTypes.array,
-};
-
-SpecificSubscription.defaultProps = {
-  subscriptionList: [
-    {
-      id: 1,
-      avatar: require("../images/avatar1.jpg"),
-      mentorName: "Kianna Press",
-      pageName: "Algebra 101",
-      planFee: 49.99,
-      status: true,
-      edit: true
-    },
-    {
-      id: 2,
-      avatar: require("../images/avatar2.jpg"),
-      mentorName: "Cristofer Septimus",
-      pageName: "Video editing",
-      planFee: 29.50,
-      status: true,
-      edit: true
-    },
-    {
-      id: 3,
-      avatar: require("../images/avatar3.jpg"),
-      mentorName: "Martin Geidt",
-      pageName: "Finance",
-      planFee: "29.50",
-      status: true,
-      edit: true
-    },
-    {
-      id: 4,
-      avatar: require("../images/avatar4.jpg"),
-      mentorName: "Kaiya Torff",
-      pageName: "Programming",
-      planFee: 32.40,
-      status: false,
-      edit: false
+      this.state = {
+        loading: false,
+        userInfo: {},
+      }
     }
-  ],
-  columns: [
-    {
-      name: 'Mentor',
-      selector: 'mentorName',
-      sortable: false,
-      style: {
-        fontSize: "16px",
-      },
-      cell: row => <div><img src={row.avatar} className="subscription-mentor-avatar" /><a href="#" class="scription-to-specific">{row.mentorName}</a></div>,
-    },
-    {
-      name: 'Subscription page name',
-      selector: 'pageName',
-      sortable: false,
-      style: {
-        fontSize: "16px",
-      },
-    },
-    {
-      name: 'Subscription plan fee',
-      selector: 'planFee',
-      sortable: false,
-      style: {
-        fontSize: "16px",
-      },
-      format: row => `$${row.planFee}`,
-    },
-    {
-      name: 'Status',
-      selector: 'status',
-      sortable: false,
-      style: {
-        fontSize: "16px",
-      },
-      cell: row => <div>{row.status === true ? "Active" : "Inactive"}</div>,
-    },
-    {
-      name: 'Edit',
-      selector: 'edit',
-      sortable: false,
-      center: true,
-      cell: row => <div className={row.edit === true ? "subscription-edit-unsubscribe" : "subscription-edit-resubscribe" }>{row.edit === true ? "Unsubscribe" : "Resubscribe"}</div>,
-    }
-  ]
-};
 
-export default SpecificSubscription;
+    componentWillMount() {
+      this.getUserInfo(this.props.match.params.id);
+    }
+
+    getUserInfo = async(id) => {
+      let param = {id: id};
+
+      try {
+        this.setState({loading: true});
+        const result = await getuserinfobyid(param);
+        if (result.data.result === "success") {
+          this.setState({
+            userInfo: result.data.data
+          });
+        } else if (result.data.result === "warning") {
+          this.showWarning(result.data.message);
+        } else {
+          if (result.data.message === "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
+          }
+        }
+        this.setState({loading: false});
+      } catch(err) {
+        this.setState({loading: false});
+        this.showFail("Something Went wrong");
+      };
+    }
+
+    handleUnSub = async() => {
+      let param = {
+        mentor_id: this.props.match.params.id,
+        email: localStorage.getItem('email')
+      };
+
+      try {
+        this.setState({loading: true});
+        const result = await unsubscription(param);
+        if (result.data.result === "success") {
+        } else if (result.data.result === "warning") {
+          this.showWarning(result.data.message);
+        } else {
+          if (result.data.message === "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
+          }
+        }
+        this.setState({loading: false});
+      } catch(err) {
+        this.setState({loading: false});
+        this.showFail("Something Went wrong");
+      };
+    }
+
+    showSuccess(text) {
+      store.addNotification({
+        title: "Success",
+        message: text,
+        type: "success",
+        insert: "top",
+        container: "top-right",
+        dismiss: {
+          duration: 500,
+          onScreen: false,
+          waitForAnimation: false,
+          showIcon: false,
+          pauseOnHover: false
+        },
+      });
+    }
+  
+    showFail(text) {
+      store.addNotification({
+        title: "Fail",
+        message: text,
+        type: "danger",
+        insert: "top",
+        container: "top-right",
+        dismiss: {
+          duration: 500,
+          onScreen: false,
+          waitForAnimation: false,
+          showIcon: false,
+          pauseOnHover: false
+        }
+      });
+    }
+
+    showWarning(text) {
+      store.addNotification({
+        title: "Warning",
+        message: text,
+        type: "warning",
+        insert: "top",
+        container: "top-right",
+        dismiss: {
+          duration: 500,
+          onScreen: false,
+          waitForAnimation: false,
+          showIcon: false,
+          pauseOnHover: false
+        }
+      });
+    }
+  
+    removeSession() {
+      localStorage.removeItem('email');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user-type');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('ws');
+    }
+
+    render() {
+      const {loading, userInfo} = this.state;
+      return (
+        <>
+          {loading && <LoadingModal open={true} />}
+          <ReactNotification />
+          <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
+            <Card small className="specific-subsciption-card">
+              <CardBody>
+                <Row>
+                  <Link to="/subscriptions" className="hidden-underline">
+                    <Button className="btn-back-scriptions">
+                      Back
+                    </Button>
+                  </Link>
+                </Row>
+                <Row>
+                  <Col xl="3" className="subscription-mentor-detail">
+                    <div>
+                      <h2>{userInfo.name}</h2>
+                      {userInfo.avatar && <img className="avatar" src={userInfo.avatar} alt="avatar"/>}
+                      {!userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
+                      <div style={{display: "flex", padding: "20px 0px"}}>
+                        <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="avatar"/>
+                        <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
+                        <h6 className="no-margin"style={{fontWeight: "bold"}}>{userInfo.sub_count}</h6>
+                      </div>
+                      <Button className="btn-subscription-unsubscribe" onClick={() => this.handleUnSub()}>
+                        Unsubscribe
+                      </Button>
+                    </div>
+                  </Col>
+                  <Col xl="9" lg="12" className="subscription-mentor-videos">
+                    {userInfo.share_info && userInfo.share_info.map((item, idx) =>
+                      <MentorVideo key={idx} item={item} />
+                    )}
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>    
+          </Container>
+        </>
+      )
+    }
+  }
