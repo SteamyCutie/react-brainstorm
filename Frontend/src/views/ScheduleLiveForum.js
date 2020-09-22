@@ -169,7 +169,7 @@ export default class ScheduleLiveForum extends React.Component {
           <Card small className="schedule-forum-card">
             <CardHeader className="live-forum-header">
               <h5 className="live-forum-header-title no-margin">Schedule live forum</h5>
-              {localStorage.getItem('is_mentor') === 1 && <Button className="live-forum-header-button" onClick={() => this.toggle_createliveforum()}>Create live forum</Button>}
+              {parseInt(localStorage.getItem('is_mentor')) === 1 ? <Button className="live-forum-header-button" onClick={() => this.toggle_createliveforum()}>Create live forum</Button> : <></>}
             </CardHeader>
             <CardBody>
               <Row>
