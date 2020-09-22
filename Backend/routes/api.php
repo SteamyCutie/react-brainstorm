@@ -24,6 +24,7 @@ Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
 Route::post('/test', 'UserController@test');
+Route::post('/findmentors', 'UserController@findMentors');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
@@ -31,7 +32,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getuserinfo', 'UserController@getUserInfo');
   Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
   Route::post('/getallmentors', 'UserController@getAllMentors');
-  Route::post('/findmentors', 'UserController@findMentors');
   Route::post('/getallstudents', 'UserController@getAllStudents');
   Route::post('/createshareinfo', 'MediaController@createShareInfo');
   Route::post('/scheduleliveforum', 'SessionController@getAllForum');
