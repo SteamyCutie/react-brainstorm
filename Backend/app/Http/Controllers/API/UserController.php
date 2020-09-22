@@ -412,8 +412,6 @@ class UserController extends Controller
       $tag_id = $request['tag_id'];
       $mentor_name = $request['name'];
       $rowsPerPage = $request['rowsPerPage'];
-//    $total = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
-//    $totalRows = count($total);
       $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
       $result_res = [];
       if (count($mentors) > 0) {
@@ -425,9 +423,11 @@ class UserController extends Controller
             $flag = false;
             for ($j = 0; $j < count($tag_rows); $j++) {
               $tags_name = Tag::where('id', $tag_rows[$j])->first();
-              $temp_tag[$j] = $tags_name->name;
-              if ($tag_id == trim($tag_rows[$j])) {
-                $flag = true;
+              if ($tags_name) {
+                $temp_tag[$j] = $tags_name->name;
+                if ($tag_id == trim($tag_rows[$j])) {
+                  $flag = true;
+                }
               }
             }
         
@@ -454,7 +454,9 @@ class UserController extends Controller
             $temp_tag = [];
             for ($j = 0; $j < count($tag_rows); $j++) {
               $tag_name = Tag::where('id', $tag_rows[$j])->first();
-              $temp_tag[$j] = $tag_name->name;
+              if ($tag_name) {
+                $temp_tag[$j] = $tag_name->name;
+              }
             }
         
             $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
