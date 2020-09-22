@@ -102,7 +102,7 @@ class SmallCardForum extends React.Component {
             <a href="#!" onClick={() => this.toggle_invite()}>
               {student_info.map((item, idx) => {
                 if (idx < 3)
-                  return <img src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
+                  return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
                 else 
                   return <></>;
               })}
