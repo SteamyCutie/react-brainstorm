@@ -450,7 +450,9 @@ class UserController extends Controller
             } else {
               $mentors[$i]['average_mark'] = 0;
             }
-        
+            if ($mentors[$i]['description'] == null){
+              $mentors[$i]['description'] == "";
+            }
             if ($flag == true) {
               $mentors[$i]['tag_name'] = $temp_tag;
               $result_res[] = $mentors[$i];
@@ -478,7 +480,9 @@ class UserController extends Controller
             } else {
               $mentors[$i]['average_mark'] = 0;
             }
-        
+            if ($mentors[$i]['description'] == null){
+              $mentors[$i]['description'] == "";
+            }
             $mentors[$i]['tag_name'] = $temp_tag;
           }
           $result_res = $mentors;
