@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
 import "../../assets/landingpage.css"
-import { Link } from "react-router-dom";
 import { signin } from '../../api/api';
 
 import Facebook from '../../images/Facebook.svg'
@@ -24,7 +23,7 @@ export default class SignIn extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     // document.getElementById("email-input").focus();
   }
 
@@ -75,7 +74,7 @@ export default class SignIn extends React.Component {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
           formIsValid = false;
           errors["email"] = "Email is incorrect";
         }
@@ -121,6 +120,10 @@ export default class SignIn extends React.Component {
       const result = await signin(this.state);
       if (result.data.result === "success") {
         localStorage.setItem('email', this.state.email);
+        localStorage.setItem('is_mentor', result.data.user.is_mentor);
+        localStorage.setItem('user_id', result.data.user.id);
+        localStorage.setItem('avatar', result.data.user.avatar);
+        localStorage.setItem('user_name', result.data.user.name);
         window.location.href = '/mentorSession';
       } else {
         this.setState({
@@ -128,9 +131,9 @@ export default class SignIn extends React.Component {
         })
       }
     } catch(err) {
-        this.setState({
-          signInError: "Email or Password is invaild"
-        })
+      this.setState({
+        signInError: 'Error is occured'
+      })
     };
   }
 
@@ -155,7 +158,7 @@ export default class SignIn extends React.Component {
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
+          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Sign in</h1>
             <div className="content-center block-content-class modal-input-group-class">
@@ -169,13 +172,13 @@ export default class SignIn extends React.Component {
                 onKeyDown={(e) => this.handleEmailKeyDown(e)}
                 autoComplete="email"
                 className="email-input"
-                autofocus="1"
+                autoFocus="1"
               />
-              <label class="email-validation-err">{this.state.validationError['email']}</label>
+              <label className="email-validation-err">{this.state.validationError['email']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="fePassword">Password</label>
-              <a href="#" htmlFor="feForgot" className="forgot-class" onClick={() => this.handleforgetPassword()}>Forgot password?</a>
+              <a href="/#" htmlFor="feForgot" className="forgot-class" onClick={() => this.handleforgetPassword()}>Forgot password?</a>
               <FormInput
                 id="password-input"
                 type="password"
@@ -185,12 +188,12 @@ export default class SignIn extends React.Component {
                 autoComplete="text"
                 className="password-input"
               />
-              <label class="password-validation-err">{this.state.validationError['password']}</label>
+              <label className="password-validation-err">{this.state.validationError['password']}</label>
             </div>
             <div className="content-center block-content-class button-text-group-class">
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
-              <p>Don't have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign up</a></p>
+              <p>Don't have an account?&nbsp;<a href="/#" onClick={() => this.toggle_modal()}>Sign up</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />
@@ -198,10 +201,10 @@ export default class SignIn extends React.Component {
               <hr />
             </div>
             <div className="content-center">
-              <Button className="sign-with-facebook"><img src={Facebook} placeholder="Facebook Image" />Sign In with Facebook</Button>
+              <Button className="sign-with-facebook"><img src={Facebook} alt="Facebook" />Sign In with Facebook</Button>
             </div>
             <div className="content-center">
-              <Button className="sign-with-google"><img src={Google} placeholder="Google Image" />Sign In with Google</Button>
+              <Button className="sign-with-google"><img src={Google} alt="Google" />Sign In with Google</Button>
             </div>
           </ModalBody>
         </Modal>

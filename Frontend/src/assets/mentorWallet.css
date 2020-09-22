@@ -274,6 +274,7 @@
   
   .modal.show {
     z-index: 9000;
+    pointer-events: none;
   }
   
   .small-card-class {
@@ -929,7 +930,7 @@
     font-size: 14px;
     font-weight: 400;
     outline: none;
-    border: none;
+    /* border: none; */
     margin-bottom: 0px;
   }
   
@@ -980,6 +981,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 4.1% !important;
   }
 
   .rbc-events-container {
@@ -999,7 +1001,7 @@
   }
 
   .week-event-content {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
     padding: 5px;
   }

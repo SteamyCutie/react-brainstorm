@@ -1,7 +1,7 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput,  FormCheckbox } from "shards-react";
-import { uploadvideo, uploadimage, createshareinfo } from '../../api/api';
-import ReactNotification from 'react-notifications-component';
+import { Modal, ModalBody, Button, FormInput } from "shards-react";
+import { uploadvideo, createshareinfo } from '../../api/api';
+import {DropzoneArea} from 'material-ui-dropzone';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import LoadingModal from "./LoadingModal";
@@ -13,6 +13,7 @@ export default class CreateMyShare extends React.Component {
     super(props);
 
     this.state = {
+      files: [],
       loading: false,
       foruminfo: {
         title: "",
@@ -75,8 +76,11 @@ export default class CreateMyShare extends React.Component {
       if (result.data.result === "success") {
         this.toggle();
         this.showSuccess("Action Successful");
+        window.location.reload();
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        if (result.data.type == 'require') {
+        if (result.data.type === 'require') {
           const {requiremessage} = this.state;
           let temp = requiremessage;
           if (result.data.message.title) {
@@ -89,38 +93,55 @@ export default class CreateMyShare extends React.Component {
             requiremessage: temp
           });
         } else {
+          this.showFail(result.data.message);
+          if (result.data.message === "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);
+          }
         }
-        this.showFail("Action Fail");
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Action Fail");
+      this.showFail("Something Went wrong");
       this.toggle();
     };
   }
 
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   onChnageVideo = async(e) => {
-    const formData = new FormData();
-    formData.append('files[]', e.target.files[0]);
-    try {
-      this.setState({loading: true});
-      const result = await uploadvideo(formData);
-      if (result.data.result == "success") {
-        const {foruminfo} = this.state;
-        let temp = foruminfo;
-        temp.media_url = result.data.data;
-        this.setState({foruminfo: temp});
-        console.log(this.state);
-        this.showSuccess("Upload Video Success");
-      } else {
+    if (e[0] === null || e[0] === undefined)
+      return;
+    else {
+      const formData = new FormData();
+      formData.append('files[]', e[0]);
+      try {
+        this.setState({loading: true});
+        const result = await uploadvideo(formData);
+        if (result.data.result === "success") {
+          const {foruminfo} = this.state;
+          let temp = foruminfo;
+          temp.media_url = result.data.data;
+          this.setState({foruminfo: temp});
+          this.showSuccess("Upload Video Success");
+        } else {
+          this.showFail();
+        }
+        this.setState({loading: false});
+      } catch(err) {
+        this.setState({loading: false});
         this.showFail();
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail();
-    };
+      };
+    }
   }
 
   showSuccess(text) {
@@ -157,36 +178,54 @@ export default class CreateMyShare extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNOtification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
     const { open } = this.props;
+    
     return (
       <div>
-        {this.state.loading && <LoadingModal open={true} />}
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Input Information</h1>
+          <h1 className="content-center modal-header-class">Upload photo/video</h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
-            {this.state.requiremessage.dtitle != '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
-            {this.state.requiremessage.dtitle != '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
-            {this.state.requiremessage.dtitle == '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle !== '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
+            {this.state.requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
+            {this.state.requiremessage.dtitle === '' && <FormInput className="profile-detail-input" type="text" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Description</label>
-            {this.state.requiremessage.ddescription != '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
-            {this.state.requiremessage.ddescription != '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
-            {this.state.requiremessage.ddescription == '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription !== '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
+            {this.state.requiremessage.ddescription !== '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
+            {this.state.requiremessage.ddescription === '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
-          <label htmlFor="feEmail">Video</label>
-            <FormInput className="profile-detail-input" type="file" placeholder="Title" onChange={(e) => this.onChnageVideo(e)}/>
+            <label htmlFor="feEmail">Photo/Video</label>
+            <DropzoneArea acceptedFiles={['video/mp4']} onChange={(e) => this.onChnageVideo(e)}/>
           </div>
           <div className="content-center block-content-class button-text-group-class">
-            <Button onClick={() => this.actionSave()}>Save</Button>
+            <Button onClick={() => this.actionSave()}>Upload</Button>
           </div>
           </ModalBody>
         </Modal>
+        {this.state.loading && <LoadingModal open={true} />}
       </div>
     );
   }

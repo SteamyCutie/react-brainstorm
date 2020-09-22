@@ -1,19 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Container, Row, Col, Badge, Button, FormSelect } from "shards-react";
-import { Calendar, momentLocalizer, globalizeLocalizer  } from 'react-big-calendar'
+import { Container, Row, Button, FormSelect } from "shards-react";
+import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import TimeGrid from 'react-big-calendar/lib/TimeGrid'
+import LoadingModal from "../components/common/LoadingModal";
 import { getUpcomingSession } from '../api/api';
-
-// import PageTitle from "./../components/common/PageTitle";
-// import SmallStats from "./../components/common/SmallStats";
-// import UsersOverview from "./../components/blog/UsersOverview";
-// import UsersByDevice from "./../components/blog/UsersByDevice";
-// import NewDraft from "./../components/blog/NewDraft";
-// import Discussions from "./../components/blog/Discussions";
-// import TopReferrals from "./../components/common/TopReferrals";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 import WalletHeader from "../components/common/WalletHeader";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -52,13 +46,6 @@ const ColoredDateCellWrapper = ( {date} ) => props => {
     return 0;
   }
 
-  const checkBorderWidth = () => {
-    let cPos = props.value.getDay();
-    if(cPos === 0) return -1;
-    else if(cPos === 6) return 1;
-    else return 0;
-  }
-
   return (
     React.cloneElement(React.Children.only(props.children), {
       style: {
@@ -67,9 +54,7 @@ const ColoredDateCellWrapper = ( {date} ) => props => {
         borderBottomLeftRadius: checkBorderRadius() === -1 ? "10px" : "0px",
         borderBottomRightRadius: checkBorderRadius() === 1 ? "10px" : "0px",
         borderColor: "#E0E0E0",
-        borderWidth: "1px",
-        // borderLeftWidth: checkBorderWidth() === -1 ? "0px" : "1px",
-        // borderRightWidth: checkBorderWidth() === 1 ? "0px" : "1px",
+        borderWidth: "1px"
       },
     })
   );
@@ -78,8 +63,8 @@ const ColoredDateCellWrapper = ( {date} ) => props => {
 export default class MentorSession extends React.Component {
   constructor(props) {
     super(props);
-    const now = new Date();
     this.state = {
+      loading: false,
       events: [],
       currentDate: new Date(),
       view: "month",
@@ -99,14 +84,116 @@ export default class MentorSession extends React.Component {
   }
 
   componentWillMount() {
+    this.getSessionList();
+  }
+
+  getSessionList = async() => {
+    let param = {
+      email: localStorage.getItem('email'),
+      tag_id: ''
+    }
+    try {
+      this.setState({loading: true});
+      const result = await getUpcomingSession(param);
+      if(result.data.result === "success") {
+        var data_arr = [];
+        var arr = {
+          id: '',
+          title: '',
+          name: '',
+          mentor_name: '',
+          noOfPax: '',
+          isBooked: '',
+          start: 0,
+          end: false,
+        };
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          arr.id = i;
+          arr.title = result.data.data[i].title;
+          arr.name = result.data.data[i].name;
+          arr.mentor_name = result.data.data[i].mentor_name;
+          arr.noOfPax = 10;
+          arr.isBooked = true;
+          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
+          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+
+          data_arr.push(arr);
+          arr = {};
+        }
+        this.setState({events: data_arr});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    }
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    })
   }
 
   changeMonth = (value) => {
     this.setState({events: value});
   }
 
+  showLoading = (value) => {
+    this.setState({loading: value});
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   render() {
     return (
+      <>
+      {this.state.loading && <LoadingModal open={true} />}
+      <ReactNotification />
       <Container fluid className="main-content-container px-4">
         <Row noGutters className="page-header py-4">
           <WalletHeader title="Upcoming Session" className="text-sm-left mb-3" flag={false}/>
@@ -123,7 +210,8 @@ export default class MentorSession extends React.Component {
             components={{
               toolbar: ToolBar({
                 setCurrentDate: this.setCurrentDate,
-                changeMonth: this.changeMonth
+                changeMonth: this.changeMonth,
+                showLoading: this.showLoading
               }),
               dateCellWrapper: ColoredDateCellWrapper({
                 date: this.state.currentDate,
@@ -143,17 +231,13 @@ export default class MentorSession extends React.Component {
           />
         </Row>
       </Container>
+      </>
     );
   }
 }
 
 class CustomMonthEvent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  
   render() {
-    const bookedIcon = this.props.event.isBooked ? <Badge><i className="fa fa-bookmark"></i></Badge> : null ;
     return (
       <div style={{position: "relative"}} className="Hello">
         Hello World!
@@ -162,8 +246,40 @@ class CustomMonthEvent extends React.Component {
   }
 }
 
-const ToolBar = ({setCurrentDate, changeMonth}) => props => {
+const ToolBar = ({changeMonth, showLoading}) => props => {
   const [alignment, setAlignment] = React.useState("right");
+  const [tags] = React.useState([
+    {id: 1, name: 'Algebra'}, 
+    {id: 2, name: 'Mathematics'},
+    {id: 3, name: 'Act'},
+    {id: 4, name: 'Organic'},
+    {id: 5, name: 'English'},
+    {id: 6, name: 'Cooking'},
+    {id: 7, name: 'German'},
+    {id: 8, name: 'French'},
+    {id: 9, name: 'Spanish'},
+    {id: 10, name: 'Russian'},
+    {id: 11, name: 'Coaching'},
+    {id: 12, name: 'Travelling'},
+    {id: 13, name: 'Cooking'},
+    {id: 14, name: 'Copy'},
+    {id: 15, name: 'Sales'},
+  ]);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const result = await gettags();
+  //       if (result.data.result === "success") {
+  //         setTags(result.data.data);
+  //       } else {
+
+  //       }
+  //     } catch(err) {
+
+  //     }
+  //   };
+  //   fetchData();
+  // });
 
   const goToDayView = () => {
     props.onView("day");
@@ -186,15 +302,17 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
     getCalendarEvents(today);
   }
 
-  const getCalendarEvents = async(date) => {
+  const getCalendarEvents = async() => {
     // setCurrentDate(date);
-    let time = new Date(date);
     try {
-      const result = await getUpcomingSession({email: localStorage.getItem('email'), time: time});
+      showLoading(true);
+      const result = await getUpcomingSession({email: localStorage.getItem('email')});
       if(result.data.result === "success") {
         var data_arr = [];
         var arr = {
           id: '',
+          name: '',
+          mentor_name: '',
           title: '',
           noOfPax: '',
           isBooked: '',
@@ -205,20 +323,29 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
         for (var i = 0; i < result.data.data.length; i ++) {
           arr.id = i;
           arr.title = result.data.data[i].title;
+          arr.name = result.data.data[i].name;
+          arr.mentor_name = result.data.data[i].mentor_name;
           arr.noOfPax = 10;
           arr.isBooked = true;
-          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month, result.data.data[i].s_day, i, i, 0);
-          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month, result.data.data[i].e_day, i, i + 20, 0);
+          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
+          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
 
           data_arr.push(arr);
           arr = {};
         }
         changeMonth(data_arr);
       } else {
-
+        if (result.data.message === "Token is Expired") {
+          removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
       }
+      showLoading(false);
     } catch(err) {
-      alert(err);
+      showLoading(false);
+      this.showFail("Something Went wrong");
     }
   }
 
@@ -291,16 +418,51 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
     return `${dayName}, ${monthName} ${date}`;
   }
 
-  const onChangeCategory = async() => {
+  const onChangeTag = async(e) => {
+    try {
+      showLoading(true);
+      const result = await getUpcomingSession({email: localStorage.getItem('email'), tag_id: e.target.value});
+      if(result.data.result === "success") {
+        var data_arr = [];
+        var arr = {
+          id: '',
+          title: '',
+          name: '',
+          mentor_name: '',
+          noOfPax: '',
+          isBooked: '',
+          start: 0,
+          end: false,
+        };
 
+        for (var i = 0; i < result.data.data.length; i ++) {
+          arr.id = i;
+          arr.title = result.data.data[i].title;
+          arr.name = result.data.data[i].name;
+          arr.mentor_name = result.data.data[i].mentor_name;
+          arr.noOfPax = 10;
+          arr.isBooked = true;
+          arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
+          arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+
+          data_arr.push(arr);
+          arr = {};
+        }
+        changeMonth(data_arr);
+      } else {
+
+      }
+      showLoading(false);
+    } catch(err) {
+      showLoading(false);
+    }
   }
 
-  const onChangeSession = async() => {
-    
-  }
-
-  const onChangeStudent = async() => {
-    
+  const removeSession = () => {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('ws');
   }
 
   return (
@@ -339,27 +501,30 @@ const ToolBar = ({setCurrentDate, changeMonth}) => props => {
       <div className="headerbar-class">
         <div className="headerbar-status center">{getToday()}</div>
         <div className="headerbar-select-group">
-          <div className="toolbar-select-label">
+          {/* <div className="toolbar-select-label">
             <label className="">Sessions:</label>
-            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeSession(e)}>
+            <FormSelect className="profile-detail-input" onChange={(e) => onChangeSession(e)}>
+              {this.state.events.map((item, index) =>
+                <option value={item.id} selected>{item.title}</option>
+              )}
               <option>All</option>
-              <option>...</option>
+            </FormSelect>
+          </div> */}
+          <div className="toolbar-select-label">
+            <label className="">Tag: </label>
+            <FormSelect id="feInputState" onChange={(e) => onChangeTag(e)}>
+              <option value="">select tag</option>
+              {tags.map((item, idx) =>                 
+                <option key={idx} value={item.id}>{item.name}</option>
+              )}
             </FormSelect>
           </div>
-          <div className="toolbar-select-label">
-            <label className="">Category: </label>
-            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeCategory(e)}>
-              <option>select category</option>
-              <option>...</option>
-            </FormSelect>
-          </div>
-          <div className="toolbar-select-label">
+          {/* <div className="toolbar-select-label">
             <label className="">Student: </label>
-            <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeStudent(e)}>
+            <FormSelect className="profile-detail-input">
               <option>select student</option>
-              <option>...</option>
             </FormSelect>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -382,7 +547,7 @@ const CustomMonthDateHeader = ({events}) => props => {
   }
 
   const consoleFunction2 = (date, view, e) => {
-    const { onDrillDown, drilldownView } = props;
+    // const { onDrillDown, drilldownView } = props;
     // onDrillDown(date, view, drilldownView);
     // props.onView(view);
   }
@@ -393,7 +558,7 @@ const CustomMonthDateHeader = ({events}) => props => {
         {consoleFunction() && props.date.getDate()}
       </div>
       <div className="month-date">
-        {calcRecordCound() > 0 && <a className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
+        {calcRecordCound() > 0 && <a href="/#" className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
           {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`}
         </a>}
       </div>
@@ -403,10 +568,6 @@ const CustomMonthDateHeader = ({events}) => props => {
 
 
 class CustomMonthHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     let d = this.props.date;
@@ -468,14 +629,14 @@ const CustomWeekEvent = props => {
     if(minutes < 10) endMinute = `0${minutes}`;
     else endMinute = `${minutes}`;
 
-    let result = `${startHour}:${startMinute} ${startType} -${endHour}:${endMinute} ${endType}`;
+    let result = `${startHour}:${startMinute} ${startType} - ${endHour}:${endMinute} ${endType}`;
     return result;
   }
 
   return (
     <div className="week-event">
       <div className="week-event-time">{checkWeekEventTime()}</div>
-      <div className="week-event-content">{props.event.title}</div>
+      <div className="week-event-content">{props.event.mentor_name}</div>
     </div>
   );
 }

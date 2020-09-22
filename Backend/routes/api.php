@@ -15,35 +15,40 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+  return $request->user();
 });
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
-
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
+Route::post('/test', 'UserController@test');
+Route::post('/findmentors', 'UserController@findMentors');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
-    Route::post('/signout', 'UserController@logout');
-    Route::post('/editprofile', 'UserController@editprofile');
-    Route::post('/mysharepage', 'MediaController@getMediaShare');
-    Route::post('/scheduleliveforum', 'SessionController@getSession');
-    Route::post('/createforum', 'SessionController@createforum');
-    Route::post('/gethistory', 'SessionController@getHistory');
-    Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
-    Route::post('/setavailabletimes', 'AvailableTimesController@setavailabletimes');
-    Route::post('/getavailabletimes', 'AvailableTimesController@getavailabletimes');
-    Route::post('/getuserinfo', 'UserController@getuserinfo');
-    Route::post('/getwallets', 'WalletController@index');
-    Route::post('/gettags', 'TagController@index');
-    Route::get('/test', 'UserController@test');
-    Route::post('/uploadimage', 'FileController@uploadimage');
-    Route::post('/uploadvideo', 'FileController@uploadvideo');
-
-    Route::post('/getallmentors', 'UserController@getallmentors');
-    Route::post('/createshareinfo', 'MediaController@createshareinfo');
-    Route::post('/editforum', 'SessionController@editforum');
-    Route::post('/getforum', 'SessionController@getforum');
+  Route::post('/signout', 'UserController@logout');
+  Route::post('/editprofile', 'UserController@editProfile');
+  Route::post('/getuserinfo', 'UserController@getUserInfo');
+  Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
+  Route::post('/getallmentors', 'UserController@getAllMentors');
+  Route::post('/getallstudents', 'UserController@getAllStudents');
+  Route::post('/createshareinfo', 'MediaController@createShareInfo');
+  Route::post('/scheduleliveforum', 'SessionController@getAllForum');
+  Route::post('/createforum', 'SessionController@createForum');
+  Route::post('/gethistory', 'SessionController@getHistory');
+  Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
+  Route::post('/deleteforum', 'SessionController@deleteForum');
+  Route::post('/editforum', 'SessionController@editForum');
+  Route::post('/getforum', 'SessionController@getForum');
+  Route::post('/getweekdata', 'DayController@index');
+  Route::post('/setavailabletimes', 'AvailableTimesController@setAvailableTimes');
+  Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
+  Route::post('/getwallets', 'WalletController@index');
+  Route::post('/gettags', 'TagController@index');
+  Route::post('/uploadimage', 'FileController@uploadImage');
+  Route::post('/uploadvideo', 'FileController@uploadVideo');
+  Route::post('/setsubscription', 'SubscriptionController@setSubscription');
+  Route::post('/unsubscription', 'SubscriptionController@unSubscription');
+  Route::post('/setreview', 'ReviewController@setReview');
 });

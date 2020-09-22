@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
+import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { forgetPassword } from '../api/api';
 
 export default class ForgetPassword extends React.Component {
@@ -10,7 +10,8 @@ export default class ForgetPassword extends React.Component {
       historyData: [],
       email: '',
       validationErrorMsg: '',
-      vCode: ''
+      vCode: '',
+      errorMsg: ''
     }
   }
 
@@ -40,7 +41,7 @@ export default class ForgetPassword extends React.Component {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
           formIsValid = false;
           error = "Email is incorrect";
         }
@@ -58,13 +59,17 @@ export default class ForgetPassword extends React.Component {
       const result = await forgetPassword({email: localStorage.getItem('email')});
 
       if(result.data.result === "success") {
-        alert("Please check your Email");
-        window.location.href = '/';
+        window.location.href = '/emailsent';
       } else {
-        alert("failed")
+        this.setState({
+          errorMsg: result.data.message
+        })
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
+      this.setState({
+        errorMsg: "Error is occured"
+      })
     }
   }
 
@@ -79,6 +84,7 @@ export default class ForgetPassword extends React.Component {
   onChangeEmail = (e) => {
     this.setState({
       email: e.target.value,
+      errorMsg: ''
     });
   }
 
@@ -108,6 +114,7 @@ export default class ForgetPassword extends React.Component {
                 </FormInput>
               </Row>
               <label style={{marginLeft: "80px"}} className="validation-err">{this.state.validationErrorMsg}</label>
+              <label className="sign-in-err">{this.state.errorMsg}</label>
           </CardBody>
           <CardFooter className="center">
             <Button

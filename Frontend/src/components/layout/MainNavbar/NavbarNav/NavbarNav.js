@@ -1,15 +1,11 @@
 import React from "react";
-import { Nav, NavbarBrand, Navbar } from "shards-react";
-import PropTypes from "prop-types";
+import { Nav } from "shards-react";
 
 import Notifications from "./Notifications";
 import UserActions from "./UserActions";
 import UserType from "./UserType";
 
 export default class NavbarNav extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   toggleType() {
     const { toggleType } = this.props;

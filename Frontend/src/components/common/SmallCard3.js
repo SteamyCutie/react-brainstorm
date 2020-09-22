@@ -1,11 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { DropdownItem, Collapse, NavItem, NavLink, Dropdown, DropdownToggle, DropdownMenu } from "shards-react";
-
-import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
-import ReivewImage from "../../images/Review.jpg"
+import default_avatar from "../../images/avatar.jpg"
 
 class SmallCard3 extends React.Component {
   constructor(props) {
@@ -15,7 +11,7 @@ class SmallCard3 extends React.Component {
     this.toggle = this.toggle.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   edit() {
@@ -29,39 +25,26 @@ class SmallCard3 extends React.Component {
   }
 
   render() {
-    const {name, day, time, tag_name, avatar_url} = this.props.data
+    const {name, day, from_time, to_time, tag_name, avatar} = this.props.data
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
           <div style={{display: "flex", float: "left"}}>
-            <img src={ReivewImage} className="small-card3-avatar" alt="avatar" />
+            {avatar ? <img src={avatar} className="small-card3-avatar" alt="avatar" /> : <img src={default_avatar} className="small-card3-avatar" alt="avatar" />}
             <div>
               <h6 className="small-card3-name">{name}</h6>
               <div style={{display: "flex"}}>
                 {tag_name.map((tag, idx) => {
-                  return(
-                    <p className="brainsshare-tag" id={idx}>{tag}</p>
-                  );
+                  if (idx < 2)
+                    return <p className="brainsshare-tag" key={idx} title={tag}>{tag}</p>;
+                  else if (idx === 2)
+                    return <p key={idx} href="#!">{tag_name.length - 2} more</p>
+                  else
+                    return <></>;
                 })}
               </div>
             </div>
           </div>
-          {/* <Dropdown open={this.state.open} toggle={this.toggle}>
-            <DropdownToggle style={{float: 'right'}}>
-            <div className="nav-link-icon__wrapper">
-                <img
-                  className="user-avatar mr-2"
-                  src={MoreButtonImage}
-                  alt="User Avatar"
-                />{" "}
-              </div>
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem  onClick={() => this.edit()}>
-                Edit
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown> */}
         </div>
         <div className="small-card3-date-time">
           <div style={{display: "flex", marginBottom: "5px"}}>
@@ -73,7 +56,7 @@ class SmallCard3 extends React.Component {
           <div style={{display: "flex", marginBottom: "5px"}}>
             <img src={Clock} alt="Clock" />
             <h6 style={{fontSize: "16px", paddingLeft: "10px"}} className="no-margin">
-              {time}
+              {from_time}~{to_time}
             </h6>
           </div>
         </div>
@@ -81,15 +64,5 @@ class SmallCard3 extends React.Component {
     );
   }
 }
-
-SmallCard3.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-};
-
-SmallCard3.defaultProps = {
-  value: 0,
-  label: "Label",
-};
 
 export default SmallCard3;

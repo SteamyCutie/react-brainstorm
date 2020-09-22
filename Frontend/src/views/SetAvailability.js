@@ -8,60 +8,9 @@ import { store } from 'react-notifications-component';
 import DeleteButtonImage from "../images/Delete.svg"
 import AddButtonImage from "../images/Add.svg"
 
-import { getAvailableTimes } from '../api/api';
-import { setAvailableTimes } from '../api/api';
+import { getAvailableTimes, setAvailableTimes } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
-
-const timeList = [
-  {id: 1, str: "00 : 00 am"},
-  {id: 2, str: "00 : 30 am"},
-  {id: 3, str: "01 : 00 am"},
-  {id: 4, str: "01 : 30 am"},
-  {id: 5, str: "02 : 00 am"},
-  {id: 6, str: "02 : 30 am"},
-  {id: 7, str: "03 : 00 am"},
-  {id: 8, str: "03 : 30 am"},
-  {id: 9, str: "04 : 00 am"},
-  {id: 10, str: "04 : 30 am"},
-  {id: 11, str: "05 : 00 am"},
-  {id: 12, str: "05 : 30 am"},
-  {id: 13, str: "06 : 00 am"},
-  {id: 14, str: "06 : 30 am"},
-  {id: 15, str: "07 : 00 am"},
-  {id: 16, str: "07 : 30 am"},
-  {id: 17, str: "08 : 00 am"},
-  {id: 18, str: "08 : 30 am"},
-  {id: 19, str: "09 : 00 am"},
-  {id: 20, str: "09 : 30 am"},
-  {id: 21, str: "10 : 00 am"},
-  {id: 22, str: "10 : 30 am"},
-  {id: 23, str: "11 : 00 am"},
-  {id: 24, str: "11 : 30 am"},
-  {id: 25, str: "12 : 00 pm"},
-  {id: 26, str: "12 : 30 pm"},
-  {id: 27, str: "01 : 00 pm"},
-  {id: 28, str: "01 : 30 pm"},
-  {id: 29, str: "02 : 00 pm"},
-  {id: 30, str: "02 : 30 pm"},
-  {id: 31, str: "03 : 00 pm"},
-  {id: 32, str: "03 : 30 pm"},
-  {id: 33, str: "04 : 00 pm"},
-  {id: 34, str: "04 : 30 pm"},
-  {id: 35, str: "05 : 00 pm"},
-  {id: 36, str: "05 : 30 pm"},
-  {id: 37, str: "06 : 00 pm"},
-  {id: 38, str: "06 : 30 pm"},
-  {id: 39, str: "07 : 00 pm"},
-  {id: 40, str: "07 : 30 pm"},
-  {id: 41, str: "08 : 00 pm"},
-  {id: 42, str: "08 : 30 pm"},
-  {id: 43, str: "09 : 00 pm"},
-  {id: 44, str: "09 : 30 pm"},
-  {id: 45, str: "10 : 00 pm"},
-  {id: 46, str: "10 : 30 pm"},
-  {id: 47, str: "11 : 00 pm"},
-  {id: 48, str: "11 : 30 pm"}
-];
+import Timelinelist from '../common/TimelistList';
 
 class SetAvailability extends React.Component {
   constructor(props) {
@@ -69,6 +18,7 @@ class SetAvailability extends React.Component {
 
     this.state = {
       loading: false,
+      timezone: '',
       currentUserId: '',
       availableTimeList: [
         {
@@ -101,13 +51,13 @@ class SetAvailability extends React.Component {
         }
       ],
       dayOfWeekStatus: [
-         false,
-         false,
-         false,
-         false,
-         false,
-         false,
-         false
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
       ]
     }
 
@@ -152,8 +102,8 @@ class SetAvailability extends React.Component {
     let list = availableTimeList;
     let timeId = 0;
 
-    for(var i = 0; i < timeList.length; i ++) {
-      if(e.target.value === timeList[i]['str']) {
+    for(var i = 0; i < Timelinelist.length; i ++) {
+      if(e.target.value === Timelinelist[i]['str']) {
         timeId = i;
         break;
       }
@@ -170,8 +120,8 @@ class SetAvailability extends React.Component {
     let list = availableTimeList;
     let timeId = 0;
 
-    for(var i = 0; i < timeList.length; i ++) {
-      if(e.target.value === timeList[i]['str']) {
+    for(var i = 0; i < Timelinelist.length; i ++) {
+      if(e.target.value === Timelinelist[i]['str']) {
         timeId = i;
         break;
       }
@@ -185,97 +135,131 @@ class SetAvailability extends React.Component {
   }
 
   makeParam() {
-    const {availableTimeList} = this.state;
-    let temp = availableTimeList;
 
-    // temp.map((time, ))
   }
 
   handleSave = async() => {
+    const {availableTimeList, dayOfWeekStatus, timezone} = this.state;
+    for (var i = 0; i < availableTimeList.length; i ++) {
+      availableTimeList[i].status = dayOfWeekStatus[i];
+    }
+
+    let param = {
+      email: localStorage.getItem('email'),
+      data: this.state.availableTimeList,
+      timezone: timezone
+    }
+
     try {
       this.setState({loading: true});
       this.makeParam();
-      const result = await setAvailableTimes({email: localStorage.getItem('email'), data: this.state.availableTimeList});
+      const result = await setAvailableTimes(param);
 
       if (result.data.result === "success") {
         this.getTimeListData();
         this.showSuccess("Set Availability Success");
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail("Set Availability Fail");
+        this.showFail(result.data.message);
+        if (result.data.message == "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Set Availability Fail");
+      this.showFail("Something Went wrong");
     };
   }
   
   getTimeListData = async() => {
+    let param = {
+      email: localStorage.getItem('email')
+    }
     try {
       this.setState({loading: true});
-      const result = await getAvailableTimes({email: localStorage.getItem('email')});
+      const result = await getAvailableTimes(param);
       
       if (result.data.result === "success") {
         var availableTimeListTemp = [
           {
             dayOfWeek: "Sunday",
-            timeList: []
+            timeList: [],
+            status: false
           },
           {
             dayOfWeek: "Monday",
-            timeList: []
+            timeList: [],
+            status: false
           },
           {
             dayOfWeek: "Tuesday",
-            timeList: []
+            timeList: [],
+            status: false
           },
           {
             dayOfWeek: "Wednesday",
-            timeList: []
+            timeList: [],
+            status: false
           },
           {
             dayOfWeek: "Thursday",
-            timeList: []
+            timeList: [],
+            status: false
           },
           {
             dayOfWeek: "Friday",
-            timeList: []
+            timeList: [],
+            status: false
           },
           {
             dayOfWeek: "Saturday",
-            timeList: []
+            timeList: [],
+            status: false
           }
         ];
-
+        let timezone = "";
         for(var i = 0; i < result.data.data.length; i ++) {
           for (var j = 0; j < availableTimeListTemp.length; j ++){
             if(result.data.data[i].day_of_week === availableTimeListTemp[j].dayOfWeek) {
               availableTimeListTemp[j].timeList.push({from: result.data.data[i].fromTime, to: result.data.data[i].toTime});
+              availableTimeListTemp[j].status = result.data.data[i].status === 1 ? true : false;
             }
           }
+          timezone = result.data.data[i].timezone;
         }
-
         this.setState({
           availableTimeList: availableTimeListTemp,
+          timezone: timezone
         });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail();
+        this.showFail(result.data.message);
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
   onChangeTimeZone = (e) => {
-    console.log(e.target.value);
+    this.setState({timezone: e.target.value});
   }
 
   showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -291,9 +275,26 @@ class SetAvailability extends React.Component {
 
   showFail(text) {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: text,
       type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
       insert: "top",
       container: "top-right",
       dismiss: {
@@ -315,15 +316,16 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.forEach(element => {
           element.setAttribute("disabled", true);
           element.classList.add("disable-event");
-        });
+        })
+
       } else {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.setAttribute("disabled", true);
           element.classList.add("disable-event");
         });
@@ -333,7 +335,7 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.removeAttribute("disabled");
           element.classList.remove("disable-event")
         });
@@ -341,23 +343,31 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
 
-        y.map((element, id) => {
+        y.foreach(element => {
           element.removeAttribute("disabled");
           element.classList.remove("disable-event")
         });
       }
     }
     temp[dayOfWeek] = !dayOfWeekStatus[dayOfWeek];
-    
     this.setState({
       dayOfWeekStatus: temp
-    })
+    });
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
   }
   
   render () {
+    const {loading, availableTimeList, dayOfWeekStatus, timezone} = this.state;
     return(
       <>
-      {this.state.loading && <LoadingModal open={true} />}
+      {loading && <LoadingModal open={true} />}
       <ReactNotification />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class">
           <Card small className="profile-setting-card">
@@ -371,48 +381,57 @@ class SetAvailability extends React.Component {
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
                       <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
-                      {TimezoneOptions.map((item, index)  =>
-                         <option value={item.value}> {item.name}</option>
-                      )}
+                        {TimezoneOptions.map((item, idx)  => {
+                          return (
+                            item.value === timezone ? <option key={idx} value={item.value} selected> {item.name}</option> : <option key={idx} value={item.value}> {item.name}</option>
+                          );
+                        })}
                       </FormSelect>
                     </Col>
                   </Row>
-                  {this.state.availableTimeList.map((day, dayIdx) => {
+                  {availableTimeList.map((day, dayIdx) => {
                     return (
-                      <div>
+                      <div key={dayIdx}>
                         <Row style={{paddingLeft: "15px"}}>
+                          {day.status ? 
                           <FormCheckbox 
                             toggle
                             small 
-                            checked={this.state.dayOfWeekStatus['day_' + dayIdx]}
+                            checked
                             onChange={e => this.handleChange(e, 'day_' + dayIdx, dayIdx)}
                           >
                           {day.dayOfWeek}
-                          </FormCheckbox>
+                          </FormCheckbox> : <FormCheckbox 
+                            toggle
+                            small 
+                            onChange={e => this.handleChange(e, 'day_' + dayIdx, dayIdx)}
+                          >
+                          {day.dayOfWeek}
+                          </FormCheckbox>}
                         </Row>
                         <div id={'day_' + dayIdx}>
                           {day.timeList.length ?
                             day.timeList.map((time, timeIdx) => {
                               return (
-                                <Row form>
-                                  <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
+                                <Row key={timeIdx} form>
+                                  <Col md="5" className="available-time-group" style={{marginRight: "100px"}}>
                                     <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
-                                      {timeList.map((item, idx) => {
+                                      {Timelinelist.map((item, idx) => {
                                         return (
                                           time.from === item.id
-                                          ? <option selected>{item.str}</option>
-                                          : <option >{item.str}</option>
+                                          ? <option key={idx} vaule={item.id} selected>{item.str}</option>
+                                          : <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
                                   </Col>
                                   <Col md="5" className="available-time-group">
                                     <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
-                                      {timeList.map((item, idx) => {
+                                      {Timelinelist.map((item, idx) => {
                                         return (
                                           time.to === item.id 
-                                          ? <option selected>{item.str}</option>
-                                          : <option >{item.str}</option>
+                                          ? <option key={idx} value={item.id} selected>{item.str}</option>
+                                          : <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
@@ -434,28 +453,28 @@ class SetAvailability extends React.Component {
                             })
                             // : null
                             :<Row form>
-                              <Col md="5" className="available-time-group" style={{marginRight: "40px"}}>
+                              <Col md="5" className="available-time-group" style={{marginRight: "100px"}}>
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
-                                  {timeList.map((item, idx) => {
+                                  {Timelinelist.map((item, idx) => {
                                     return (
-                                      <option >{item.str}</option>
+                                      <option key={idx} >{item.str}</option>
                                     )
                                   })}
                                 </FormSelect>
                               </Col>
                               <Col md="5" className="available-time-group">
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
-                                  {timeList.map((item, idx) => {
+                                  {Timelinelist.map((item, idx) => {
                                     return (
-                                      <option >{item.str}</option>
+                                      <option key={idx} >{item.str}</option>
                                     )
                                   })}
                                 </FormSelect>
                               </Col>
                               <Col style={{marginTop: "10px", marginBottom: "10px"}}>
-                              {!this.state.dayOfWeekStatus[dayIdx]}
+                              {!dayOfWeekStatus[dayIdx]}
                                 <Button className="btn-available-time-add-delete no-padding"
-                                  disabled={!this.state.dayOfWeekStatus[dayIdx]}
+                                  disabled={!dayOfWeekStatus[dayIdx]}
                                   onClick={() => this.handleAdd(dayIdx)}>
                                   <img src={AddButtonImage} alt="Add" />
                                 </Button>

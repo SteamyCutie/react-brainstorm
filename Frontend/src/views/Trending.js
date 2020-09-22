@@ -1,6 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
 
 import SmallCard2 from "./../components/common/SmallCard2";
 import MentorDetailCard from "./../components/common/MentorDetailCard"
@@ -14,7 +14,10 @@ export default class Trending extends React.Component {
   constructor(props) {
     super(props);
 
+    this.mentorRef = React.createRef();
+
     this.state = {
+      totalCnt: 0,
       loading: false,
       mentors: [],
       smallCards: [
@@ -35,29 +38,60 @@ export default class Trending extends React.Component {
         }
       ],
     };
+
+    this.sendUser = this.sendUser.bind(this);
   }
 
   componentWillMount() {
-   this.getMentors();
+   this.getMentors(1);
   }
 
-  getMentors = async() => {
+  sendUser(to, avatar, name) {
+    this.props.setUser(to, avatar, name);
+  }
+
+  getMentors = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
     try {
       this.setState({loading: true});
-      const result = await getallmentors({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      const result = await getallmentors(param);
+      if (result.data.result === "success") {
         this.setState({
           loading: false,
-          mentors: result.data.data
+          mentors: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
-        console.log(this.state.mentors);
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Edit Profile Fail");
+      this.showFail("Something Went wrong");
     };
+  }
+
+  onChangePagination(e, value) {
+    this.getMentors(value);
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
   }
 
   showSuccess(text) {
@@ -77,10 +111,10 @@ export default class Trending extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -94,22 +128,40 @@ export default class Trending extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
   render() {
+    const {loading, smallCards, mentors, totalCnt} = this.state;
     return (
       <>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Trending</h3>
             </Col>
           </Row>
-
           <Row>
             <div className="card-container">
-            {this.state.smallCards.map((card, idx) => (
+            {smallCards.map((card, idx) => (
                 <SmallCard2
-                  id={idx}
+                  key={idx}
                   title={card.title}
                   content={card.content}
                   image={card.image}
@@ -117,29 +169,23 @@ export default class Trending extends React.Component {
             ))}
             </div>
           </Row>
-
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>
             </Col>
           </Row>
-
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
-              {this.state.mentors.map((data, idx) =>(
-                <MentorDetailCard mentorData={data} key={idx}/>
+              {mentors.map((data, idx) =>(
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} />
               ))}
             </Col>
           </Row>
+          {mentors.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )
   };
-};
-
-Trending.propTypes = {
-  smallCards: PropTypes.array,
-  tHistory: PropTypes.array,
-  columns: PropTypes.array,
-  mentorData: PropTypes.array,
 };

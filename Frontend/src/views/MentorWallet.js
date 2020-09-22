@@ -1,6 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -16,17 +16,18 @@ export default class MentorWallet extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      totalCnt: 0,
       smallCards: [
         {
-          value: "$231.45",
+          value: "$0",
           label: "Available Balance",
         },
         {
-          value: "$154.90",
+          value: "$0",
           label: "Pending Balance",
         },
         {
-          value: "$1320.10",
+          value: "$0",
           label: "Life time Earnings",
         }
       ],
@@ -87,29 +88,45 @@ export default class MentorWallet extends React.Component {
   }
 
   componentWillMount() {
-    this.getWallets();
+    this.getHistory(1);
   }
 
-  getWallets = async() => {
+  getHistory = async(pageNo) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
     try {
       this.setState({loading: true});
-      const result = await getwallets({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
-        this.setState({tHistory: result.data.data});
+      const result = await getwallets(param);
+      if (result.data.result === "success") {
+        this.setState({
+          loading: false,
+          tHistory: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail();
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
 
-  showSuccess() {
+  showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -123,10 +140,10 @@ export default class MentorWallet extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -140,18 +157,44 @@ export default class MentorWallet extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   render() {
+    const {loading, tHistory, columns, smallCards, totalCnt} = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
-      <ReactNotification />
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
           </Row>
 
           <Row>
-            {this.state.smallCards.map((card, idx) => (
+            {smallCards.map((card, idx) => (
               <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
                 <SmallCard
                   id={idx}
@@ -164,9 +207,12 @@ export default class MentorWallet extends React.Component {
 
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">
-              <CustomDataTable title="Transaction history" data={this.state.tHistory} header={this.state.columns}/>
+              <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
             </Col>
           </Row>
+          {tHistory.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )

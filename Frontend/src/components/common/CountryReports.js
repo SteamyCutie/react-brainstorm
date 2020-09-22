@@ -20,7 +20,7 @@ class CountryReports extends React.Component {
     this.initCountriesMap = this.initCountriesMap.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.createGoogleMaps().then(this.initCountriesMap);
   }
 

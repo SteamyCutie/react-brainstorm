@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
+use Log;
 class Kernel extends ConsoleKernel
 {
     /**
@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
+      Commands\RunScheduledPosts::class
     ];
 
     /**
@@ -24,7 +25,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+//         $schedule->command('inspire')->hourly();
+//      echo "qqqqqqqqqqqqqqqqqqq echo";
+//      Log::debug('qqqqqqqqqqqqqqqqqqq log:debug');
+//      error_log('qqqqqqqqqqqqqqqqqqq error.log');
+//      Log::info('qqqqqqqqqqqqqqqqqqqqThis is some useful information.');
+      $schedule->command('run:scheduled')
+        ->everyMinute();
     }
 
     /**

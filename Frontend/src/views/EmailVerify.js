@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
+import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { verifyCode } from '../api/api';
 
 export default class EmailVerify extends React.Component {
@@ -7,7 +7,7 @@ export default class EmailVerify extends React.Component {
     super(props);
     
     this.state = {
-      historyData: [],
+      errorMsg: '',
       code: '',
     }
   }
@@ -21,13 +21,18 @@ export default class EmailVerify extends React.Component {
       const result = await verifyCode({email: localStorage.getItem('email'), password: localStorage.getItem('password'),code: this.state.code});
 
       if(result.data.result === "success") {
-        localStorage.setItem('token', result.data.token);
-        window.location.href = '/mentorSession';
+        // localStorage.setItem('token', result.data.token);
+        window.location.href = '/';
       } else {
-        alert("incorrect code")
+        this.setState({
+          errorMsg: result.data.message
+        })
       }
     } catch(err) {
-      alert(err);
+      // alert(err);
+      this.setState({
+        errorMsg: "Error is occured"
+      })
     }
     localStorage.removeItem('password');
   }
@@ -39,6 +44,7 @@ export default class EmailVerify extends React.Component {
   onChangeCode = (e) => {
     this.setState({
       code: e.target.value,
+      errorMsg: ''
     });
   }
 
@@ -68,6 +74,7 @@ export default class EmailVerify extends React.Component {
                 </FormInput>
               </Row>
               <label style={{marginLeft: "80px"}} className="validation-err">{this.state.validationErrorMsg}</label>
+              <label className="sign-in-err">{this.state.errorMsg}</label>
           </CardBody>
           <CardFooter className="center">
             <Button

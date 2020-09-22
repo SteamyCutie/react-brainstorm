@@ -28,7 +28,7 @@ const BrainsshareWorks = () => (
                 <div className="center blue-background-two-class">
                   <img
                     src={FindMentorImage}
-                    placeholder="Mentor Active Image"
+                    alt="Mentor Active"
                   />
                 </div>
               </div>
@@ -52,7 +52,7 @@ const BrainsshareWorks = () => (
                 <div className="center blue-background-two-class">
                   <img
                     src={BookSessionImage}
-                    placeholder="Mentor Active Image"
+                    alt="Mentor Active"
                   />
                 </div>
               </div>
@@ -76,7 +76,7 @@ const BrainsshareWorks = () => (
                 <div className="center blue-background-two-class">
                   <img
                     src={VideoSessionImage}
-                    placeholder="Mentor Active Image"
+                    alt="Mentor Active"
                   />
                 </div>
               </div>

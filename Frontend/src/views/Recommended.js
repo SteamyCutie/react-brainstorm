@@ -1,6 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Container, Row, Col } from "shards-react";
+import Pagination from '@material-ui/lab/Pagination';
 
 import MentorDetailCard from "./../components/common/MentorDetailCard"
 import LoadingModal from "../components/common/LoadingModal";
@@ -10,105 +10,55 @@ import { store } from 'react-notifications-component';
 
 import { getallmentors } from '../api/api';
 
-// const Recommended = ({ smallCards, tHistory, columns, mentorData }) => (
 export default class Recommended extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      totalCnt: 0,
       loading: false,
       mentors: [],
-      mentorData: [
-        {
-          name: "Kianna Press",
-          score: 4.8,
-          image: require("../images/Rectangle_Kianna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: true,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 25,
-          time: 60,
-        },
-        {
-          name: "Rayna Korsgaard",
-          score: 4.8,
-          image: require("../images/Rectangle_Rayna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: false,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        },
-        {
-          name: "Malcom Wiliam",
-          score: 5.0,
-          image: require("../images/Rectangle_K.png"),
-          teaches: [
-            "Physics",
-            "Mathematics",
-          ],
-          online: true,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        },
-        {
-          name: "Rayna Korsgaard",
-          score: 4.8,
-          image: require("../images/Rectangle_Rayna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: false,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        },
-        {
-          name: "Rayna Korsgaard",
-          score: 4.8,
-          image: require("../images/Rectangle_Rayna_big.png"),
-          teaches: [
-            "Algebra",
-            "Mathematics",
-          ],
-          online: false,
-          description: "I'm currently doing my PhD in statistical Physics. I can help you with conceptual and mathematical aspects of classical mechanics, quantum mechanics, statistical mechanics, electrodynamics, mathematical methods for every students and subjects.",
-          rate: 35,
-          time: 60,
-        }
-      ]
     };
   }
 
   componentWillMount() {
-   this.getMentors();
+   this.getMentors(1);
   }
 
-  getMentors = async() => {
+  getMentors = async(pageNo) => {
+    let param  = {
+      email: localStorage.getItem('email'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
     try {
       this.setState({loading: true});
-      const result = await getallmentors({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      const result = await getallmentors(param);
+      if (result.data.result === "success") {
         this.setState({
           loading: false,
-          mentors: result.data.data
+          mentors: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
-        console.log(this.state.mentors);
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail("Edit Profile Fail");
+      this.showFail("Something Went wrong");
     };
+  }
+
+  onChangePagination(e, value) {
+    this.getMentors(value);
   }
 
   showSuccess(text) {
@@ -128,10 +78,10 @@ export default class Recommended extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -145,10 +95,37 @@ export default class Recommended extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   render() {
+    const {mentors, loading, totalCnt} = this.state;
     return (
       <>
-        {this.state.loading && <LoadingModal open={true} />}
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
@@ -158,11 +135,14 @@ export default class Recommended extends React.Component {
 
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
-              {this.state.mentors.map((data, idx) =>(
+              {mentors.map((data, idx) =>(
                 <MentorDetailCard mentorData={data} key={idx}/>
               ))}
             </Col>
           </Row>
+          {mentors.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
         </Container>
       </>
     )

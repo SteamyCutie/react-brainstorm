@@ -5,11 +5,8 @@ import { Card, CardBody, Button } from "shards-react";
 import MoreButtonImage from "../../images/more.svg"
 
 class SmallCardPayment extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   render() {

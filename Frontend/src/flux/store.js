@@ -3,13 +3,15 @@ import { EventEmitter } from "events";
 import Dispatcher from "./dispatcher";
 import Constants from "./constants";
 import getSidebarNavItems from "../data/sidebar-nav-items";
+import getSearchSidebarNavItems from "../data/search-sidebar-nav-items";
 
 let _store = {
   menuVisible: false,
   userType: true,
   mentorUrl: "/mentorSession",
   studentUrl: "/studentSession",
-  navItems: getSidebarNavItems()
+  navItems: getSidebarNavItems(),
+  searchItems: getSearchSidebarNavItems()
 };
 
 class Store extends EventEmitter {
@@ -69,6 +71,10 @@ class Store extends EventEmitter {
 
   getSidebarItems() {
     return _store.navItems;
+  }
+
+  getSearchSidebarItems() {
+    return _store.searchItems;
   }
 
   getUserType() {

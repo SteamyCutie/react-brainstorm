@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Container, Row, Col, Button, Card, CardBody } from "shards-react";
-import { mysharepage, getuserinfo } from '../api/api';
+import { Container, Row, Col, Card, CardBody } from "shards-react";
+import { getuserinfobyid } from '../api/api';
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -17,45 +16,37 @@ export default class MySharePage extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      infoList: [],
       userInfo: []
     };
   }
 
   componentWillMount() {
-    this.getMyInformation();
     this.getuserinfo();
   }
 
-  getMyInformation = async() => {
-    try {
-      this.setState({loading: true});
-      const result = await mysharepage({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
-        this.setState({infoList: result.data.data});
-      } else {
-        this.showFail();
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail();
-    };
-  }
-
   getuserinfo = async() => {
+    let param = {
+      id: localStorage.getItem('user_id')
+    }
     try {
       this.setState({loading: true});
-      const result = await getuserinfo({email: localStorage.getItem('email')});
-      if (result.data.result == "success") {
+      const result = await getuserinfobyid(param);
+      if (result.data.result === "success") {
         this.setState({userInfo: result.data.data});
+      } else if (result.datat.result === "warning") {
+        this.showWarning(result.data.message);
       } else {
-        this.showFail();
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
       }
       this.setState({loading: false});
     } catch(err) {
       this.setState({loading: false});
-      this.showFail();
+      this.showFail("Something Went wrong");
     };
   }
   
@@ -69,10 +60,10 @@ export default class MySharePage extends React.Component {
     textField.remove();
   };
 
-  showSuccess() {
+  showSuccess(text) {
     store.addNotification({
       title: "Success",
-      message: "Action Success!",
+      message: text,
       type: "success",
       insert: "top",
       container: "top-right",
@@ -86,10 +77,10 @@ export default class MySharePage extends React.Component {
     });
   }
 
-  showFail() {
+  showFail(text) {
     store.addNotification({
-      title: "Success",
-      message: "Action Success!",
+      title: "Fail",
+      message: text,
       type: "danger",
       insert: "top",
       container: "top-right",
@@ -103,10 +94,36 @@ export default class MySharePage extends React.Component {
     });
   }
 
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreeen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  removeSession() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('ws');
+  }
+
   render() {
+    const {userInfo, loading} = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
+      {loading && <LoadingModal open={true} />}
       <ReactNotification />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Row noGutters className="page-header py-4">
@@ -119,21 +136,21 @@ export default class MySharePage extends React.Component {
               <Row>
                 <Col xl="3" className="subscription-mentor-detail">
                   <div>
-                    {this.state.userInfo.avatar && <img className="avatar" src={this.state.userInfo.avatar} alt="avatar"/>}
-                    {!this.state.userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
+                    {userInfo.avatar && <img className="avatar" src={userInfo.avatar} alt="avatar"/>}
+                    {!userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
                     <div style={{display: "flex", padding: "20px 0px"}}>
-                      <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}}/>
+                      <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
                       <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                      <h6 className="no-margin"style={{fontWeight: "bold"}}>24</h6>
+                      <h6 className="no-margin"style={{fontWeight: "bold"}}>{userInfo.sub_count}</h6>
                     </div>
                   </div>
                 </Col>
                 <Col xl="9" lg="12" className="subscription-mentor-videos">
                   <h6 className="profile-link-url">
-                    <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
-                    <a href="javascript:void(0)">www.brainsshare.com/kiannapress</a>
+                    <a href="#!" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
+                    <a href="#!">www.brainsshare.com/kiannapress</a>
                   </h6>
-                  {this.state.infoList.map((item, idx) => 
+                  {userInfo.share_info && userInfo.share_info.map((item, idx) => 
                     <MentorVideo key={idx} item={item} />
                   )}
                 </Col>

@@ -32,7 +32,7 @@ export default class SignUp extends React.Component {
 
   toggle_modal() {
     const { toggle_modal } = this.props;
-    toggle_modal();
+    toggle_modal();    
   }
 
   onChangeName = (e) => {
@@ -54,18 +54,16 @@ export default class SignUp extends React.Component {
   actionSignup = async() => {
     try {
       const result = await signup(this.state);
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('password', this.state.password);
         window.location.href = '/verification';
       } else {
-        alert(result.data.message)
-        // this.setState({
-        //   signUpError: result.data.message
-        // })
+        this.setState({
+          signUpError: result.data.message
+        })
       }
     } catch(err) {
-      
     };
   }
 
@@ -155,7 +153,7 @@ export default class SignUp extends React.Component {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
-        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') == -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
+        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.state.email.indexOf('@@') === -1 && lastDotPos > 2 && (this.state.email.length - lastDotPos) > 2)) {
           formIsValid = false;
           errors["email"] = "Email is incorrect";
         }
@@ -197,7 +195,7 @@ export default class SignUp extends React.Component {
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
-          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} placeholder="Close Image" /></Button>
+          <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close"/></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Sign up</h1>
             <div className="content-center block-content-class modal-input-group-class">
@@ -209,7 +207,7 @@ export default class SignUp extends React.Component {
                 onChange={(e) => this.onChangeName(e)}
                 onKeyDown={(e) => this.handleNameKeyDown(e)}
               />
-              <label class="password-validation-err">{this.state.validationError['name']}</label>
+              <label className="password-validation-err">{this.state.validationError['name']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Email</label>
@@ -221,7 +219,7 @@ export default class SignUp extends React.Component {
                 onKeyDown={(e) => this.handleEmailKeyDown(e)}
                 autoComplete="email"
               />
-              <label class="password-validation-err">{this.state.validationError['email']}</label>
+              <label className="password-validation-err">{this.state.validationError['email']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Create password</label>
@@ -233,25 +231,24 @@ export default class SignUp extends React.Component {
                 onKeyDown={(e) => this.handlePasswordKeyDown(e)}
                 autoComplete="password"
               />
-              <label class="password-validation-err">{this.state.validationError['password']}</label>
+              <label className="password-validation-err">{this.state.validationError['password']}</label>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Confirm password</label>
               <FormInput
                 id="confirm"
-                type="confirm-password"
                 type="password"
                 placeholder="Confirm password"
                 onChange={(e) => this.onChangeConfirmPassword(e)}
                 onKeyDown={(e) => this.handleConfirmKeyDown(e)}
                 autoComplete="password"
               />
-              <label class="password-validation-err">{this.state.validationError['confirm']}</label>
+              <label className="password-validation-err">{this.state.validationError['confirm']}</label>
             </div>
             <div className="content-center block-content-class button-text-group-class">
-              <label class="password-validation-err">{this.state.signUpError}</label>
+              <label className="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
-              <p>Already have an account?&nbsp;<a href="#" onClick={() => this.toggle_modal()}>Sign in</a></p>
+              <p>Already have an account?&nbsp;<a href="/#" onClick={() => this.toggle_modal()}>Sign in</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />
@@ -259,10 +256,10 @@ export default class SignUp extends React.Component {
               <hr />
             </div>
             <div className="content-center">
-              <Button className="sign-with-facebook"><img src={Facebook} placeholder="Facebook Image" />Sign In with Facebook</Button>
+              <Button className="sign-with-facebook"><img src={Facebook} alt="Facebook" />Sign In with Facebook</Button>
             </div>
             <div className="content-center">
-              <Button className="sign-with-google"><img src={Google} placeholder="Google Image" />Sign In with Google</Button>
+              <Button className="sign-with-google"><img src={Google} alt="Google" />Sign In with Google</Button>
             </div>
           </ModalBody>
         </Modal>

@@ -2,24 +2,35 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Card, CardBody, FormRadio } from "shards-react";
 
-import MoreButtonImage from "../../images/more.svg"
-
 class SmallCardPaymentSubscribe extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      selectedCard: null
+    };
+
+    this.changeCard = this.changeCard.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+  }
+
+  changeCard(type) {
+    this.setState({
+      selectedCard: type
+    });
+    this.props.changeCard(type);
   }
 
   render() {
-    const { title, image, expireDate, isPrimary } = this.props;
+    const { title, image, expireDate, type } = this.props;
     return (
       <Card small className="small-card-payment" >
         <CardBody className="no-padding">
           <div className="items-container">
             <div  style={{marginTop: "15px", paddingLeft: "10px"}}>
-              <FormRadio/>
+              <FormRadio name={type} checked={this.state.selectedCard === type} onChange={() => { this.changeCard(type) }}></FormRadio>
             </div>
             <div className="no-padding">
                 <img src={image} className="small-card-payment-logo" alt="card"/>

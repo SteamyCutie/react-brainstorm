@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Container, Navbar, NavbarBrand } from "shards-react";
 
@@ -15,10 +14,6 @@ const classes = classNames(
 );
 
 export default class MainNavbar extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
 
   toggleType() {
     const { toggleType } = this.props;

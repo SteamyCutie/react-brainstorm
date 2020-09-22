@@ -7,12 +7,12 @@ export default function() {
       htmlAfter: "",
       filter: true
     },
-    {
-      title: "Profile Settings",
-      htmlBefore: '<svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 19V17C17 15.9391 16.5786 14.9217 15.8284 14.1716C15.0783 13.4214 14.0609 13 13 13H5C3.93913 13 2.92172 13.4214 2.17157 14.1716C1.42143 14.9217 1 15.9391 1 17V19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9C11.2091 9 13 7.20914 13 5C13 2.79086 11.2091 1 9 1C6.79086 1 5 2.79086 5 5C5 7.20914 6.79086 9 9 9Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      to: "/profile",
-      filter: true,
-    },
+    // {
+    //   title: "Profile Settings",
+    //   htmlBefore: '<svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 19V17C17 15.9391 16.5786 14.9217 15.8284 14.1716C15.0783 13.4214 14.0609 13 13 13H5C3.93913 13 2.92172 13.4214 2.17157 14.1716C1.42143 14.9217 1 15.9391 1 17V19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9C11.2091 9 13 7.20914 13 5C13 2.79086 11.2091 1 9 1C6.79086 1 5 2.79086 5 5C5 7.20914 6.79086 9 9 9Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    //   to: "/profile",
+    //   filter: true,
+    // },
     {
       title: "Set availability",
       htmlBefore: '<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 5V11L15 13" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',

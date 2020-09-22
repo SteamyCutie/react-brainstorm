@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
-
-import MoreButtonImage from "../../images/more.svg"
+import { Player } from 'video-react';
+import "video-react/dist/video-react.css";
+import background from "../../images/background.jpeg"
 
 class MentorVideo extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class MentorVideo extends React.Component {
     this.toggleActions = this.toggleActions.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   toggleActions() {
@@ -25,13 +25,13 @@ class MentorVideo extends React.Component {
   }
 
   render() {
-    const {title, description, media_url, media_type, day, time} = this.props.item;
+    const { description, media_url, day, time } = this.props.item;
     return (
       <div className="mentor-desc-video">
         <div className="mentor-desc-video-header">
           <h6 className="video-upload-time no-margin">{day} at {time}</h6>
           
-          <NavItem className="dropdown notifications notification-class">
+          {/* <NavItem className="dropdown notifications notification-class">
             <NavLink
               className="nav-link-icon text-center"
               onClick={this.toggleActions}
@@ -54,7 +54,7 @@ class MentorVideo extends React.Component {
                 Edit
               </DropdownItem>
             </Collapse>
-          </NavItem>
+          </NavItem> */}
         </div>
         <div>
           <h6 className="mentor-desc-video-detail no-margin">
@@ -62,9 +62,15 @@ class MentorVideo extends React.Component {
           </h6>
         </div>
         <div>
-          <video className="mentor-video-tag" controls>
-            <source src={media_url} type={media_type} />
-          </video>
+          {/* <video className="mentor-video-tag" controls> */}
+            {/* <source src={media_url} type={media_type} /> */}
+            
+          {/* </video> */}
+          <Player
+              playsInline
+              poster={background}
+              src={media_url}
+            />
         </div>
       </div>
     );

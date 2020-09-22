@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "shards-react";
 import DataTable, { createTheme } from "react-data-table-component";
 
 class SubscriptionTable extends React.Component {
@@ -60,9 +59,6 @@ class SubscriptionTable extends React.Component {
     });
   }
 
-  componentDidMount() {
-  }
-
   render() {
     const { data, header } = this.props;
     const { noHeader, subHeader, subHeaderAlign, customStyles } = this.state;
@@ -78,9 +74,9 @@ class SubscriptionTable extends React.Component {
               (
                 <div style={{ display: 'flex', alignItems: 'center' }} className="subscription-table-header">
                   <h2 className="subscription-table-title">Subscriptions</h2>
-                  <Button theme="primary" className="mb-2 mr-3 btn-subscription-table">
+                  {/* <Button theme="primary" className="mb-2 mr-3 btn-subscription-table">
                     Find a mentor
-                  </Button>
+                  </Button> */}
                 </div>
               )
             }

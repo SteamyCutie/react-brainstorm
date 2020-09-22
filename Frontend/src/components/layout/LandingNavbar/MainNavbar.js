@@ -57,14 +57,23 @@ export default class MainNavbar extends React.Component{
     }
   }
 
+  becomeMentor() {
+    console.log("become a mentor");
+  }
+
+  findMentor() {
+    window.location.href = '/findmentor';
+    console.log("find a mentor");
+  }
+
   render() {
 
     const { signInOpen, signUpOpen } = this.state;
 
     return (
       <div className={classes}>
-        <SignIn ref={this.signInElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()} />
-        <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} />
+        <SignIn ref={this.signInElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
+        <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()}/>
         <Container className="p-0 fix-position">
           <Navbar type="light" className="align-items-stretch flex-md-nowrap p-0">
             <img
@@ -74,10 +83,10 @@ export default class MainNavbar extends React.Component{
             />
             <NavbarSearch />
             <div className="btn-group-header">
-              <Button theme="light" className="mb-2 white-background btn-landingpage" style={{boxShadow: "none !important" }}>
+              <Button theme="light" className="mb-2 white-background btn-landingpage" style={{boxShadow: "none !important" }} onClick={() => this.becomeMentor()}>
                 Become a mentor
               </Button>
-              <Button theme="light" className="mb-2 btn-landingpage white-background">
+              <Button theme="light" className="mb-2 btn-landingpage white-background" onClick={() => this.findMentor()}>
                 Find a mentor
               </Button>
               <Button theme="light" className="mb-2 btn-landingpage white-background" onClick={() => this.toggle_signup()}>

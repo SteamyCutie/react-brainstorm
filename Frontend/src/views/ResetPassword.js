@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect, FormInput, CardFooter, Button } from "shards-react";
+import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { resetPassword } from '../api/api';
 
 export default class ResetPassword extends React.Component {
@@ -74,10 +74,14 @@ export default class ResetPassword extends React.Component {
       if(result.data.result === "success") {
         window.location.href = '/';
       } else {
-        alert("failed")
+        this.setState({
+          resetErrorMsg: result.data.message
+        })
       }
     } catch(err) {
-      alert(err);
+      this.setState({
+        resetErrorMsg: "Error is occured"
+      })
     }
   }
 

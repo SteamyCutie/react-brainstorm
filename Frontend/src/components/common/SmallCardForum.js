@@ -1,28 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, NavItem, NavLink } from "shards-react";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
 
 import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
-import ReivewImage from "../../images/Review.jpg"
 
-import avatar1 from "../../images/forum-avatar1.jpg"
-import EditLiveForum from "./EditLiveForum";
+import avatar2 from "../../images/avatar.jpg"
+import InvitedStudent from "./InvitedStudent";
 
 class SmallCardForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      loading: false,
       forumInfos: [],
-      ModalOpen: false,
+      ModalInviteOpen: false
     };
     this.toggle = this.toggle.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
   }
 
   toggle() {
@@ -31,24 +29,19 @@ class SmallCardForum extends React.Component {
     });
   }
 
-  toggle_editliveforum() {
+  toggle_invite() {
     this.setState({
-      ModalOpen: !this.state.ModalOpen
-    });
-  }
-
-  toggle_modal() {
-    this.setState({
-      ModalOpen: !this.state.ModalOpen,
+      ModalInviteOpen: !this.state.ModalInviteOpen
     });
   }
 
   render() {
-    const {title, description, avatar, invited, tags, tag_name, day, time, id} = this.props.item;
-    const { ModalOpen } = this.state;
+    const {title, description, avatar, invited, tags, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
+    const {toggle_editliveforum, toggle_confirm} = this.props;
+    const { ModalInviteOpen } = this.state;
     return (
       <div className="small-card-forum">
-        <EditLiveForum open={ModalOpen} id={id} toggle={() => this.toggle_editliveforum()} toggle_modal={() => this.toggle_modal()}></EditLiveForum>
+        <InvitedStudent open={ModalInviteOpen} id={id} toggle={() => this.toggle_invite()}></InvitedStudent>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
           <Dropdown open={this.state.open} toggle={this.toggle}>
@@ -62,16 +55,27 @@ class SmallCardForum extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem  onClick={() => this.toggle_editliveforum()}>
+              <DropdownItem>
+                Invite students
+              </DropdownItem>
+              <DropdownItem onClick={() => toggle_editliveforum(id)}>
                 Edit
+              </DropdownItem>
+              <DropdownItem onClick={() => toggle_confirm(id)}>
+                Delete
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
         <div style={{display: "flex"}}>
-        {tag_name.map((item, idx) => 
-          <p className="brainsshare-tag">{item}</p>
-        )}
+        {tag_name.map((item, idx) => {
+          if (idx < 3)
+            return <p key={idx} className="brainsshare-tag" title={item}>{item}</p>;
+          else if (idx === 3)
+            return <p key={idx} href="#!">{tag_name.length - 3} more</p>
+          else 
+            return <></>;
+        })}
         </div>
         <div className="small-card-forum-date-time">
           <div style={{display: "flex", marginBottom: "5px", marginRight: "10px"}}>
@@ -83,17 +87,28 @@ class SmallCardForum extends React.Component {
           <div style={{display: "flex", marginBottom: "5px", marginRight: "10px"}}>
             <img src={Clock} alt="Clock" />
             <h6 style={{fontSize: "16px", paddingLeft: "10px"}} className="no-margin">
-              {time}
+              {from_time}~{to_time}
             </h6>
           </div>
         </div>
         <div className="forum-invited-student">
           <div style={{display: "flex"}}>
-          {avatar.map((item, idx) => 
-            <img src={avatar1} alt="avatar" className="forum-student-avatar"/>
-          )}
+          {/* if (idx < 3)
+            return <p key={idx} className="brainsshare-tag" title={item}>{item}</p>;
+          else if (idx == 3)
+            return <p key={idx} href="#!">{tag_name.length - 3} more</p>
+          else 
+            return <></>; */}
+            <a href="#!" onClick={() => this.toggle_invite()}>
+              {student_info.map((item, idx) => {
+                if (idx < 3)
+                  return <img src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
+                else 
+                  return <></>;
+              })}
+              </a>
           </div>
-          <h6 className="forum-student-number no-margin">{invited.length} invited</h6>
+          <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
         </div>
       </div>
     );

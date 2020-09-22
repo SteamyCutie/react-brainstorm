@@ -43,6 +43,21 @@ export const getuserinfo = (param) => {
     });
 };
 
+export const getuserinfobyid = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getuserinfobyid', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
 export const editprofile = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -94,6 +109,37 @@ export const getallmentors = (param) => {
         }
     });
 }
+
+export const getallstudents = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getallstudents', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const findmentors = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/findmentors', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 //-------UserController------------
 
 
@@ -131,21 +177,6 @@ export const setAvailableTimes = (param) => {
 
 
 //MediaController
-export const mysharepage = (param) => {
-    return new Promise(async(resolve, reject) => {
-        try {
-            const token = localStorage.getItem('token');
-            const header = {
-                'Authorization': 'bearer ' + token
-            }
-            const response = await axios.post(SERVER_URL+'/api/mysharepage', param, {headers: header});
-            resolve(response);
-        } catch(error) {
-            reject(error);
-        }
-    });
-};
-
 export const createshareinfo = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -271,6 +302,21 @@ export const getHistory = (param) => {
         }
     });
 }
+
+export const deleteforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/deleteforum', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 //------------SessionController--------------
 
 
@@ -326,11 +372,6 @@ export const uploadvideo = (param) => {
 }
 
 export const verifyCode = (param) => {
-    const config = {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
-    };
     return new Promise(async(resolve, reject) => {
         try {
             const response = await axios.post(SERVER_URL+'/api/verifycode', param);
@@ -342,5 +383,78 @@ export const verifyCode = (param) => {
 }
 
 //---------FileController-------------
+
+//WeekController
+
+export const getweekdata = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getweekdata', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+//---------WeekController-------------
+
+//SubscribeController
+
+export const subscribe = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        // 'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/setsubscription', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const unsubscription = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        // 'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/unsubscription', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+//---------SubscribeController-------------
+
+//ReviewController
+
+export const setreview = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+        // 'content-type': 'multipart/form-data'
+    }
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/setreview', param, {headers: header});
+            resolve(response);
+        }  catch(error) {
+            reject(error);
+        }
+    });
+}
+//---------ReviewController-------------
 
 //Backend Apis
