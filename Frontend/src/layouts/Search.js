@@ -38,10 +38,10 @@ export default class SearchLayout extends React.Component {
   }
 
   componentWillMount() {
-    if(!localStorage.getItem('token')) {
-      window.location.href = '/';
-      return;
-    }
+    // if(!localStorage.getItem('token')) {
+    //   window.location.href = '/';
+    //   return;
+    // }
 
     Store.addChangeListener(this.onChange);
     let { pageNo } = this.state;
@@ -128,7 +128,7 @@ export default class SearchLayout extends React.Component {
           mentors: result.data.data,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
-        this.showInfomation("Please Login");
+        // this.showInformation("Please Login");
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -154,11 +154,7 @@ export default class SearchLayout extends React.Component {
   }
 
   removeSession() {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('ws');
+    localStorage.clear();
   }
 
   showSuccess(text) {
@@ -212,7 +208,8 @@ export default class SearchLayout extends React.Component {
     });
   }
 
-  showInfomation(text) {
+  showInformation(text) {
+    console.log(text);
     store.addNotification({
       title: "Alert",
       message: text,
@@ -246,7 +243,7 @@ export default class SearchLayout extends React.Component {
             >
               <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} onSearch={(searchKey) => this.onSearch(searchKey)}/>
               {/* {children} */}
-              <SearchResult item={mentors} count={totalCnt} pagination={(pageNo) => this.onChangePagination(pageNo)}></SearchResult>
+              <SearchResult item={mentors} count={totalCnt} pagination={(pageNo) => this.onChangePagination(pageNo)} showInfomation={(text) => this.showInformation(text)}></SearchResult>
               
               {!noFooter && <MainFooter />}
             </Col>

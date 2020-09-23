@@ -68,9 +68,7 @@ export default class MainNavbar extends React.Component{
   }
 
   render() {
-
     const { signInOpen, signUpOpen } = this.state;
-
     return (
       <div className={classes}>
         <SignIn ref={this.signInElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
