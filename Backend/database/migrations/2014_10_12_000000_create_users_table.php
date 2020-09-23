@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
       $table->integer('expertise')->nullable();
       $table->integer('sub_count')->nullable();
       $table->timestamp('dob')->nullable();
-      $table->string('tags_id')->nullable();
+      $table->string('tags_id')->default("");
       $table->integer('is_mentor')->nullable();
       $table->float('hourly_price')->nullable();
       $table->string('video_url')->nullable();
@@ -36,6 +36,8 @@ class CreateUsersTable extends Migration
       $table->boolean('instant_call')->nullable();
       $table->integer('status')->nullable();
       $table->string('timezone')->nullable();
+      $table->float('average_mark')->nullable();
+      $table->string('origin_password')->nullable();
       $table->rememberToken();
       $table->timestamps();
     });
