@@ -8,6 +8,7 @@ import "../../assets/landingpage.css"
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
+import defaultAvatar from "../../images/avatar.jpg";
 import Clock from "../../images/Clock.svg";
 import { featuredmentors } from '../../api/api';
 
@@ -57,7 +58,8 @@ export default class FeaturedMentors extends React.Component {
           {carouselDatas.map((data, idx) => (
             <div className="carousel-component" key={idx}>
               <div style={{position: "relative"}} key={idx}>
-                <img key={idx} src={data.avatar} alt={data.name} className="carousel-component-img-class" />
+                {data.avatar && <img key={idx} src={data.avatar} alt={data.name} className="carousel-component-img-class" />}
+                {!data.avatar && <img key={idx} src={defaultAvatar} alt={data.name} className="carousel-component-img-class" />}
                 {
                   data.online && <div key={idx} className="carousel-component-online-class"></div>
                 }

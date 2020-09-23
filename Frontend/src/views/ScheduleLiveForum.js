@@ -8,13 +8,14 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getforums } from "../api/api";
+import { getforums, getuserinfo } from "../api/api";
 
 export default class ScheduleLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       id: '',
+      user: {},
       loading: false,
       forumInfos: [],
       ModalOpen: false,
@@ -24,6 +25,7 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   componentWillMount() {
+    this.getUserInfo();
     this.getForums();  
   }
 
@@ -97,6 +99,26 @@ export default class ScheduleLiveForum extends React.Component {
     };
   }
 
+  getUserInfo = async() => {
+    try {
+      const result = await getuserinfo({email: localStorage.getItem('email')});
+      if (result.data.result === "success") {
+        this.setState({user: result.data.data});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+    } catch(err) {
+      this.showFail("Something Went wrong");
+    };
+  }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",
@@ -153,7 +175,8 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   render() {
-    const { ModalOpen, ModalEditOpen, ModalConfirmOpen, loading, forumInfos, id } = this.state;
+    const { ModalOpen, ModalEditOpen, ModalConfirmOpen, loading, forumInfos, id, user } = this.state;
+    
     return (
       <div>
         {loading && <LoadingModal open={true} />}
@@ -165,7 +188,7 @@ export default class ScheduleLiveForum extends React.Component {
           <Card small className="schedule-forum-card">
             <CardHeader className="live-forum-header">
               <h5 className="live-forum-header-title no-margin">Schedule live forum</h5>
-              {parseInt(localStorage.getItem('is_mentor')) === 1 ? <Button className="live-forum-header-button" onClick={() => this.toggle_createliveforum()}>Create live forum</Button> : <></>}
+              {user.is_mentor === 1 ? <Button className="live-forum-header-button" onClick={() => this.toggle_createliveforum()}>Create live forum</Button> : <></>}
             </CardHeader>
             <CardBody>
               <Row>

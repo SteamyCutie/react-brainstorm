@@ -126,6 +126,7 @@ export default class SignIn extends React.Component {
         localStorage.setItem('user_name', result.data.user.name);
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
         localStorage.setItem('is_mentor', result.data.user.is_mentor);
+
         if(result.data.user.is_mentor) {
           window.location.href = '/mentorSession';
         } else {
