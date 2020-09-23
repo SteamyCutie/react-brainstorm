@@ -197,3 +197,32 @@
   position: relative;
   z-index: auto;
 }
+
+.room-video-chat {
+  width: 80%;
+}
+
+.room-member {
+  padding: 10px;
+  background-color: white;
+}
+
+.room-chat-area {
+  /* height: 30px; */
+  /* background-color: pink; */
+}
+
+.room-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+.room-video-container {
+  padding: 10px;
+}
+
+.chat-history {
+  height: 200px !important;
+}

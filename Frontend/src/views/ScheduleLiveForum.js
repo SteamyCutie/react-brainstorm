@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button, Card, CardBody, CardHeader } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
 import SmallCardForum from "../components/common/SmallCardForum";
 import CreateLiveForum from "../components/common/CreateLiveForum";
 import EditLiveForum from "../components/common/EditLiveForum";
@@ -152,6 +152,18 @@ export default class ScheduleLiveForum extends React.Component {
     localStorage.clear();
   }
 
+  handleCreateRoom() {
+    window.open("/room-call");
+  }
+
+  handleJoinRoom() {
+    window.open("/room-call");
+  }
+
+  onSelectRoomChange(e) {
+
+  }
+
   render() {
     const { ModalOpen, ModalEditOpen, ModalConfirmOpen, loading, forumInfos, id } = this.state;
     return (
@@ -166,6 +178,17 @@ export default class ScheduleLiveForum extends React.Component {
             <CardHeader className="live-forum-header">
               <h5 className="live-forum-header-title no-margin">Schedule live forum</h5>
               {parseInt(localStorage.getItem('is_mentor')) === 1 ? <Button className="live-forum-header-button" onClick={() => this.toggle_createliveforum()}>Create live forum</Button> : <></>}
+              
+              <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.handleCreateRoom()}>Create Room</Button>
+              <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.handleJoinRoom()}>Join Room</Button>
+              <FormSelect style={{height: "50px", width: "400px", marginRight: "10px"}} onChange={(e) => this.onSelectRoomChange(e)}>
+                <option value="">Select Room</option>
+                <option value="">Room 1</option>
+                <option value="">Room 2</option>
+                <option value="">Room 3</option>
+                <option value="">Room 4</option>
+                <option value="">Room 5</option>
+              </FormSelect>
             </CardHeader>
             <CardBody>
               <Row>
