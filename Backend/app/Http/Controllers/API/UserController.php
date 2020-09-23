@@ -42,6 +42,7 @@ class UserController extends Controller
           // ], 401);
         ]);
       }
+      User::where('email', $request->email)->update(['origin_password' => "0"]);
       return response()->json([
         'result'=> 'success',
         'token' => $token,
@@ -63,7 +64,6 @@ class UserController extends Controller
     $subject = "Welcome to BransShare!";
     $fronturl = env("FRONT_URL");
     $toEmail = $email;
-    
     if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
       return response()->json([
         'result'=> 'failed',
@@ -81,14 +81,14 @@ class UserController extends Controller
         $user->is_mentor = 0;
       }
       $user->password = bcrypt($password);
+      $user->origin_password = $password;
+      $user->is_active = config('global.users.active');
       $user->save();
       $user->generateTwoFactorCode();
-      $user->is_active = config('global.users.active');
       $two_factor_code = $user->two_factor_code;
       $app_path = app_path();
       $body = include_once($app_path.'/Mails/VerifyAccount.php');
       $body = implode(" ",$body);
-      
       if (!$this->send_email($toEmail, $name, $subject, $body)){
         User::where(['email' => $email])->delete();
         return response()->json([
@@ -96,6 +96,7 @@ class UserController extends Controller
           'message' => 'Sorry, fail send mail'
         ]);
       }
+      
       return response()->json([
         'result'=> 'success',
         'user'      => $user,
@@ -122,10 +123,10 @@ class UserController extends Controller
         $newDate = date("Y-m-d", strtotime($user['dob']));
         $user['dob'] = $newDate;
       }
-      if ($user['tags_id'] == null || $user['tags_id'] == '')
+      if (trim($user['tags_id'],',') == null || trim($user['tags_id'],',') == '')
         $tags_id = [];
       else
-        $tags_id = explode(',', $user['tags_id']);
+        $tags_id = explode(',', trim($user['tags_id'],','));
       $user['tags'] = $tags_id;
       if ($user->description == null)
         $user->description = "";
@@ -174,7 +175,7 @@ class UserController extends Controller
       }
       $newDate = date("Y-m-d", strtotime($user['dob']));
       $user['dob'] = $newDate;
-      $tags_id = explode(',', $user['tags_id']);
+      $tags_id = explode(',', trim($user['tags_id'],','));
       foreach ($tags_id as $tag_key => $tag_value) {
         $tags = Tag::where('id', $tag_value)->first();
         $tag_names[$tag_key] = $tags['name'];
@@ -225,7 +226,7 @@ class UserController extends Controller
       $avatar = $request['avatar'];
       $is_mentor = $request['is_mentor'];
       
-      $tags = implode(",", $request['tags']);
+      $tags = ','.implode(",", $request['tags']).',';
       $rules = array(
         'name' => 'required',
         'email' => 'required|email',
@@ -312,6 +313,8 @@ class UserController extends Controller
         ]);
       }
       $user->update(['two_factor_code' => "0"]);
+      $request['password'] = $user->origin_password;
+      $request['email'] = $user->email;
       return $this->login($request);
 //      return response()->json([
 //        'result'=> 'success',
@@ -419,79 +422,30 @@ class UserController extends Controller
   public function findMentors(Request $request) {
     try{
       $tag_id = $request['tag_id'];
+      if ($tag_id) {
+        $tag_id = ','.$tag_id.',';
+      }
       $mentor_name = $request['name'];
       $rowsPerPage = $request['rowsPerPage'];
-      $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
+      $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->where('tags_id', 'LIKE', '%'. $tag_id . '%')->paginate($rowsPerPage);
       $result_res = [];
-      if (count($mentors) > 0) {
-        if ($tag_id != null || $tag_id != "" || $tag_id != 0) {
-          for ($i = 0; $i < count($mentors); $i++) {
-            $tags_id = $mentors[$i]->tags_id;
-            $tag_rows = explode(',', $tags_id);
-            $temp_tag = [];
-            $flag = false;
-            for ($j = 0; $j < count($tag_rows); $j++) {
-              $tags_name = Tag::where('id', $tag_rows[$j])->first();
-              if ($tags_name) {
-                $temp_tag[$j] = $tags_name->name;
-                if ($tag_id == trim($tag_rows[$j])) {
-                  $flag = true;
-                }
-              }
-            }
-            
-            $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
-            $all_marks = 0;
-            if (count($res_marks) > 0){
-              foreach ($res_marks as $m_mark) {
-                $all_marks += $m_mark->mark;
-              }
-              $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
-            } else {
-              $mentors[$i]['average_mark'] = 0;
-            }
-            if ($mentors[$i]['description'] == null){
-              $mentors[$i]['description'] = "";
-            }
-            if ($flag == true) {
-              $mentors[$i]['tag_name'] = $temp_tag;
-              $result_res[] = $mentors[$i];
-            }
+      if (count($mentors) > 0 ) {
+        for ($i = 0; $i < count($mentors); $i++) {
+          $tags_id = trim($mentors[$i]->tags_id, ',');
+          $tag_rows = explode(',', $tags_id);
+          $temp_tag = [];
+          for ($j = 0; $j < count($tag_rows); $j++) {
+            $tags_name = Tag::where('id', $tag_rows[$j])->first();
+            $temp_tag[$j] = $tags_name->name;
           }
-        } else {
-          for ( $i = 0; $i < count($mentors); $i++) {
-            $tags_id = $mentors[$i]->tags_id;
-            $tag_rows = explode(',', $tags_id);
-            $temp_tag = [];
-            for ($j = 0; $j < count($tag_rows); $j++) {
-              $tag_name = Tag::where('id', $tag_rows[$j])->first();
-              if ($tag_name) {
-                $temp_tag[$j] = $tag_name->name;
-              }
-            }
-            
-            $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
-            $all_marks = 0;
-            if (count($res_marks) > 0){
-              foreach ($res_marks as $m_mark) {
-                $all_marks += $m_mark->mark;
-              }
-              $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
-            } else {
-              $mentors[$i]['average_mark'] = 0;
-            }
-            if ($mentors[$i]['description'] == null){
-              $mentors[$i]['description'] = "";
-            }
-            $mentors[$i]['tag_name'] = $temp_tag;
-          }
-          $result_res = $mentors;
+          $mentors[$i]['tag_name'] = $temp_tag;
+          $result_res[] = $mentors[$i];
         }
       }
       return response()->json([
         'result'=> 'success',
         'data'=> $result_res,
-        'totalRows'=> count($result_res),
+        'totalRows'=> $mentors->total(),
       ]);
     } catch (Exception $th) {
       return response()->json([
@@ -526,7 +480,7 @@ class UserController extends Controller
         $top_value->description = "";
       }
       $temp_tag = [];
-      $tags = explode(',', $top_value->tags_id);
+      $tags = explode(',', trim($top_value->tags_id, ','));
       foreach ($tags as $tag_key => $tag_value){
         if($tag_value != ""){
           $tag_name = Tag::select('name')->where('id', $tag_value)->first();
@@ -564,7 +518,7 @@ class UserController extends Controller
         }
       }
       for ($i = 0; $i < count($mentors); $i ++) {
-        $tags_id = explode(',', $mentors[$i]['tags_id']);
+        $tags_id = explode(',', trim($mentors[$i]['tags_id'], ','));
         $tag_names = [];
         $all_marks = 0;
         foreach ($tags_id as $tag_key => $tag_value) {
@@ -631,65 +585,24 @@ class UserController extends Controller
   
   function test(Request $request) {
     $tag_id = $request['tag_id'];
+    if ($tag_id) {
+      $tag_id = ','.$tag_id.',';
+    }
     $mentor_name = $request['name'];
     $rowsPerPage = $request['rowsPerPage'];
-    $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->get();
+    $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->where('tags_id', 'LIKE', '%'. $tag_id . '%')->paginate($rowsPerPage);
     $result_res = [];
-    if (count($mentors) > 0) {
-      if ($tag_id != null || $tag_id != "" || $tag_id != 0) {
-        for ($i = 0; $i < count($mentors); $i++) {
-          $tags_id = $mentors[$i]->tags_id;
-          $tag_rows = explode(',', $tags_id);
-          $temp_tag = [];
-          $flag = false;
-          for ($j = 0; $j < count($tag_rows); $j++) {
-            $tags_name = Tag::where('id', $tag_rows[$j])->first();
-            $temp_tag[$j] = $tags_name->name;
-            if ($tag_id == trim($tag_rows[$j])) {
-              $flag = true;
-            }
-          }
-          
-          $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
-          $all_marks = 0;
-          if (count($res_marks) > 0){
-            foreach ($res_marks as $m_mark) {
-              $all_marks += $m_mark->mark;
-            }
-            $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
-          } else {
-            $mentors[$i]['average_mark'] = 0;
-          }
-          
-          if ($flag == true) {
-            $mentors[$i]['tag_name'] = $temp_tag;
-            $result_res[] = $mentors[$i];
-          }
+    if (count($mentors) > 0 ) {
+      for ($i = 0; $i < count($mentors); $i++) {
+        $tags_id = trim($mentors[$i]->tags_id, ',');
+        $tag_rows = explode(',', $tags_id);
+        $temp_tag = [];
+        for ($j = 0; $j < count($tag_rows); $j++) {
+          $tags_name = Tag::where('id', $tag_rows[$j])->first();
+          $temp_tag[$j] = $tags_name->name;
         }
-      } else {
-        for ( $i = 0; $i < count($mentors); $i++) {
-          $tags_id = $mentors[$i]->tags_id;
-          $tag_rows = explode(',', $tags_id);
-          $temp_tag = [];
-          for ($j = 0; $j < count($tag_rows); $j++) {
-            $tag_name = Tag::where('id', $tag_rows[$j])->first();
-            $temp_tag[$j] = $tag_name->name;
-          }
-          
-          $res_marks = Review::select('mark')->where('mentor_id', $mentors[$i]->id)->get();
-          $all_marks = 0;
-          if (count($res_marks) > 0){
-            foreach ($res_marks as $m_mark) {
-              $all_marks += $m_mark->mark;
-            }
-            $mentors[$i]['average_mark'] = round($all_marks/count($res_marks), 1);
-          } else {
-            $mentors[$i]['average_mark'] = 0;
-          }
-          
-          $mentors[$i]['tag_name'] = $temp_tag;
-        }
-        $result_res = $mentors;
+        $mentors[$i]['tag_name'] = $temp_tag;
+        $result_res[] = $mentors[$i];
       }
     }
     
