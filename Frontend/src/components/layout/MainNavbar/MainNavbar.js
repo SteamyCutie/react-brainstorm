@@ -20,6 +20,11 @@ export default class MainNavbar extends React.Component {
     toggleType();
   }
 
+  toggle_search(searchKey) {
+    const { onSearch } = this.props;
+    onSearch(searchKey);
+  }
+
   render() {
 
     const { filterType } = this.props;
@@ -28,7 +33,7 @@ export default class MainNavbar extends React.Component {
       <div className={classes}>
         <Container className="p-0 fix-position">
           <Navbar type="light" className="align-items-stretch flex-md-nowrap p-0">
-            <NavbarSearch />
+            <NavbarSearch toggle_search={(searchKey) => this.toggle_search(searchKey)}/>
             <div className="sidebar-main-navbar-class">
               <Navbar
                 className="align-items-stretch bg-white flex-md-nowrap border-bottom p-0"

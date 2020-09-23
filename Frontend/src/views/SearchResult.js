@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
-import MentorDetailCard from "../components/common/MentorDetailCard"
+import SearchMentorDetailCard from "../components/common/SearchMentorDetailCard"
 
 import background from "../images/background.jpg"
 import mentorlevel from "../images/mentor-level.svg"
@@ -22,12 +22,13 @@ export default class SearchResult extends React.Component {
       pagination(v);
     }
 
+    toggle_login(text) {
+      // const { showInfomation } = this.props;
+      // showInfomation(text);
+    }
+
     removeSession() {
-      localStorage.removeItem('email');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user-type');
-      localStorage.removeItem('user_name');
-      localStorage.removeItem('ws');
+      localStorage.clear();
     }
 
     render() {
@@ -53,7 +54,7 @@ export default class SearchResult extends React.Component {
             <Row className="no-padding">
               <Col lg="12" md="12" sm="12">
                 {item.map((data, idx) =>(
-                  <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} />
+                  <SearchMentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} toggle_login={(text) => this.toggle_login(text)}/>
                 ))}
               </Col>
             </Row>
