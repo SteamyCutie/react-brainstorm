@@ -18,11 +18,23 @@ export default class EmailVerify extends React.Component {
 
   actionVerifyCode = async() => {
     try {
-      const result = await verifyCode({email: localStorage.getItem('email'), password: localStorage.getItem('password'),code: this.state.code});
+      const result = await verifyCode({code: this.state.code});
 
       if(result.data.result === "success") {
-        // localStorage.setItem('token', result.data.token);
-        window.location.href = '/';
+        localStorage.setItem('token', result.data.token);
+        // window.location.href = '/';
+        localStorage.setItem('email', this.state.email);
+        localStorage.setItem('is_mentor', result.data.user.is_mentor);
+        localStorage.setItem('user_id', result.data.user.id);
+        localStorage.setItem('avatar', result.data.user.avatar);
+        localStorage.setItem('user_name', result.data.user.name);
+        localStorage.setItem('pay_verified', result.data.user.pay_verified);
+        localStorage.setItem('is_mentor', result.data.user.is_mentor);
+        if(this.result.data.user.is_mentor) {
+          window.location.href = '/mentorWallet';
+        } else {
+          window.location.href = '/studentWallet';
+        }
       } else {
         this.setState({
           errorMsg: result.data.message
