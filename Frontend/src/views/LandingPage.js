@@ -8,6 +8,13 @@ import GetFastResults from "../components/landingpage/GetFastResults"
 import ShareKnowledge from "../components/landingpage/ShareKnowledge"
 
 export default class landingpage extends React.Component{
+  componentWillMount() {
+    this.removeSession();
+  }
+
+  removeSession() {
+    localStorage.clear();
+  }
   render() {
     
     return (

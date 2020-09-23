@@ -38,19 +38,16 @@ export default class InvitedStudent extends React.Component {
   }
 
   actionSave = async() => {
-    // const {cardinfo} = this.state;
+    const { toggle } = this.props;
+    toggle();    
   }
 
-  actionRemove = async() => {
-    // const {cardinfo} = this.state;
+  actionRemove = async(session_id, student_id) => {
+    console.log(session_id, student_id);
   }
 
   removeSession() {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('ws');
+    localStorage.clear();
   }
 
   showSuccess(text) {
@@ -88,7 +85,7 @@ export default class InvitedStudent extends React.Component {
   }
 
   render() {
-    const { open } = this.props;
+    const { open, students, id } = this.props;
     const { loading } = this.state;
     return (
       <div>
@@ -101,25 +98,29 @@ export default class InvitedStudent extends React.Component {
             <a href="#!"><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Invite more students</h5></a>
           </Row>
           <Row form>
-            <Col md="10" className="modal-input-group-class">
-              <div className="items-container">
-                <div className="no-padding">
-                  <img src={avatar2} className="invited-student-logo" alt="card"/>
+            {students.map((item, idx) => (
+              <Col md="10" className="modal-input-group-class" key={idx}>
+                <div className="items-container">
+                  <div className="no-padding">
+                    <img src={avatar2} className="invited-student-logo" alt="card"/>
+                  </div>
+                  <div className="nvited-student-desc">
+                    <h4 className="small-card-payment-title no-margin">{item.name}</h4>
+                    <h6 className="invited-student-desc-desc no-margin">{item.description}</h6>
+                  </div>
                 </div>
-                <div className="nvited-student-desc">
-                  <h4 className="small-card-payment-title no-margin">David</h4>
-                  <h6 className="invited-student-desc-desc no-margin">12312312</h6>
+              </Col>
+            ))}
+            {students.map((item, idx) => (
+              <Col md="2" className="modal-input-group-class">
+                <div className="content-center block-content-class button-text-group-class">
+                  <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.actionRemove(id, item.id)}>
+                    <img src={Recycle} alt="Clock" />
+                    Remove
+                  </Button>
                 </div>
-              </div>
-            </Col>
-            <Col md="2" className="modal-input-group-class">
-              <div className="content-center block-content-class button-text-group-class">
-                <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.actionRemove()}>
-                  <img src={Recycle} alt="Clock" />
-                  Remove
-                </Button>
-              </div>
-            </Col>
+              </Col>
+            ))}
           </Row>
           
           <div className="content-center block-content-class button-text-group-class">

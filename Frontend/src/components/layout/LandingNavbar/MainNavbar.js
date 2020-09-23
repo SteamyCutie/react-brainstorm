@@ -75,7 +75,10 @@ export default class MainNavbar extends React.Component{
 
   findMentor() {
     window.location.href = '/findmentor';
-    console.log("find a mentor");
+  }
+
+  toggle_search(searchText) {
+    window.location.href = '/findmentor';
   }
 
   render() {
@@ -93,7 +96,7 @@ export default class MainNavbar extends React.Component{
               src={projectLogo}
               className="logo-image"
             />
-            <NavbarSearch />
+            <NavbarSearch toggle_search={(searchText) => this.toggle_search(searchText)}/>
             <div className="btn-group-header">
               <Button theme="light" className="mb-2 white-background btn-landingpage" style={{boxShadow: "none !important" }} onClick={() => this.becomeMentor()}>
                 Become a mentor

@@ -41,7 +41,7 @@ class SmallCardForum extends React.Component {
     const { ModalInviteOpen } = this.state;
     return (
       <div className="small-card-forum">
-        <InvitedStudent open={ModalInviteOpen} id={id} toggle={() => this.toggle_invite()}></InvitedStudent>
+        <InvitedStudent open={ModalInviteOpen} id={id} students={student_info} toggle={() => this.toggle_invite()}></InvitedStudent>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
           <Dropdown open={this.state.open} toggle={this.toggle}>
@@ -55,7 +55,7 @@ class SmallCardForum extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem>
+              <DropdownItem onClick={() => toggle_editliveforum(id)}>
                 Invite students
               </DropdownItem>
               <DropdownItem onClick={() => toggle_editliveforum(id)}>
@@ -93,16 +93,10 @@ class SmallCardForum extends React.Component {
         </div>
         <div className="forum-invited-student">
           <div style={{display: "flex"}}>
-          {/* if (idx < 3)
-            return <p key={idx} className="brainsshare-tag" title={item}>{item}</p>;
-          else if (idx == 3)
-            return <p key={idx} href="#!">{tag_name.length - 3} more</p>
-          else 
-            return <></>; */}
             <a href="#!" onClick={() => this.toggle_invite()}>
               {student_info.map((item, idx) => {
                 if (idx < 3)
-                  return <img src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
+                  return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
                 else 
                   return <></>;
               })}

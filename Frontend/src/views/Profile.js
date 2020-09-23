@@ -6,7 +6,6 @@ import { store } from 'react-notifications-component';
 import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormSelect, Form, FormTextarea, DatePicker } from "shards-react";
 import expertise from '../common/constants';
 import LoadingModal from "../components/common/LoadingModal";
-
 import Icon from "../images/Lightning.svg"
 import Tooltip from "../images/Tooltip.svg"
 import avatar from "../images/avatar.jpg"
@@ -79,9 +78,9 @@ export default class MySharePage extends React.Component {
         temp.email = result.data.data.email;
         temp.avatar = result.data.data.avatar;
         temp.description = result.data.data.description;
-        temp.hourlyprice = result.data.data.hourly_price;
+        temp.hourlyprice = (result.data.data.hourly_price === "" || result.data.data.hourly_price === null) ? 0 : result.data.data.hourly_price;
         temp.subpagename = result.data.data.sub_page_name;
-        temp.subplanfee = result.data.data.sub_plan_fee;
+        temp.subplanfee = (result.data.data.sub_plan_fee === "" || result.data.data.sub_plan_fee === null) ? 0 : result.data.data.sub_plan_fee;
         temp.videourl = result.data.data.video_url;
         temp.expertise = (result.data.data.expertise === null || result.data.data.expertise === "") ? 1 : result.data.data.expertise;
         temp.instantcall = result.data.data.instant_call;
@@ -451,11 +450,7 @@ export default class MySharePage extends React.Component {
   }
 
   removeSession() {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('ws');
+    localStorage.clear();
   }
 
   render() {

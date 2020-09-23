@@ -128,11 +128,18 @@ export const getallstudents = (param) => {
 export const findmentors = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const token = localStorage.getItem('token');
-            const header = {
-                'Authorization': 'bearer ' + token
-            }
-            const response = await axios.post(SERVER_URL+'/api/findmentors', param, {headers: header});
+            const response = await axios.post(SERVER_URL+'/api/findmentors', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const featuredmentors = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/featuredmentors', param);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -439,7 +446,6 @@ export const unsubscription = (param) => {
 //---------SubscribeController-------------
 
 //ReviewController
-
 export const setreview = (param) => {
     const token = localStorage.getItem('token');
     const header = {
@@ -456,5 +462,22 @@ export const setreview = (param) => {
     });
 }
 //---------ReviewController-------------
+
+//PaymentController
+
+export const addpayment = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearee' + token,
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/addpayment', param, {headers: header});
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
 
 //Backend Apis

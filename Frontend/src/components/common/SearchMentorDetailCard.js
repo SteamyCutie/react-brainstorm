@@ -10,7 +10,7 @@ import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
 import defaultavatar from "../../images/avatar.jpg"
 
-class MentorDetailCard extends React.Component {
+class SearchMentorDetailCard extends React.Component {
   constructor(props) {
     super(props);
 
@@ -36,10 +36,6 @@ class MentorDetailCard extends React.Component {
   componentWillMount() {
   }
 
-  handleAvailableNow() {
-    this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name);
-  }
-
   toggle_videocall() {
     this.setState({
       videoCallModal: !this.state.videoCallModal
@@ -52,20 +48,13 @@ class MentorDetailCard extends React.Component {
     });
   }
 
-  handleBookCall() {
-    this.setState({
-      modal_toggle: !this.state.modal_toggle
-    })
-  }
-
   modal_toggle() {
 
   }
 
-  toggle_openmodalreview() {
-    this.setState({
-      ModalOpenReview: !this.state.ModalOpenReview
-    });
+  toggle_login(text) {
+    // const { toggle_login } = this.props;
+    // toggle_login(text);
   }
 
   readMore() {
@@ -128,7 +117,7 @@ class MentorDetailCard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleAvailableNow()}>
+            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.toggle_login("Please Login")}>
               <img src={Lightening} alt="Lightening"/>
               Available now
             </Button> : <Button disabled className="btn-mentor-detail-instant">
@@ -137,13 +126,13 @@ class MentorDetailCard extends React.Component {
             </Button>}
           </Row>
           <Row className="center">
-            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookCall()}>
+            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.toggle_login("Please Login")}>
               <img src={Clock} alt="Clock" />
               Book a session
             </Button>
           </Row>
           <Row className="center">
-            <Button className="btn-mentor-detail-book" onClick={() => this.toggle_openmodalreview()}>
+            <Button className="btn-mentor-detail-book" onClick={() => this.toggle_login("Please Login")}>
               <img src={Clock} alt="Clock" />
               Review Mentor
             </Button>
@@ -154,4 +143,4 @@ class MentorDetailCard extends React.Component {
   }
 }
 
-export default MentorDetailCard;
+export default SearchMentorDetailCard;

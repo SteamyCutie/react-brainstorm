@@ -96,6 +96,10 @@ export default class DefaultLayout extends React.Component {
       this.props.history.push(studentUrl);
   }
 
+  onSearch(searchKey) {
+    console.log(searchKey);
+  }
+
   // setWebsocket(wsUri) {
   //   this.ws = new WebSocket(wsUri);
   //   const that = this;
@@ -485,7 +489,7 @@ export default class DefaultLayout extends React.Component {
             className="main-content p-0 main-content-class"
             tag="main"
           >
-            {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} />}
+            {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} onSearch={(searchKey) => this.onSearch(searchKey)}/>}
             {filterType && <SubMainNavbar/>}
             {children}
             {/* {this.state.call && 

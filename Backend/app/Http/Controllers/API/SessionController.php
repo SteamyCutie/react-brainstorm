@@ -42,7 +42,7 @@ class SessionController extends Controller
         $session_info[$key]['student_info'] = $temp_st;
         
         $str_tags = $value['tags_id'];
-        $tags_id = explode(',',$str_tags);
+        $tags_id = explode(',',trim($str_tags, ','));
         $session_info[$key]['tags'] = $tags_id;
         $tag_names = [];
         foreach ($tags_id as $tag_key => $tag_value) {
@@ -79,7 +79,7 @@ class SessionController extends Controller
       if ($forum['tags_id'] == null || $forum['tags_id'] == '')
         $tags_id = [];
       else
-        $tags_id = explode(',', $forum['tags_id']);
+        $tags_id = explode(',', trim($forum['tags_id'], ','));
   
       $forum['tags'] = $tags_id;
       foreach ($tags_id as $tag_key=> $tag_id) {
@@ -136,7 +136,7 @@ class SessionController extends Controller
       $user_id = User::select('id')->where('email', $email)->first();
       $title = $request['title'];
       $description = $request['description'];
-      $tags = implode(",", $request['tags']);
+      $tags = ','.implode(",", $request['tags']).',';
       $rules = array(
         'title' => 'required',
         'description' => 'required',
@@ -179,8 +179,7 @@ class SessionController extends Controller
         'to' => $to_day_str,
         'status' => 0,
       ]);
-  
-//      $students = explode(",", $request['students']);
+
       $students = $request['students'];
       for ($i = 0; $i < count($students); $i++) {
         Invited::create([
@@ -209,7 +208,7 @@ class SessionController extends Controller
       $title = $request['title'];
       $students = $request['students'];
       $description = $request['description'];
-      $tags = implode(",", $request['tags']);
+      $tags = ','.implode(",", $request['tags']).',';
 
       $from = $request['from'];
       $to = $request['to'];
@@ -306,10 +305,10 @@ class SessionController extends Controller
       {
         $result_from = $session_info['from'];
         $result_tag = $session_info['tags_id'];
-        $tags_id = explode(',',$result_tag);
+        $tags_id = explode(',', trim($result_tag, ','));
     
         $result_invited = $session_info['invited_id'];
-        $invited_id = explode(',', $result_invited);
+        $invited_id = explode(',', trim($result_invited, ','));
     
         foreach ($invited_id as $invited_key => $invited_value) {
           if (trim($invited_value) == $user_id['id'])
@@ -368,7 +367,7 @@ class SessionController extends Controller
           $temp1 = $result_infos;
         } else {
           foreach ($result_infos as $tags_key => $result_info) {
-            $tag_array = explode(',', $result_info['tags_id']);
+            $tag_array = explode(',', trim($result_info['tags_id'], ','));
             for ($j = 0; $j < count($tag_array); $j++) {
               if ($tag_id == trim($tag_array[$j])){
                 $temp1[] = $result_info;
@@ -393,9 +392,9 @@ class SessionController extends Controller
           $result_from = $session_info['from'];
           $result_to = $session_info['to'];
           $result_tag = $session_info['tags_id'];
-          $tags_id = explode(',',$result_tag);
+          $tags_id = explode(',', trim($result_tag, ','));
           $result_invited = $session_info['invited_id'];
-          $invited_id = explode(',', $result_invited);
+          $invited_id = explode(',', trim($result_invited, ','));
           // foreach ($invited_id as $invited_key => $invited_value) {
           $temp = [];
           // if (trim($invited_value) == $user['id'])
@@ -423,7 +422,7 @@ class SessionController extends Controller
           $result_res = $result_tags;
         } else {
           foreach ($result_tags as $tags_key => $tags_value) {
-            $tag_array = explode(',', $tags_value->tags_id);
+            $tag_array = explode(',', trim($tags_value->tags_id, ','));
             for ($j = 0; $j < count($tag_array); $j++) {
               if ($tag_id == trim($tag_array[$j])){
                 $result_res[] = $result_tags[$tags_key];
@@ -450,7 +449,7 @@ class SessionController extends Controller
           $result_res[$i]['e_month'] = $e_month;
           $result_res[$i]['e_day'] = $e_day;
       
-          $tags_id = explode(',', $result_res[$i]['tags_id']);
+          $tags_id = explode(',', trim($result_res[$i]['tags_id'], ','));
           $tag_names = [];
           foreach ($tags_id as $tag_key => $tag_value) {
             $tags = Tag::select('name')->where('id', $tag_value)->first();
