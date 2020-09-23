@@ -22,7 +22,7 @@ export default class SignUp extends React.Component {
         confirm: '',
       },
       signUpError: '', 
-      isMentor: false, 
+      is_mentor:  false, 
     };
   }
 
@@ -53,7 +53,7 @@ export default class SignUp extends React.Component {
   }
 
   actionSignup = async() => {
-    try {
+    try {console.log(this.state)
       const result = await signup(this.state);
       if (result.data.result === "success") {
         localStorage.setItem('email', result.data.user.email);
@@ -188,9 +188,12 @@ export default class SignUp extends React.Component {
   handleSignup() {
     if(this.handleValidation()) {
       this.setState({
-        isMentor: this.props.isMentor, 
+        is_mentor:  this.props.isMentor, 
+      }, () => {
+        this.actionSignup();
       })
-      this.actionSignup();
+      
+      // console.log(this.state)
     }
   }
 
