@@ -25,6 +25,7 @@ Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
 Route::post('/test', 'UserController@test');
 Route::post('/findmentors', 'UserController@findMentors');
+Route::post('/featuredmentors', 'UserController@featuredMentors');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');

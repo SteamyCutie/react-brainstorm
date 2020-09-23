@@ -16,7 +16,7 @@ class ReviewController extends Controller
       $mentor_id = $request->mentor_id;
       $mark = $request->mark;
       $review = $request->review;
-  
+      
       $rules = array(
         'review' => 'required'
       );
@@ -38,6 +38,22 @@ class ReviewController extends Controller
         'mark' => $mark,
         'review' => $review,
       ]);
+      // get average_mark for Review and User table
+      $m_marks = Review::select('mark')->where('mentor_id', $mentor_id)->get();
+      $average_mark = 0;
+      if (count($m_marks) > 0) {
+        $all_marks = 0;
+        $average_mark = 0;
+        foreach ($m_marks as $m_mark) {
+          $all_marks += $m_mark->mark;
+        }
+        $average_mark = round($all_marks/count($m_marks), 1);
+      } else {
+        $average_mark = 0;
+      }
+      Review::where('mentor_id', $mentor_id)->update(['average_mark' => $average_mark]);
+      User::where('id', $mentor_id)->update(['average_mark' => $average_mark]);
+      // end get average_mark
       if($res_review) {
         return response()->json([
           'result'=> 'success',

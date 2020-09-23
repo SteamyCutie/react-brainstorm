@@ -1,10 +1,7 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
-import { store } from 'react-notifications-component';
-
+import { addpayment } from '../../api/api';
 import Close from '../../images/Close.svg'
 
 export default class AddNewCard extends React.Component {
@@ -48,7 +45,7 @@ export default class AddNewCard extends React.Component {
 
   onChangeNumber = (e) => {
     var array = e.target.value.split("");
-    if (array.length > 500) {
+    if (array.length > 20) {
       return;
     }
     const {cardinfo} = this.state;
@@ -80,49 +77,42 @@ export default class AddNewCard extends React.Component {
   }
 
   actionAdd = async() => {
-    // const {cardinfo} = this.state;
+    const { name, number, date, code } = this.state;
+    const { toggle_success, toggle_fail, toggle_warning} = this.props;
+    let param = {
+      name: name,
+      number: number,
+      date: date,
+      code: code
+    }
+    console.log(param);
+    try {
+      this.setState({loading: true});
+      const result = await addpayment(param);
+      if (result.data.result === "success") {
+        this.setState({
+          loading: false,
+        });
+        toggle_success("Add Payment Success");
+      } else if (result.data.result === "warning") {
+        toggle_warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          toggle_fail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      toggle_fail("Something Went wrong");
+    }; 
   }
 
   removeSession() {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('ws');
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    localStorage.clear();
   }
 
   render() {
@@ -130,12 +120,10 @@ export default class AddNewCard extends React.Component {
     const { cardinfo, requiremessage, loading } = this.state;
     return (
       <div>
-        <ReactNotification />
         <Modal size="md" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
           <h1 className="content-center modal-header-class">Add new card</h1>
-
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmailAddress" className="profile-detail-important">Cardholder name</label>
             {requiremessage.dname !== '' && <span className="require-message">{requiremessage.dname}</span>}
@@ -146,8 +134,8 @@ export default class AddNewCard extends React.Component {
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmailAddress" className="profile-detail-important">Credit or debit card number</label>
             {requiremessage.dnumber !== '' && <span className="require-message">{requiremessage.dnumber}</span>}
-            {requiremessage.dnumber !== '' && <FormInput className="profile-detail-input" placeholder="1234 5678 2472 8394" invalid onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
-            {requiremessage.dnumber === '' && <FormInput className="profile-detail-input" placeholder="1234 5678 2472 8394" onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
+            {requiremessage.dnumber !== '' && <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" invalid onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
+            {requiremessage.dnumber === '' && <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
           </div>
           <Row form>
             <Col md="6" className="modal-input-group-class">

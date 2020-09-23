@@ -62,10 +62,6 @@ class MentorVideo extends React.Component {
           </h6>
         </div>
         <div>
-          {/* <video className="mentor-video-tag" controls> */}
-            {/* <source src={media_url} type={media_type} /> */}
-            
-          {/* </video> */}
           <Player
               playsInline
               poster={background}
