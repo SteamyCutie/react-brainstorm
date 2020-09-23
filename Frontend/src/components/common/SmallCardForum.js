@@ -6,7 +6,7 @@ import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 
-import avatar2 from "../../images/avatar.jpg"
+import defaultAvatar from "../../images/avatar.jpg"
 import InvitedStudent from "./InvitedStudent";
 
 class SmallCardForum extends React.Component {
@@ -94,11 +94,17 @@ class SmallCardForum extends React.Component {
         <div className="forum-invited-student">
           <div style={{display: "flex"}}>
             <a href="#!" onClick={() => this.toggle_invite()}>
+                {/* {data.avatar && <img key={idx} src={data.avatar} alt={data.name} className="carousel-component-img-class" />}
+                {!data.avatar && <img key={idx} src={defaultAvatar} alt={data.name} className="carousel-component-img-class" />} */}
               {student_info.map((item, idx) => {
-                if (idx < 3)
-                  return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
-                else 
+                if (idx < 3) {
+                  if (item.avatar)
+                    return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
+                  else
+                    return <img key={idx} src={defaultAvatar} alt="avatar" className="forum-student-avatar"/>;
+                } else {
                   return <></>;
+                }
               })}
               </a>
           </div>

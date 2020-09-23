@@ -70,7 +70,6 @@ export default class MainNavbar extends React.Component{
     if(!this.state.signUpOpen) {
       this.signUpElement.current.clearValidationErrors();
     }
-    console.log(this.is_Mentor);
   }
 
   findMentor() {
