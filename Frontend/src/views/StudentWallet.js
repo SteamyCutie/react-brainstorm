@@ -248,11 +248,7 @@ export default class StudentWallet extends React.Component {
   }
 
   removeSession() {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('ws');
+    localStorage.clear();
   }
 
   showSuccess(text) {
@@ -312,7 +308,13 @@ export default class StudentWallet extends React.Component {
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
-        <AddNewCard open={ModalOpen} toggle={() => this.toggle_add()} ></AddNewCard>
+        <AddNewCard 
+          open={ModalOpen} 
+          toggle={() => this.toggle_add()} 
+          toggle_success={(text) => this.showSuccess(text)}>
+          toggle_fail={(text) => this.showFail(text)}
+          toggle_warning={(text) => this.showWarning(text)}
+        </AddNewCard>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col className="page-title">

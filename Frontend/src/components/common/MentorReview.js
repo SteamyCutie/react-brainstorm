@@ -100,11 +100,7 @@ export default class MentorReview extends React.Component {
   }
 
   removeSession() {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('ws');
+    localStorage.clear();
   }
 
   showSuccess(text) {
