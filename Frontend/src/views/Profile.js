@@ -40,9 +40,9 @@ export default class MySharePage extends React.Component {
         email: '',
         description: '',
         expertise: 1,
-        hourlyprice: '',
+        hourlyprice: 0,
         subpagename: '',
-        subplanfee: '',
+        subplanfee: 0,
         videourl: '',
         avatar: '',
         instantcall: false,
@@ -78,11 +78,11 @@ export default class MySharePage extends React.Component {
         temp.email = result.data.data.email;
         temp.avatar = result.data.data.avatar;
         temp.description = result.data.data.description;
-        temp.hourlyprice = (result.data.data.hourly_price === "" || result.data.data.hourly_price === null) ? 0 : result.data.data.hourly_price;
+        temp.hourlyprice = result.data.data.hourly_price;
         temp.subpagename = result.data.data.sub_page_name;
-        temp.subplanfee = (result.data.data.sub_plan_fee === "" || result.data.data.sub_plan_fee === null) ? 0 : result.data.data.sub_plan_fee;
+        temp.subplanfee = result.data.data.sub_plan_fee;
         temp.videourl = result.data.data.video_url;
-        temp.expertise = (result.data.data.expertise === null || result.data.data.expertise === "") ? 1 : result.data.data.expertise;
+        temp.expertise = result.data.data.expertise;
         temp.instantcall = result.data.data.instant_call;
         temp.is_mentor = result.data.data.is_mentor;
         temp.tags = result.data.data.tags;
@@ -183,11 +183,6 @@ export default class MySharePage extends React.Component {
     const {param} = this.state;
     let temp = param;
     temp.is_mentor = !param.is_mentor;
-    if (!param.is_mentor === true) {
-      localStorage.setItem('is_mentor', 0);
-    } else {
-      localStorage.setItem('is_mentor', 1);
-    }
     
     this.setState({param: temp});
   }
