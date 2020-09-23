@@ -84,12 +84,7 @@
         </div>
         <div class='block'>
             <span>
-                Confirm your account by entering this code:
-            </span>
-        </div>
-        <div class='block'>
-            <span>
-                $vCode                
+                You can update your password by entering below button.
             </span>
         </div>
         <div class='block' >
