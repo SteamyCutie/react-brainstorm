@@ -22,4 +22,10 @@ return [
         'active' => 1,
         'deactive' => 0,
     ],
+    'card_type' => [
+      'travel' => 3,
+      'visa' => 4,
+      'masterCard' => 5,
+      'discoverCard' => 6,
+    ],
 ];

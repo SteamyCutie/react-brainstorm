@@ -1,13 +1,18 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
 import LoadingModal from "./LoadingModal";
-import { addpayment } from '../../api/api';
+import { createpayment } from '../../api/api';
 import Close from '../../images/Close.svg'
 
 export default class AddNewCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      cvc: '',
+      expiry: '',
+      focus: '',
+      name: '',
+      number: '',
       loading: false,
       cardinfo: {
         name: '',
@@ -54,7 +59,7 @@ export default class AddNewCard extends React.Component {
     this.setState({cardinfo: temp});
   }
 
-  onChangedate = (e) => {
+  onChangeDate = (e) => {
     var array = e.target.value.split("");
     if (array.length > 500) {
       return;
@@ -77,31 +82,59 @@ export default class AddNewCard extends React.Component {
   }
 
   actionAdd = async() => {
-    const { name, number, date, code } = this.state;
+    const { cardinfo, requiremessage } = this.state;
     const { toggle_success, toggle_fail, toggle_warning} = this.props;
+
+    let temp = requiremessage;
+    temp.dname = '';
+    temp.dnumber = '';
+    temp.ddate = '';
+    temp.dcode = '';
     let param = {
-      name: name,
-      number: number,
-      date: date,
-      code: code
+      user_id: localStorage.getItem('user_id'),
+      card_name: cardinfo.name,
+      card_number: cardinfo.number,
+      card_expiration: cardinfo.date,
+      cvc_code: cardinfo.code
     }
-    console.log(param);
     try {
       this.setState({loading: true});
-      const result = await addpayment(param);
+      const result = await createpayment(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
         });
         toggle_success("Add Payment Success");
+        window.location.href = "/studentWallet";
       } else if (result.data.result === "warning") {
         toggle_warning(result.data.message);
       } else {
-        if (result.data.message === "Token is Expired") {
-          this.removeSession();
-          window.location.href = "/";
+        if (result.data.type === "require") {
+          const {requiremessage} = this.state;
+          let temp = requiremessage;
+          if (result.data.message.card_name) {
+            temp.dname = result.data.message.card_name[0];
+          }
+          if (result.data.message.card_number) {
+            temp.dnumber = result.data.message.card_number[0];
+          }
+          if (result.data.message.cvc_code) {
+            temp.dcode = result.data.message.cvc_code[0];
+          }
+          if (result.data.message.card_expiration) {
+            temp.ddate = result.data.message.card_expiration[0];
+          }
+          
+          this.setState({
+            requiremessage: temp
+          });
         } else {
-          toggle_fail(result.data.message);
+          if (result.data.message === "Token is Expired") {
+            this.removeSession();
+            window.location.href = "/";
+          } else {
+            toggle_fail(result.data.message);
+          }
         }
       }
       this.setState({loading: false});
@@ -113,6 +146,16 @@ export default class AddNewCard extends React.Component {
 
   removeSession() {
     localStorage.clear();
+  }
+
+  handleInputFocus = (e) => {
+    this.setState({ focus: e.target.name });
+  }
+
+  handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    this.setState({ [name]: value });
   }
 
   render() {

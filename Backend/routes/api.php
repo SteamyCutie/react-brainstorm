@@ -52,4 +52,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   Route::post('/setreview', 'ReviewController@setReview');
+  Route::post('/createpayment', 'PaymentController@createPayment');
+  Route::post('/getpayment', 'PaymentController@getPayment');
 });

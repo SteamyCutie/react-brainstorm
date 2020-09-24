@@ -22,7 +22,6 @@ export default class NavbarSearch extends React.Component{
   }
 
   componentWillMount() {
-    this.onSearch();
   }
 
   onChangeSearchText(e) {
@@ -33,6 +32,7 @@ export default class NavbarSearch extends React.Component{
     const { toggle_search } = this.props;
     const { searchKey } = this.state;
     toggle_search(searchKey)
+    localStorage.setItem('searchKey', searchKey);
   }
 
   render() {

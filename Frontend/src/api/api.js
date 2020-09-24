@@ -465,15 +465,32 @@ export const setreview = (param) => {
 
 //PaymentController
 
-export const addpayment = (param) => {
+export const createpayment = (param) => {
     const token = localStorage.getItem('token');
     const header = {
-        'Authorization': 'bearee' + token,
+        'Authorization': 'bearer ' + token,
     }
 
     return new Promise(async(resolve, reject) => {
         try {
-            const response = await axios.post(SERVER_URL+'/api/addpayment', param, {headers: header});
+            const response = await axios.post(SERVER_URL+'/api/createpayment', param, {headers: header});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export const getpayment = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getpayment', param, {headers: header});
+            resolve(response);
         } catch (error) {
             reject(error);
         }
