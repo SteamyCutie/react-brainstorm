@@ -9,7 +9,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getwallets } from '../api/api';
+import { getwallets, getpayment } from '../api/api';
 import { Badge } from "shards-react";
 
 export default class StudentWallet extends React.Component {
@@ -19,20 +19,7 @@ export default class StudentWallet extends React.Component {
       loading: false,
       totalCnt: 0,
       ModalOpen: false,
-      paymentCard: [
-        {
-          title: "Mastercard ending in 2715",
-          image: require("../images/Mastercard-logo.png"),
-          expireDate: "8/23",
-          isPrimary: true
-        },
-        {
-          title: "Visa ending in 9372",
-          image: require("../images/VisaCard-logo.png"),
-          expireDate: "02/21",
-          isPrimary: false
-        }
-      ],
+      paymentCard: [],
       columns: [
         {
           name: 'Lesson ID',
@@ -199,6 +186,7 @@ export default class StudentWallet extends React.Component {
 
   componentWillMount() {
     this.getHistory(1);
+    this.getPayment();
   }
 
   toggle_add() {
@@ -239,8 +227,57 @@ export default class StudentWallet extends React.Component {
     };
   }
 
-  addNewCard() {
+  getPayment = async() => {
+    const { paymentCard } = this.state;
+    let param = {
+      user_id: localStorage.getItem('user_id')
+    }
+    try {
+      this.setState({loading: true});
+      const result = await getpayment(param);
+      if (result.data.result === "success") {
+        let param = {
+          card_type: 1,
+          is_primary: 1,
+          card_name: '',
+          expired_date: '',
+          image: ''
+        }
 
+        let params = [];
+        for (var i = 0; i < result.data.data.length; i ++) {
+          param.card_type = result.data.data[i].card_type;
+          param.card_name = result.data.data[i].card_name;
+          param.is_primary = result.data.data[i].is_primary;
+          param.expired_date = result.data.data[i].expired_date;
+          if (param.card_type === 4) {
+            param.image = require("../images/VisaCard-logo.png");
+          } else if (param.card_type === 3) {
+            param.image = require("../images/Mastercard-logo.png");
+          }
+          params.push(param);
+          param = {};
+        }
+
+        this.setState({
+          loading: false,
+          paymentCard: params
+        });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
   }
 
   onChangePagination(e, value) {
@@ -311,9 +348,9 @@ export default class StudentWallet extends React.Component {
         <AddNewCard 
           open={ModalOpen} 
           toggle={() => this.toggle_add()} 
-          toggle_success={(text) => this.showSuccess(text)}>
+          toggle_success={(text) => this.showSuccess(text)}
           toggle_fail={(text) => this.showFail(text)}
-          toggle_warning={(text) => this.showWarning(text)}
+          toggle_warning={(text) => this.showWarning(text)}>
         </AddNewCard>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
@@ -328,10 +365,10 @@ export default class StudentWallet extends React.Component {
             {paymentCard.map((card, idx) => (
                 <SmallCardPayment
                   key={idx}
-                  title={card.title}
-                  expireDate={card.expireDate}
+                  title={card.card_name}
+                  expireDate={card.expired_date}
                   image={card.image}
-                  isPrimary={card.isPrimary}
+                  isPrimary={card.is_primary}
                 />
             ))}
             </div>
