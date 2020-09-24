@@ -162,7 +162,7 @@ class SetAvailability extends React.Component {
         this.showWarning(result.data.message);
       } else {
         this.showFail(result.data.message);
-        if (result.data.message == "Token is Expired") {
+        if (result.data.message === "Token is Expired") {
           this.removeSession();
           window.location.href = "/";
         }
