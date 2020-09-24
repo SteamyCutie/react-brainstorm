@@ -56,8 +56,6 @@ export default class SignUp extends React.Component {
     try {console.log(this.state)
       const result = await signup(this.state);
       if (result.data.result === "success") {
-        // localStorage.setItem('email', result.data.user.email);
-        // localStorage.setItem('password', this.state.password);
         window.location.href = '/verification';
       } else {
         this.setState({
