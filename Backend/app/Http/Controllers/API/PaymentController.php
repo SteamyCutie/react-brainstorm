@@ -38,22 +38,24 @@ class PaymentController extends Controller
           'message' => $validator->messages()
         ];
       }
-      $res_exist = Payment::where(['cvc_code' => $cvc_code])->get();
+      $res_exist = Payment::where(['cvc_code' => $cvc_code])->orwhere(['card_number' => $card_number])->get();
       if (count($res_exist) > 0) {
         return response()->json([
-          'result'=> 'failed',
+          'result'=> 'warning',
           'message' => 'Payment already exist.',
         ]);
       } else {
+        $card_type = substr($card_number, 0, 1);
         $payment = Payment::create([
           'user_id' => $user_id,
           'card_name' => $card_name,
           'card_number' => $card_number,
           'card_expiration' => $card_expiration,
           'cvc_code' => $cvc_code,
+          'card_type' => $card_type,
           'is_primary' => true,
         ]);
-          Payment::where('created_at', '<', Carbon::now())->update(['is_primary' => false]);
+        Payment::where('created_at', '<', Carbon::now())->update(['is_primary' => false]);
       }
       return response()->json([
         'result'=> 'success',
@@ -63,6 +65,25 @@ class PaymentController extends Controller
       return response()->json([
         'result'=> 'failed',
         'data'=> $th,
+      ]);
+    }
+  }
+  
+  public function getPayment(Request $request) {
+    $user_id = $request['user_id'];
+    $user = Payment::select('card_name', 'card_expiration', 'is_primary', 'card_type')->where('user_id', $user_id)->get();
+    foreach ($user as $user_value) {
+      $user_value['expired_date'] = date('m/d', strtotime($user_value->card_expiration));
+    }
+    if ($user) {
+      return response()->json([
+        'result'=> 'success',
+        'data' => $user,
+      ]);
+    } else {
+      return response()->json([
+        'result'=> 'failed',
+        'message' => 'user not exsited.',
       ]);
     }
   }

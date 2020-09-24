@@ -22,8 +22,8 @@ class CreateSessionsTable extends Migration
             $table->timestamp('to')->nullable();
             $table->string('invited_id')->nullable();
             $table->string('tags_id')->nullable();
-            $table->integer('status');
-
+            $table->integer('status')->default(0);
+            $table->integer('posted')->default(0);
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
             $table->timestamps();
         });

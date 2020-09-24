@@ -17,7 +17,8 @@ class CreatePaymentsTable extends Migration
       $table->id();
       $table->string('user_id')->default("");
       $table->string('card_name')->default("");
-      $table->string('card_number')->default("")->unique();;
+      $table->string('card_number')->default("")->unique();
+      $table->integer('card_type')->default(0);
       $table->timestamp('card_expiration')->nullable();
       $table->integer('cvc_code')->default(0);
       $table->boolean('is_primary')->default(false);

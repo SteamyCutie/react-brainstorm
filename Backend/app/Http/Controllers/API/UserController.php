@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Session;
 use App\Models\Subscription;
+use Faker\Provider\Payment;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ use App\Models\Media;
 use JWTAuth;
 use Exception;
 use Carbon\Carbon;
+use App\Http\Controllers\API\PaymentController;
+use phpDocumentor\Reflection\DocBlock\Tags\See;
 
 class UserController extends Controller
 {
@@ -594,7 +597,26 @@ class UserController extends Controller
   }
   
   function test(Request $request) {
-  
+    echo Carbon::now()."\n";
+    
+//    echo config('global.card_type.visa');
+//    echo config('global.card_type.masterCard');
+//    echo config('global.card_type.discoverCard');
+//    $request['user_id'] = 6;
+//    echo app('App\Http\Controllers\API\PaymentController')->getPayment($request);
+
+//    $payment = new PaymentController;
+//    return $payment->getPayment($request);
+//    $email = $request['email'];
+//    echo env("MAIL_FROM_NAME");
+//    var_dump(env("FRONT_URL"));
+//    $this->send_email("lucascholz@protonmail.com", "lucascholz", "welcome to brainsshare", "Hello");
+//    echo app_path();
+    
+//    $ids = $sessions->pluck('id');
+//    echo Carbon::now()->addMinutes(5)."\n";
+//    $sessions = Session::where('posted',0)->where('from', '<=', Carbon::now()->addMinutes(5))->first();
+//    echo $sessions;
   }
 }
 
