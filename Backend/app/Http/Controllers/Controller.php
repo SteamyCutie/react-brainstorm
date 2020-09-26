@@ -17,6 +17,8 @@ class Controller extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
   
+  private $posted_ids = [] ;
+  
   public function send_email($toEmail, $toName, $subject, $body){
     // Instantiation and passing `true` enables exceptions
     $mail = new PHPMailer(true);
@@ -43,5 +45,13 @@ class Controller extends BaseController
     } catch (Exception $e) {
       return false;
     }
+  }
+  
+  public function setPostedLatestId($post_ids) {
+    $this->posted_ids = $post_ids;
+    return true;
+  }
+  public function getPostedLatestId() {
+    return $this->posted_ids;
   }
 }

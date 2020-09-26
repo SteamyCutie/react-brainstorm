@@ -476,4 +476,27 @@ class SessionController extends Controller
       ]);
     }
   }
+  
+  public function schedulePost(Request $request) {
+    $user_id = $request->user_id;
+    $post_ids = Controller::getPostedLatestId();
+    if (count($post_ids) > 0) {
+      foreach ($post_ids as $session_id) {
+        $result = Invited::where('session_id', $session_id)->where(function ($q) use ($user_id) {
+          $q->where('student_id', $user_id)->orWhere('mentor_id', $user_id);
+        })->first();
+        if ($result) {
+          $data = Session::select('title', 'user_id', 'from', 'to')->first();
+          return response()->json([
+            'result'=> 'success',
+            'data'=> $data,
+          ]);
+        }
+      }
+    }
+    return response()->json([
+      'result'=> 'failed',
+      'message'=> 'No Forum',
+    ]);
+  }
 }

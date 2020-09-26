@@ -54,4 +54,5 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setreview', 'ReviewController@setReview');
   Route::post('/createpayment', 'PaymentController@createPayment');
   Route::post('/getpayment', 'PaymentController@getPayment');
+  Route::post('/schedulepost', 'SessionController@schedulePost');
 });

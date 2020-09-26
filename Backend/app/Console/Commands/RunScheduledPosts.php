@@ -44,7 +44,7 @@ class RunScheduledPosts extends Command
    */
   public function handle()
   {
-//    * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+    $post_session_ids = [];
     $send_mail = new Controller;
     $subject = "Welcome to BrainsShare!";
     $fronturl = env("FRONT_URL");
@@ -74,7 +74,9 @@ class RunScheduledPosts extends Command
         if ($result) {
           Session::where('id', $sn_value->id)->update(['posted' => 1]);
         }
+        $post_session_ids[] = $sn_value->id;
       }
+      Controller::setPostedLatestId($post_session_ids);
     }
   }
 }
