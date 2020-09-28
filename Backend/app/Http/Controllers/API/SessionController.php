@@ -508,7 +508,6 @@ class SessionController extends Controller
     if (count($post_session_ids) > 0) {
       foreach ($post_session_ids as $post_session_id) {
         $session_id = $post_session_id->session_id;
-        
         $result = Invited::where('session_id', $session_id)->where(function ($q) use ($user_id) {
           $q->where('student_id', $user_id)->orWhere('mentor_id', $user_id);
         })->first();

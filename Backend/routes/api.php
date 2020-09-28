@@ -57,4 +57,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getpayment', 'PaymentController@getPayment');
   Route::post('/schedulepost', 'SessionController@schedulePost');
   Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
+  Route::post('/addlibrary', 'LibraryController@addLibrary');
+  Route::post('/getlibrary', 'LibraryController@getLibrary');
+  Route::post('/addreport', 'ReportController@addReport');
 });
