@@ -1,9 +1,12 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormInput, CardFooter, FormSelect, Button, FormTextarea, ListGroup, ListGroupItem, FormGroup } from "shards-react";
-
-// import { Participant } from "../components/VideoCallParticipant"
-
 import kurentoUtils from 'kurento-utils';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
 
 const PARTICIPANT_MAIN_CLASS = 'participant main';
 const PARTICIPANT_CLASS = 'participant';
@@ -13,27 +16,32 @@ var participants = {};
 
 var room_ws = null;
 
-function Participant(name) {
+function Participant(name, isLocalVideo) {
 	this.name = name;
 	var container = document.createElement('div');
 	container.className = isPresentMainParticipant() ? PARTICIPANT_CLASS : PARTICIPANT_MAIN_CLASS;
 	container.id = name;
 	var span = document.createElement('span');
   var video = document.createElement('video');
-  // var video = document.getElementById('video-from');
   var rtcPeer;
 
 	container.appendChild(video);
-	// container.appendChild(span);
-	// container.onclick = switchContainerClass;
+	container.appendChild(span);
 	document.getElementById('room-video-container').appendChild(container);
 
-	// span.appendChild(document.createTextNode(name));
+	
 
 	video.id = 'video-' + name;
 	video.autoplay = true;
-	video.controls = false;
+  video.controls = false;
 
+  if(isLocalVideo) {
+    container.classList.add("local-video");
+  } else {
+    container.classList.add("room-video-display-none");
+    container.classList.add("participant-video");
+    span.appendChild(document.createTextNode(name));
+  }
 
 	this.getElement = function() {
 		return container;
@@ -41,19 +49,6 @@ function Participant(name) {
 
 	this.getVideoElement = function() {
 		return video;
-	}
-
-	function switchContainerClass() {
-		if (container.className === PARTICIPANT_CLASS) {
-			var elements = Array.prototype.slice.call(document.getElementsByClassName(PARTICIPANT_MAIN_CLASS));
-			elements.forEach(function(item) {
-					item.className = PARTICIPANT_CLASS;
-				});
-
-      container.className = PARTICIPANT_MAIN_CLASS;
-    } else {
-      container.className = PARTICIPANT_CLASS;
-		}
 	}
 
 	function isPresentMainParticipant() {
@@ -87,7 +82,7 @@ function Participant(name) {
 	this.dispose = function() {
 		console.log('Disposing participant ' + this.name);
 		this.rtcPeer.dispose();
-		// container.parentNode.removeChild(container);
+		container.parentNode.removeChild(container);
   };
   
   this.sendMessage = function(message) {
@@ -105,11 +100,16 @@ export default class RoomCall extends React.Component {
       errorMsg: '',
       code: '',
       participants: [], 
+      selfName: '', 
+      roomName: '', 
+      fullScreen: false, 
     }
+
+    // this.handleListItemClick = this.handleListItemClick.bind(this);
   }
 
   componentWillMount() {
-    this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall') // location.host
+    this.setWebsocket('wss://' + '192.168.136.130:8443' + '/groupcall');
   }
 
   /******************************** Group Call Start ************************/
@@ -153,19 +153,19 @@ export default class RoomCall extends React.Component {
 
   register() {
     
-    const radn_num = Math.floor(Math.random() * 101).toString();
-    name = radn_num;
+    const rand_num = Math.floor(Math.random() * 101).toString();
+    name = rand_num;
     var room = 'aaa';
   
-    // document.getElementById('room-header').innerText = 'ROOM ' + room;
-    // document.getElementById('join').style.display = 'none';
-    // document.getElementById('room').style.display = 'block';
-
-    console.log(this.ws.readyState, "Websocket Ready State");
+    this.setState({
+      selfName: rand_num, 
+      roomName: room, 
+    })
   
     var message = {
       id : 'joinRoom',
       name : name,
+      
       room : room,
     }
     this.sendMessage(message);
@@ -211,8 +211,8 @@ export default class RoomCall extends React.Component {
       }
     };
     
-    var participant = new Participant(name);
-    participants[name] = participant;
+    var participant = new Participant(this.state.selfName, true);
+    participants[this.state.selfName] = participant;
     var video = participant.getVideoElement();
   
     var options = {
@@ -234,6 +234,7 @@ export default class RoomCall extends React.Component {
     })
     
     msg.data.forEach(this.receiveVideo);
+    document.getElementById(this.state.participants[this.state.participants.length - 1]).classList.remove("room-video-display-none");
   }
   
   leaveRoom() {
@@ -245,13 +246,11 @@ export default class RoomCall extends React.Component {
       participants[key].dispose();
     }
   
-    // document.getElementById('join').style.display = 'block';
-    // document.getElementById('room').style.display = 'none';
     // this.ws.close();
   }
   
   receiveVideo(sender) {
-    var participant = new Participant(sender);
+    var participant = new Participant(sender, false);
     participants[sender] = participant;
     var video = participant.getVideoElement();
     const that = this;
@@ -283,9 +282,6 @@ export default class RoomCall extends React.Component {
     var participant = participants[request.name];
     participant.dispose();
     delete participants[request.name];
-
-    var element = document.getElementById('video-' + request.name);
-    element.parentNode.removeChild(element);
   }
   
   sendMessage(message) {
@@ -304,28 +300,59 @@ export default class RoomCall extends React.Component {
 
   }
 
+  handleListItemClick(param) {
+    this.state.participants.map((participant) => {
+      if(param === participant) {
+        document.getElementById(participant).classList.remove("room-video-display-none");
+      } else {
+        document.getElementById(participant).classList.add("room-video-display-none");
+      }
+      
+    })
+  }
+
+  toggleFullScreen() {
+    const element = document.getElementById("room-container");
+
+    if(!this.state.fullScreen) {
+      console.log("11111111111111111111111111111111")
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) { /* Firefox */
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) { /* IE/Edge */
+        element.msRequestFullscreen();
+      }
+    } else {
+      console.log("2222222222222222222222222222222222")
+      element.webkitExitFullscreen();
+      if (element.exitFullscreen) {
+        element.exitFullscreen();
+      } else if (element.mozCancelFullScreen) { /* Firefox */
+        element.mozCancelFullScreen();
+      } else if (element.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        element.webkitExitFullscreen();
+      } else if (element.msExitFullscreen) { /* IE/Edge */
+        element.msExitFullscreen();
+      }
+    }
+
+    this.setState({
+      fullScreen: !this.state.fullScreen, 
+    })
+  }
+
   render() {
     return (
-      <div className="room-container">
-      {/* </div> <Container fluid className="main-content-container px-4 pb-4 main-content-container-class"> */}
+      <div className="room-container" id="room-container">
         <Col xl="9">
           <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.leaveRoom()}>Leave Room</Button>
           <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.register()}>Join Room</Button>
-          <FormSelect style={{height: "50px", width: "400px", marginRight: "10px"}} onChange={(e) => this.onSelectRoomChange(e)}>
-            <option value="">Select Room</option>
-            <option value="">Room 1</option>
-            <option value="">Room 2</option>
-            <option value="">Room 3</option>
-            <option value="">Room 4</option>
-            <option value="">Room 5</option>
-          </FormSelect>
+          <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.toggleFullScreen()}>Full Screen</Button>
           <div className="room-video-container" id="room-video-container">
-            {/* <video id="video-from" width="100%" className="video-call-student">
-              Your browser does not support the video tag.
-            </video>
-            <video id="video-me" width="200px" height="150px" className="video-call-mentor">
-              Your browser does not support the video tag.
-            </video> */}
+
           </div>
           <div id="room-chat-area" className="room-chat-area">
             <FormGroup>
@@ -336,14 +363,28 @@ export default class RoomCall extends React.Component {
         </Col>
         <Col xl="3" className="room-member">
           <div id="room-member" width="20%">
-          <ListGroup>
-            {this.state.participants.map((participant, key) => 
-              <ListGroupItem id={key}>{participant}</ListGroupItem>
-            )}
-          </ListGroup>
+            <List dense >
+              {this.state.participants.map((participant, key) => {
+                const labelId = {participant};
+                return (
+                  <ListItem 
+                    key={participant} 
+                    button
+                    onClick={() => this.handleListItemClick(participant)}
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={participant}
+                        src={`/static/images/avatar/${participant + 1}.jpg`}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText id={labelId} primary={participant} />
+                  </ListItem>
+                );
+              })}
+            </List>
           </div>
         </Col>
-      {/* </Container> */}
       </div>
     )
   }
