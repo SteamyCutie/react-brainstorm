@@ -19,18 +19,18 @@ function Participant(name) {
 	container.className = isPresentMainParticipant() ? PARTICIPANT_CLASS : PARTICIPANT_MAIN_CLASS;
 	container.id = name;
 	var span = document.createElement('span');
-  // var video = document.createElement('video');
-  var video = document.getElementById('video-from');
+  var video = document.createElement('video');
+  // var video = document.getElementById('video-from');
   var rtcPeer;
 
-	// container.appendChild(video);
+	container.appendChild(video);
 	// container.appendChild(span);
 	// container.onclick = switchContainerClass;
-	// document.getElementById('participants').appendChild(container);
+	document.getElementById('room-video-container').appendChild(container);
 
 	// span.appendChild(document.createTextNode(name));
 
-	// video.id = 'video-' + name;
+	video.id = 'video-' + name;
 	video.autoplay = true;
 	video.controls = false;
 
@@ -104,12 +104,12 @@ export default class RoomCall extends React.Component {
     this.state = {
       errorMsg: '',
       code: '',
-      members: [], 
+      participants: [], 
     }
   }
 
   componentWillMount() {
-    this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall') // location.host
+    this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall') // location.host
   }
 
   /******************************** Group Call Start ************************/
@@ -172,6 +172,13 @@ export default class RoomCall extends React.Component {
   }
   
   onNewParticipant(request) {
+    const {participants} = this.state;
+    let temp = participants;
+    temp.push(request.name);
+
+    this.setState({
+      participants: temp, 
+    })
     this.receiveVideo(request.name);
   }
   
@@ -203,7 +210,7 @@ export default class RoomCall extends React.Component {
         }
       }
     };
-    // console.log(name + " registered in room " + room);
+    
     var participant = new Participant(name);
     participants[name] = participant;
     var video = participant.getVideoElement();
@@ -213,6 +220,7 @@ export default class RoomCall extends React.Component {
       mediaConstraints: constraints,
       onicecandidate: participant.onIceCandidate.bind(participant)
     }
+
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options,
       function (error) {
         if(error) {
@@ -220,9 +228,11 @@ export default class RoomCall extends React.Component {
         }
         this.generateOffer (participant.offerToReceiveVideo.bind(participant));
     });
+    
     this.setState({
-      members: msg.data, 
+      participants: msg.data, 
     })
+    
     msg.data.forEach(this.receiveVideo);
   }
   
@@ -237,7 +247,6 @@ export default class RoomCall extends React.Component {
   
     // document.getElementById('join').style.display = 'block';
     // document.getElementById('room').style.display = 'none';
-    console.log("**********SOCKET CLOSED*******************")
     // this.ws.close();
   }
   
@@ -263,9 +272,20 @@ export default class RoomCall extends React.Component {
   
   onParticipantLeft(request) {
     console.log('Participant ' + request.name + ' left');
+    const currentParticipants = this.state.participants;
+    let temp = currentParticipants;
+    let filteredAry = temp.filter(e => e !== request.name)
+
+    this.setState({
+      participants: filteredAry, 
+    })
+
     var participant = participants[request.name];
     participant.dispose();
     delete participants[request.name];
+
+    var element = document.getElementById('video-' + request.name);
+    element.parentNode.removeChild(element);
   }
   
   sendMessage(message) {
@@ -299,13 +319,13 @@ export default class RoomCall extends React.Component {
             <option value="">Room 4</option>
             <option value="">Room 5</option>
           </FormSelect>
-          <div className="room-video-container">
-            <video id="video-from" width="100%" className="video-call-student">
+          <div className="room-video-container" id="room-video-container">
+            {/* <video id="video-from" width="100%" className="video-call-student">
               Your browser does not support the video tag.
             </video>
             <video id="video-me" width="200px" height="150px" className="video-call-mentor">
               Your browser does not support the video tag.
-            </video>
+            </video> */}
           </div>
           <div id="room-chat-area" className="room-chat-area">
             <FormGroup>
@@ -317,8 +337,8 @@ export default class RoomCall extends React.Component {
         <Col xl="3" className="room-member">
           <div id="room-member" width="20%">
           <ListGroup>
-            {this.state.members.map((member, key) => 
-              <ListGroupItem id={key}>{member}</ListGroupItem>
+            {this.state.participants.map((participant, key) => 
+              <ListGroupItem id={key}>{participant}</ListGroupItem>
             )}
           </ListGroup>
           </div>
