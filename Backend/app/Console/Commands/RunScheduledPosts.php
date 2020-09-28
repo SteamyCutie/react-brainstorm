@@ -4,10 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\SessionController;
 use App\Models\Session;
 use App\Models\User;
 use App\Models\Invited;
 use Carbon\Carbon;
+use App\Models\SchedulePosted;
 use Log;
 
 
@@ -59,8 +61,10 @@ class RunScheduledPosts extends Command
         $name = $mentor_name;
         $toEmail = $mentor->email;
         $app_path = app_path();
-        $body = include_once($app_path.'/Mails/Session.php');
-        $body = implode(" ",$body);
+        if ($sn_key == 0) {
+          $body = include_once($app_path.'/Mails/Session.php');
+          $body = implode(" ",$body);
+        }
         $send_mail->send_email($toEmail, $name, $subject, $body);
         $st_inviteds = Invited::where('mentor_id', $sn_value->user_id)->where('session_id', $sn_value->id)->get();
         foreach ($st_inviteds as $st_invited_key => $st_invited_value) {
@@ -73,10 +77,12 @@ class RunScheduledPosts extends Command
         }
         if ($result) {
           Session::where('id', $sn_value->id)->update(['posted' => 1]);
+          $post_session_ids[] = $sn_value->id;
+          SchedulePosted::create([
+            'session_id' => $sn_value->id,
+          ]);
         }
-        $post_session_ids[] = $sn_value->id;
       }
-      Controller::setPostedLatestId($post_session_ids);
     }
   }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Invited;
 use App\Models\Session;
 use App\Models\Subscription;
+use App\Models\SchedulePosted;
 use Faker\Provider\Payment;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
@@ -603,9 +604,39 @@ class UserController extends Controller
     }
   }
   
-  function test(Request $request)
-  {
-    echo Carbon::now() . "\n";
+  public function switchUser(Request $request) {
+    try {
+      $user_id = $request->user_id;
+      $is_mentor = User::select('is_mentor')->where('id', $user_id)->first();
+      $res = User::where('id', $user_id)->update(['is_mentor' => !$is_mentor->is_mentor]);
+      if ($res > 0) {
+        return response()->json([
+          'result' => 'success',
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+        ]);
+      }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th,
+      ]);
+    }
   }
+}
+
+function test(Request $request)
+{
+  $user_id = $request->user_id;
+  $session_id = $request->session_id;
+  echo Carbon::now() . "\n";
+//    SchedulePosted::truncate();
+  $result = Invited::where('session_id', $session_id)->where(function ($q) use ($user_id) {
+    $q->where('student_id', $user_id)->orWhere('mentor_id', $user_id);
+  })->get();
+  echo($result);
+  echo Carbon::now() . "\n";
 }
 
