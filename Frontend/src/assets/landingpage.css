@@ -50,6 +50,17 @@ body {
     padding: 0px !important;
 }
 
+.btn-search-mentor {
+    background-color: #00008B !important;
+    border-color: #00008B !important;
+    width: 78px !important;
+}
+
+.btn-search-mentor span {
+    justify-content: center;
+    padding: 0px !important;
+}
+
 .btn-landingpage {
     border-color: #04B5FA !important;
     height: 48px;
@@ -867,17 +878,17 @@ body {
     float: right;
 }
 
-.button-text-group-class {
-    align-items: center;
-    justify-content: center;
-}
-
 .hidden-underline {
     text-decoration: none;
 }
 
 .hidden-underline:hover {
     text-decoration: none;
+}
+
+.button-text-group-class {
+    align-items: center;
+    justify-content: center;
 }
 
 .button-text-group-class button {
@@ -942,6 +953,78 @@ body {
 }
 
 .button-text-group-class a:hover {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.button-text-group-class-mentor {
+    align-items: center;
+    justify-content: center;
+}
+
+.button-text-group-class-mentor button {
+    margin: 10px;
+    display: flex;
+    margin: auto;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #00008B;
+    border-color: #00008B;
+    padding: 15px 50px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-text-group-class-mentor button:hover {
+    margin: 10px;
+    display: flex;
+    margin: auto;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #00008B;
+    border-color: #00008B;
+    box-shadow: none;
+    padding: 15px 50px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-text-group-class-mentor button:active {
+    margin: 10px;
+    display: flex;
+    margin: auto;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #00008B !important;
+    border-color: #00008B !important;
+    box-shadow: none;
+    padding: 15px 50px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-text-group-class-mentor p {
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    font-weight: 400;
+}
+
+.button-text-group-class-mentor a {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.button-text-group-class-mentor a:hover {
     font-size: 14px;
     font-weight: 500;
     color: #333333;
@@ -1017,6 +1100,38 @@ body {
     background-color: #000000 !important;
     opacity: 0.3 !important;
     z-index: 8000;
+}
+
+.toggle-button-class-mentor {
+    text-transform: capitalize !important;
+    color: #ACACAC !important;
+    border-color: #ACACAC !important;
+    outline: none !important;
+    z-index: 1 !important;
+    height: 48px !important;
+    margin-top: 5px !important;
+    margin-right: auto !important;
+}
+
+.toggle-button-class-mentor.Mui-selected {
+    background-color: #00008B !important;
+    pointer-events: none !important; 
+    border-color: #00008B !important;
+    border-radius: 5px !important;
+    color: #FFFFFF !important;
+    text-transform: capitalize !important;
+    outline: none !important;
+    z-index: 2 !important;
+}
+
+.toggle-button-class-mentor:hover {
+    text-transform: capitalize !important;
+    color: #ACACAC !important;
+    background-color: #FFFFFF !important;
+    border-color: #ACACAC !important;
+    outline: none !important;
+    z-index: 1 !important;
+    margin-right: auto !important;
 }
 
 .toggle-button-class {
@@ -1110,4 +1225,12 @@ input.sign-has-err:focus {
 .sign-in-err {
     padding-left: 10px;
     color: #d50000 !important;
+}
+
+.upload-video-photo-color {
+    color: #04B5FA;
+}
+
+.upload-video-photo-color-mentor {
+    color: #00008B;
 }

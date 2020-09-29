@@ -75,7 +75,7 @@ export default class FeaturedMentors extends React.Component {
                     if (idx < 3)
                       return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
                     else if (idx === 3)
-                      return <p key={idx} href="#!">{data.tag_name.length - 3} more</p>
+                      return <p key={idx} href="javascript:void(0)">{data.tag_name.length - 3} more</p>
                     else 
                       return <></>;
                   })}
@@ -83,7 +83,7 @@ export default class FeaturedMentors extends React.Component {
                 <div className="carousel-component-body-desc-class">
                   {!this.state.more && (data.description.length > 200 ? <p>{data.description.slice(0,200)}...</p> : <p>{data.description}</p>)}
                   {this.state.more && <p>{data.description}</p>}
-                  {data.description.length > 200 && (this.state.more ? <a href="#!" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="#!" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
+                  {data.description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
                 </div>
                 <div className="carousel-component-body-play-class">
                   <a href={data.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>

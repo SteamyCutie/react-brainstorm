@@ -48,7 +48,7 @@ class SidebarNavItems extends React.Component {
         <ul style={{paddingLeft: 65}}>
           {items.map((item, idx) => (
             <li key={idx} className="search-item-list">
-              <a href="#!" onClick={() => this.onMenuClick(item.id)}>{item.title}</a>
+              <a href="javascript:void(0)" onClick={() => this.onMenuClick(item.id)}>{item.title}</a>
             </li>
           ))}
         </ul>

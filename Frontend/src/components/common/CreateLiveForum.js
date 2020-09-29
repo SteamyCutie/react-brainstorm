@@ -94,9 +94,15 @@ export default class CreateLiveForum extends React.Component {
         this.setState({tags: params});
       } else {
         if (result.data.message === "Token is Expired") {
+          toggle_createfail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else if (result.data.message === "Token is Invalid") {
+          toggle_createfail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          toggle_createfail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -132,9 +138,15 @@ export default class CreateLiveForum extends React.Component {
         this.setState({students: params});
       } else {
         if (result.data.message === "Token is Expired") {
+          toggle_createfail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else if (result.data.message === "Token in Invalid") {
+          toggle_createfail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          toggle_createfail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -179,6 +191,15 @@ export default class CreateLiveForum extends React.Component {
           });
         } else {
           if (result.data.message === "Token is Expired") {
+            toggle_createfail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Token is Invalid") {
+            toggle_createfail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Authorization Token not found") {
+            toggle_createfail(result.data.message);
             this.removeSession();
             window.location.href = "/";
           } else {
@@ -345,7 +366,7 @@ export default class CreateLiveForum extends React.Component {
               );
             })}
           </FormSelect>
-          <div className="content-center block-content-class button-text-group-class">
+          <div className="content-center block-content-class button-text-group-class-mentor">
             <Button onClick={() => this.actionSave()}>Save</Button>
           </div>
           </ModalBody>

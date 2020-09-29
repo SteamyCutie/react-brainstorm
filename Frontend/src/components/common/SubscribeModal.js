@@ -63,6 +63,14 @@ export default class SubscribeModal extends React.Component {
           this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
         } else {
           this.showFail(result.data.message);
         }
@@ -158,7 +166,7 @@ export default class SubscribeModal extends React.Component {
                   changeCard={this.changeCard}
                 />
               ))}
-              <a href="#!" onClick={() => this.toggle_modal()}><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Add new card</h5></a>
+              <a href="javascript:void(0)" onClick={() => this.toggle_modal()}><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Add new card</h5></a>
             </div>
             <div className="content-center block-content-class button-text-group-class" style={{marginBottom: "40px"}}>
               <Button className="center" onClick={() => this.handleSubscribe(item.id, item.sub_plan_fee)}>Subscribe</Button>

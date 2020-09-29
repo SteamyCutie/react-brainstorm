@@ -143,6 +143,15 @@ export default class EditLiveForum extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -177,9 +186,15 @@ export default class EditLiveForum extends React.Component {
         this.setState({students: params});
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else if (result.data.message === "Token in Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -222,6 +237,15 @@ export default class EditLiveForum extends React.Component {
           });
         } else {
           if (result.data.message === "Token is Expired") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Token is Invalid") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Authorization Token not found") {
+            this.showFail(result.data.message);
             this.removeSession();
             window.location.href = "/";
           } else {
@@ -241,6 +265,7 @@ export default class EditLiveForum extends React.Component {
   }
 
   getSession = async(id) => {
+    this.setState({loading: true});
     try {
       const result = await getforum({id: id});
       if (result.data.result === "success") {
@@ -289,14 +314,24 @@ export default class EditLiveForum extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
           this.showFail(result.data.message);
         }
       }
+      this.setState({loading: false});
     } catch(err) {
-      console.log(err);
+      this.setState({loading: false});
       this.showFail("Something Went wrong");
     }
   }
@@ -446,7 +481,7 @@ export default class EditLiveForum extends React.Component {
               );
             })}
           </FormSelect>
-          <div className="content-center block-content-class button-text-group-class">
+          <div className="content-center block-content-class button-text-group-class-mentor">
             <Button onClick={() => this.actionEdit()}>Edit</Button>
           </div>
           </ModalBody>

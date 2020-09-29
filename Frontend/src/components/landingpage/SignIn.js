@@ -120,12 +120,10 @@ export default class SignIn extends React.Component {
       const result = await signin(this.state);
       if (result.data.result === "success") {
         localStorage.setItem('email', this.state.email);
-        localStorage.setItem('is_mentor', result.data.user.is_mentor);
         localStorage.setItem('user_id', result.data.user.id);
         localStorage.setItem('avatar', result.data.user.avatar);
         localStorage.setItem('user_name', result.data.user.name);
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
-        localStorage.setItem('is_mentor', result.data.user.is_mentor);
 
         if(result.data.user.is_mentor) {
           window.location.href = '/mentorSession';

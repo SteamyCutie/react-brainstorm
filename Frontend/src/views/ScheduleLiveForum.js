@@ -86,6 +86,15 @@ export default class ScheduleLiveForum extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -108,6 +117,15 @@ export default class ScheduleLiveForum extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -194,7 +212,11 @@ export default class ScheduleLiveForum extends React.Component {
               <Row>
                 {forumInfos.map((item, idx) => 
                   <Col key={idx} xl="4" lg="4" sm="6">
-                    <SmallCardForum key={idx} item={item} toggle_editliveforum={(id) => this.toggle_editliveforum(id)} toggle_confirm={(id) => this.toggle_confirm(id)}/>
+                    <SmallCardForum 
+                      key={idx} 
+                      item={item} 
+                      toggle_editliveforum={(id) => this.toggle_editliveforum(id)} 
+                      toggle_confirm={(id) => this.toggle_confirm(id)} />
                   </Col>
                 )}
               </Row>

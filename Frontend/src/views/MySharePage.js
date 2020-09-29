@@ -37,6 +37,15 @@ export default class MySharePage extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -143,8 +152,8 @@ export default class MySharePage extends React.Component {
                 </Col>
                 <Col xl="9" lg="12" className="subscription-mentor-videos">
                   <h6 className="profile-link-url">
-                    <a href="#!" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
-                    <a href="#!">www.brainsshare.com/kiannapress</a>
+                    <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
+                    <a href="javascript:void(0)" style={{color: '#00008B'}}>www.brainsshare.com/kiannapress</a>
                   </h6>
                   {userInfo.share_info && userInfo.share_info.map((item, idx) => 
                     <MentorVideo key={idx} item={item} />

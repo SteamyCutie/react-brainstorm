@@ -43,6 +43,15 @@ export default class Subscribe extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -165,7 +174,7 @@ export default class Subscribe extends React.Component {
                           if (idx < 3)
                             return <p key={idx} className="brainsshare-tag" title={tag}>{tag}</p>
                           else if (idx === 3)
-                            return <p key={idx} href="#!">{mentorData.tags.length - 3} more</p>
+                            return <p key={idx} href="javascript:void(0)">{mentorData.tags.length - 3} more</p>
                           else 
                             return <></>;
                       })}

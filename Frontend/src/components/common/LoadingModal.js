@@ -17,7 +17,8 @@ export default class SignIn extends React.Component {
     return (
       <div>
         <Modal open={open} className="modal-class custom" backdrop={true} backdropClassName="backdrop-class">
-          <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '9600', left: '50%', top: '50%'}}/>
+          {/* <Loader type="ThreeDots" color="#04B5FA" height="100" width="100" style={{position: 'fixed', zIndex: '9600', left: '50%', top: '50%'}}/> */}
+          <Loader type="ThreeDots" color={JSON.parse(localStorage.getItem('user-type')) ? "#00008B" : "#04B5FA"} height="100" width="100" style={{position: 'fixed', zIndex: '9600', left: '50%', top: '50%'}}/>
         </Modal>
       </div>
     );
