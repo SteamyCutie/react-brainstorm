@@ -161,10 +161,20 @@ class SetAvailability extends React.Component {
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
-        this.showFail(result.data.message);
-        if (result.data.message == "Token is Expired") {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href= "/";
+        } else {
+          this.showFail(result.data.message);
         }
       }
       this.setState({loading: false});
@@ -239,6 +249,15 @@ class SetAvailability extends React.Component {
       } else {
         this.showFail(result.data.message);
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -340,13 +359,13 @@ class SetAvailability extends React.Component {
           element.classList.remove("disable-event")
         });
       } else {
-        const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
-        let y = [...elements];
-
-        y.foreach(element => {
-          element.removeAttribute("disabled");
-          element.classList.remove("disable-event")
-        });
+        // const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
+        // let y = [...elements];
+        
+        // y.foreach(element => {
+        //   element.removeAttribute("disabled");
+        //   element.classList.remove("disable-event")
+        // });
       }
     }
     temp[dayOfWeek] = !dayOfWeekStatus[dayOfWeek];

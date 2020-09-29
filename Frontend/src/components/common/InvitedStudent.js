@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ModalBody, Button, Col, Row } from "shards-react";
+import { Modal, ModalBody, ModalFooter, Button, Col, Row } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
@@ -8,6 +8,7 @@ import { store } from 'react-notifications-component';
 import Close from '../../images/Close.svg'
 import Recycle from '../../images/Recycle.svg'
 import avatar2 from "../../images/avatar.jpg"
+import { deleteinviteduser } from '../../api/api';
 
 export default class InvitedStudent extends React.Component {
   constructor(props) {
@@ -43,7 +44,44 @@ export default class InvitedStudent extends React.Component {
   }
 
   actionRemove = async(session_id, student_id) => {
-    console.log(session_id, student_id);
+    const param = {
+      session_id: session_id,
+      student_id: student_id
+    };
+    try {
+      this.setState({loading: true});
+      const result = await deleteinviteduser(param);
+      if (result.data.result === "success") {
+        this.showSuccess("Remove invited user success");
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+          if (result.data.message === "Token is Expired") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Token is Invalid") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Authorization Token not found") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else {
+            this.showFail(result.data.message);      
+          }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
+  }
+
+  toggle_invitemore(id) {
+    const { toggle_invitemore } = this.props;
+    toggle_invitemore(id);
   }
 
   removeSession() {
@@ -90,16 +128,16 @@ export default class InvitedStudent extends React.Component {
     return (
       <div>
         <ReactNotification />
-        <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
+        <Modal size="md" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
           <h1 className="content-center modal-header-class">Invited students</h1>
           <Row form>
-            <a href="#!"><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Invite more students</h5></a>
+            <a href="javascript:void(0)" onClick={() => this.toggle_invitemore(id)}><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Invite more students</h5></a>
           </Row>
-          <Row form>
-            {students.map((item, idx) => (
-              <Col md="10" className="modal-input-group-class" key={idx}>
+          {students.map((item, idx) => (
+            <Row form>
+              <Col md="8" className="modal-input-group-class" key={idx}>
                 <div className="items-container">
                   <div className="no-padding">
                     <img src={avatar2} className="invited-student-logo" alt="card"/>
@@ -110,9 +148,7 @@ export default class InvitedStudent extends React.Component {
                   </div>
                 </div>
               </Col>
-            ))}
-            {students.map((item, idx) => (
-              <Col md="2" className="modal-input-group-class">
+              <Col md="2" className="modal-input-group-class" key={idx}>
                 <div className="content-center block-content-class button-text-group-class">
                   <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.actionRemove(id, item.id)}>
                     <img src={Recycle} alt="Clock" />
@@ -120,13 +156,14 @@ export default class InvitedStudent extends React.Component {
                   </Button>
                 </div>
               </Col>
-            ))}
-          </Row>
-          
-          <div className="content-center block-content-class button-text-group-class">
-            <Button onClick={() => this.actionSave()}>Save</Button>
-          </div>
+            </Row>
+          ))}
           </ModalBody>
+          <ModalFooter>
+            <div className="content-center block-content-class button-text-group-class-mentor">
+              <Button onClick={() => this.actionSave()}>Save</Button>
+            </div>
+          </ModalFooter>
         </Modal>
         {loading && <LoadingModal open={true} />}
       </div>

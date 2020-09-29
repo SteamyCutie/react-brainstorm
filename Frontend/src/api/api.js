@@ -28,6 +28,18 @@ export const signin = (param) => {
     });
 };
 
+export const signbysocial = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/signbysocial', param);
+            localStorage.setItem('token', response.data.token);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const getuserinfo = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -147,8 +159,22 @@ export const featuredmentors = (param) => {
     });
 }
 
-//-------UserController------------
+export const switchuser = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/switchuser', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 
+//-------UserController------------
 
 //AvailableTimesController
 export const getAvailableTimes = (param) => {
@@ -324,6 +350,36 @@ export const deleteforum = (param) => {
         }
     });
 }
+
+export const schedulepost = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/schedulepost', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const deleteinviteduser = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/deleteinviteduser', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 //------------SessionController--------------
 
 
@@ -490,6 +546,56 @@ export const getpayment = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
             const response = await axios.post(SERVER_URL+'/api/getpayment', param, {headers: header});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+//LibraryController
+
+export const addlibrary = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/addlibrary', param, {headers: header});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export const addreport = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/addreport', param, {headers: header});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export const getlibrary = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getlibrary', param, {headers: header});
             resolve(response);
         } catch (error) {
             reject(error);

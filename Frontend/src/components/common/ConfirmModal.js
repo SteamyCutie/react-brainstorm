@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ModalBody, Button, Col, Row } from "shards-react";
+import { Modal, ModalBody, ModalFooter, Button, Col, Row, ModalHeader } from "shards-react";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
@@ -44,6 +44,15 @@ export default class AddNewCard extends React.Component {
         this.showWarning(result.data.message);
       } else {
           if (result.data.message === "Token is Expired") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Token is Invalid") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Authorization Token not found") {
+            this.showFail(result.data.message);
             this.removeSession();
             window.location.href = "/";
           } else {
@@ -120,17 +129,19 @@ export default class AddNewCard extends React.Component {
         <ReactNotification />
         <Modal size="md" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
-          <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Delete Forum</h1>
-          <Row form>
-            <Col md="6" className="project-detail-input-group">
-              <Button outline size="lg" onClick={() => this.toggle()}>Cancel</Button>
-            </Col>
-            <Col md="6" className="project-detail-input-group">
-              <Button size="lg" theme="danger" onClick={() => this.actionRemove(id)}>Remove</Button>
-            </Col>
-          </Row>
+          <ModalHeader>Delete Forum</ModalHeader>
+          <ModalBody>
           </ModalBody>
+          <ModalFooter>
+            <Row form>
+              <Col md="6" className="project-detail-input-group">
+                <Button outline size="lg" onClick={() => this.toggle()}>Cancel</Button>
+              </Col>
+              <Col md="6" className="project-detail-input-group">
+                <Button size="lg" theme="danger" onClick={() => this.actionRemove(id)}>Remove</Button>
+              </Col>
+            </Row>
+          </ModalFooter>
         </Modal>
         {loading && <LoadingModal open={true} />}
       </div>
