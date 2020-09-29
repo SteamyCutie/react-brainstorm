@@ -36,6 +36,7 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   toggle_createsuccess(text) {
+    this.getForums();
     this.showSuccess(text);
   }
 
@@ -44,6 +45,7 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   toggle_editsuccess(text) {
+    this.getForums();
     this.showSuccess(text);
   }
 
@@ -77,15 +79,27 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   getForums = async() => {
+    let param = {
+      email: localStorage.getItem('email')
+    }
     try {
       this.setState({loading: true});
-      const result = await getforums({email: localStorage.getItem('email')});
+      const result = await getforums(param);
       if (result.data.result === "success") {
         this.setState({forumInfos: result.data.data});
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -108,6 +122,15 @@ export default class ScheduleLiveForum extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -194,7 +217,11 @@ export default class ScheduleLiveForum extends React.Component {
               <Row>
                 {forumInfos.map((item, idx) => 
                   <Col key={idx} xl="4" lg="4" sm="6">
-                    <SmallCardForum key={idx} item={item} toggle_editliveforum={(id) => this.toggle_editliveforum(id)} toggle_confirm={(id) => this.toggle_confirm(id)}/>
+                    <SmallCardForum 
+                      key={idx} 
+                      item={item} 
+                      toggle_editliveforum={(id) => this.toggle_editliveforum(id)} 
+                      toggle_confirm={(id) => this.toggle_confirm(id)} />
                   </Col>
                 )}
               </Row>

@@ -92,9 +92,6 @@ export default class MentorWallet extends React.Component {
   }
 
   componentDidMount() {
-    if(localStorage.getItem('is_mentor') && localStorage.getItem('pay_verified')) {
-      this.showFail("You must verify at payment.");
-    }
   }
 
   getHistory = async(pageNo) => {
@@ -116,6 +113,15 @@ export default class MentorWallet extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
