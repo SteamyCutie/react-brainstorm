@@ -195,6 +195,10 @@ export default class StudentWallet extends React.Component {
     });
   }
 
+  pay = async() => {
+    
+  }
+
   getHistory = async(pageNo) => {
     let param = {
       email: localStorage.getItem('email'),
@@ -214,6 +218,15 @@ export default class StudentWallet extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -267,6 +280,15 @@ export default class StudentWallet extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -358,6 +380,7 @@ export default class StudentWallet extends React.Component {
               <h3>Wallet</h3>
             </Col>
             <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>
+            <Button className="btn-add-payment" onClick={() => this.pay()}>Just test Pay</Button>
           </Row>
 
           <Row>

@@ -29,7 +29,7 @@ export default class Subscriptions extends React.Component {
           cell: row => 
           <div>
             <img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              {/* <a href="#!" onClick={() => this.handleSub(row.id)} style={{color: 'black'}}>{row.mentorName}</a> */}
+              {/* <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{color: 'black'}}>{row.mentorName}</a> */}
               <span>{row.mentorName}</span>
           </div>,
         },
@@ -66,7 +66,7 @@ export default class Subscriptions extends React.Component {
           center: true,
           cell: row => 
             <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe" }>
-              {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="#!" onClick={() => this.handleSub(row.id)} style={{color: '#999999'}}>Subscripbe</a> : <a href="#!" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>}
+              {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{color: '#999999'}}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>}
             </div>,
         }
       ]
@@ -134,6 +134,15 @@ export default class Subscriptions extends React.Component {
           this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {

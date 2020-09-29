@@ -47,7 +47,7 @@ export default class NavbarSearch extends React.Component{
             value={searchKey}
           />
           <InputGroupAddon type="append">
-            <Button className="navbar-search btn-search" onClick={() => this.onSearch()}>
+            <Button className={JSON.parse(localStorage.getItem('user-type')) ? "navbar-search btn-search-mentor" : "navbar-search btn-search" } onClick={() => this.onSearch()}>
               <InputGroupText>
                 <img src={SearchIcon} alt="search-icon"/>
               </InputGroupText>

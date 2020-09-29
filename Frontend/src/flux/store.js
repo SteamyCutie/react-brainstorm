@@ -83,6 +83,7 @@ class Store extends EventEmitter {
 
   setUserType() {
     _store.userType = !_store.userType;
+    localStorage.setItem("user-type", JSON.stringify(_store.userType)); 
     this.emit(Constants.CHANGE);
   }
 

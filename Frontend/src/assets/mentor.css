@@ -45,32 +45,32 @@
     font-weight: 500;
     color: #FFFFFF;
     padding: 14px 10px !important;
-    background-color: #04B5FA;
-    border-color:  #04B5FA !important;
+    background-color: #00008B;
+    border-color:  #00008B !important;
 }
 
 .live-forum-header-button:hover {
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #04B5FA !important;
-    border-color:  #04B5FA !important;
+    background-color: #00008B !important;
+    border-color:  #00008B !important;
 }
 
 .live-forum-header-button:focus {
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #04B5FA !important;
-    border-color:  #04B5FA !important;
+    background-color: #00008B !important;
+    border-color:  #00008B !important;
 }
 
 .live-forum-header-button:active {
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #04B5FA !important;
-    border-color:  #04B5FA !important;
+    background-color: #00008B !important;
+    border-color:  #00008B !important;
 }
 
 .small-card-forum-desc {
@@ -224,25 +224,25 @@
 
 .btn-profile-detail-save {
     color: white !important;
-    background-color: #04B5FA !important;
-    border-color: #04B5FA;
+    background-color: #00008B !important;
+    border-color: #00008B;
     font-size: 16px;
     width: 145px;
     height: 50px;
 }
 
 .btn-profile-detail-save:hover {
-    border-color: #04B5FA;
+    border-color: #00008B;
     /* box-shadow: none; */
 }
 
 .btn-profile-detail-save:focus {
-    border-color: #04B5FA;
+    border-color: #00008B;
     /* box-shadow: none; */
 }
 
 .btn-profile-detail-save:active {
-    border-color: #04B5FA !important;
+    border-color: #00008B !important;
     box-shadow: none;
 }
 
@@ -458,4 +458,13 @@
 
 button:focus {
     outline: none !important;
+}
+
+.mentor-video-style {
+    text-align: right;
+}
+
+.mentor-video-style .dropdown-menu {
+    left: 0px;
+    left: 660px;
 }

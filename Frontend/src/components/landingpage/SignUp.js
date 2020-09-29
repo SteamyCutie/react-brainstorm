@@ -1,5 +1,7 @@
 import React from "react";
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
+import Loginbygoogle from "../common/Loginbygoogle";
+import Loginbyfacebook from "../common/Loginbyfacebook";
 import "../../assets/landingpage.css"
 import { signup } from '../../api/api';
 
@@ -260,11 +262,11 @@ export default class SignUp extends React.Component {
               or
               <hr />
             </div>
-            <div className="content-center">
-              <Button className="sign-with-facebook"><img src={Facebook} alt="Facebook" />Sign In with Facebook</Button>
+            <div className="facebook-login-center">
+              <Loginbyfacebook></Loginbyfacebook>
             </div>
-            <div className="content-center">
-              <Button className="sign-with-google"><img src={Google} alt="Google" />Sign In with Google</Button>
+            <div className="google-login-center">
+              <Loginbygoogle></Loginbygoogle>
             </div>
           </ModalBody>
         </Modal>
