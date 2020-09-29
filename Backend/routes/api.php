@@ -34,6 +34,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
   Route::post('/getallmentors', 'UserController@getAllMentors');
   Route::post('/getallstudents', 'UserController@getAllStudents');
+  Route::post('/switchuser', 'UserController@switchUser');
   Route::post('/createshareinfo', 'MediaController@createShareInfo');
   Route::post('/scheduleliveforum', 'SessionController@getAllForum');
   Route::post('/createforum', 'SessionController@createForum');
@@ -54,4 +55,9 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setreview', 'ReviewController@setReview');
   Route::post('/createpayment', 'PaymentController@createPayment');
   Route::post('/getpayment', 'PaymentController@getPayment');
+  Route::post('/schedulepost', 'SessionController@schedulePost');
+  Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
+  Route::post('/addlibrary', 'LibraryController@addLibrary');
+  Route::post('/getlibrary', 'LibraryController@getLibrary');
+  Route::post('/addreport', 'ReportController@addReport');
 });

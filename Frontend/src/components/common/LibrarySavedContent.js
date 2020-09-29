@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "shards-react";
+import { Player } from 'video-react';
 
 import MoreButtonImage from "../../images/more.svg"
-import Video from "../../video/video.mp4"
 import ReivewImage from "../../images/Review.jpg"
+import background from "../../images/background.jpeg"
 
 class LibrarySavedContent extends React.Component {
   constructor(props) {
@@ -15,26 +16,29 @@ class LibrarySavedContent extends React.Component {
   }
 
   render() {
+    const { media_url, mentor_name } = this.props.item;
     return (
       <div className="library-saved-content">
         <div>
-          <video className="mentor-video-tag" controls>
-            <source src={Video} type="video/mp4" />
-          </video>
+          <Player
+            playsInline
+            poster={background}
+            src={media_url}
+          />
         </div>
-        <div className="library-saved-content-desc">
-          {/* <h6 className="video-upload-time no-margin">08/09/20 at 12:04pm</h6> */}
+        <div className="library-saved-content-desc" style={{marginTop: 10}}>
           <div style={{display: "flex", float: "left"}}>
             <img src={ReivewImage} className="saved-content-avatar" alt="avatar" />
             <div>
-              <h6 className="library-content-name">Kaylynn Curtis</h6>
+              <h6 className="library-content-name">{mentor_name}</h6>
             </div>
           </div>
-          <Button className="btn-video-desc-more no-padding">
+          <Button className="btn-video-desc-more no-padding" style={{marginTop: 10}}>
             <img src={MoreButtonImage} alt="more"/>
           </Button>
         </div>
         <div>
+          <br></br>
           <h6 className="mentor-desc-video-detail no-margin">
             My Video
           </h6>

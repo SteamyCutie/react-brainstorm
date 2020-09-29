@@ -130,6 +130,15 @@ export default class AddNewCard extends React.Component {
           });
         } else {
           if (result.data.message === "Token is Expired") {
+            toggle_fail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Token is Invaild") {
+            toggle_fail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Authorization Token not found") {
+            toggle_fail(result.data.message);
             this.removeSession();
             window.location.href = "/";
           } else {

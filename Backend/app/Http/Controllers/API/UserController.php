@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
+use App\Models\Invited;
 use App\Models\Session;
 use App\Models\Subscription;
 use Faker\Provider\Payment;
@@ -31,30 +32,30 @@ class UserController extends Controller
       $input = $request->only('email', 'password');
       $token = null;
       $user = User::where('email', $request->email)->first();
-      if( !$user->email_verified_at ) {
+      if (!$user->email_verified_at) {
         return response()->json([
-          'result'=> 'failed',
+          'result' => 'failed',
           'message' => config('messages.auth.verify_code'),
           // ], 401);
         ]);
       }
       if (!$token = JWTAuth::attempt($input)) {
         return response()->json([
-          'result'=> 'failed',
+          'result' => 'failed',
           'message' => 'Email or Password is incorrect.',
           // ], 401);
         ]);
       }
       User::where('email', $request->email)->update(['origin_password' => "", 'remember_token' => ""]);
       return response()->json([
-        'result'=> 'success',
+        'result' => 'success',
         'token' => $token,
         'user' => auth()->user(),
       ]);
     } catch (\Throwable $th) {
       return response()->json([
-        'result'=> 'failed',
-        'message'=> 'Email or Password is incorrect.',
+        'result' => 'failed',
+        'message' => 'Email or Password is incorrect.',
       ]);
     }
   }
@@ -67,10 +68,10 @@ class UserController extends Controller
     $subject = "Welcome to BransShare!";
     $fronturl = env("FRONT_URL");
     $toEmail = $email;
-    if(count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())){
+    if (count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())) {
       return response()->json([
-        'result'=> 'failed',
-        'message'   =>  'Email address is already existed'
+        'result' => 'failed',
+        'message' => 'Email address is already existed'
         // ], 300);
       ]);
     }
@@ -78,7 +79,7 @@ class UserController extends Controller
       $user = new User();
       $user->name = $name;
       $user->email = $email;
-      if ($request['is_mentor']){
+      if ($request['is_mentor']) {
         $user->is_mentor = $request['is_mentor'];
       } else {
         $user->is_mentor = 0;
@@ -90,21 +91,21 @@ class UserController extends Controller
       $user->generateTwoFactorCode();
       $two_factor_code = $user->two_factor_code;
       $app_path = app_path();
-      $body = include_once($app_path.'/Mails/VerifyAccount.php');
-      $body = implode(" ",$body);
-      if (!$this->send_email($toEmail, $name, $subject, $body)){
+      $body = include_once($app_path . '/Mails/VerifyAccount.php');
+      $body = implode(" ", $body);
+      if (!$this->send_email($toEmail, $name, $subject, $body)) {
         User::where(['email' => $email])->delete();
         return response()->json([
-          'result'=> 'failed',
+          'result' => 'failed',
           'message' => 'Sorry, fail send mail'
         ]);
       }
       return response()->json([
-        'result'=> 'success',
+        'result' => 'success',
       ]);
     } catch (Exception $e) {
       return response()->json([
-        'result'=> 'failed',
+        'result' => 'failed',
         'message' => 'Sorry, user can not register'
         // ], 500);
       ]);
@@ -113,7 +114,7 @@ class UserController extends Controller
   
   public function getUserInfo(Request $request)
   {
-    try{
+    try {
       $email = $request['email'];
       $temp_names = [];
       $user = User::where('email', $email)->first();
@@ -124,34 +125,34 @@ class UserController extends Controller
         $newDate = date("Y-m-d", strtotime($user['dob']));
         $user['dob'] = $newDate;
       }
-      if (trim($user['tags_id'],',') == null || trim($user['tags_id'],',') == '')
+      if (trim($user['tags_id'], ',') == null || trim($user['tags_id'], ',') == '')
         $tags_id = [];
       else
-        $tags_id = explode(',', trim($user['tags_id'],','));
+        $tags_id = explode(',', trim($user['tags_id'], ','));
       $user['tags'] = $tags_id;
       if ($user->description == null)
         $user->description = "";
-      foreach ($tags_id as $tag_key=> $tag_id) {
-        if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()){
+      foreach ($tags_id as $tag_key => $tag_id) {
+        if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()) {
           $temp_names[] = $tag_names->name;
         }
       }
       $user['tags_name'] = $temp_names;
       return response()->json([
-        'result'=> 'success',
-        'data'=> $user,
+        'result' => 'success',
+        'data' => $user,
       ]);
     } catch (Exception $th) {
       return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
+        'result' => 'failed',
+        'data' => $th,
       ]);
     }
   }
   
   public function getUserInfoById(Request $request)
   {
-    try{
+    try {
       $id = $request['id'];
 //      $average_review = 0;
 //      $count_review = 0;
@@ -166,7 +167,7 @@ class UserController extends Controller
         $current = date('Y-m-d');
         $date1 = date_create($created_at);
         $date2 = date_create($current);
-        $diff = date_diff($date1,$date2);
+        $diff = date_diff($date1, $date2);
         $temp['student'] = $res_student;
         $temp['review'] = $review_value;
         $temp['review']['day_diff'] = $diff->format('%a');
@@ -177,15 +178,15 @@ class UserController extends Controller
       $newDate = date("Y-m-d", strtotime($user['dob']));
       $user['dob'] = $newDate;
       $tags_id = [];
-      if (trim($user['tags_id'],',') != "") {
-        $tags_id = explode(',', trim($user['tags_id'],','));
+      if (trim($user['tags_id'], ',') != "") {
+        $tags_id = explode(',', trim($user['tags_id'], ','));
       }
       foreach ($tags_id as $tag_key => $tag_value) {
         $tags = Tag::where('id', $tag_value)->first();
         $tag_names[$tag_key] = $tags['name'];
       }
       $share_info = Media::where('user_id', $user['id'])->get();
-      for($i = 0; $i < count($share_info); $i++){
+      for ($i = 0; $i < count($share_info); $i++) {
         $date = $share_info[$i]['created_at'];
         $share_info[$i]['day'] = date('d/m/y', strtotime($date));
         $share_info[$i]['time'] = date('h:i a', strtotime($date));
@@ -203,20 +204,20 @@ class UserController extends Controller
       if ($user->description == null)
         $user->description = "";
       return response()->json([
-        'result'=> 'success',
-        'data'=> $user,
+        'result' => 'success',
+        'data' => $user,
       ]);
     } catch (Exception $th) {
       return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
+        'result' => 'failed',
+        'data' => $th,
       ]);
     }
   }
   
   public function editProfile(Request $request)
   {
-    try{
+    try {
       $name = $request['name'];
       $birthday = $request['birthday'];
       $email = $request['email'];
@@ -230,7 +231,7 @@ class UserController extends Controller
       $avatar = $request['avatar'];
       $is_mentor = $request['is_mentor'];
       
-      $tags = ','.implode(",", $request['tags']).',';
+      $tags = ',' . implode(",", $request['tags']) . ',';
       $rules = array(
         'name' => 'required',
         'email' => 'required|email',
@@ -243,10 +244,9 @@ class UserController extends Controller
       $messages = array(
         'required' => 'This field is required.',
       );
-      $validator = Validator::make( $request->all(), $rules, $messages );
+      $validator = Validator::make($request->all(), $rules, $messages);
       
-      if ($validator->fails())
-      {
+      if ($validator->fails()) {
         return [
           'result' => 'failed',
           'type' => 'require',
@@ -258,8 +258,8 @@ class UserController extends Controller
       
       if ($user == null || count($user) == 0) {
         return response()->json([
-          'result'=> 'failed',
-          'message'=> 'Current User Does Not Exist',
+          'result' => 'failed',
+          'message' => 'Current User Does Not Exist',
         ]);
       } else {
         User::where('email', $email)->update(array(
@@ -280,26 +280,27 @@ class UserController extends Controller
         ));
         
         return response()->json([
-          'result'=> 'success',
-          'data'=> $user,
+          'result' => 'success',
+          'data' => $user,
         ]);
       }
     } catch (Exception $th) {
       return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
+        'result' => 'failed',
+        'data' => $th,
       ]);
     }
   }
   
-  public function verifyCode(Request $request){
+  public function verifyCode(Request $request)
+  {
     $subject = "Welcome to BrainsShare!";
     try {
       $code = $request->code;
       $user = User::where('two_factor_code', $code)->first();
-      if(!$user) {
+      if (!$user) {
         return response()->json([
-          'result'=> 'failed',
+          'result' => 'failed',
           'message' => 'Sorry, The confirm code is incorrect!'
           // ], 500);
         ]);
@@ -308,11 +309,11 @@ class UserController extends Controller
       $toEmail = $user->email;
       $name = $user->name;
       $app_path = app_path();
-      $body = include_once($app_path.'/Mails/Welcome.php');
-      $body = implode(" ",$body);
-      if (!$this->send_email($toEmail, $name, $subject, $body)){
+      $body = include_once($app_path . '/Mails/Welcome.php');
+      $body = implode(" ", $body);
+      if (!$this->send_email($toEmail, $name, $subject, $body)) {
         return response()->json([
-          'result'=> 'failed',
+          'result' => 'failed',
           'message' => 'Sorry, fail send mail'
         ]);
       }
@@ -323,24 +324,25 @@ class UserController extends Controller
       
     } catch (\Throwable $th) {
       return response()->json([
-        'result'=> 'failed',
+        'result' => 'failed',
         'message' => 'Sorry, can not verify the code'
         // ], 500);
       ]);
     }
   }
   
-  public function forgot(Request $request) {
+  public function forgot(Request $request)
+  {
     $subject = "Welcome to BrainsShare!";
     $email = $request['email'];
     $token = null;
     
     try {
       $user = User::where('email', $email)->first();
-      if(!$user){
+      if (!$user) {
         return response()->json([
-          'result'=> 'failed',
-          'message'   =>  'Email address is not existed'
+          'result' => 'failed',
+          'message' => 'Email address is not existed'
           // ], 300);
         ]);
       }
@@ -348,63 +350,65 @@ class UserController extends Controller
       $name = $user->name;
       $fronturl = env("FRONT_URL");
       $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-      $vCode =  substr(str_shuffle($permitted_chars), 0, 50);
+      $vCode = substr(str_shuffle($permitted_chars), 0, 50);
       User::where('email', $email)->update(['remember_token' => $vCode]);
       
       $app_path = app_path();
-      $body = include_once($app_path.'/Mails/VerifyCode.php');
-      $body = implode(" ",$body);
-      if (!$this->send_email($toEmail, $name, $subject, $body)){
+      $body = include_once($app_path . '/Mails/VerifyCode.php');
+      $body = implode(" ", $body);
+      if (!$this->send_email($toEmail, $name, $subject, $body)) {
         return response()->json([
-          'result'=> 'failed',
+          'result' => 'failed',
           'message' => 'Sorry, fail send mail'
         ]);
       }
       return response()->json([
-        'result'=> 'success',
+        'result' => 'success',
       ]);
     } catch (\Throwable $th) {
       return response()->json([
-        'result'=> 'failed',
+        'result' => 'failed',
         'message' => 'Invalid Email',
       ]);
     }
   }
-  public function reset(Request $request) {
+  
+  public function reset(Request $request)
+  {
     $vCode = null;
     try {
       $vCode = $request->vCode;
 //      $email = $request->email;
       $password = $request->password;
       $user = User::where('remember_token', $vCode)->first();
-      if($user){
-        if($user->remember_token != $vCode){
+      if ($user) {
+        if ($user->remember_token != $vCode) {
           return response()->json([
-            'result'=> 'failed',
+            'result' => 'failed',
             'message' => 'fail to confirm verify code.',
           ]);
         }
-        if($password == "") {
+        if ($password == "") {
           return response()->json([
-            'result'=> 'failed',
+            'result' => 'failed',
             'message' => 'Can not empty password'
           ]);
         }
         $password_code = bcrypt($password);
         $user->update(['password' => $password_code]);
         return response()->json([
-          'result'=> 'success',
+          'result' => 'success',
           'message' => 'Updated password',
         ]);
       } else {
         return response()->json([
-          'result'=> 'failed',
-          'message'      => 'Updating password failed',
+          'result' => 'failed',
+          'message' => 'Updating password failed',
         ]);
       }
     } catch (\Throwable $th) {
       return response()->json([
-        'result'=> 'failed',
+        'result' => 'failed',
         'message' => 'Sorry, can not update password. Try again.'
         // ], 500);
       ]);
@@ -414,58 +418,60 @@ class UserController extends Controller
   public function signout(Request $request)
   {
     return response()->json([
-      'result'=> 'success',
-      'message'      =>  'logout successfully'
+      'result' => 'success',
+      'message' => 'logout successfully'
       // ], 200);
     ]);
   }
   
-  public function findMentors(Request $request) {
-    try{
-    $tag_id = $request['tag_id'];
-    if ($tag_id) {
-      $tag_id = ','.$tag_id.',';
-    }
-    $mentor_name = $request['name'];
-    $rowsPerPage = $request['rowsPerPage'];
-    $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->where('tags_id', 'LIKE', '%'. $tag_id . '%')->where('is_mentor',1)->paginate($rowsPerPage);
-    $result_res = [];
-    if (count($mentors) > 0 ) {
-      for ($i = 0; $i < count($mentors); $i++) {
-        $temp_tag = [];
-        $tags_id = "";
-        if (trim($mentors[$i]->tags_id, ',') != "") {
-          $tags_id = trim($mentors[$i]->tags_id, ',');
-        }
-        if ($tags_id != ""){
-          $tag_rows = explode(',', $tags_id);
-          for ($j = 0; $j < count($tag_rows); $j++) {
-            $tags_name = Tag::where('id', $tag_rows[$j])->first();
-            $temp_tag[$j] = $tags_name->name;
-          }
-        }
-        if ($mentors[$i]['description'] == null){
-          $mentors[$i]['description'] = "";
-        }
-        $mentors[$i]['tag_name'] = $temp_tag;
-        $result_res[] = $mentors[$i];
+  public function findMentors(Request $request)
+  {
+    try {
+      $tag_id = $request['tag_id'];
+      if ($tag_id) {
+        $tag_id = ',' . $tag_id . ',';
       }
-    }
-    return response()->json([
-      'result'=> 'success',
-      'data'=> $result_res,
-      'totalRows'=> $mentors->total(),
-    ]);
+      $mentor_name = $request['name'];
+      $rowsPerPage = $request['rowsPerPage'];
+      $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->where('tags_id', 'LIKE', '%' . $tag_id . '%')->where('is_mentor', 1)->paginate($rowsPerPage);
+      $result_res = [];
+      if (count($mentors) > 0) {
+        for ($i = 0; $i < count($mentors); $i++) {
+          $temp_tag = [];
+          $tags_id = "";
+          if (trim($mentors[$i]->tags_id, ',') != "") {
+            $tags_id = trim($mentors[$i]->tags_id, ',');
+          }
+          if ($tags_id != "") {
+            $tag_rows = explode(',', $tags_id);
+            for ($j = 0; $j < count($tag_rows); $j++) {
+              $tags_name = Tag::where('id', $tag_rows[$j])->first();
+              $temp_tag[$j] = $tags_name->name;
+            }
+          }
+          if ($mentors[$i]['description'] == null) {
+            $mentors[$i]['description'] = "";
+          }
+          $mentors[$i]['tag_name'] = $temp_tag;
+          $result_res[] = $mentors[$i];
+        }
+      }
+      return response()->json([
+        'result' => 'success',
+        'data' => $result_res,
+        'totalRows' => $mentors->total(),
+      ]);
     } catch (Exception $th) {
       return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
+        'result' => 'failed',
+        'data' => $th,
       ]);
     }
   }
   
-  public function featuredMentors(Request $request) {
-    try{
+  public function featuredMentors(Request $request)
+  {
+    try {
 //    $users = User::select('id')->get();
 //    foreach ($users as $user_key => $user_value) {
 //      $user_marks = Review::select('mark')->where('mentor_id', $user_value->id)->get();
@@ -492,8 +498,8 @@ class UserController extends Controller
         if (trim($top_value->tags_id, ',') != "") {
           $tags = explode(',', trim($top_value->tags_id, ','));
         }
-        foreach ($tags as $tag_key => $tag_value){
-          if($tag_value != ""){
+        foreach ($tags as $tag_key => $tag_value) {
+          if ($tag_value != "") {
             $tag_name = Tag::select('name')->where('id', $tag_value)->first();
             $temp_tag[$tag_key] = $tag_name->name;
           }
@@ -502,32 +508,32 @@ class UserController extends Controller
       }
       
       return response()->json([
-        'result'=> 'success',
-        'data'=> $top_mentors,
+        'result' => 'success',
+        'data' => $top_mentors,
       ]);
     } catch (Exception $th) {
       return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
+        'result' => 'failed',
+        'data' => $th,
       ]);
     }
   }
   
   public function getAllMentors(Request $request)
   {
-    try{
+    try {
       $email = $request['email'];
       $rowsPerPage = $request['rowsPerPage'];
       $page = $request['page'];
-      $users = User::where('email', '!=', $email)->where('is_mentor',1)->paginate($rowsPerPage);
+      $users = User::where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
       
-      for ($i = 0; $i < count($users); $i ++) {
+      for ($i = 0; $i < count($users); $i++) {
         if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
           $mentors[] = $users[$i];
         }
       }
-      for ($i = 0; $i < count($mentors); $i ++) {
+      for ($i = 0; $i < count($mentors); $i++) {
         $tags_id = [];
         if (trim($mentors[$i]['tags_id'], ',') != "") {
           $tags_id = explode(',', trim($mentors[$i]['tags_id'], ','));
@@ -550,73 +556,86 @@ class UserController extends Controller
 //        }
         $temp = [];
         $sub_id = Subscription::select('student_id')->where('mentor_id', $mentors[$i]['id'])->get();
-        if(count($sub_id) > 0) {
-          for ($k = 0; $k < count($sub_id); $k++){
+        if (count($sub_id) > 0) {
+          for ($k = 0; $k < count($sub_id); $k++) {
             $temp[] = $sub_id[$k]['student_id'];
           }
         }
-        if ($mentors[$i]['description'] == null){
+        if ($mentors[$i]['description'] == null) {
           $mentors[$i]['description'] = "";
         }
         $mentors[$i]['sub_id'] = $temp;
       }
       return response()->json([
-        'result'=> 'success',
-        'data'=> $mentors,
-        'totalRows'=> $users->total(),
+        'result' => 'success',
+        'data' => $mentors,
+        'totalRows' => $users->total(),
       ]);
     } catch (Exception $th) {
       return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
+        'result' => 'failed',
+        'data' => $th,
       ]);
     }
   }
   
-  function getAllStudents(Request $request) {
-    try{
+  function getAllStudents(Request $request)
+  {
+    try {
       $email = $request->email;
       $students = User::select('id', 'email', 'avatar')->where('email', '!=', $email)->get();
       if (count($students) > 0) {
         return response()->json([
-          'result'=> 'success',
-          'data'=> $students,
+          'result' => 'success',
+          'data' => $students,
         ]);
       } else {
         return response()->json([
-          'result'=> 'failed',
-          'data'=> [],
+          'result' => 'failed',
+          'data' => [],
         ]);
       }
     } catch (Exception $th) {
       return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
+        'result' => 'failed',
+        'data' => $th,
       ]);
     }
   }
   
-  function test(Request $request) {
-    echo Carbon::now()."\n";
-    
-//    echo config('global.card_type.visa');
-//    echo config('global.card_type.masterCard');
-//    echo config('global.card_type.discoverCard');
-//    $request['user_id'] = 6;
-//    echo app('App\Http\Controllers\API\PaymentController')->getPayment($request);
-
-//    $payment = new PaymentController;
-//    return $payment->getPayment($request);
-//    $email = $request['email'];
-//    echo env("MAIL_FROM_NAME");
-//    var_dump(env("FRONT_URL"));
-//    $this->send_email("lucascholz@protonmail.com", "lucascholz", "welcome to brainsshare", "Hello");
-//    echo app_path();
-    
-//    $ids = $sessions->pluck('id');
-//    echo Carbon::now()->addMinutes(5)."\n";
-//    $sessions = Session::where('posted',0)->where('from', '<=', Carbon::now()->addMinutes(5))->first();
-//    echo $sessions;
+  public function switchUser(Request $request) {
+    try {
+      $user_id = $request->user_id;
+      $is_mentor = User::select('is_mentor')->where('id', $user_id)->first();
+      $res = User::where('id', $user_id)->update(['is_mentor' => !$is_mentor->is_mentor]);
+      if ($res > 0) {
+        return response()->json([
+          'result' => 'success',
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+        ]);
+      }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th,
+      ]);
+    }
   }
+}
+
+function test(Request $request)
+{
+  $user_id = $request->user_id;
+  $session_id = $request->session_id;
+  echo Carbon::now() . "\n";
+//    SchedulePosted::truncate();
+  $result = Invited::where('session_id', $session_id)->where(function ($q) use ($user_id) {
+    $q->where('student_id', $user_id)->orWhere('mentor_id', $user_id);
+  })->get();
+  echo($result);
+  echo Carbon::now() . "\n";
 }
 
