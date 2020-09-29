@@ -18,6 +18,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Http\Controllers\API\PaymentController;
 use phpDocumentor\Reflection\DocBlock\Tags\See;
+use Log;
 
 class UserController extends Controller
 {
@@ -109,6 +110,79 @@ class UserController extends Controller
         'message' => 'Sorry, user can not register'
         // ], 500);
       ]);
+    }
+  }
+  
+  public function signBySocial(Request $request)
+  {
+    $email = $request->email;
+    $name = $request->name;
+    $provider = $request->provider;
+    $provider_id = $request->provider_id;
+    Log::info([$email, $name, $provider, $provider_id]);
+    $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
+    if ($user) {
+      $token = null;
+      if (!$token = JWTAuth::fromUser($user)) {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'Email or Password is incorrect.',
+          // ], 401);
+        ]);
+      }
+      return response()->json([
+        'result' => 'success',
+        'token' => $token,
+        'user' => $user,
+      ]);
+    } else {
+      $user = User::where('email', $email)->first();
+      if ($user) {
+        User::where('email', $email)->update([
+          'name' => $name,
+          'provider' => $provider,
+          'provider_id' => $provider_id,
+        ]);
+        $token = null;
+        if (!$token = JWTAuth::fromUser($user)) {
+          return response()->json([
+            'result' => 'failed',
+            'message' => 'Email or Password is incorrect.',
+            // ], 401);
+          ]);
+        }
+        $user = User::where('email', $email)->first();
+        return response()->json([
+          'result' => 'success',
+          'token' => $token,
+          'user' => $user,
+        ]);
+      } else {
+        Log::info([$email, $name, $provider, $provider_id]);
+        $user = User::create([
+          'email' => $email,
+          'password' => bcrypt($email),
+          'name' => $name,
+          'provider' => $provider,
+          'provider_id' => $provider_id,
+          'email_verified_at' => Carbon::now(),
+          'is_active' => 1,
+        ]);
+        $token = null;
+        if (!$token = JWTAuth::fromUser($user)) {
+          return response()->json([
+            'result' => 'failed',
+            'message' => 'Email or Password is incorrect.',
+            // ], 401);
+          ]);
+        }
+        $user = User::where('id', $user->id)->first();
+        return response()->json([
+          'result' => 'success',
+          'token' => $token,
+          'user' => $user,
+        ]);
+      }
     }
   }
   
@@ -624,18 +698,19 @@ class UserController extends Controller
       ]);
     }
   }
+  
+  function test(Request $request)
+  {
+    echo Carbon::now() . "\n";
+    $email = $request->email;
+    $result =User::where('email', $email)->update([
+      'name' => $request->name,
+      'provider' => $request->provider,
+      'provider_id' => $request->provider_id,
+    ]);
+    echo $result;
+  }
 }
 
-function test(Request $request)
-{
-  $user_id = $request->user_id;
-  $session_id = $request->session_id;
-  echo Carbon::now() . "\n";
-//    SchedulePosted::truncate();
-  $result = Invited::where('session_id', $session_id)->where(function ($q) use ($user_id) {
-    $q->where('student_id', $user_id)->orWhere('mentor_id', $user_id);
-  })->get();
-  echo($result);
-  echo Carbon::now() . "\n";
-}
+
 
