@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
+Route::post('/signbysocial', 'UserController@signBySocial');
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
