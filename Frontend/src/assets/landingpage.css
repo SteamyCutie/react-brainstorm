@@ -823,6 +823,41 @@ body {
     align-content: center;
 }
 
+.google-login-center button {
+    align-items: unset !important;
+    display: flex !important;
+    width: 100%;
+
+    background-color: #4285F4 !important;
+    border-color: #4285F4 !important;
+    margin-bottom: 40px;
+    border-radius: 5px !important;
+    font-size: 16px !important;
+    padding: 5px !important;
+    position: relative;
+    color: white !important;
+}
+
+.facebook-login-center button {
+    align-items: unset !important;
+    display: flex !important;
+    width: 100%;
+
+    background-color: #4285F4 !important;
+    border-color: #4285F4 !important;
+    margin-bottom: 40px;
+    border-radius: 5px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    padding: 5px !important;
+    position: relative;
+    color: white !important;
+}
+
+.facebook-login-center i {
+    font-size: 40px !important;
+}
+
 .full-width-class {
     width: 100%;
 }

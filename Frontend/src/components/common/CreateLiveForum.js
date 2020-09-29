@@ -172,7 +172,6 @@ export default class CreateLiveForum extends React.Component {
       const result = await createforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
-        window.location.href = "/scheduleLiveForum";
         toggle_createsuccess("Create Forum Success");
       } else if (result.data.result === "warning") {
         toggle_createwarning(result.data.message);

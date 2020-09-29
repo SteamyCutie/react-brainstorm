@@ -28,6 +28,18 @@ export const signin = (param) => {
     });
 };
 
+export const signbysocial = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/signbysocial', param);
+            localStorage.setItem('token', response.data.token);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const getuserinfo = (param) => {
     return new Promise(async(resolve, reject) => {
         try {

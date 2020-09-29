@@ -221,7 +221,6 @@ export default class EditLiveForum extends React.Component {
       if (result.data.result === "success") {
         this.toggle();
         toggle_editsuccess("Edit Forum Success");
-        window.location.href = "/scheduleLiveForum";
       } else {
         if (result.data.type === 'require') {
           const {requiremessage} = this.state;

@@ -36,6 +36,7 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   toggle_createsuccess(text) {
+    this.getForums();
     this.showSuccess(text);
   }
 
@@ -44,6 +45,7 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   toggle_editsuccess(text) {
+    this.getForums();
     this.showSuccess(text);
   }
 
@@ -77,9 +79,12 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   getForums = async() => {
+    let param = {
+      email: localStorage.getItem('email')
+    }
     try {
       this.setState({loading: true});
-      const result = await getforums({email: localStorage.getItem('email')});
+      const result = await getforums(param);
       if (result.data.result === "success") {
         this.setState({forumInfos: result.data.data});
       } else if (result.data.result === "warning") {

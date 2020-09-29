@@ -77,6 +77,7 @@ export default class SubscribeModal extends React.Component {
       }
       this.setState({loading: false});
     } catch(err) {
+      console.log(err, "-----");
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     };

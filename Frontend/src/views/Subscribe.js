@@ -25,7 +25,7 @@ export default class Subscribe extends React.Component {
       loading: false,
       subscriptionOpen: false,
       addnewcardModal: false,
-      mentorData: {} 
+      mentorData: {},
     }
   }
 
@@ -190,7 +190,8 @@ export default class Subscribe extends React.Component {
                       
                     </Row>
                     <div className="mentor-detail-myself" style={{marginTop: 30}}>
-                      <p>{mentorData.description}...</p>
+                      {mentorData.description != "" && <p>{mentorData.description}...</p>}
+                      <p>{mentorData.description}</p>
                     </div>
                     <div className="mentor-detail-video">
                       <a href={mentorData.video_url} target="_blank" rel="noopener noreferrer"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>

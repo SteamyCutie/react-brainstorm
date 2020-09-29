@@ -359,13 +359,13 @@ class SetAvailability extends React.Component {
           element.classList.remove("disable-event")
         });
       } else {
-        const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
-        let y = [...elements];
-
-        y.foreach(element => {
-          element.removeAttribute("disabled");
-          element.classList.remove("disable-event")
-        });
+        // const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
+        // let y = [...elements];
+        
+        // y.foreach(element => {
+        //   element.removeAttribute("disabled");
+        //   element.classList.remove("disable-event")
+        // });
       }
     }
     temp[dayOfWeek] = !dayOfWeekStatus[dayOfWeek];

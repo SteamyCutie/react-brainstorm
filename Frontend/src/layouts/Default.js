@@ -9,6 +9,7 @@ import Pusher from 'pusher-js';
 import { Store } from "../flux";
 import { Dispatcher, Constants } from "../flux";
 import { schedulepost, switchuser } from '../api/api';
+import { PUSHER_KEY } from '../common/config';
     
 export default class DefaultLayout extends React.Component {
   constructor(props) {
@@ -59,7 +60,7 @@ export default class DefaultLayout extends React.Component {
   }
 
   getNotifications() {
-    var pusher = new Pusher('e89985ed54dad44cf61e', {
+    var pusher = new Pusher(PUSHER_KEY, {
       cluster: 'mt1'
     });
     var self = this;
