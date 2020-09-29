@@ -38,6 +38,8 @@ class CreateUsersTable extends Migration
       $table->string('timezone')->default("");
       $table->float('average_mark')->default(0);
       $table->string('origin_password')->default("");
+      $table->enum('provider', ['Manual', 'Google', 'Facebook']);
+      $table->string('provider_id')->nullable();
       $table->rememberToken();
       $table->timestamps();
     });
