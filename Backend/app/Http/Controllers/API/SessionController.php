@@ -9,7 +9,6 @@ use App\Models\Session;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Invited;
-use App\Models\SchedulePosted;
 use Log;
 
 class SessionController extends Controller
@@ -500,32 +499,5 @@ class SessionController extends Controller
         'data'=> $th,
       ]);
     }
-  }
-  
-  public function schedulePost(Request $request) {
-    $user_id = $request->user_id;
-    $post_session_ids = SchedulePosted::select('session_id')->get();
-    if (count($post_session_ids) > 0) {
-      foreach ($post_session_ids as $post_session_id) {
-        $session_id = $post_session_id->session_id;
-        $result = Invited::where('session_id', $session_id)->where(function ($q) use ($user_id) {
-          $q->where('student_id', $user_id)->orWhere('mentor_id', $user_id);
-        })->first();
-        
-        if ($result) {
-          $data = Session::select('title', 'user_id', 'from', 'to')->where('id', $session_id)->first();
-          if ($data) {
-            return response()->json([
-              'result'=> 'success',
-              'data'=> $data,
-            ]);
-          }
-        }
-      }
-    }
-    return response()->json([
-      'result'=> 'success',
-      'data' => [],
-    ]);
   }
 }

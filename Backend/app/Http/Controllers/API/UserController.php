@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Invited;
 use App\Models\Session;
 use App\Models\Subscription;
-use App\Models\SchedulePosted;
 use Faker\Provider\Payment;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;

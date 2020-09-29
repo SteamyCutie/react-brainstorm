@@ -15,9 +15,9 @@ class CreateLibrariesTable extends Migration
   {
     Schema::create('libraries', function (Blueprint $table) {
       $table->id();
-      $table->string('media_url')->default("");
-      $table->string('mentor_name')->default("");
-      $table->integer('student_id')->default(0);
+      $table->string('media_url')->nullable();
+      $table->string('mentor_name')->nullable();
+      $table->integer('student_id')->nullable();
       $table->timestamps();
     });
   }
