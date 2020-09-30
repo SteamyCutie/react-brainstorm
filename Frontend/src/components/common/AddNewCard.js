@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
+import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
 import { createpayment } from '../../api/api';
 import Close from '../../images/Close.svg'
@@ -49,10 +50,6 @@ export default class AddNewCard extends React.Component {
   }
 
   onChangeNumber = (e) => {
-    var array = e.target.value.split("");
-    if (array.length > 20) {
-      return;
-    }
     const {cardinfo} = this.state;
     let temp = cardinfo;
     temp.number = e.target.value;
@@ -60,10 +57,6 @@ export default class AddNewCard extends React.Component {
   }
 
   onChangeDate = (e) => {
-    var array = e.target.value.split("");
-    if (array.length > 500) {
-      return;
-    }
     const {cardinfo} = this.state;
     let temp = cardinfo;
     temp.date = e.target.value;
@@ -72,7 +65,7 @@ export default class AddNewCard extends React.Component {
 
   onChangeCode = (e) => {
     var array = e.target.value.split("");
-    if (array.length > 500) {
+    if (array.length > 3) {
       return;
     }
     const {cardinfo} = this.state;
@@ -186,15 +179,19 @@ export default class AddNewCard extends React.Component {
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmailAddress" className="profile-detail-important">Credit or debit card number</label>
             {requiremessage.dnumber !== '' && <span className="require-message">{requiremessage.dnumber}</span>}
-            {requiremessage.dnumber !== '' && <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" invalid onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
-            {requiremessage.dnumber === '' && <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
+            {requiremessage.dnumber !== '' && <Cleave placeholder="1234 5678 2472 8394" className="profile-detail-input form-control is-invalid" options={{creditCard: true}} onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
+            {requiremessage.dnumber === '' && <Cleave placeholder="1234 5678 2472 8394" className="profile-detail-input form-control" options={{creditCard: true}} onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
+            {/* <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" invalid onChange={(e) => this.onChangeNumber(e)} } */}
+            {/* {requiremessage.dnumber === '' && <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>} */}
           </div>
           <Row form>
             <Col md="6" className="modal-input-group-class">
               <label htmlFor="feEmailAddress" className="profile-detail-important">Expiration date</label>
               {requiremessage.ddate !== '' && <span className="require-message">{requiremessage.ddate}</span>}
-              {requiremessage.ddate !== '' && <FormInput className="profile-detail-input" placeholder="MM/YY" invalid onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
-              {requiremessage.ddate === '' && <FormInput className="profile-detail-input" placeholder="MM/YY" onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
+              {requiremessage.ddate !== '' && <Cleave placeholder="MM/YY" className="profile-detail-input form-control is-invalid" options={{date: true, datePattern: ['m', 'y']}} onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
+              {requiremessage.ddate === '' && <Cleave placeholder="MM/YY" className="profile-detail-input form-control" options={{date: true, datePattern: ['m', 'y']}} onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
+              {/* {requiremessage.ddate !== '' && <FormInput className="profile-detail-input" placeholder="MM/YY" invalid onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
+              {requiremessage.ddate === '' && <FormInput className="profile-detail-input" placeholder="MM/YY" onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>} */}
             </Col>
 
             <Col md="6" className="modal-input-group-class">

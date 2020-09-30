@@ -1,5 +1,9 @@
 import React from "react";
 import { Container, Row, Col } from "shards-react";
+import LoadingModal from "../components/common/LoadingModal";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
 
 import MainNavbar from "../components/layout/MainNavbar/MainNavbar";
 import SubMainNavbar from "../components/layout/MainNavbar/SubMainNavbar";
@@ -28,17 +32,19 @@ export default class DefaultLayout extends React.Component {
     }
 
     this.state = {
+      loading: false,
       noNavbar: false,
       filterType: filterType,
       mentorUrl: Store.getMentorHistory(),
       studentUrl: Store.getStudentHistory(),
       noFooter: true,
-      notifications: {
-        from: '',
-        to: '',
-        title: '',
-        user_id: 0
-      }
+      // notifications: {
+      //   from: '',
+      //   to: '',
+      //   title: '',
+      //   user_id: 0
+      // }
+      notifications: []
     }
 
     this.handleClick = this.handleClick.bind(this);
@@ -60,14 +66,23 @@ export default class DefaultLayout extends React.Component {
   }
 
   getNotifications() {
+    console.log("-----");
     var pusher = new Pusher(PUSHER_KEY, {
       cluster: 'mt1'
     });
     var self = this;
     var channel = pusher.subscribe('session-channel');
     channel.bind('brainsshare-session-event', function(data) {
-      if (localStorage.getItem('user_id') == data.message.user_id){
-        self.setState({notifications: data.message});
+      console.log(data, "*****");
+      for (var i = 0; i < data.message.length; i ++) {
+        if (localStorage.getItem('user_id') == data.message[i].user_id){
+          var {notifications} = self.state;
+          // notifications = [];
+          var temp = notifications;
+          temp.push(data.message[i]);
+          console.log(temp, "++++");
+          self.setState({notifications: temp});
+        }
       }
     });
   }
@@ -108,37 +123,118 @@ export default class DefaultLayout extends React.Component {
   }
 
   switchUser = async() => {
+    const { loading } = this.state;
     let param = {
       user_id: localStorage.getItem('user_id')
     }
     try {
+      this.setState({loading: true});
       const result = await switchuser(param);
       if (result.data.result === "success") {
       } else if (result.data.result === "warning") {
-      } 
+        this.showWarning(result.data.message);
+      } else { 
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invaild") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
     } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
     };
+  }
+
+  showSuccess(text) {
+    store.addNotification({
+      title: "Success",
+      message: text,
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreeen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  removeSession() {
+    localStorage.clear();
   }
 
   render() {
     const { children } = this.props;
-    const { noFooter, noNavbar, filterType, notifications } = this.state;
+    const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
 
     return (
-      <Container fluid>
-        <Row>
-          <MainSidebar filterType={filterType}/>
-          <Col
-            className="main-content p-0 main-content-class"
-            tag="main"
-          >
-            {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications}/>}
-            {filterType && <SubMainNavbar/>}
-            {children}
-            {!noFooter && <MainFooter />}
-          </Col>
-        </Row>
-      </Container>
+      <>
+        {loading && <LoadingModal open={true} />}
+        <ReactNotification />
+        <Container fluid>
+          <Row>
+            <MainSidebar filterType={filterType}/>
+            <Col
+              className="main-content p-0 main-content-class"
+              tag="main"
+            >
+              {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications}/>}
+              {filterType && <SubMainNavbar/>}
+              {children}
+              {!noFooter && <MainFooter />}
+            </Col>
+          </Row>
+        </Container>
+      </>
     );
   }
 }

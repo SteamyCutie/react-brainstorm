@@ -603,4 +603,22 @@ export const getlibrary = (param) => {
     });
 }
 
+//PostedNotificationController
+
+export const checkednotification = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/checkednotification', param, {headers: header});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 //Backend Apis
