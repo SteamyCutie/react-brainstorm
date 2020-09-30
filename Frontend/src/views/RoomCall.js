@@ -29,21 +29,16 @@ function Participant(user_info, isLocalVideo) {
 	container.className = isPresentMainParticipant() ? PARTICIPANT_CLASS : PARTICIPANT_MAIN_CLASS;
 	container.id = this.user_id;
   var span = document.createElement('span');
-  var avatar = document.createElement('img');
   var video = document.createElement('video');
   var rtcPeer;
 
 	container.appendChild(video);
   container.appendChild(span);
-  container.appendChild(avatar);
   document.getElementById('room-video-container').appendChild(container);
 
 	video.id = 'video-' + name;
 	video.autoplay = true;
   video.controls = false;
-
-  avatar.src = this.user_avatar;
-	avatar.style = 'height: 40px; width: 40px;';
 
   if(isLocalVideo) {
     container.classList.add("local-video");
@@ -91,8 +86,12 @@ function Participant(user_info, isLocalVideo) {
 
 	this.dispose = function() {
 		console.log('Disposing participant ' + this.name);
-		this.rtcPeer.dispose();
-		container.parentNode.removeChild(container);
+    this.rtcPeer.dispose();
+    
+    const myNode = document.getElementById("room-video-container");
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.lastChild);
+    }
   };
   
   this.sendMessage = function(message) {
@@ -114,8 +113,6 @@ export default class RoomCall extends React.Component {
       roomName: '', 
       fullScreen: false, 
     }
-
-    // this.handleListItemClick = this.handleListItemClick.bind(this);
   }
 
   componentWillMount() {
@@ -192,7 +189,9 @@ export default class RoomCall extends React.Component {
   onNewParticipant(request) {
     const {participants} = this.state;
     let temp = participants;
+    
     temp.push(request.user_info);
+
     this.setState({
       participants: temp, 
     }, () => {
@@ -253,7 +252,6 @@ export default class RoomCall extends React.Component {
     })
     
     msg.data.forEach(this.receiveVideo);
-    // document.getElementById(this.state.participants[this.state.participants.length - 1]).classList.remove("room-video-display-none");
   }
   
   leaveRoom() {
@@ -261,6 +259,11 @@ export default class RoomCall extends React.Component {
       id : 'leaveRoom'
     });
   
+    var temp = [];
+    this.setState({
+      participants: temp, 
+    })
+
     for ( var key in participants) {
       participants[key].dispose();
     }
@@ -289,13 +292,20 @@ export default class RoomCall extends React.Component {
   }
   
   onParticipantLeft(request) {
-    console.log('Participant ' + request.name + ' left');
+    console.log('Participant ' + request.user_id + ' left');
     const currentParticipants = this.state.participants;
     let temp = currentParticipants;
-    let filteredAry = temp.filter(e => e !== request.name)
+    let index;
+
+    for (index = 0; index < temp.length; index ++) {
+      if(temp[index].user_id === request.user_id) {
+        temp.splice(index, 1);
+        break;
+      }
+    }
 
     this.setState({
-      participants: filteredAry, 
+      participants: temp, 
     })
 
     var participant = participants[request.user_id];
@@ -337,46 +347,6 @@ export default class RoomCall extends React.Component {
   render() {
     return (
       <div className="room-container" id="room-container">
-        {/* <Col xl="9">
-          <Row>
-            <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.leaveRoom()}>Leave Room</Button>
-            <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.register()}>Join Room</Button>
-            <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.toggleFullScreen()}>Full Screen</Button>
-          </Row>
-          <Row className="room-video-container" id="room-video-container">
-            
-          </Row>
-          <div id="room-chat-area" className="room-chat-area">
-            <FormGroup className="no-bottom-margin">
-              <FormTextarea placeholder="Please input" className="chat-history"/>
-              <FormInput placeholder="Input.." className="chat-input"/>
-            </FormGroup>
-          </div>
-        </Col>
-        <Col xl="3" className="room-member">
-          <div id="room-member" width="20%">
-            <List dense >
-              {this.state.participants.map((participant, key) => {
-                const labelId = {participant};
-                return (
-                  <ListItem 
-                    key={participant} 
-                    button
-                    onClick={() => this.handleListItemClick(participant)}
-                  >
-                    <ListItemAvatar>
-                      <Avatar
-                        alt={participant}
-                        src={`/static/images/avatar/${participant + 1}.jpg`}
-                      />
-                    </ListItemAvatar>
-                    <ListItemText id={labelId} primary={participant} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </div>
-        </Col> */}
         <div className="room-button-container">
           
         </div>
@@ -386,7 +356,6 @@ export default class RoomCall extends React.Component {
         <div id="room-member" width="20%" className="room-member">
           <List dense >
             {this.state.participants.map((participant, key) => {
-              // const labelId = {participant.user_id};
               return (
                 <ListItem 
                   key={participant.user_id} 
@@ -405,9 +374,6 @@ export default class RoomCall extends React.Component {
             })}
           </List>
         </div>
-        {/* <div id="room-small-video-container" className="room-small-video-container">
-
-        </div> */}
         <div className="room-control-container">
           <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.leaveRoom()}>Leave Room</Button>
           <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.register()}>Join Room</Button>
