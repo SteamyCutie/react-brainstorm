@@ -81,9 +81,10 @@ export default class DefaultLayout extends React.Component {
           var temp = notifications;
           temp.push(data.message[i]);
           console.log(temp, "++++");
-          self.setState({notifications: temp});
         }
       }
+      self.setState({notifications: temp});
+      temp = [];
     });
   }
 
