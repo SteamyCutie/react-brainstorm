@@ -1,4 +1,6 @@
 import React from "react";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
+import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 import default_avatar from "../../images/avatar.jpg"
@@ -9,9 +11,19 @@ class SmallCard3 extends React.Component {
     this.state = {open: false,};
     
     this.toggle = this.toggle.bind(this);
+    this.mentorName = '';
+    this.name = '';
   }
 
   componentWillMount() {
+  }
+
+  componentDidMount() {
+    this.mentorName = "Alex Dvornikov"; // this.mentorName = this.props.data.mentor_name;
+    this.name = this.props.data.title;
+    
+    localStorage.setItem("session_name", this.name);
+    localStorage.setItem("session_mentor", this.mentorName);
   }
 
   edit() {
@@ -22,6 +34,10 @@ class SmallCard3 extends React.Component {
     this.setState(prevState => {
       return { open: !prevState.open };
     });
+  }
+
+  toggle_startSession() {
+    window.open("/room-call");
   }
 
   render() {
@@ -45,6 +61,22 @@ class SmallCard3 extends React.Component {
               </div>
             </div>
           </div>
+          <Dropdown open={this.state.open} toggle={this.toggle} className="more-drop-down">
+            <DropdownToggle>
+              <div className="nav-link-icon__wrapper">
+                <img
+                  className="user-avatar mr-2"
+                  src={MoreButtonImage}
+                  alt="User Avatar"
+                />{" "}
+              </div>
+            </DropdownToggle>
+            <DropdownMenu >
+              <DropdownItem onClick={this.toggle_startSession}>
+                Start Forum
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
         <div className="small-card3-date-time">
           <div style={{display: "flex", marginBottom: "5px"}}>
