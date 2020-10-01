@@ -9,6 +9,13 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 
 import DeclineImg from '../images/call-decline.svg'
+import FullScreenImg from '../images/switch-fullscreen.svg'
+import MuteMicImg from '../images/mute-microphone.svg'
+import MuteVideoImg from '../images/mute-video.svg'
+import ChatImg from '../images/room-chat.svg'
+import ScreenshareImg from '../images/room-screenshare.svg'
+import AddUserImg from '../images/room-adduser.svg'
+
 import { Height } from "@material-ui/icons";
 
 const PARTICIPANT_MAIN_CLASS = 'participant main';
@@ -33,7 +40,7 @@ function Participant(user_info, isLocalVideo) {
   var rtcPeer;
 
 	container.appendChild(video);
-  container.appendChild(span);
+  // container.appendChild(span);
   document.getElementById('room-video-container').appendChild(container);
 
 	video.id = 'video-' + name;
@@ -161,6 +168,10 @@ export default class RoomCall extends React.Component {
         console.error('Unrecognized message', parsedMessage);
       }
     }
+
+    this.ws.onopen = function(e) {
+      that.register();
+    }
   }
 
   register() {
@@ -273,6 +284,7 @@ export default class RoomCall extends React.Component {
       participants[key].dispose();
     }
   
+    window.close();
     // this.ws.close();
   }
   
@@ -353,38 +365,60 @@ export default class RoomCall extends React.Component {
     const session_name = localStorage.getItem("session_name");
     return (
       <div className="room-container" id="room-container">
-        <div className="room-video-container center" id="room-video-container">
-          <h1 className="room-call-session-titile">{session_name}</h1>  
+        <div style={{height: "100vh", display: "flex", flexDirection: "column", position: "relative"}}>
+          <div className="room-video-container center" id="room-video-container">
+            <h1 className="room-call-session-titile">{session_name}</h1>  
+          </div>
+          <div id="room-member" width="20%" className="room-member" style={{marginLeft: "auto"}}>
+            <List dense >
+              {this.state.participants.map((participant, key) => {
+                return (
+                  <ListItem 
+                    key={participant.user_id} 
+                    button
+                    onClick={() => this.handleListItemClick(participant.user_id)}
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={participant.user_name}
+                        src={participant.user_avatar}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText id={participant.user_id} primary={participant.user_name} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>
         </div>
-        <div id="room-member" width="20%" className="room-member">
-          <List dense >
-            {this.state.participants.map((participant, key) => {
-              return (
-                <ListItem 
-                  key={participant.user_id} 
-                  button
-                  onClick={() => this.handleListItemClick(participant.user_id)}
-                >
-                  <ListItemAvatar>
-                    <Avatar
-                      alt={participant.user_name}
-                      src={participant.user_avatar}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText id={participant.user_id} primary={participant.user_name} />
-                </ListItem>
-              );
-            })}
-          </List>
-        </div>
-        <div className="room-control-container">
-          <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.leaveRoom()}>Leave Room</Button>
-          <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.register()}>Join Room</Button>
-          <Button className="live-forum-header-button" style={{marginRight: "10px"}} onClick={() => this.toggleFullScreen()}>Full Screen</Button>
-          
-          <Button className="btn-room-call-decline" style={{marginRight: "10px"}} onClick={() => this.toggleFullScreen()}>
-            <img src={DeclineImg} placeholder="Phone" style={{height: "60px", width: "60px"}} alt="Decline"/>
-          </Button>
+        <div>
+          <div className="room-control-container">
+            <Button className="btn-rooom-control margin-right-auto">
+              <img src={FullScreenImg} alt="Full Screen"/>
+            </Button>
+            
+            <div className="">
+              <Button className="btn-rooom-control float-center">
+                <img src={MuteMicImg} alt="Mute mic"/>
+              </Button>
+              <Button className="btn-rooom-control float-center">
+                <img src={MuteVideoImg} alt="Mute video"/>
+              </Button>
+              <Button className="btn-rooom-control float-center">
+                <img src={ChatImg} alt="Chat"/>
+              </Button>
+              <Button className="btn-rooom-control float-center">
+                <img src={ScreenshareImg} alt="Screenshare"/>
+              </Button>
+              <Button className="btn-rooom-control float-center">
+                <img src={AddUserImg} alt="Add user"/>
+              </Button>
+            </div>
+            
+            <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px"}} onClick={() => this.leaveRoom()}>
+              <img src={DeclineImg} alt="Phone" style={{height: "60px", width: "60px", color: "#"}} alt="Decline"/>
+            </Button>
+          </div>
         </div>
       </div>
     )

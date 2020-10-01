@@ -206,6 +206,9 @@
   padding: 10px;
   background-color: white;
   width: 20%;
+  height: calc(100vh - 100px);
+  position: absolute;
+  right: 0px;
 }
 
 .room-chat-area {
@@ -215,19 +218,12 @@
 
 .room-container {
   /* padding: 20px; */
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   height: 100vh;
   margin-right: -15px;
   margin-left: -15px;
 }
-
-/* .room-video-container {
-  padding: 10px;
-  width: 100%;
-  height: 500px;
-  height: 80vh;
-}*/
 
 .chat-history {
   height: 200px !important;
@@ -243,23 +239,22 @@
 
 .local-video video {
   position: absolute;
-  right: 350px;
+  right: 20%;
   top: 60px;
   border-radius: 4px;
   width: 200px;
   height: 150px;
+  margin-right: 10px
 }
 
 .participant-video video{
-  /* height: 80vh; */
+  width: 100%;
+  object-fit: fill;
 }
 
 .room-video-container {
-  width: 100%;
-  /* height: 100vh; */
-  background-color: pink;
-  /* padding-top: 5px; */
-  padding-bottom: 5px;
+  width: 80%;
+  /* margin-bottom: -5px; */
 }
 
 .room-chat-area {
@@ -276,11 +271,22 @@
 .room-control-container {
   width: 100%;
   height: 100px;
+  border-radius: 8px;
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  align-items: center;
+  background: #00000099;
+}
+
+.room-control-container-back {
+  width: 100%;
+  height: 100px;
   opacity: 0.6;
   border-radius: 8px;
   background-color: black;
-  position: absolute;
-  bottom: 0px;
+  /* position: absolute; */
+  /* bottom: 0px; */
 }
 
 .participant-video video {
@@ -308,7 +314,7 @@
 }
 
 .btn-room-call-decline {
-  margin: 12px 30px;
+  margin: 10px 30px;
   margin-right: 30px !important;
   float: right;
   width: 150px;
@@ -332,4 +338,55 @@
   text-align: center;
   position: absolute;
   top: 20px;
+  font-weight: 700;
+  color: #04B5FA;
+}
+
+.btn-rooom-control {
+  margin-top: 2px;
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 80px !important;
+  width: 80px !important;
+  background: transparent !important;
+  border: none;
+}
+
+.btn-rooom-control:hover {
+  background-color: #646464 !important;
+  box-shadow: none;
+}
+
+.btn-rooom-control:active {
+  background-color: #646464  !important;
+  box-shadow: none;
+}
+
+.btn-rooom-control:focus {
+  background-color: #646464  !important;
+  box-shadow: none;
+}
+
+.float-left {
+  float: left !important;
+}
+
+.float-right {
+  float: right !important;
+}
+
+.float-center {
+  float: center !important;
+}
+
+.margin-right-auto {
+  margin-right: auto;
+}
+
+.margin-left-auto {
+  margin-left: auto;
+}
+
+.participant-video {
+  width: 100%;
 }
