@@ -198,6 +198,7 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeUser = (e) => {
+    localStorage.setItem('user-type', !JSON.parse(localStorage.getItem('user-type')));
     const {param} = this.state;
     let temp = param;
     temp.is_mentor = !param.is_mentor;

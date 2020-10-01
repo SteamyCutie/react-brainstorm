@@ -461,10 +461,5 @@ button:focus {
 }
 
 .mentor-video-style {
-    text-align: right;
-}
-
-.mentor-video-style .dropdown-menu {
-    left: 0px;
-    left: 660px;
+    float: right;
 }

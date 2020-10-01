@@ -38,12 +38,6 @@ export default class DefaultLayout extends React.Component {
       mentorUrl: Store.getMentorHistory(),
       studentUrl: Store.getStudentHistory(),
       noFooter: true,
-      // notifications: {
-      //   from: '',
-      //   to: '',
-      //   title: '',
-      //   user_id: 0
-      // }
       notifications: []
     }
 
@@ -66,21 +60,18 @@ export default class DefaultLayout extends React.Component {
   }
 
   getNotifications() {
-    console.log("-----");
     var pusher = new Pusher(PUSHER_KEY, {
       cluster: 'mt1'
     });
     var self = this;
     var channel = pusher.subscribe('session-channel');
     channel.bind('brainsshare-session-event', function(data) {
-      console.log(data, "*****");
+      var {notifications} = self.state;
+      notifications = [];
       for (var i = 0; i < data.message.length; i ++) {
         if (localStorage.getItem('user_id') == data.message[i].user_id){
-          var {notifications} = self.state;
-          // notifications = [];
           var temp = notifications;
           temp.push(data.message[i]);
-          console.log(temp, "++++");
         }
       }
       self.setState({notifications: temp});
@@ -124,7 +115,6 @@ export default class DefaultLayout extends React.Component {
   }
 
   switchUser = async() => {
-    const { loading } = this.state;
     let param = {
       user_id: localStorage.getItem('user_id')
     }
