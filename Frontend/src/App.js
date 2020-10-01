@@ -61,7 +61,7 @@ export default class App extends React.Component{
 
   componentWillMount() {
     var wsUri = 'wss://media.brainsshare.com/one2one';
-    // var wsUri = 'wss://192.168.105.47:8443/one2one';
+    // var wsUri = 'wss://192.168.136.129:8443/broadcast';
     this.setWebsocket(wsUri);
   }
 
@@ -118,6 +118,7 @@ export default class App extends React.Component{
     };
 
     localStorage.setItem('ws', JSON.stringify(this.ws));
+    // If bussy just reject without disturbing user
   }
 
   register(user) {
@@ -176,11 +177,7 @@ export default class App extends React.Component{
           if (error)
             return console.error(error);
         });
-        // this.setState({
-        //   callState: IN_CALL,
-        //   call: true,
-        //   sdpAnswer: message.sdpAnswer
-        // })
+
         this.setState({
           isAccepted: true,
         })
@@ -204,8 +201,6 @@ export default class App extends React.Component{
     ring.loop = true;
     ring.pause();
     ring.currentTime = 0;
-    // console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
-    // this.toggle_incomingCall_modal();
   }
 
   startCommunication(message) {
@@ -213,15 +208,9 @@ export default class App extends React.Component{
       if (error)
         return console.error(error);
     });
-    // this.setState({
-    //   callState: IN_CALL,
-    //   call: true,
-    //   sdpAnswer: message.sdpAnswer
-    // })
   }
 
   incomingCall(message) {
-    // If bussy just reject without disturbing user
     if (this.state.callState !== NO_CALL) {
       var response = {
         id : 'incomingCallResponse',
@@ -243,84 +232,24 @@ export default class App extends React.Component{
       fromName: message.name, 
       avatarURL: message.avatarURL,
     })
-
-    // that.ring = INCOMING_RING;
-    // this.setState({
-    //   callState: INCOMING_CALL
-    // });
-    // if (1) {
-    //   this.setState({
-    //     callState: INCOMING_CALL,
-    //     call: true,
-    //     from: message.from
-    //   })
       
     this.toggle_incomingCall_modal(message)
 
-    // var options = {
-    //   localVideo: videoInput,
-    //   remoteVideo: videoOutput,
-    //   onicecandidate: onIceCandidate
-    // }
-
-    // webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
-    //   function (error) {
-    //     if (error) {
-    //       console.error(error);
-    //       setCallState(NO_CALL);
-    //     }
-
-    //     this.generateOffer(function (error, offerSdp) {
-    //       if (error) {
-    //         console.error(error);
-    //         setCallState(NO_CALL);
-    //       }
-    //       var response = {
-    //         id: 'incomingCallResponse',
-    //         from: message.from,
-    //         callResponse: 'accept',
-    //         sdpOffer: offerSdp
-    //       };
-    //       sendMessage(response);
-    //     });
-    //   });
-
-    // } else {
-    //   var response = {
-    //     id: 'incomingCallResponse',
-    //     from: message.from,
-    //     callResponse: 'reject',
-    //     message: 'user declined'
-    //   };
-    //   this.sendMessage(response);
-    //   this.stop(true);
-    // }
   }
 
   call(to) {
-    // console.log(to, '1111111111111111111111111');
     this.setState({
       callState: OUTGOING_CALL,
       call: true,
       to: to,
       callResponseSate: 0,
-      // outcomingCallStatus: false,
     })
-    // 
+
     const ring = document.getElementById("outgoing-ring");
     ring.loop = true;
     ring.play();
 
     this.toggle_outcomingCall_modal();
-
-    // if (document.getElementById('peer').value == '') {
-    //   window.alert("You must specify the peer name");
-    //   return;
-    // }
-
-    // setCallState(PROCESSING_CALL);
-
-    // showSpinner(videoInput, videoOutput);
   }
 
   stop(message) {
