@@ -6,7 +6,7 @@ import MoreButtonImage from "../../images/more.svg"
 import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 
-import avatar2 from "../../images/avatar.jpg"
+import defaultAvatar from "../../images/avatar.jpg"
 import InvitedStudent from "./InvitedStudent";
 
 class SmallCardForum extends React.Component {
@@ -35,13 +35,19 @@ class SmallCardForum extends React.Component {
     });
   }
 
+  toggle_invitemore(id) {
+    const { toggle_editliveforum } = this.props;
+    toggle_editliveforum(id);
+    this.toggle_invite();
+  }
+
   render() {
     const {title, description, avatar, invited, tags, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
     const {toggle_editliveforum, toggle_confirm} = this.props;
     const { ModalInviteOpen } = this.state;
     return (
       <div className="small-card-forum">
-        <InvitedStudent open={ModalInviteOpen} id={id} students={student_info} toggle={() => this.toggle_invite()}></InvitedStudent>
+        <InvitedStudent open={ModalInviteOpen} id={id} students={student_info} toggle={() => this.toggle_invite()} toggle_invitemore={(id) => this.toggle_invitemore(id)}></InvitedStudent>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
           <Dropdown open={this.state.open} toggle={this.toggle}>
@@ -72,7 +78,7 @@ class SmallCardForum extends React.Component {
           if (idx < 3)
             return <p key={idx} className="brainsshare-tag" title={item}>{item}</p>;
           else if (idx === 3)
-            return <p key={idx} href="#!">{tag_name.length - 3} more</p>
+            return <p key={idx} href="javascript:void(0)">{tag_name.length - 3} more</p>
           else 
             return <></>;
         })}
@@ -93,12 +99,16 @@ class SmallCardForum extends React.Component {
         </div>
         <div className="forum-invited-student">
           <div style={{display: "flex"}}>
-            <a href="#!" onClick={() => this.toggle_invite()}>
+            <a href="javascript:void(0)" onClick={() => this.toggle_invite()}>
               {student_info.map((item, idx) => {
-                if (idx < 3)
-                  return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
-                else 
+                if (idx < 3) {
+                  if (item.avatar)
+                    return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
+                  else
+                    return <img key={idx} src={defaultAvatar} alt="avatar" className="forum-student-avatar"/>;
+                } else {
                   return <></>;
+                }
               })}
               </a>
           </div>

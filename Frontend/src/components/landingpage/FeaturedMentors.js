@@ -8,6 +8,7 @@ import "../../assets/landingpage.css"
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
+import defaultAvatar from "../../images/avatar.jpg";
 import Clock from "../../images/Clock.svg";
 import { featuredmentors } from '../../api/api';
 
@@ -57,7 +58,8 @@ export default class FeaturedMentors extends React.Component {
           {carouselDatas.map((data, idx) => (
             <div className="carousel-component" key={idx}>
               <div style={{position: "relative"}} key={idx}>
-                <img key={idx} src={data.avatar} alt={data.name} className="carousel-component-img-class" />
+                {data.avatar && <img key={idx} src={data.avatar} alt={data.name} className="carousel-component-img-class" />}
+                {!data.avatar && <img key={idx} src={defaultAvatar} alt={data.name} className="carousel-component-img-class" />}
                 {
                   data.online && <div key={idx} className="carousel-component-online-class"></div>
                 }
@@ -73,7 +75,7 @@ export default class FeaturedMentors extends React.Component {
                     if (idx < 3)
                       return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
                     else if (idx === 3)
-                      return <p key={idx} href="#!">{data.tag_name.length - 3} more</p>
+                      return <p key={idx} href="javascript:void(0)">{data.tag_name.length - 3} more</p>
                     else 
                       return <></>;
                   })}
@@ -81,7 +83,7 @@ export default class FeaturedMentors extends React.Component {
                 <div className="carousel-component-body-desc-class">
                   {!this.state.more && (data.description.length > 200 ? <p>{data.description.slice(0,200)}...</p> : <p>{data.description}</p>)}
                   {this.state.more && <p>{data.description}</p>}
-                  {data.description.length > 200 && (this.state.more ? <a href="#!" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="#!" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
+                  {data.description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
                 </div>
                 <div className="carousel-component-body-play-class">
                   <a href={data.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>

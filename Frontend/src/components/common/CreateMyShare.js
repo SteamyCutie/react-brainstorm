@@ -95,6 +95,15 @@ export default class CreateMyShare extends React.Component {
         } else {
           this.showFail(result.data.message);
           if (result.data.message === "Token is Expired") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Token is Invalid") {
+            this.showFail(result.data.message);
+            this.removeSession();
+            window.location.href = "/";
+          } else if (result.data.message === "Authorization Token not found") {
+            this.showFail(result.data.message);
             this.removeSession();
             window.location.href = "/";
           } else {
@@ -216,7 +225,8 @@ export default class CreateMyShare extends React.Component {
             <label htmlFor="feEmail">Photo/Video</label>
             <DropzoneArea acceptedFiles={['video/mp4']} onChange={(e) => this.onChnageVideo(e)}/>
           </div>
-          <div className="content-center block-content-class button-text-group-class">
+          {/* <div className="content-center block-content-class button-text-group-class"> */}
+          <div className={JSON.parse(localStorage.getItem('user-type')) ? "content-center block-content-class button-text-group-class-mentor" : "content-center block-content-class button-text-group-class" }>
             <Button onClick={() => this.actionSave()}>Upload</Button>
           </div>
           </ModalBody>

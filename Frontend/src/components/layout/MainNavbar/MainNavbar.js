@@ -21,13 +21,12 @@ export default class MainNavbar extends React.Component {
   }
 
   toggle_search(searchKey) {
-    const { onSearch } = this.props;
-    onSearch(searchKey);
+    window.location.href = '/findmentor';
   }
 
   render() {
 
-    const { filterType } = this.props;
+    const { filterType, notifications } = this.props;
 
     return (
       <div className={classes}>
@@ -56,7 +55,7 @@ export default class MainNavbar extends React.Component {
                 </NavbarBrand>
               </Navbar>
             </div>
-            <NavbarNav filterType={filterType}  toggleType={() => this.toggleType()} />
+            <NavbarNav filterType={filterType}  toggleType={() => this.toggleType()} notifications={notifications}/>
             <NavbarToggle />
           </Navbar>
         </Container>

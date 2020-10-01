@@ -2,10 +2,16 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Session;
 use Illuminate\Console\Command;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\SessionController;
+use App\Models\Session;
+use App\Models\User;
+use App\Models\Invited;
 use Carbon\Carbon;
+use App\Events\StatusLiked;
 use Log;
+
 
 class RunScheduledPosts extends Command
 {
@@ -40,18 +46,46 @@ class RunScheduledPosts extends Command
    */
   public function handle()
   {
-    echo "qqqqqqqqqqqqqqqqqqq echo";
-    Log::debug('qqqqqqqqqqqqqqqqqqq log:debug');
-    error_log('qqqqqqqqqqqqqqqqqqq error.log');
-    Log::info('qqqqqqqqqqqqqqqqqqqqThis is some useful information.');
-    
-//    $scheduled_session = Session::where('posted', 0)->where('from', )
-
-//    $scheduledPosts = ScheduledPost::where('posted', 0)
-//      ->where('scheduled_at', '<=', Carbon::now())
-//      ->whereNull('status')->get();
-//    $ids = $scheduledPosts->pluck('id');
-//    ScheduledPost::whereIn('id', $ids)->updatae(['posted' => 1]);
-//    multiRequest(route('test'), $scheduledPosts);
+    $send_mail = new Controller;
+    $subject = "Welcome to BrainsShare!";
+    $fronturl = env("FRONT_URL");
+    $result = false;
+    $sessions = Session::where('posted',0)->where('from', '<=', Carbon::now()->addMinutes(15))->get();
+    if (count($sessions) > 0) {
+      foreach ($sessions as $sn_key => $sn_value) {
+        $posted_session = [];
+        $from = $sn_value->from;
+        $title = $sn_value->title;
+        $mentor = User::select('id', 'name', 'email')->where('id', $sn_value->user_id)->first();
+        $mentor_name = $mentor->name;
+        $name = $mentor_name;
+        $toEmail = $mentor->email;
+        $app_path = app_path();
+        if ($sn_key == 0) {
+          $body = include_once($app_path.'/Mails/Session.php');
+          $body = implode(" ",$body);
+        }
+        $posted_session['user_id'] = $mentor->id;
+        $posted_session['title'] = $sn_value->title;
+        $posted_session['from'] = $sn_value->from;
+        $posted_session['to'] = $sn_value->to;
+        $send_mail->send_email($toEmail, $name, $subject, $body);
+        event(new StatusLiked($posted_session));
+        $st_inviteds = Invited::where('mentor_id', $sn_value->user_id)->where('session_id', $sn_value->id)->get();
+        foreach ($st_inviteds as $st_invited_key => $st_invited_value) {
+          $student = User::select('id', 'name', 'email')->where('id', $st_invited_value->student_id)->first();
+          if ($student) {
+            $toEmail = $student->email;
+            $name = $student->name;
+            $result = $send_mail->send_email($toEmail, $name, $subject, $body);
+            $posted_session['user_id'] = $student->id;
+            event(new StatusLiked($posted_session));
+          }
+        }
+        if ($result) {
+          Session::where('id', $sn_value->id)->update(['posted' => 1]);
+        }
+      }
+    }
   }
 }

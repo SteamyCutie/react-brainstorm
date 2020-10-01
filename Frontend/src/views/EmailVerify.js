@@ -22,15 +22,12 @@ export default class EmailVerify extends React.Component {
 
       if(result.data.result === "success") {
         localStorage.setItem('token', result.data.token);
-        // window.location.href = '/';
-        localStorage.setItem('email', this.state.email);
-        localStorage.setItem('is_mentor', result.data.user.is_mentor);
+        localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('user_id', result.data.user.id);
         localStorage.setItem('avatar', result.data.user.avatar);
         localStorage.setItem('user_name', result.data.user.name);
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
-        localStorage.setItem('is_mentor', result.data.user.is_mentor);
-        if(this.result.data.user.is_mentor) {
+        if(result.data.user.is_mentor) {
           window.location.href = '/mentorWallet';
         } else {
           window.location.href = '/studentWallet';

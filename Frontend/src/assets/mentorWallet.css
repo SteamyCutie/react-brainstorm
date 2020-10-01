@@ -197,6 +197,17 @@
   .main-sidebar .nav .nav-item .nav-link.active i, .main-sidebar .nav .nav-item .nav-link:hover i, .main-sidebar .nav .nav-item.active i, .main-sidebar .nav .nav-item:hover i {
     color: #FFFFFF;
   }
+
+  .main-sidebar-mentor .nav .nav-item .nav-link.active, .main-sidebar .nav .nav-item .nav-link:hover, .main-sidebar .nav .nav-item.active, .main-sidebar .nav .nav-item:hover {
+    background-color: #00008B;
+    color: #FFFFFF;
+    stroke: white !important;
+    box-shadow: none;
+  }
+  
+  .main-sidebar-mentor .nav .nav-item .nav-link.active i, .main-sidebar .nav .nav-item .nav-link:hover i, .main-sidebar .nav .nav-item.active i, .main-sidebar .nav .nav-item:hover i {
+    color: #FFFFFF;
+  }
   
   .main-navbar {
     height: 94px;
@@ -431,6 +442,38 @@
     background-color: #04B5FA !important;
     border-color:  #04B5FA !important;
   }
+
+  .btn-add-payment-mentor {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: #00008B;
+    border-color:  #00008B !important;
+  }
+  
+  .btn-add-payment-mentor:hover {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: #00008B !important;
+    border-color:  #00008B !important;
+  }
+  
+  .btn-add-payment-mentor:focus {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: #00008B !important;
+    border-color:  #00008B !important;
+  }
+  
+  .btn-add-payment-mentor:active {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    background-color: #00008B !important;
+    border-color:  #00008B !important;
+  }
   
   .wallet-data-table-class {
     min-height: calc(100vh - 24rem);
@@ -543,6 +586,12 @@
   }
   
   .main-sidebar .nav .nav-item .nav-link {
+    font-weight: 400;
+    color: #999999;
+    padding: .9375rem 1.5625rem;
+  }
+
+  .main-sidebar-mentor .nav .nav-item .nav-link {
     font-weight: 400;
     color: #999999;
     padding: .9375rem 1.5625rem;
@@ -701,10 +750,10 @@
     font-family: inherit !important;
     padding: 10px 30px !important;
     color: #FFFFFF !important;
-    background-color: #04B5FA !important;
+    background-color: #00008B !important;
     outline: none !important;
     border-radius: 5px !important;
-    border-color: #04B5FA !important;
+    border-color: #00008B !important;
   }
   
   .toolbar-week-button {
@@ -726,10 +775,10 @@
     font-family: inherit !important;
     padding: 10px 30px !important;
     color: #FFFFFF !important;
-    background-color: #04B5FA !important;
+    background-color: #00008B !important;
     outline: none !important;
     border-radius: 5px !important;
-    border-color: #04B5FA !important;
+    border-color: #00008B !important;
   }
   
   .toolbar-month-button {
@@ -749,8 +798,8 @@
     font-family: inherit !important;
     padding: 10px 30px !important;
     color: #FFFFFF !important;
-    background-color: #04B5FA !important;
-    border-color: #04B5FA !important;
+    background-color: #00008B !important;
+    border-color: #00008B !important;
     outline: none !important;
     border-radius: 5px !important;
   }

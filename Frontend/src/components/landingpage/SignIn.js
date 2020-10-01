@@ -1,10 +1,9 @@
 import React from "react";
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
+import Loginbygoogle from "../common/Loginbygoogle";
+import Loginbyfacebook from "../common/Loginbyfacebook";
 import "../../assets/landingpage.css"
 import { signin } from '../../api/api';
-
-import Facebook from '../../images/Facebook.svg'
-import Google from '../../images/Google.svg'
 import Close from '../../images/Close.svg'
 
 export default class SignIn extends React.Component {
@@ -23,8 +22,9 @@ export default class SignIn extends React.Component {
     };
   }
 
-  componentWillMount() {
-    // document.getElementById("email-input").focus();
+  componentDidMount() {
+    // var x = document.getElementById("google-login").firstChild.innerHTML;
+    // console.log(x);
   }
 
   clearValidationErrors() {
@@ -120,12 +120,12 @@ export default class SignIn extends React.Component {
       const result = await signin(this.state);
       if (result.data.result === "success") {
         localStorage.setItem('email', this.state.email);
-        localStorage.setItem('is_mentor', result.data.user.is_mentor);
         localStorage.setItem('user_id', result.data.user.id);
         localStorage.setItem('avatar', result.data.user.avatar);
         localStorage.setItem('user_name', result.data.user.name);
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
-        localStorage.setItem('is_mentor', result.data.user.is_mentor);
+        localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
+
         if(result.data.user.is_mentor) {
           window.location.href = '/mentorSession';
         } else {
@@ -157,6 +157,12 @@ export default class SignIn extends React.Component {
 
   handleforgetPassword() {
     window.location.href = '/forgetpassword';
+  }
+
+  errorOccur(text) {
+    this.setState({
+      signInError: text
+    })
   }
 
   render() {
@@ -206,11 +212,11 @@ export default class SignIn extends React.Component {
               or
               <hr />
             </div>
-            <div className="content-center">
-              <Button className="sign-with-facebook"><img src={Facebook} alt="Facebook" />Sign In with Facebook</Button>
+            <div className="facebook-login-center">
+              <Loginbyfacebook errorOccur={(text) => this.errorOccur(text)}></Loginbyfacebook>
             </div>
-            <div className="content-center">
-              <Button className="sign-with-google"><img src={Google} alt="Google" />Sign In with Google</Button>
+            <div className="google-login-center">
+              <Loginbygoogle errorOccur={(text) => this.errorOccur(text)}></Loginbygoogle>
             </div>
           </ModalBody>
         </Modal>

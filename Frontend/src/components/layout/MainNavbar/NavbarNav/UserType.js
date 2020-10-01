@@ -12,8 +12,11 @@ export default class UserType extends React.Component {
 
   componentWillMount() {
     const { filterType } = this.props;
+    
     let tmp_ali = "left";
-    if (filterType === false) tmp_ali = "right";
+    if (filterType === false) {
+      tmp_ali = "right";
+    }
     this.setState({
       alignment: tmp_ali,
     });
@@ -40,7 +43,7 @@ export default class UserType extends React.Component {
         onChange={(event, newAlignment) => this.handleAlignment(event, newAlignment)}
         aria-label="text alignment"
       >
-        <ToggleButton value="left" aria-label="left aligned" className="toggle-button-class mentor-toggle-class">
+        <ToggleButton value="left" aria-label="left aligned" className="toggle-button-class-mentor mentor-toggle-class">
           Mentor
         </ToggleButton>
         <ToggleButton value="right" aria-label="right aligned" className="toggle-button-class student-toggle-class">

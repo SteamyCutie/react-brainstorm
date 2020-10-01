@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
+Route::post('/signbysocial', 'UserController@signBySocial');
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
@@ -34,6 +35,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
   Route::post('/getallmentors', 'UserController@getAllMentors');
   Route::post('/getallstudents', 'UserController@getAllStudents');
+  Route::post('/switchuser', 'UserController@switchUser');
   Route::post('/createshareinfo', 'MediaController@createShareInfo');
   Route::post('/scheduleliveforum', 'SessionController@getAllForum');
   Route::post('/createforum', 'SessionController@createForum');
@@ -52,4 +54,11 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   Route::post('/setreview', 'ReviewController@setReview');
+  Route::post('/createpayment', 'PaymentController@createPayment');
+  Route::post('/getpayment', 'PaymentController@getPayment');
+  Route::post('/schedulepost', 'SessionController@schedulePost');
+  Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
+  Route::post('/addlibrary', 'LibraryController@addLibrary');
+  Route::post('/getlibrary', 'LibraryController@getLibrary');
+  Route::post('/addreport', 'ReportController@addReport');
 });

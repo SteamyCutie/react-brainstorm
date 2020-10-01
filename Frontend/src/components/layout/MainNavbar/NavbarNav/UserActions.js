@@ -4,7 +4,7 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import { getuserinfo } from '../../../../api/api';
-import avatar from "../../../../images/avatar.jpg"
+import defaultAvatar from "../../../../images/avatar.jpg"
 import {
   Dropdown,
   DropdownToggle,
@@ -25,8 +25,8 @@ export default class UserActions extends React.Component {
   }
 
   componentWillMount() {
-    // this.getUserInformation();
-    this.setState({avatar: localStorage.getItem('avatar')});
+    this.getUserInformation();
+    // this.setState({avatar: localStorage.getItem('avatar')});
   }
 
   getUserInformation = async() => {
@@ -38,6 +38,15 @@ export default class UserActions extends React.Component {
         this.showWarning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.messasge);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
           this.removeSession();
           window.location.href = "/";
         } else {
@@ -99,13 +108,14 @@ export default class UserActions extends React.Component {
   }
 
   render() {
+    const { avatar, open } = this.state;
     return (
       <>
         <ReactNotification />
-        <Dropdown open={this.state.open} toggle={this.toggle}>
+        <Dropdown open={open} toggle={this.toggle}>
           <DropdownToggle>
-            {this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={this.state.avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
-            {!this.state.avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+            {avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+            {!avatar && <img className="user-avatar rounded-circle mr-2" src={defaultAvatar} alt="User Avatar" style={{height: '2.5rem'}} />}
             {" "}</DropdownToggle>
           <DropdownMenu>
             <DropdownItem tag={Link} to="profile">

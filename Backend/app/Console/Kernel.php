@@ -25,11 +25,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//         $schedule->command('inspire')->hourly();
-//      echo "qqqqqqqqqqqqqqqqqqq echo";
-//      Log::debug('qqqqqqqqqqqqqqqqqqq log:debug');
-//      error_log('qqqqqqqqqqqqqqqqqqq error.log');
-//      Log::info('qqqqqqqqqqqqqqqqqqqqThis is some useful information.');
       $schedule->command('run:scheduled')
         ->everyMinute();
     }
@@ -42,7 +37,6 @@ class Kernel extends ConsoleKernel
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
-
         require base_path('routes/console.php');
     }
 }
