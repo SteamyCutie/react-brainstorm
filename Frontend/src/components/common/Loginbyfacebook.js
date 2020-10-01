@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FacebookLogin from 'react-facebook-login';
 import Facebook from '../../images/Facebook.svg'
-import { GOOGLE_KEY } from '../../common/config';
+import { FACEBOOK_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
 
 export class Loginbyfacebook extends Component {
@@ -48,7 +48,7 @@ export class Loginbyfacebook extends Component {
 
     return (
       <FacebookLogin buttonStyle={{padding: 6}}
-        appId="682908192243627"
+        appId={FACEBOOK_KEY}
         autoLoad={false}
         fields="name,email,picture"
         callback={responseFacebook} 
