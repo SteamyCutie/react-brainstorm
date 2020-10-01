@@ -49,7 +49,7 @@ class RunScheduledPosts extends Command
   {
     $notifications = PostedNotification::where('notification_posted', 0)->get();
     if (count($notifications)) {
-      Log::info(['notifications: ' , $notifications]);
+      Log::info(['notifications: ' , count($notifications)]);
       event(new StatusLiked($notifications));
     }
     $send_mail = new Controller;
@@ -87,7 +87,7 @@ class RunScheduledPosts extends Command
           'to' => $sn_value->to,
         ]);
         $posted_data[] = $posted_session;
-        event(new StatusLiked($posted_data));
+//        event(new StatusLiked($posted_data));
         $st_inviteds = Invited::where('mentor_id', $sn_value->user_id)->where('session_id', $sn_value->id)->get();
         foreach ($st_inviteds as $st_invited_key => $st_invited_value) {
           $student = User::select('id', 'name', 'email')->where('id', $st_invited_value->student_id)->first();
@@ -105,7 +105,7 @@ class RunScheduledPosts extends Command
               'to' => $sn_value->to,
             ]);
             $posted_data[] = $posted_session;
-            event(new StatusLiked($posted_data));
+//            event(new StatusLiked($posted_data));
           }
         }
         if ($mentor_res) {
