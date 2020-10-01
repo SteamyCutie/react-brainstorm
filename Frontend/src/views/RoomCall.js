@@ -110,10 +110,18 @@ export default class RoomCall extends React.Component {
       roomName: '', 
       fullScreen: false, 
     }
+    
+    this.room_id = "";
   }
 
   componentWillMount() {
     this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');
+  }
+
+  componentDidMount() {
+    this.room_id = localStorage.getItem("room_id");
+
+    // this.register();
   }
 
   /******************************** Group Call Start ************************/
@@ -160,10 +168,10 @@ export default class RoomCall extends React.Component {
     const rand_num = Math.floor(Math.random() * 101).toString();
 
     var info = {
-      room : "aaa",
-      user_id: rand_num + "@gmail.com", 
-      user_name: "Full Developer: " + rand_num, 
-      user_avatar: "https://brainshares.s3-us-west-2.amazonaws.com/1599807220_517526_aaa.png", 
+      room : localStorage.getItem("room_id"),
+      user_id: localStorage.getItem("user_id"), 
+      user_name: localStorage.getItem("user_name"), 
+      user_avatar: localStorage.getItem("avatar"), 
       user_type: 1, 
     }
 
