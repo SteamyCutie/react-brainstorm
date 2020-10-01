@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Invited;
+use App\Models\PostedNotification;
 use App\Models\Session;
 use App\Models\Subscription;
 use Faker\Provider\Payment;
@@ -702,13 +703,13 @@ class UserController extends Controller
   function test(Request $request)
   {
     echo Carbon::now() . "\n";
-    $email = $request->email;
-    $result =User::where('email', $email)->update([
-      'name' => $request->name,
-      'provider' => $request->provider,
-      'provider_id' => $request->provider_id,
-    ]);
-    echo $result;
+//    $notifications = PostedNotification::where('notification_posted', 0)->get();
+    $posted_session['user_id'] = 1;
+    $posted_session['session_id'] = 2;
+    $posted_session['session_title'] = "asdasd";
+    $posted_session['from'] = "2020-09-28 12:32:32";
+    $posted_session['to'] = "2020-09-28 12:32:32";
+//    echo $posted_session;
   }
 }
 

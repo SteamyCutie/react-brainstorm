@@ -61,4 +61,5 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/addlibrary', 'LibraryController@addLibrary');
   Route::post('/getlibrary', 'LibraryController@getLibrary');
   Route::post('/addreport', 'ReportController@addReport');
+  Route::post('/checkednotification', 'PostedNotificationController@checkedNotification');
 });

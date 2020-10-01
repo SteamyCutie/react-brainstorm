@@ -157,6 +157,26 @@ class UserSeeder extends Seeder
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
         'sub_plan_fee' => 0, 'description' => '',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
+      ],
+      [
+        'id' => 17, 'name' => "Guy Walker", 'email' => 'guywalkerj@gmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+        'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
+        'password' => '$2y$10$rL1mWEjQs5WrepWPp/cLk.NrqWi/Bvoi5750kxLX/UhL/vMbVNDXC',
+        'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png',
+        'dob' => null, 'two_factor_code' => '0',
+        'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
+        'sub_plan_fee' => 0, 'description' => '',
+        'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
+      ],
+      [
+        'id' => 18, 'name' => "Test", 'email' => 'chornyikarandash@gmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+        'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
+        'password' => '$2y$10$K8UzdelN7Usk2y3z0GjCXubK3wYvWTdpD.g2rlI3JPD4A.sSz9vRW',
+        'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png',
+        'dob' => null, 'two_factor_code' => '0',
+        'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
+        'sub_plan_fee' => 0, 'description' => '',
+        'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ]
     ];
     
