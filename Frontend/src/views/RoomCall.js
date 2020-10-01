@@ -88,10 +88,7 @@ function Participant(user_info, isLocalVideo) {
 		console.log('Disposing participant ' + this.name);
     this.rtcPeer.dispose();
     
-    const myNode = document.getElementById("room-video-container");
-    while (myNode.firstChild) {
-      myNode.removeChild(myNode.lastChild);
-    }
+    container.parentNode.removeChild(container);
   };
   
   this.sendMessage = function(message) {
@@ -308,7 +305,7 @@ export default class RoomCall extends React.Component {
       participants: temp, 
     })
 
-    var participant = participants[request.user_id];
+    var participant = participants[request.user_id];console.log(participant);
     participant.dispose();
     delete participants[request.user_id];
   }
@@ -345,13 +342,11 @@ export default class RoomCall extends React.Component {
   }
 
   render() {
+    const session_name = localStorage.getItem("session_name");
     return (
       <div className="room-container" id="room-container">
-        <div className="room-button-container">
-          
-        </div>
         <div className="room-video-container center" id="room-video-container">
-            
+          <h1 className="room-call-session-titile">{session_name}</h1>  
         </div>
         <div id="room-member" width="20%" className="room-member">
           <List dense >
