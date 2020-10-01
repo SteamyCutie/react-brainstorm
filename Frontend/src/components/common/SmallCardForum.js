@@ -23,6 +23,12 @@ class SmallCardForum extends React.Component {
   componentWillMount() {
   }
 
+  componentDidMount() {
+    this.name = this.props.item.title;
+    
+    localStorage.setItem("session_name", this.name);
+  }
+
   toggle() {
     this.setState(prevState => {
       return { open: !prevState.open };
@@ -39,6 +45,10 @@ class SmallCardForum extends React.Component {
     const { toggle_editliveforum } = this.props;
     toggle_editliveforum(id);
     this.toggle_invite();
+  }
+
+  toggle_startliveforum() {
+    window.open("/room-call");
   }
 
   render() {
@@ -61,6 +71,9 @@ class SmallCardForum extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu>
+              <DropdownItem onClick={this.toggle_startliveforum}>
+                Start Forum
+              </DropdownItem>
               <DropdownItem onClick={() => toggle_editliveforum(id)}>
                 Invite students
               </DropdownItem>

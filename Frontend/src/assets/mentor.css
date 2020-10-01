@@ -468,3 +468,7 @@ button:focus {
     left: 0px;
     left: 660px;
 }
+
+.more-drop-down {
+    float: right;
+}
