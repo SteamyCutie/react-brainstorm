@@ -105,9 +105,7 @@ return ["
             </span>
         </div>
         <div class='facebook-icon'>
-            <a href='https://www.facebook.com/appbuscasa' target='_blank'>
-                <img src='https://buscasa360storage0010513.s3-us-west-2.amazonaws.com/facebook.png' style='width:100%;'/>
-            </a>
+        
         </div>
         <div class='block'>
             BrainsShare &copy; 2020, All rights reserved..<br>
