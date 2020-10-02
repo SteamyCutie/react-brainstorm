@@ -21,9 +21,11 @@ class SmallCard3 extends React.Component {
   componentDidMount() {
     this.mentorName = "Alex Dvornikov"; // this.mentorName = this.props.data.mentor_name;
     this.name = this.props.data.title;
+    this.room_id = this.props.data.room_id;
     
     localStorage.setItem("session_name", this.name);
     localStorage.setItem("session_mentor", this.mentorName);
+    localStorage.setItem("room_id", this.room_id);
   }
 
   edit() {

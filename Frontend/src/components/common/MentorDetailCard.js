@@ -52,14 +52,9 @@ class MentorDetailCard extends React.Component {
     });
   }
 
-  handleBookCall() {
-    this.setState({
-      modal_toggle: !this.state.modal_toggle
-    })
-  }
-
-  modal_toggle() {
-
+  handleBookSession() {
+    const { toggle } = this.props;
+    toggle();
   }
 
   toggle_openmodalreview() {
@@ -131,13 +126,10 @@ class MentorDetailCard extends React.Component {
             {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleAvailableNow()}>
               <img src={Lightening} alt="Lightening"/>
               Available now
-            </Button> : <Button disabled className="btn-mentor-detail-instant">
-              <img src={Lightening} alt="Lightening" />
-              Available now
-            </Button>}
+            </Button> : <></> }
           </Row>
           <Row className="center">
-            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookCall()}>
+            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession()}>
               <img src={Clock} alt="Clock" />
               Book a session
             </Button>
