@@ -40,7 +40,7 @@ export default class IncomingCall extends React.Component {
               <Row className="center btn-group-call">
                 <Button className="btn-video-call-decline" onClick={() => this.toggle()}>
                   <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Decline"/>
-                  Decline
+                  End
                 </Button>
               </Row>
             </div>

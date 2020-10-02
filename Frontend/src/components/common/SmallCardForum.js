@@ -25,8 +25,10 @@ class SmallCardForum extends React.Component {
 
   componentDidMount() {
     this.name = this.props.item.title;
+    this.room_id = this.props.item.room_id;
     
     localStorage.setItem("session_name", this.name);
+    localStorage.setItem("room_id", this.room_id);
   }
 
   toggle() {

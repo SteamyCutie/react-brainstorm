@@ -199,7 +199,7 @@ body {
 }
 
 .main-sidebar-mentor .nav .nav-item .nav-link.active, .main-sidebar-mentor .nav .nav-item .nav-link:hover, .main-sidebar-mentor .nav .nav-item.active, .main-sidebar-mentor .nav .nav-item:hover {
-    background-color: #00008B;
+    background-color: #018ac0;
     color: #FFFFFF;
     stroke: white !important;
     box-shadow: none;
@@ -1189,4 +1189,68 @@ body {
 
 .pagination-center {
     justify-content: center;
+}
+
+.week-style-header-available {
+    height: 50px;
+    border-top: 5px solid #04B5FA;
+    margin-right: 10px;
+    text-align: center;
+    padding: 10px;
+}
+
+.week-style-header-disable {
+    height: 50px;
+    border-top: 5px solid #999999;
+    margin-right: 10px;
+    text-align: center;
+    padding: 10px;
+}
+
+.week-style-header-available p {
+    margin-bottom: 10px;
+}
+
+.week-style-header-disable p {
+    margin-bottom: 10px;
+}
+
+.week-style-header-available .today {
+    background-color: #04B5FA;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+}
+
+.week-style-header-disable .today {
+    background-color: #999999;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+}
+
+.week-style-header-available .not-today {
+    background-color: transparent;
+    color: #333333;
+    font-weight: 600;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+}
+
+.week-style-header-disable .not-today {
+    background-color: transparent;
+    color: #333333;
+    font-weight: 600;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
 }

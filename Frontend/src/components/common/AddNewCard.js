@@ -181,8 +181,6 @@ export default class AddNewCard extends React.Component {
             {requiremessage.dnumber !== '' && <span className="require-message">{requiremessage.dnumber}</span>}
             {requiremessage.dnumber !== '' && <Cleave placeholder="1234 5678 2472 8394" className="profile-detail-input form-control is-invalid" options={{creditCard: true}} onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
             {requiremessage.dnumber === '' && <Cleave placeholder="1234 5678 2472 8394" className="profile-detail-input form-control" options={{creditCard: true}} onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>}
-            {/* <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" invalid onChange={(e) => this.onChangeNumber(e)} } */}
-            {/* {requiremessage.dnumber === '' && <FormInput id="cardnumber" className="profile-detail-input" placeholder="1234 5678 2472 8394" onChange={(e) => this.onChangeNumber(e)} value={cardinfo.number}/>} */}
           </div>
           <Row form>
             <Col md="6" className="modal-input-group-class">
@@ -190,8 +188,6 @@ export default class AddNewCard extends React.Component {
               {requiremessage.ddate !== '' && <span className="require-message">{requiremessage.ddate}</span>}
               {requiremessage.ddate !== '' && <Cleave placeholder="MM/YY" className="profile-detail-input form-control is-invalid" options={{date: true, datePattern: ['m', 'y']}} onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
               {requiremessage.ddate === '' && <Cleave placeholder="MM/YY" className="profile-detail-input form-control" options={{date: true, datePattern: ['m', 'y']}} onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
-              {/* {requiremessage.ddate !== '' && <FormInput className="profile-detail-input" placeholder="MM/YY" invalid onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>}
-              {requiremessage.ddate === '' && <FormInput className="profile-detail-input" placeholder="MM/YY" onChange={(e) => this.onChangeDate(e)} value={cardinfo.date}/>} */}
             </Col>
 
             <Col md="6" className="modal-input-group-class">
