@@ -21,6 +21,7 @@ import EmailVerify from "./views/EmailVerify"
 import ForgetPassword from "./views/ForgetPassword"
 import ResetPassword from "./views/ResetPassword"
 import EmailSent from "./views/EmailSent"
+import RoomCall from "./views/RoomCall"
 
 export default [
   {
@@ -128,6 +129,10 @@ export default [
     path: "/findmentor",
     layout: SearchLayout,
     component: SearchResult
+  },
+  {
+    path: "/room-call",
+    layout: ExtraPageLayout,
+    component: RoomCall
   }
-
 ];

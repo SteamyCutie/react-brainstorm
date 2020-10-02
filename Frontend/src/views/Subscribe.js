@@ -181,9 +181,9 @@ export default class Subscribe extends React.Component {
                     </Row>
                     <Row className="mentor-detail-subject-tag">
                       <h5 className="tag-title mentor-detail-subject-title">Level: </h5>
-                      {mentorData.expertise == 1 && <p>Entry Level</p>}
-                      {mentorData.expertise == 2 && <p>Intermediate</p>}
-                      {mentorData.expertise == 3 && <p>Expert</p>}
+                      {mentorData.expertise === 1 && <p>Entry Level</p>}
+                      {mentorData.expertise === 2 && <p>Intermediate</p>}
+                      {mentorData.expertise === 3 && <p>Expert</p>}
                     </Row>
                     <Row className="mentor-detail-subject-tag">
                       <h5 className="tag-title mentor-detail-subject-title" style={{width: 150}}>Mentor Since: </h5>
@@ -207,10 +207,7 @@ export default class Subscribe extends React.Component {
                       {mentorData.instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleAvailableNow()}>
                         <img src={Lightening} alt="Lightening"/>
                         Available now
-                      </Button> : <Button disabled className="btn-mentor-detail-instant">
-                        <img src={Lightening} alt="Lightening" />
-                        Available now
-                      </Button>}
+                      </Button> : <></>}
                     </Row>
                     <Row className="center">
                       <Button className="btn-mentor-detail-book">

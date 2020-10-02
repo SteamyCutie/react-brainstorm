@@ -15,9 +15,12 @@ class PaymentController extends Controller
     $user_id = $request['user_id'];
     $card_name = $request['card_name'];
     $card_number = $request['card_number'];
-    $card_expiration = $request['card_expiration'];
     $cvc_code = $request['cvc_code'];
     $is_primary = $request['is_primary'];
+  
+    $input_date = str_replace('/','/25/', $request['card_expiration']);
+    $temp_date = strtotime($input_date);
+    $card_expiration = date('Y-m-d', $temp_date);
     try {
       $rules = array(
         'user_id' => 'required',

@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button, Card, CardBody, CardHeader } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
 import SmallCardForum from "../components/common/SmallCardForum";
 import CreateLiveForum from "../components/common/CreateLiveForum";
 import EditLiveForum from "../components/common/EditLiveForum";
@@ -20,7 +20,8 @@ export default class ScheduleLiveForum extends React.Component {
       forumInfos: [],
       ModalOpen: false,
       ModalEditOpen: false,
-      ModalConfirmOpen: false
+      ModalConfirmOpen: false, 
+      room: '', 
     };
   }
 
@@ -195,6 +196,20 @@ export default class ScheduleLiveForum extends React.Component {
 
   removeSession() {
     localStorage.clear();
+  }
+
+  handleCreateRoom() {
+    // this.setWebsocket('wss://' + 'localhost:8443' + '/groupcall') // location.host
+    this.register();
+    window.open("/room-call");
+  }
+
+  handleJoinRoom() {
+    window.open("/room-call");
+  }
+
+  onSelectRoomChange(e) {
+
   }
 
   render() {

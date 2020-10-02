@@ -7,6 +7,7 @@ import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import WalletHeader from "../components/common/WalletHeader";
 import SmallCard from "../components/common/SmallCard";
+import AddNewBank from "../components/common/AddNewBank";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 import { getwallets } from '../api/api';
@@ -15,6 +16,7 @@ export default class MentorWallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      ModalOpen: false,
       loading: false,
       totalCnt: 0,
       smallCards: [
@@ -93,6 +95,12 @@ export default class MentorWallet extends React.Component {
 
   componentDidMount() {
   }
+
+  // toggle_add() {
+  //   this.setState({
+  //     ModalOpen: !this.state.ModalOpen
+  //   });
+  // }
 
   getHistory = async(pageNo) => {
     let param = {
@@ -191,13 +199,18 @@ export default class MentorWallet extends React.Component {
   }
 
   render() {
-    const {loading, tHistory, columns, smallCards, totalCnt} = this.state;
+    const {loading, tHistory, columns, smallCards, totalCnt, ModalOpen} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
+        {/* <AddNewBank 
+          open={ModalOpen} 
+          toggle={() => this.toggle_add()} >
+        </AddNewBank> */}
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
+            {/* <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true} click_add={() => this.toggle_add()}/> */}
             <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
           </Row>
 

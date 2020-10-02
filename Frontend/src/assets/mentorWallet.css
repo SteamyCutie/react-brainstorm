@@ -199,7 +199,7 @@
   }
 
   .main-sidebar-mentor .nav .nav-item .nav-link.active, .main-sidebar .nav .nav-item .nav-link:hover, .main-sidebar .nav .nav-item.active, .main-sidebar .nav .nav-item:hover {
-    background-color: #00008B;
+    background-color: #018ac0;
     color: #FFFFFF;
     stroke: white !important;
     box-shadow: none;
@@ -447,32 +447,32 @@
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #00008B;
-    border-color:  #00008B !important;
+    background-color: #018ac0;
+    border-color:  #018ac0 !important;
   }
   
   .btn-add-payment-mentor:hover {
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #00008B !important;
-    border-color:  #00008B !important;
+    background-color: #018ac0 !important;
+    border-color:  #018ac0 !important;
   }
   
   .btn-add-payment-mentor:focus {
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #00008B !important;
-    border-color:  #00008B !important;
+    background-color: #018ac0 !important;
+    border-color:  #018ac0 !important;
   }
   
   .btn-add-payment-mentor:active {
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #00008B !important;
-    border-color:  #00008B !important;
+    background-color: #018ac0 !important;
+    border-color:  #018ac0 !important;
   }
   
   .wallet-data-table-class {
@@ -750,10 +750,10 @@
     font-family: inherit !important;
     padding: 10px 30px !important;
     color: #FFFFFF !important;
-    background-color: #00008B !important;
+    background-color: #018ac0 !important;
     outline: none !important;
     border-radius: 5px !important;
-    border-color: #00008B !important;
+    border-color: #018ac0 !important;
   }
   
   .toolbar-week-button {
@@ -775,10 +775,10 @@
     font-family: inherit !important;
     padding: 10px 30px !important;
     color: #FFFFFF !important;
-    background-color: #00008B !important;
+    background-color: #018ac0 !important;
     outline: none !important;
     border-radius: 5px !important;
-    border-color: #00008B !important;
+    border-color: #018ac0 !important;
   }
   
   .toolbar-month-button {
@@ -798,8 +798,8 @@
     font-family: inherit !important;
     padding: 10px 30px !important;
     color: #FFFFFF !important;
-    background-color: #00008B !important;
-    border-color: #00008B !important;
+    background-color: #018ac0 !important;
+    border-color: #018ac0 !important;
     outline: none !important;
     border-radius: 5px !important;
   }

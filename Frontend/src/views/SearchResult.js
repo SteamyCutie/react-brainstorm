@@ -11,7 +11,10 @@ export default class SearchResult extends React.Component {
   constructor(props) {
     super(props);
 
-      this.state = {}
+      this.state = {
+        search_hourly: false,
+        search_level: false
+      }
     }
 
     componentWillMount() {
@@ -27,13 +30,29 @@ export default class SearchResult extends React.Component {
       // showInfomation(text);
     }
 
+    searchByHourlyRate() {
+      this.setState(prevState => {
+        return { search_hourly: !prevState.search_hourly };
+      });
+      const { searchFilter } = this.props;
+      searchFilter(this.state.search_level, !this.state.search_hourly);
+    }
+
+    searchByMentorLevel() {
+      this.setState(prevState => {
+        return { search_level: !prevState.search_level };
+      });
+      const { searchFilter } = this.props;
+      searchFilter(!this.state.search_level, this.state.search_hourly);
+    }
+
     removeSession() {
       localStorage.clear();
     }
 
     render() {
       const { item, count } = this.props;
-
+      const { search_hourly, search_level } = this.state;
       return (
         <>
           <img src={background} className="search-background" alt="background"></img>
@@ -41,14 +60,20 @@ export default class SearchResult extends React.Component {
           <span className="search-background-sub-title">Language learning and Private Lessons online</span>
           <Container fluid className="px-4 pb-4 page-basic-margin">
             <h3 className="search-title">Brainshare Mentors</h3>
-            <Button style={{marginBottom: 10}} className="search-btn">
+            { search_level ? <Button style={{marginBottom: 10}} className="search-level" onClick={() => this.searchByMentorLevel()}>
               <img src={mentorlevel} alt="MentorLevel" />
               Mentor level
-            </Button>
-            <Button style={{marginBottom: 10}} className="search-btn">
+            </Button> : <Button style={{marginBottom: 10}} className="search-btn" onClick={() => this.searchByMentorLevel()}>
+              <img src={mentorlevel} alt="MentorLevel" />
+              Mentor level
+            </Button> }
+            { search_hourly ? <Button style={{marginBottom: 10}} className="search-hourly" onClick={() => this.searchByHourlyRate()}>
               <img src={hourlyrate} alt="HourlyRate" />
               Hourly rate
-            </Button>
+            </Button> : <Button style={{marginBottom: 10}} className="search-btn" onClick={() => this.searchByHourlyRate()}>
+              <img src={hourlyrate} alt="HourlyRate" />
+              Hourly rate
+            </Button> }
           </Container>
           <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
             <Row className="no-padding">

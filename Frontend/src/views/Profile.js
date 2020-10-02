@@ -175,29 +175,30 @@ export default class MySharePage extends React.Component {
     };
   }
 
-  onChangeTags = (e) => {
-    const {selectedTags} = this.state;
-    let temp = selectedTags;
-    temp = e;
-    this.setState({selectedTags: temp});
+  // onChangeTags = (e) => {
+  //   const {selectedTags} = this.state;
+  //   let temp = selectedTags;
+  //   temp = e;
+  //   this.setState({selectedTags: temp});
 
-    if (e.length > 0) {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.tags = [];
-      for(var i = 0; i < e.length; i ++) {
-        temp1.tags.push(e[i].value);
-      }
-      this.setState({param: temp1});
-    } else {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.tags = [];
-      this.setState({param: temp1});
-    }
-  }
+  //   if (e.length > 0) {
+  //     const { param } = this.state;
+  //     let temp1 = param;
+  //     temp1.tags = [];
+  //     for(var i = 0; i < e.length; i ++) {
+  //       temp1.tags.push(e[i].value);
+  //     }
+  //     this.setState({param: temp1});
+  //   } else {
+  //     const { param } = this.state;
+  //     let temp1 = param;
+  //     temp1.tags = [];
+  //     this.setState({param: temp1});
+  //   }
+  // }
 
   onChangeUser = (e) => {
+    localStorage.setItem('user-type', !JSON.parse(localStorage.getItem('user-type')));
     const {param} = this.state;
     let temp = param;
     temp.is_mentor = !param.is_mentor;
@@ -599,7 +600,7 @@ export default class MySharePage extends React.Component {
                           <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
                           <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={param.description}/>
                         </Row>
-                        {param.is_mentor ? 
+                        {/* {param.is_mentor ? 
                           <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
                           <FormCheckbox toggle checked className="instant-call-toggle custom-toggle" onChange={(e) => this.onChangeUser(e)}>
                           </FormCheckbox><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span> : 
@@ -607,7 +608,7 @@ export default class MySharePage extends React.Component {
                           <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
                           <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
                           </FormCheckbox>
-                          <span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span>}
+                          <span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span>} */}
                         {param.is_mentor ? 
                         <>
                           <div><label htmlFor="fePassword">Tags</label></div>

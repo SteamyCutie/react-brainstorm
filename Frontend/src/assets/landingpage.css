@@ -51,8 +51,8 @@ body {
 }
 
 .btn-search-mentor {
-    background-color: #00008B !important;
-    border-color: #00008B !important;
+    background-color: #018ac0 !important;
+    border-color: #018ac0 !important;
     width: 78px !important;
 }
 
@@ -849,7 +849,7 @@ body {
     border-radius: 5px !important;
     font-size: 16px !important;
     font-weight: 500 !important;
-    padding: 5px !important;
+    padding: 8px !important;
     position: relative;
     color: white !important;
 }
@@ -1005,8 +1005,8 @@ body {
     color: #FFFFFF;
     font-size: 16px;
     font-weight: 400;
-    background-color: #00008B;
-    border-color: #00008B;
+    background-color: #018ac0;
+    border-color: #018ac0;
     padding: 15px 50px;
     border-radius: 5px;
     margin-top: 10px;
@@ -1020,8 +1020,8 @@ body {
     color: #FFFFFF;
     font-size: 16px;
     font-weight: 400;
-    background-color: #00008B;
-    border-color: #00008B;
+    background-color: #018ac0;
+    border-color: #018ac0;
     box-shadow: none;
     padding: 15px 50px;
     border-radius: 5px;
@@ -1036,8 +1036,8 @@ body {
     color: #FFFFFF;
     font-size: 16px;
     font-weight: 400;
-    background-color: #00008B !important;
-    border-color: #00008B !important;
+    background-color: #018ac0 !important;
+    border-color: #018ac0 !important;
     box-shadow: none;
     padding: 15px 50px;
     border-radius: 5px;
@@ -1149,9 +1149,9 @@ body {
 }
 
 .toggle-button-class-mentor.Mui-selected {
-    background-color: #00008B !important;
+    background-color: #018ac0 !important;
     pointer-events: none !important; 
-    border-color: #00008B !important;
+    border-color: #018ac0 !important;
     border-radius: 5px !important;
     color: #FFFFFF !important;
     text-transform: capitalize !important;
@@ -1267,5 +1267,5 @@ input.sign-has-err:focus {
 }
 
 .upload-video-photo-color-mentor {
-    color: #00008B;
+    color: #018ac0;
 }
