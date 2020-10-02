@@ -207,10 +207,7 @@ export default class Subscribe extends React.Component {
                       {mentorData.instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleAvailableNow()}>
                         <img src={Lightening} alt="Lightening"/>
                         Available now
-                      </Button> : <Button disabled className="btn-mentor-detail-instant">
-                        <img src={Lightening} alt="Lightening" />
-                        Available now
-                      </Button>}
+                      </Button> : <></>}
                     </Row>
                     <Row className="center">
                       <Button className="btn-mentor-detail-book">

@@ -592,6 +592,7 @@ class CustomMonthHeader extends React.Component {
 const CustomWeekHeader = props => {
 
   const checkLabel = () => {
+    console.log(props);
     let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let dayName = days[props.date.getDay()];
     let month = props.date.getMonth() + 1;

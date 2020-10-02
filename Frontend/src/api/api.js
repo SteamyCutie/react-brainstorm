@@ -621,4 +621,20 @@ export const checkednotification = (param) => {
     });
 }
 
+export const getnotification = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getnotification', param, {headers: header});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 //Backend Apis
