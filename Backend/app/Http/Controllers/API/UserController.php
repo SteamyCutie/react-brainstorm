@@ -6,7 +6,6 @@ use App\Models\Invited;
 use App\Models\PostedNotification;
 use App\Models\Session;
 use App\Models\Subscription;
-use Faker\Provider\Payment;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -14,11 +13,13 @@ use App\Models\User;
 use App\Models\Tag;
 use App\Models\Review;
 use App\Models\Media;
+use App\Models\Payment;
 use JWTAuth;
 use Exception;
 use Carbon\Carbon;
 use App\Http\Controllers\API\PaymentController;
 use phpDocumentor\Reflection\DocBlock\Tags\See;
+use DateTime;
 use Log;
 
 class UserController extends Controller
@@ -508,7 +509,24 @@ class UserController extends Controller
       }
       $mentor_name = $request['name'];
       $rowsPerPage = $request['rowsPerPage'];
-      $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')->where('tags_id', 'LIKE', '%' . $tag_id . '%')->where('is_mentor', 1)->paginate($rowsPerPage);
+      $filter_level = $request['filterbylevel'];
+      $filter_hourly = $request['filterbyhourly'];
+      if ($filter_level == true) {
+        $level_direction = 'DESC';
+      } else {
+        $level_direction = 'ASC';
+      }
+      if ($filter_hourly == true) {
+        $hourly_direction = 'DESC';
+      } else {
+        $hourly_direction = 'ASC';
+      }
+      $mentors = User::where('name', 'LIKE', '%' . $mentor_name . '%')
+        ->where('tags_id', 'LIKE', '%' . $tag_id . '%')
+        ->where('is_mentor', 1)
+        ->orderBy('expertise', $level_direction)
+        ->orderBy('hourly_price', $hourly_direction)
+        ->paginate($rowsPerPage);
       $result_res = [];
       if (count($mentors) > 0) {
         for ($i = 0; $i < count($mentors); $i++) {
@@ -703,13 +721,15 @@ class UserController extends Controller
   function test(Request $request)
   {
     echo Carbon::now() . "\n";
-//    $notifications = PostedNotification::where('notification_posted', 0)->get();
-    $posted_session['user_id'] = 1;
-    $posted_session['session_id'] = 2;
-    $posted_session['session_title'] = "asdasd";
-    $posted_session['from'] = "2020-09-28 12:32:32";
-    $posted_session['to'] = "2020-09-28 12:32:32";
-//    echo $posted_session;
+    $input = '09/20';
+    $input = str_replace('/','/25/', $input);
+    $date = strtotime($input);
+    $newdate = date('Y-m-d', $date);
+    
+    Payment::create([
+      'card_expiration' => $newdate,
+      'card_number' => 123123,
+    ]);
   }
 }
 

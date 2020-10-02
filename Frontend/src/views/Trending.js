@@ -4,6 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import SmallCard2 from "./../components/common/SmallCard2";
 import MentorDetailCard from "./../components/common/MentorDetailCard"
+import BookSession from "./../components/common/BookSession"
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -17,6 +18,7 @@ export default class Trending extends React.Component {
     this.mentorRef = React.createRef();
 
     this.state = {
+      ModalOpen: false, 
       totalCnt: 0,
       loading: false,
       mentors: [],
@@ -99,6 +101,12 @@ export default class Trending extends React.Component {
     localStorage.clear();
   }
 
+  toggle(id) {
+    this.setState({
+      ModalOpen: !this.state.ModalOpen,
+    });
+  }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",
@@ -151,11 +159,12 @@ export default class Trending extends React.Component {
   }
 
   render() {
-    const {loading, smallCards, mentors, totalCnt} = this.state;
+    const {loading, smallCards, mentors, totalCnt, ModalOpen} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
+        <BookSession open={ModalOpen} toggle={() => this.toggle()}></BookSession>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
@@ -182,7 +191,7 @@ export default class Trending extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} />
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={() => this.toggle()}/>
               ))}
             </Col>
           </Row>
