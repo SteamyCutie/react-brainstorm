@@ -1254,3 +1254,20 @@ body {
     border: none;
     border-radius: 50%;
 }
+
+.schedule {
+    margin-bottom: 10px;
+    background-color: white;
+    border: none;
+    color: black;
+}
+
+.schedule:active {
+    background-color: #04B5FA;
+}
+.schedule:focus {
+    background-color: #04B5FA;
+}
+.schedule:hover {
+    background-color: #04B5FA;
+}

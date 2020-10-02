@@ -52,9 +52,9 @@ class MentorDetailCard extends React.Component {
     });
   }
 
-  handleBookSession() {
+  handleBookSession(id) {
     const { toggle } = this.props;
-    toggle();
+    toggle(id);
   }
 
   toggle_openmodalreview() {
@@ -129,7 +129,7 @@ class MentorDetailCard extends React.Component {
             </Button> : <></> }
           </Row>
           <Row className="center">
-            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession()}>
+            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
               <img src={Clock} alt="Clock" />
               Book a session
             </Button>
