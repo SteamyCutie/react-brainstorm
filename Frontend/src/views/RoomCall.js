@@ -122,7 +122,7 @@ export default class RoomCall extends React.Component {
   }
 
   componentWillMount() {
-    this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');
+    this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
   }
 
   componentDidMount() {
