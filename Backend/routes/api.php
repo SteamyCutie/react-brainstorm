@@ -27,6 +27,12 @@ Route::post('/reset', 'UserController@reset');
 Route::post('/test', 'UserController@test');
 Route::post('/findmentors', 'UserController@findMentors');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
+Route::post('/createpayment', 'PaymentController@createPayment');
+Route::post('/getpayment', 'PaymentController@getPayment');
+Route::post('/testpayment', 'PaymentController@testpayment');
+Route::post('/createcustomer', 'PaymentController@createcustomer');
+Route::post('/test', 'PaymentController@test');
+
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
@@ -54,8 +60,8 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   Route::post('/setreview', 'ReviewController@setReview');
-  Route::post('/createpayment', 'PaymentController@createPayment');
-  Route::post('/getpayment', 'PaymentController@getPayment');
+//  Route::post('/createpayment', 'PaymentController@createPayment');
+//  Route::post('/getpayment', 'PaymentController@getPayment');
   Route::post('/schedulepost', 'SessionController@schedulePost');
   Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
   Route::post('/addlibrary', 'LibraryController@addLibrary');

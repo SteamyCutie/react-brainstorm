@@ -15,7 +15,10 @@ class CreatePaymentsTable extends Migration
   {
     Schema::create('payments', function (Blueprint $table) {
       $table->id();
-      $table->string('user_id')->default("");
+      $table->integer('user_id')->nullable();
+      $table->string('email')->nullable();
+      $table->string('customer_id')->default("")->unique();
+      $table->string('token')->default("");
       $table->string('card_name')->default("");
       $table->string('card_number')->default("")->unique();
       $table->integer('card_type')->default(0);

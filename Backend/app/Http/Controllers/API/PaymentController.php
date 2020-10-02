@@ -16,6 +16,7 @@ class PaymentController extends Controller
     $card_name = $request['card_name'];
     $card_number = $request['card_number'];
     $cvc_code = $request['cvc_code'];
+    $token = $request['token'];
     $is_primary = $request['is_primary'];
   
     $input_date = str_replace('/','/25/', $request['card_expiration']);
@@ -49,21 +50,30 @@ class PaymentController extends Controller
         ]);
       } else {
         $card_type = substr($card_number, 0, 1);
-        $payment = Payment::create([
-          'user_id' => $user_id,
+        $payment = Payment::where('user_id', $user_id)->update([
+//          'user_id' => $user_id,
           'card_name' => $card_name,
           'card_number' => $card_number,
           'card_expiration' => $card_expiration,
           'cvc_code' => $cvc_code,
           'card_type' => $card_type,
+          'token' => $token,
           'is_primary' => true,
         ]);
-        Payment::where('created_at', '<', Carbon::now())->update(['is_primary' => false]);
+//        Payment::where('created_at', '<', Carbon::now())->update(['is_primary' => false]);
       }
-      return response()->json([
-        'result'=> 'success',
-        'message' => 'craeted payment',
-      ]);
+      if ($payment) {
+        return response()->json([
+          'result'=> 'success',
+          'message' => 'craeted payment',
+        ]);
+      } else {
+        return response()->json([
+          'result'=> 'failed',
+          'message' => 'exist already same user',
+        ]);
+      }
+      
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
@@ -74,11 +84,10 @@ class PaymentController extends Controller
   
   public function getPayment(Request $request) {
     $user_id = $request['user_id'];
-    $user = Payment::select('card_name', 'card_expiration', 'is_primary', 'card_type')->where('user_id', $user_id)->get();
-    foreach ($user as $user_value) {
-      $user_value['expired_date'] = date('m/d', strtotime($user_value->card_expiration));
-    }
+    $user = Payment::where('user_id', $user_id)
+      ->where('card_number','!=', '')->first();
     if ($user) {
+      $user['expired_date'] = date('m/d', strtotime($user->card_expiration));
       return response()->json([
         'result'=> 'success',
         'data' => $user,
@@ -89,5 +98,36 @@ class PaymentController extends Controller
         'message' => 'user not exsited.',
       ]);
     }
+  }
+  
+  public function testpayment(Request $request) {
+    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+  
+    $result_payment = \Stripe\PaymentIntent::create([
+      'amount' => 1000,
+      'currency' => 'usd',
+      'payment_method_types' => ['card'],
+      'receipt_email' => 'paul425@protonmail.com',
+    ]);
+    
+    echo $result_payment;
+  }
+
+  public function createcustomer(Request $request) {
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+    $result = $stripe->customers->create([
+      'email' => "lexus0526@protonmail.com",
+      'description' => 'register lexus0526 customer',
+    ]);
+    echo $result->id;
+  }
+  
+  public function test(Request $request) {
+    $user_id = $request['user_id'];
+    $user = Payment::where('user_id', $user_id)
+      ->where('card_number','!=', '')->first();
+    echo $user;
   }
 }
