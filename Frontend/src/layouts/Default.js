@@ -12,7 +12,7 @@ import MainFooter from "../components/layout/MainFooter";
 import Pusher from 'pusher-js';
 import { Store } from "../flux";
 import { Dispatcher, Constants } from "../flux";
-import { schedulepost, switchuser } from '../api/api';
+import { getnotification, switchuser } from '../api/api';
 import { PUSHER_KEY } from '../common/config';
     
 export default class DefaultLayout extends React.Component {
@@ -52,6 +52,7 @@ export default class DefaultLayout extends React.Component {
     }
 
     Store.addChangeListener(this.onChange);
+    this.getNotificationsByPusher();
     this.getNotifications();
   }
 
@@ -59,7 +60,7 @@ export default class DefaultLayout extends React.Component {
     Store.removeChangeListener(this.onChange);
   }
 
-  getNotifications() {
+  getNotificationsByPusher() {
     var pusher = new Pusher(PUSHER_KEY, {
       cluster: 'mt1'
     });
@@ -77,6 +78,36 @@ export default class DefaultLayout extends React.Component {
       self.setState({notifications: temp});
       temp = [];
     });
+  }
+
+  getNotifications = async() => {
+    let param = {
+      user_id: localStorage.getItem('user_id')
+    }
+    try {
+      const result = await getnotification(param);
+      if (result.data.result === "success") {
+        this.setState({notifications: result.data.data});
+      } else if (result.data.result === "warning") {
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.removeSession();
+          window.location.href = "/";
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+    } catch(err) {
+    };
   }
 
   onChange() {

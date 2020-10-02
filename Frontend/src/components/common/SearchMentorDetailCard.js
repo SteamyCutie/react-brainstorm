@@ -120,10 +120,7 @@ class SearchMentorDetailCard extends React.Component {
             {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.toggle_login("Please Login")}>
               <img src={Lightening} alt="Lightening"/>
               Available now
-            </Button> : <Button disabled className="btn-mentor-detail-instant">
-              <img src={Lightening} alt="Lightening" />
-              Available now
-            </Button>}
+            </Button> : <></>}
           </Row>
           <Row className="center">
             <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.toggle_login("Please Login")}>

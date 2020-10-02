@@ -48,15 +48,10 @@ class SidebarNavItems extends React.Component {
         <ul style={{paddingLeft: 65}}>
           {items.map((item, idx) => (
             <li key={idx} className="search-item-list">
-              <a href="javascript:void(0)" onClick={() => this.onMenuClick(item.id)}>{item.title}</a>
+              <a href="javascript:void(0)" onClick={() => this.onMenuClick(item.id)} className="category-item">{item.title}</a>
             </li>
           ))}
         </ul>
-        {/* <Nav className="nav--no-borders flex-column">
-          {items.map((item, idx) => (
-            <SidebarNavItem key={idx} item={item} filterType={filterType} />
-          ))}
-        </Nav> */}
       </div>
     )
   }
