@@ -103,6 +103,19 @@ class UserController extends Controller
           'message' => 'Sorry, fail send mail'
         ]);
       }
+      //Begin register customer ID for stripe
+      $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+      $stripe_customer = $stripe->customers->create([
+        'email' => $email,
+        'description' => 'registered'.$name.'customer',
+        'name' => $name,
+      ]);
+      Payment::create([
+        'user_id' => $user->id,
+        'customer_id' => $stripe_customer->id,
+        'email' => $email,
+      ]);
+      //End register customer ID for stripe
       return response()->json([
         'result' => 'success',
       ]);
