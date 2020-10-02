@@ -18,6 +18,7 @@ export default class Trending extends React.Component {
     this.mentorRef = React.createRef();
 
     this.state = {
+      id: 0,
       ModalOpen: false, 
       totalCnt: 0,
       loading: false,
@@ -104,6 +105,7 @@ export default class Trending extends React.Component {
   toggle(id) {
     this.setState({
       ModalOpen: !this.state.ModalOpen,
+      id: id
     });
   }
 
@@ -159,12 +161,12 @@ export default class Trending extends React.Component {
   }
 
   render() {
-    const {loading, smallCards, mentors, totalCnt, ModalOpen} = this.state;
+    const {loading, smallCards, mentors, totalCnt, ModalOpen, id} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
-        <BookSession open={ModalOpen} toggle={() => this.toggle()}></BookSession>
+        <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
@@ -191,7 +193,7 @@ export default class Trending extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={() => this.toggle()}/>
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)}/>
               ))}
             </Col>
           </Row>
