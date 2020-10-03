@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Payment;
@@ -42,11 +43,18 @@ class PaymentController extends Controller
           'message' => $validator->messages()
         ];
       }
-      $res_exist = Payment::where(['cvc_code' => $cvc_code])->orwhere(['card_number' => $card_number])->get();
-      if (count($res_exist) > 0) {
+      $user_exist = Payment::where('user_id', $user_id)->first();
+      if (!$user_exist) {
         return response()->json([
           'result'=> 'warning',
-          'message' => 'Payment already exist.',
+          'message' => 'User does not already exist.',
+        ]);
+      }
+      $res_exist = Payment::where(['user_id' => $user_id])->where(['card_number' => $card_number])->first();
+      if ($res_exist) {
+        return response()->json([
+          'result'=> 'warning',
+          'message' => 'card number already exist.',
         ]);
       } else {
         $card_type = substr($card_number, 0, 1);
@@ -66,11 +74,6 @@ class PaymentController extends Controller
         return response()->json([
           'result'=> 'success',
           'message' => 'craeted payment',
-        ]);
-      } else {
-        return response()->json([
-          'result'=> 'failed',
-          'message' => 'exist already same user',
         ]);
       }
       
@@ -92,12 +95,11 @@ class PaymentController extends Controller
         'result'=> 'success',
         'data' => $user,
       ]);
-    } else {
-      return response()->json([
-        'result'=> 'failed',
-        'message' => 'user not exsited.',
-      ]);
     }
+    return response()->json([
+      'result'=> 'success',
+      'data' => [],
+    ]);
   }
   
   public function testpayment(Request $request) {
@@ -112,11 +114,44 @@ class PaymentController extends Controller
     
     echo $result_payment;
   }
+  
+  public function finishedsession(Request $request) {
+    $user_id = $request['user_id'];
+    
+    $pay_info = Payment::where('user_id', $user_id)->first();
+    $expir_date = $pay_info->card_expiration;
+    $temp = explode('-', $expir_date);
+    $exp_year = $temp[0];
+    $exp_month = $temp[1];
+    $temp = $pay_info['card_number'];
+    $card_cvd = $pay_info['cvc_code'];
+    $card_number = str_replace(' ','', $temp);
+    
+    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+//    $result = $stripe->paymentMethods->create([
+//      'type' => 'card',
+//      'card' => [
+//        'number' => $card_number,
+//        'exp_month' => $exp_month,
+//        'exp_year' => $exp_year,
+//        'cvc' => $card_cvd,
+//      ],
+//    ]);
+    
+    $result = $stripe->paymentMethods->create([
+      'type' => 'card',
+      'card' => [
+        'number' => '4242424242424242',
+        'exp_month' => 10,
+        'exp_year' => 2021,
+        'cvc' => '314',
+      ],
+    ]);
+    echo $result;
+  }
 
   public function createcustomer(Request $request) {
-    $stripe = new \Stripe\StripeClient(
-      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
-    );
+    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
     $result = $stripe->customers->create([
       'email' => "lexus0526@protonmail.com",
       'description' => 'register lexus0526 customer',
