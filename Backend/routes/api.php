@@ -32,7 +32,7 @@ Route::post('/getpayment', 'PaymentController@getPayment');
 Route::post('/testpayment', 'PaymentController@testpayment');
 Route::post('/createcustomer', 'PaymentController@createcustomer');
 Route::post('/test', 'PaymentController@test');
-
+Route::post('/finishedsession', 'PaymentController@finishedsession');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
@@ -62,6 +62,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setreview', 'ReviewController@setReview');
 //  Route::post('/createpayment', 'PaymentController@createPayment');
 //  Route::post('/getpayment', 'PaymentController@getPayment');
+//  Route::post('/finishedsession', 'PaymentController@finishedsession');
   Route::post('/schedulepost', 'SessionController@schedulePost');
   Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
   Route::post('/addlibrary', 'LibraryController@addLibrary');
