@@ -18,7 +18,6 @@ class MentorDetailCard extends React.Component {
 
     this.state = {
       more: false,
-      ModalOpenReview: false,
       teaches: [],
       call: false,
       registerState: 0,
@@ -57,12 +56,6 @@ class MentorDetailCard extends React.Component {
     toggle(id);
   }
 
-  toggle_openmodalreview() {
-    this.setState({
-      ModalOpenReview: !this.state.ModalOpenReview
-    });
-  }
-
   readMore() {
     this.setState({more: true});
   }
@@ -79,11 +72,9 @@ class MentorDetailCard extends React.Component {
 
   render() {
     const {id, name, avatar, tag_name, online, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
-    const {ModalOpenReview} = this.state;
 
     return (
       <div className="mentor-detail-card">
-        <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview>
         <div style={{position: "relative"}} className="mentor-detail-avatar">
             {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
             {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
@@ -132,12 +123,6 @@ class MentorDetailCard extends React.Component {
             <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
               <img src={Clock} alt="Clock" />
               Book a session
-            </Button>
-          </Row>
-          <Row className="center">
-            <Button className="btn-mentor-detail-book" onClick={() => this.toggle_openmodalreview()}>
-              <img src={Clock} alt="Clock" />
-              Review Mentor
             </Button>
           </Row>
         </div>
