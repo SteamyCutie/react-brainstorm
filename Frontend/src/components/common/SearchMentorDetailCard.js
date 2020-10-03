@@ -52,9 +52,9 @@ class SearchMentorDetailCard extends React.Component {
 
   }
 
-  toggle_login(text) {
-    // const { toggle_login } = this.props;
-    // toggle_login(text);
+  toggle_signin() {
+    const { toggle_signin } = this.props;
+    toggle_signin();
   }
 
   readMore() {
@@ -117,21 +117,15 @@ class SearchMentorDetailCard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.toggle_login("Please Login")}>
+            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.toggle_signin()}>
               <img src={Lightening} alt="Lightening"/>
               Available now
             </Button> : <></>}
           </Row>
           <Row className="center">
-            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.toggle_login("Please Login")}>
+            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.toggle_signin()}>
               <img src={Clock} alt="Clock" />
               Book a session
-            </Button>
-          </Row>
-          <Row className="center">
-            <Button className="btn-mentor-detail-book" onClick={() => this.toggle_login("Please Login")}>
-              <img src={Clock} alt="Clock" />
-              Review Mentor
             </Button>
           </Row>
         </div>

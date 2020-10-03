@@ -110,8 +110,14 @@ export default class Notifications extends React.Component {
         }
       }
       // this.setState({loading: false});
+      this.setState({
+        visible: !this.state.visible,
+      });
     } catch(err) {
       // this.setState({loading: false});
+      this.setState({
+        visible: !this.state.visible,
+      });
       this.showFail("Something Went wrong");
     };
   }

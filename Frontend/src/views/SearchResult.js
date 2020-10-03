@@ -2,6 +2,8 @@ import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 import SearchMentorDetailCard from "../components/common/SearchMentorDetailCard"
+import SignIn from "../components/landingpage/SignIn"
+import SignUp from "../components/landingpage/SignUp"
 
 import background from "../images/background.jpg"
 import mentorlevel from "../images/mentor-level.svg"
@@ -10,8 +12,11 @@ import hourlyrate from "../images/hourly-rate.svg"
 export default class SearchResult extends React.Component {
   constructor(props) {
     super(props);
-
+      this.signInElement = React.createRef();
+      this.signUpElement = React.createRef();
       this.state = {
+        signInOpen: false,
+        signUpOpen: false,
         search_hourly: false,
         search_level: false
       }
@@ -25,9 +30,36 @@ export default class SearchResult extends React.Component {
       pagination(v);
     }
 
-    toggle_login(text) {
-      // const { showInfomation } = this.props;
-      // showInfomation(text);
+    toggle_signin() {
+      this.setState({
+        signInOpen: !this.state.signInOpen
+      });
+      if(!this.state.signInOpen) {
+        this.signInElement.current.clearValidationErrors();
+      }
+    }
+
+    toggle_signup() {
+      this.setState({
+        signInOpen: !this.state.signInOpen
+      });
+      if(!this.state.signInOpen) {
+        this.signInElement.current.clearValidationErrors();
+      }
+    }
+
+    toggle_modal() {
+      this.setState({
+        signInOpen: !this.state.signInOpen,
+        signUpOpen: !this.state.signUpOpen
+      });
+      if(!this.state.signInOpen) {
+        this.signInElement.current.clearValidationErrors();
+      }
+
+      if(!this.state.signUpOpen) {
+        this.signUpElement.current.clearValidationErrors();
+      }
     }
 
     searchByHourlyRate() {
@@ -52,9 +84,11 @@ export default class SearchResult extends React.Component {
 
     render() {
       const { item, count } = this.props;
-      const { search_hourly, search_level } = this.state;
+      const { search_hourly, search_level, signInOpen, signUpOpen } = this.state;
       return (
         <>
+          <SignIn ref={this.signInElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
+          <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()}/>
           <img src={background} className="search-background" alt="background"></img>
           <span className="search-background-title">Share your knowledge</span>
           <span className="search-background-sub-title">Language learning and Private Lessons online</span>
@@ -79,7 +113,7 @@ export default class SearchResult extends React.Component {
             <Row className="no-padding">
               <Col lg="12" md="12" sm="12">
                 {item.map((data, idx) =>(
-                  <SearchMentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} toggle_login={(text) => this.toggle_login(text)}/>
+                  <SearchMentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} toggle_signin={() => this.toggle_signin()}/>
                 ))}
               </Col>
             </Row>
