@@ -30,9 +30,9 @@ export class Loginbyfacebook extends Component {
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
         if (result.data.user.is_mentor === 1)
-          window.location.href = "/mentorSession";
+          window.location.href = "/mentorDashboard";
         else
-          window.location.href = "/studentSession";
+          window.location.href = "/studentDashboard";
       } else {
         errorOccur(result.data.message);
       }

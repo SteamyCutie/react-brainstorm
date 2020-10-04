@@ -435,6 +435,7 @@ export default class EditLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
             <label htmlFor="feEmail">Tags</label>
             <MultiSelect
+              hasSelectAll={false}
               options={tags}
               value={selectedTags}
               onChange={(e) => this.setSelectedTags(e)}
@@ -444,6 +445,7 @@ export default class EditLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
             <label htmlFor="feEmail">Students</label> 
             <MultiSelect
+              hasSelectAll={false}            
               options={students}
               value={selectedUsers}
               onChange={(e) => this.setSelectedUsers(e)}

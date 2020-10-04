@@ -241,7 +241,6 @@ export default class StudentWallet extends React.Component {
   }
 
   getPayment = async() => {
-    const { paymentCard } = this.state;
     let param = {
       user_id: localStorage.getItem('user_id')
     }
@@ -390,7 +389,7 @@ export default class StudentWallet extends React.Component {
                   key={idx}
                   title={card.card_name}
                   expireDate={card.expired_date}
-                  image={card.image}
+                  type={card.card_type}
                   isPrimary={card.is_primary}
                 />
             ))}

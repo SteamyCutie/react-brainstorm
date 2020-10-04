@@ -24,9 +24,9 @@ export default class DefaultLayout extends React.Component {
     if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentorSession") {
+      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentorDashboard") {
         filterType = true;
-      } else if (props.location.pathname === "/studentWallet" || props.location.pathname === "/studentSession") {
+      } else if (props.location.pathname === "/studentWallet" || props.location.pathname === "/studentDashboard") {
         filterType = false;
       }
     }
@@ -38,7 +38,8 @@ export default class DefaultLayout extends React.Component {
       mentorUrl: Store.getMentorHistory(),
       studentUrl: Store.getStudentHistory(),
       noFooter: true,
-      notifications: []
+      notifications: [],
+      searchKey: {}
     }
 
     this.handleClick = this.handleClick.bind(this);
@@ -115,9 +116,9 @@ export default class DefaultLayout extends React.Component {
     if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentorSession") {
+      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentorDashboard") {
         filterType = true;
-      } else if (this.props.location.pathname === "/studentWallet" || this.props.location.pathname === "/studentSession") {
+      } else if (this.props.location.pathname === "/studentWallet" || this.props.location.pathname === "/studentDashboard") {
         filterType = false;
       }
     }
@@ -179,6 +180,13 @@ export default class DefaultLayout extends React.Component {
     };
   }
 
+  handleSearch(searchKey) {
+    console.log(searchKey);
+    this.setState({
+      searchKey: searchKey
+    })
+  }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",
@@ -236,6 +244,9 @@ export default class DefaultLayout extends React.Component {
 
   render() {
     const { children } = this.props;
+    if ('tags' in this.state.searchKey && this.state.searchKey.tags.length > 0) {
+      children.props.location.searchKey = this.state.searchKey;
+    }
     const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
 
     return (
@@ -249,7 +260,7 @@ export default class DefaultLayout extends React.Component {
               className="main-content p-0 main-content-class"
               tag="main"
             >
-              {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications}/>}
+              {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications} toggle_search={(searchkey) => this.handleSearch(searchkey)}/>}
               {filterType && <SubMainNavbar/>}
               {children}
               {!noFooter && <MainFooter />}

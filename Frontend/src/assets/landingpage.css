@@ -1269,3 +1269,12 @@ input.sign-has-err:focus {
 .upload-video-photo-color-mentor {
     color: #018ac0;
 }
+
+.top-navbar-search {
+    width: 85%;
+    padding-top: 5px;
+}
+
+.top-navbar-search .dropdown-container {
+    height: 49px;
+}
