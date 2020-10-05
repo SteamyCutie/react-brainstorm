@@ -9,7 +9,7 @@ import {
   Button
 } from "shards-react";
 import MultiSelect from "react-multi-select-component";
-import { gettags } from '../../../api/api';
+import { gettags, signout } from '../../../api/api';
 
 import SearchIcon from '../../../images/SearchIcon.svg'
 
@@ -20,7 +20,7 @@ export default class NavbarSearch extends React.Component{
     super(props);
     this.state = {
       searchKey: (localStorage.getItem('searchKey') === null || localStorage.getItem('searchKey') === undefined) ? "" : localStorage.getItem('searchKey'),
-      selectedTags: [],
+      selectedTags: (localStorage.getItem('search-category') === null ? [] : JSON.parse(localStorage.getItem('search-category'))),
       tags: [],
       param: {
         tags: []
@@ -57,14 +57,11 @@ export default class NavbarSearch extends React.Component{
       } else if (result.data.result === "warning") {
       } else {
         if (result.data.message === "Token is Expired") {
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -78,32 +75,46 @@ export default class NavbarSearch extends React.Component{
     const {selectedTags} = this.state;
     let temp = selectedTags;
     temp = e;
+    localStorage.removeItem('search-category');
+    localStorage.setItem('search-category', JSON.stringify(temp));
     this.setState({selectedTags: temp});
+  }
 
-    if (e.length > 0) {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.tags = [];
-      for(var i = 0; i < e.length; i ++) {
-        temp1.tags.push(e[i].value);
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
       }
-      this.setState({param: temp1});
-    } else {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.tags = [];
-      this.setState({param: temp1});
+    } catch(error) {
+
     }
   }
 
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   onSearch() {
     const { toggle_search } = this.props;
-    const { param } = this.state;
-    toggle_search(param)
+    const { selectedTags } = this.state;
+    toggle_search(selectedTags)
   }
 
   render() {

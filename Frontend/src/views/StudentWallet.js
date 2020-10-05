@@ -9,7 +9,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getwallets, getpayment } from '../api/api';
+import { getwallets, getpayment, paybysession, signout } from '../api/api';
 import { Badge } from "shards-react";
 
 export default class StudentWallet extends React.Component {
@@ -196,7 +196,40 @@ export default class StudentWallet extends React.Component {
   }
 
   pay = async() => {
-    
+    let param = {
+      card_number: '4242 4242 4242 4242',
+      amount: 100
+    }
+    try {
+      this.setState({loading: true});
+      const result = await paybysession(param);
+      if (result.data.result === "success") {
+        this.setState({
+          loading: false,
+          tHistory: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
   }
 
   getHistory = async(pageNo) => {
@@ -219,16 +252,13 @@ export default class StudentWallet extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -280,16 +310,13 @@ export default class StudentWallet extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -305,8 +332,35 @@ export default class StudentWallet extends React.Component {
     this.getHistory(value);
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   showSuccess(text) {

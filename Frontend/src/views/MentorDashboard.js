@@ -1,20 +1,25 @@
 import React from "react";
-import { Container, Row, Col } from "shards-react";
+import { Container, Row, Col, Card, CardBody } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
 import SmallCard2 from "./../components/common/SmallCard2";
-import MentorDetailCard from "./../components/common/MentorDetailCard"
-import BookSession from "./../components/common/BookSession"
+import MentorDetailCard from "./../components/common/MentorDetailCard";
+import MentorVideo from "./../components/common/MentorVideo";
+import BookSession from "./../components/common/BookSession";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
-import { getallmentors } from '../api/api';
+import { findmentorsbytags, signout } from '../api/api';
+
+import avatar from "../images/avatar.jpg"
+import SubscriperImg from "../images/Users.svg"
+import LinkImg from "../images/Link.svg"
+
 export default class MentorDashboard extends React.Component {
   constructor(props) {
     super(props);
-
     this.mentorRef = React.createRef();
 
     this.state = {
@@ -23,50 +28,39 @@ export default class MentorDashboard extends React.Component {
       totalCnt: 0,
       loading: false,
       mentors: [],
-      smallCards: [
-        {
-          title: "Act science",
-          content: "Mentors",
-          image: require ("../images/act-science.svg")
-        },
-        {
-          title: "English",
-          content: "Mentors",
-          image: require("../images/english.svg")
-        },
-        {
-          title: "Cooking",
-          content: "Mentors",
-          image: require("../images/cooking.svg")
-        }
-      ],
     };
 
     this.sendUser = this.sendUser.bind(this);
   }
 
   componentWillMount() {
-   this.getMentors(1);
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, 1);
   }
-
-  // shouldComponentUpdate(nextProps) {
-    
-  //   console.log(nextProps, '++++++++======');
-  // }
 
   sendUser(to, avatar, name) {
     this.props.setUser(to, avatar, name);
   }
 
-  getMentors = async(pageNo) => {
+  getMentors = async(category, pageNo) => {
     let param = {
-      email: localStorage.getItem('email'),
+      user_id: localStorage.getItem('user_id'),
+      tags_id: category,
       page: pageNo,
       rowsPerPage: 10
     }
+
     try {
       this.setState({loading: true});
-      const result = await getallmentors(param);
+      const result = await findmentorsbytags(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
@@ -78,16 +72,13 @@ export default class MentorDashboard extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -100,11 +91,47 @@ export default class MentorDashboard extends React.Component {
   }
 
   onChangePagination(e, value) {
-    this.getMentors(value);
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, value);
+  }
+
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
   }
 
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   toggle(id) {
@@ -166,47 +193,51 @@ export default class MentorDashboard extends React.Component {
   }
 
   render() {
-    const {loading, smallCards, mentors, totalCnt, ModalOpen, id} = this.state;
-    console.log(this.props, '+++++++++');
+    const {loading, mentors, totalCnt, ModalOpen, id} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
-        <Container fluid className="main-content-container px-4 main-content-container-class">
-          <Row noGutters className="page-header py-4">
-            <Col xs="12" sm="12" className="page-title">
-              <h3>Trending</h3>
-            </Col>
-          </Row>
-          <Row>
-            <div className="card-container">
-            {smallCards.map((card, idx) => (
-                <SmallCard2
-                  key={idx}
-                  title={card.title}
-                  content={card.content}
-                  image={card.image}
-                />
-            ))}
-            </div>
-          </Row>
-          <Row noGutters className="page-header py-4">
-            <Col xs="12" sm="12" className="page-title">
-              <h3>Top Brainsshare mentors</h3>
-            </Col>
-          </Row>
-          <Row className="no-padding">
-            <Col lg="12" md="12" sm="12">
-              {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)}/>
-              ))}
-            </Col>
-          </Row>
-          {mentors.length > 0 && <Row className="pagination-center">
-            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
-          </Row>}
-        </Container>
+          <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
+            <Row noGutters className="page-header py-4">
+              <Col className="page-title">
+                <h3>My share page</h3>
+              </Col>
+            </Row>
+            
+            {mentors && mentors.map((mentor, idx) => 
+            <Card small className="share-page-card" style={{marginBottom: 30}}>
+              <CardBody>
+                <Row>
+                  <Col xl="3" className="subscription-mentor-detail">
+                    <div>
+                      {mentor.avatar && <img className="avatar" src={mentor.avatar} alt="avatar"/>}
+                      {!mentor.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
+                      <div style={{display: "flex", padding: "20px 0px"}}>
+                        <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
+                        <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
+                        <h6 className="no-margin"style={{fontWeight: "bold"}}>{mentor.sub_count}</h6>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col xl="9" lg="12" className="subscription-mentor-videos">
+                    <h6 className="profile-link-url">
+                      <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
+                      <a href="javascript:void(0)" style={{color: '#018ac0'}}>www.brainsshare.com/kiannapress</a>
+                    </h6>
+                    {mentor.share_info && mentor.share_info.map((item, idx) => 
+                      <MentorVideo key={idx} item={item} />
+                    )}
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>   
+            )} 
+            {mentors.length > 0 && <Row className="pagination-center">
+              <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+            </Row>}
+          </Container>
       </>
     )
   };

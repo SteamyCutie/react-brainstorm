@@ -60,7 +60,7 @@ export default class SubMainNavbar extends React.Component {
                 }
               </div>
               <div className="margin-right-class">
-                <a href="javascript:void(0)" onClick={() => this.toggle_openmodal()} className={JSON.parse(localStorage.getItem('user-type')) ? "upload-video-photo-color-mentor" : "upload-video-photo-color" }>Upload photo/video</a>
+                <a href="javascript:void(0)" onClick={() => this.toggle_openmodal()} className={JSON.parse(localStorage.getItem('user-type')) ? "upload-video-photo-color-mentor" : "upload-video-photo-color" }>Upload video</a>
               </div>
             </div>
           </Navbar>

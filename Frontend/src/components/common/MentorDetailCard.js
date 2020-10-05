@@ -71,15 +71,15 @@ class MentorDetailCard extends React.Component {
   }
 
   render() {
-    const {id, name, avatar, tag_name, online, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
+    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
 
     return (
       <div className="mentor-detail-card">
         <div style={{position: "relative"}} className="mentor-detail-avatar">
-            {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
-            {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
+          {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
+          {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
           {
-            online && <img src={Online} alt="Online" className="mentor-detail-avatar-status" />
+            status === 1 && <div className="carousel-component-online-class"></div>
           }
         </div>
         <div className="mentor-detail-desc">

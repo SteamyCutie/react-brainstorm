@@ -2,7 +2,8 @@ import React from "react";
 import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
 import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
-import { createpayment } from '../../api/api';
+import { createpayment, signout } from '../../api/api';
+import { REACT_APP_STRIPE_KEY } from '../../common/config';
 import Close from '../../images/Close.svg'
 
 export default class AddNewCard extends React.Component {
@@ -88,66 +89,114 @@ export default class AddNewCard extends React.Component {
       card_name: cardinfo.name,
       card_number: cardinfo.number,
       card_expiration: cardinfo.date,
-      cvc_code: cardinfo.code
+      cvc_code: cardinfo.code,
     }
     try {
       this.setState({loading: true});
-      const result = await createpayment(param);
-      if (result.data.result === "success") {
-        this.setState({
-          loading: false,
-        });
-        toggle_success("Add Payment Success");
-        window.location.href = "/studentWallet";
-      } else if (result.data.result === "warning") {
-        toggle_warning(result.data.message);
-      } else {
-        if (result.data.type === "require") {
-          const {requiremessage} = this.state;
-          let temp = requiremessage;
-          if (result.data.message.card_name) {
-            temp.dname = result.data.message.card_name[0];
-          }
-          if (result.data.message.card_number) {
-            temp.dnumber = result.data.message.card_number[0];
-          }
-          if (result.data.message.cvc_code) {
-            temp.dcode = result.data.message.cvc_code[0];
-          }
-          if (result.data.message.card_expiration) {
-            temp.ddate = result.data.message.card_expiration[0];
-          }
-          
-          this.setState({
-            requiremessage: temp
-          });
-        } else {
-          if (result.data.message === "Token is Expired") {
-            toggle_fail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
-          } else if (result.data.message === "Token is Invaild") {
-            toggle_fail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
-          } else if (result.data.message === "Authorization Token not found") {
-            toggle_fail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
-          } else {
-            toggle_fail(result.data.message);
-          }
-        }
+      const stripe_key = window.Stripe.setPublishableKey(REACT_APP_STRIPE_KEY);
+
+      const exp_month = cardinfo.date.split('/')[0];
+      const exp_year = cardinfo.date.split('/')[1];
+      const card_info = {
+        number: cardinfo.number,
+        exp_month: exp_month,
+        exp_year: exp_year,
+        cvc: cardinfo.code
       }
-      this.setState({loading: false});
+
+      window.Stripe.createToken(card_info, async (req, res) => {
+        if (res.error) {
+          if (res.error.code === 'invalid_number' || res.error.code === 'incorrect_number')
+            toggle_fail(res.error.code);
+          if (res.error.code === 'incorrect_cvc' || res.error.code === 'invaild_cvc')
+            toggle_fail(res.error.code);
+          if (res.error.code === 'invalid_expiry_month' || res.error.code === 'invalid_expiry_year')
+            toggle_fail(res.error.code);
+        } else if (res.id) {
+          param = { ...param, token: res.id };
+
+          const result = await createpayment(param);
+          if (result.data.result === "success") {
+            this.setState({
+              loading: false,
+            });
+            toggle_success("Add Payment Success");
+            window.location.href = "/studentWallet";
+          } else if (result.data.result === "warning") {
+            toggle_warning(result.data.message);
+          } else {
+            if (result.data.type === "require") {
+              const {requiremessage} = this.state;
+              let temp = requiremessage;
+              if (result.data.message.card_name) {
+                temp.dname = result.data.message.card_name[0];
+              }
+              if (result.data.message.card_number) {
+                temp.dnumber = result.data.message.card_number[0];
+              }
+              if (result.data.message.cvc_code) {
+                temp.dcode = result.data.message.cvc_code[0];
+              }
+              if (result.data.message.card_expiration) {
+                temp.ddate = result.data.message.card_expiration[0];
+              }
+              
+              this.setState({
+                requiremessage: temp
+              });
+            } else {
+              if (result.data.message === "Token is Expired") {
+                toggle_fail(result.data.message);
+                this.signout();
+              } else if (result.data.message === "Token is Invaild") {
+                toggle_fail(result.data.message);
+                this.signout();
+              } else if (result.data.message === "Authorization Token not found") {
+                toggle_fail(result.data.message);
+                this.signout();
+              } else {
+                toggle_fail(result.data.message);
+              }
+            }
+          }
+          this.setState({loading: false});
+        }
+      })
     } catch(err) {
       this.setState({loading: false});
       toggle_fail("Something Went wrong");
     }; 
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   handleInputFocus = (e) => {

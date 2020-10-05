@@ -3,7 +3,7 @@ import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSele
 import MultiSelect from "react-multi-select-component";
 import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
-import { createforum, gettags, getallstudents } from '../../api/api';
+import { createforum, gettags, getallstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 
 import Close from '../../images/Close.svg'
@@ -95,16 +95,13 @@ export default class CreateLiveForum extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           toggle_createfail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           toggle_createfail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           toggle_createfail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           toggle_createfail(result.data.message);
         }
@@ -139,16 +136,13 @@ export default class CreateLiveForum extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           toggle_createfail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token in Invalid") {
           toggle_createfail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           toggle_createfail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           toggle_createfail(result.data.message);
         }
@@ -191,16 +185,13 @@ export default class CreateLiveForum extends React.Component {
         } else {
           if (result.data.message === "Token is Expired") {
             toggle_createfail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Token is Invalid") {
             toggle_createfail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Authorization Token not found") {
             toggle_createfail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else {
             toggle_createfail("Create Forum Fail");
           }
@@ -213,8 +204,35 @@ export default class CreateLiveForum extends React.Component {
     }
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   onChangeDay = (e) => {

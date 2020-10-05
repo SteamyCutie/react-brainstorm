@@ -1278,3 +1278,11 @@ input.sign-has-err:focus {
 .top-navbar-search .dropdown-container {
     height: 49px;
 }
+
+.top-navbar-search .dropdown-heading-value {
+    padding-top: 7px;
+}
+
+.top-navbar-search svg {
+    padding-top: 7px;
+}

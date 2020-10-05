@@ -12,7 +12,7 @@ import MainFooter from "../components/layout/MainFooter";
 import Pusher from 'pusher-js';
 import { Store } from "../flux";
 import { Dispatcher, Constants } from "../flux";
-import { getnotification, switchuser } from '../api/api';
+import { getnotification, switchuser, signout } from '../api/api';
 import { PUSHER_KEY } from '../common/config';
     
 export default class DefaultLayout extends React.Component {
@@ -93,16 +93,13 @@ export default class DefaultLayout extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -159,16 +156,13 @@ export default class DefaultLayout extends React.Component {
       } else { 
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invaild") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -181,11 +175,16 @@ export default class DefaultLayout extends React.Component {
   }
 
   handleSearch(searchKey) {
-    console.log(searchKey);
-    this.setState({
-      searchKey: searchKey
-    })
-  }
+    // this.setState({
+    //   searchKey: searchKey
+    // });
+
+    const { history } = this.props;
+    if (JSON.parse(localStorage.getItem('user-type')))
+      history.push("/mentorDashboard");
+    else 
+      history.push("/studentDashboard");
+  } 
 
   showSuccess(text) {
     store.addNotification({
@@ -238,16 +237,40 @@ export default class DefaultLayout extends React.Component {
     });
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   render() {
     const { children } = this.props;
-    if ('tags' in this.state.searchKey && this.state.searchKey.tags.length > 0) {
-      children.props.location.searchKey = this.state.searchKey;
-    }
-    const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
+    const { noFooter, noNavbar, filterType, notifications, loading, searchKey } = this.state;
 
     return (
       <>

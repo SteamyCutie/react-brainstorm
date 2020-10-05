@@ -28,6 +28,21 @@ export const signin = (param) => {
     });
 };
 
+export const signout = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/signout', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const signbysocial = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -148,6 +163,17 @@ export const findmentors = (param) => {
     });
 }
 
+export const findmentorsbycategory = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/findmentorsbycategory', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const featuredmentors = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -167,6 +193,21 @@ export const switchuser = (param) => {
                 'Authorization': 'bearer ' + token
             }
             const response = await axios.post(SERVER_URL+'/api/switchuser', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const findmentorsbytags = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/findmentorsbytags', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);
@@ -546,6 +587,22 @@ export const getpayment = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
             const response = await axios.post(SERVER_URL+'/api/getpayment', param, {headers: header});
+            resolve(response);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export const paybysession = (param) => {
+    const token = localStorage.getItem('token');
+    const header = {
+        'Authorization': 'bearer ' + token,
+    }
+
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/paybysession', param, {headers: header});
             resolve(response);
         } catch (error) {
             reject(error);
