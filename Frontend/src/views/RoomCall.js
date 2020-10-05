@@ -15,7 +15,6 @@ import MuteVideoImg from '../images/mute-video.svg'
 import ChatImg from '../images/room-chat.svg'
 import ScreenshareImg from '../images/room-screenshare.svg'
 import AddUserImg from '../images/room-adduser.svg'
-import spinner from '../images/spinner.gif'
 
 import { Height } from "@material-ui/icons";
 
@@ -45,7 +44,7 @@ function Participant(user_info, isLocalVideo) {
   if(isLocalVideo) {
     document.getElementById('room-video-container').appendChild(container);
   } else {
-    span.classList.add("room-participant-name");
+    span.classList.add("room-participant-name")
     span.appendChild(document.createTextNode(this.user_name));
     document.getElementById('room-member-video').appendChild(container);
   }

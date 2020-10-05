@@ -409,7 +409,14 @@
   right: 0px;
   padding-top: 20px;
   padding-right: 50px;
+  padding-bottom: 110px;
   background-color: #00000000;
+  overflow: auto;
+}
+
+.room-member-video::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* Chrome/Safari/Webkit */
 }
 
 .room-participant-video {
@@ -426,6 +433,6 @@
   padding: 5px 10px;
   text-align: center;
   /* background-color: #04B5FAB0; */
-  color: white;
+  color: #04B5FA;
   border-radius: 4px;
 }
