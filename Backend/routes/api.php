@@ -26,6 +26,7 @@ Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
 //Route::post('/test', 'UserController@test');
 Route::post('/findmentors', 'UserController@findMentors');
+Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
 
 Route::post('/createpayment', 'PaymentController@createPayment');
@@ -37,6 +38,7 @@ Route::post('/testpayment', 'PaymentController@testpayment');
 Route::post('/createcustomer', 'PaymentController@createcustomer');
 Route::post('/test', 'PaymentController@test');
 Route::post('/finishedsession', 'PaymentController@finishedsession');
+
 
 
 Route::group(['middleware' => 'jwt.verify'], function () {
