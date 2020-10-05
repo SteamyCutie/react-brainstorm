@@ -52,6 +52,9 @@ class RunScheduledPosts extends Command
       Log::info(['notifications: ' , count($notifications)]);
       event(new StatusLiked($notifications));
     }
+    //Begin not register email_verify delete
+    User::where('email_verified_at', null)->delete();
+    //End not register email_verify delete
     $send_mail = new Controller;
     $subject = "Welcome to BrainsShare!";
     $fronturl = env("FRONT_URL");

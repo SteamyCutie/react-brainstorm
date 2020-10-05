@@ -49,7 +49,7 @@ class UserController extends Controller
           // ], 401);
         ]);
       }
-      User::where('email', $request->email)->update(['origin_password' => "", 'remember_token' => ""]);
+      User::where('email', $request->email)->update(['origin_password' => "", 'remember_token' => "", 'status' => 1]);
       return response()->json([
         'result' => 'success',
         'token' => $token,
@@ -110,11 +110,13 @@ class UserController extends Controller
         'description' => 'registered'.$name.'customer',
         'name' => $name,
       ]);
-      Payment::create([
-        'user_id' => $user->id,
-        'customer_id' => $stripe_customer->id,
-        'email' => $email,
-      ]);
+//      Payment::create([
+//        'user_id' => $user->id,
+//        'customer_id' => $stripe_customer->id,
+//        'email' => $email,
+//      ]);
+      $user->customer_id = $stripe_customer->id;
+      $user->save();
       //End register customer ID for stripe
       return response()->json([
         'result' => 'success',
@@ -145,6 +147,7 @@ class UserController extends Controller
           // ], 401);
         ]);
       }
+      User::where('email', $email)->update(['status' => 1]);
       return response()->json([
         'result' => 'success',
         'token' => $token,
@@ -167,6 +170,7 @@ class UserController extends Controller
           ]);
         }
         $user = User::where('email', $email)->first();
+        User::where('email', $email)->update(['status' => 1]);
         return response()->json([
           'result' => 'success',
           'token' => $token,
@@ -192,6 +196,7 @@ class UserController extends Controller
           ]);
         }
         $user = User::where('id', $user->id)->first();
+        User::where('email', $email)->update(['status' => 1]);
         return response()->json([
           'result' => 'success',
           'token' => $token,
@@ -506,6 +511,8 @@ class UserController extends Controller
   
   public function signout(Request $request)
   {
+    $email = $request['email'];
+    User::where('email', $email)->update(['status' => 0]);
     return response()->json([
       'result' => 'success',
       'message' => 'logout successfully'

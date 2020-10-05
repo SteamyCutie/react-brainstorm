@@ -40,6 +40,7 @@ class CreateUsersTable extends Migration
       $table->string('origin_password')->default("");
       $table->enum('provider', ['Manual', 'Google', 'Facebook']);
       $table->string('provider_id')->nullable();
+      $table->string('customer_id')->nullable();
       $table->rememberToken();
       $table->timestamps();
     });
