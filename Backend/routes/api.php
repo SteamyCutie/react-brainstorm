@@ -24,9 +24,22 @@ Route::post('/signbysocial', 'UserController@signBySocial');
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
 Route::post('/reset', 'UserController@reset');
-Route::post('/test', 'UserController@test');
+//Route::post('/test', 'UserController@test');
 Route::post('/findmentors', 'UserController@findMentors');
+Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
+
+Route::post('/createpayment', 'PaymentController@createPayment');
+Route::post('/paybysession', 'PaymentController@payBySession');
+Route::post('/createsource', 'PaymentController@createsource');
+Route::post('/removesource', 'PaymentController@removesource');
+Route::post('/getpayment', 'PaymentController@getPayment');
+Route::post('/testpayment', 'PaymentController@testpayment');
+Route::post('/createcustomer', 'PaymentController@createcustomer');
+Route::post('/test', 'PaymentController@test');
+Route::post('/finishedsession', 'PaymentController@finishedsession');
+
+
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
@@ -54,8 +67,9 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   Route::post('/setreview', 'ReviewController@setReview');
-  Route::post('/createpayment', 'PaymentController@createPayment');
-  Route::post('/getpayment', 'PaymentController@getPayment');
+//  Route::post('/createpayment', 'PaymentController@createPayment');
+//  Route::post('/getpayment', 'PaymentController@getPayment');
+//  Route::post('/finishedsession', 'PaymentController@finishedsession');
   Route::post('/schedulepost', 'SessionController@schedulePost');
   Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
   Route::post('/addlibrary', 'LibraryController@addLibrary');
