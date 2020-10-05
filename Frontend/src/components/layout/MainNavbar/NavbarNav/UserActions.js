@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getuserinfo } from '../../../../api/api';
+import { getuserinfo, signout } from '../../../../api/api';
 import defaultAvatar from "../../../../images/avatar.jpg"
 import {
   Dropdown,
@@ -39,16 +39,13 @@ export default class UserActions extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.messasge);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -64,13 +61,35 @@ export default class UserActions extends React.Component {
     });
   }
 
-  logout() {
-    localStorage.removeItem('email');
-    window.location.href = "/";
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
   }
 
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   showFail(text) {
@@ -122,7 +141,7 @@ export default class UserActions extends React.Component {
               <i className="material-icons">&#xE7FD;</i> Profile
             </DropdownItem>
             <DropdownItem divider />
-            <DropdownItem className="text-danger" onClick={() => this.logout()}>
+            <DropdownItem className="text-danger" onClick={() => this.signout()}>
               <i className="material-icons text-danger">&#xE879;</i> Logout
             </DropdownItem>
           </DropdownMenu>

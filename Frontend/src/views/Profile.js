@@ -9,7 +9,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import Icon from "../images/Lightning.svg"
 import Tooltip from "../images/Tooltip.svg"
 import avatar from "../images/avatar.jpg"
-import { editprofile, getuserinfo, uploadimage, gettags } from '../api/api';
+import { editprofile, getuserinfo, uploadimage, gettags, signout } from '../api/api';
 
 export default class MySharePage extends React.Component {
   constructor(props) {
@@ -112,16 +112,13 @@ export default class MySharePage extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -156,16 +153,13 @@ export default class MySharePage extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -175,36 +169,36 @@ export default class MySharePage extends React.Component {
     };
   }
 
-  // onChangeTags = (e) => {
-  //   const {selectedTags} = this.state;
-  //   let temp = selectedTags;
-  //   temp = e;
-  //   this.setState({selectedTags: temp});
+  onChangeTags = (e) => {
+    const {selectedTags} = this.state;
+    let temp = selectedTags;
+    temp = e;
+    this.setState({selectedTags: temp});
 
-  //   if (e.length > 0) {
-  //     const { param } = this.state;
-  //     let temp1 = param;
-  //     temp1.tags = [];
-  //     for(var i = 0; i < e.length; i ++) {
-  //       temp1.tags.push(e[i].value);
-  //     }
-  //     this.setState({param: temp1});
-  //   } else {
-  //     const { param } = this.state;
-  //     let temp1 = param;
-  //     temp1.tags = [];
-  //     this.setState({param: temp1});
-  //   }
-  // }
-
-  onChangeUser = (e) => {
-    localStorage.setItem('user-type', !JSON.parse(localStorage.getItem('user-type')));
-    const {param} = this.state;
-    let temp = param;
-    temp.is_mentor = !param.is_mentor;
-    
-    this.setState({param: temp});
+    if (e.length > 0) {
+      const { param } = this.state;
+      let temp1 = param;
+      temp1.tags = [];
+      for(var i = 0; i < e.length; i ++) {
+        temp1.tags.push(e[i].value);
+      }
+      this.setState({param: temp1});
+    } else {
+      const { param } = this.state;
+      let temp1 = param;
+      temp1.tags = [];
+      this.setState({param: temp1});
+    }
   }
+
+  // onChangeUser = (e) => {
+  //   localStorage.setItem('user-type', !JSON.parse(localStorage.getItem('user-type')));
+  //   const {param} = this.state;
+  //   let temp = param;
+  //   temp.is_mentor = !param.is_mentor;
+    
+  //   this.setState({param: temp});
+  // }
 
   actionSave = async() => {
     const {requiremessage, param} = this.state;
@@ -259,16 +253,13 @@ export default class MySharePage extends React.Component {
         } else {
           if (result.data.message === "Token is Expired") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Token is Invalid") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Authorization Token not found") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else {
             this.showFail(result.data.message);
           }
@@ -409,16 +400,13 @@ export default class MySharePage extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -481,8 +469,35 @@ export default class MySharePage extends React.Component {
     });
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   render() {
@@ -613,6 +628,7 @@ export default class MySharePage extends React.Component {
                         <>
                           <div><label htmlFor="fePassword">Tags</label></div>
                           <MultiSelect
+                            hasSelectAll={false}
                             options={tags}
                             value={selectedTags}
                             onChange={(e) => this.onChangeTags(e)}
