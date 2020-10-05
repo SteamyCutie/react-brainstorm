@@ -21,7 +21,8 @@ export default class MainNavbar extends React.Component {
   }
 
   toggle_search(searchKey) {
-    window.location.href = '/findmentor';
+    const { toggle_search } = this.props;
+    toggle_search(searchKey);
   }
 
   render() {

@@ -12,7 +12,7 @@ import MainFooter from "../components/layout/MainFooter";
 import Pusher from 'pusher-js';
 import { Store } from "../flux";
 import { Dispatcher, Constants } from "../flux";
-import { getnotification, switchuser } from '../api/api';
+import { getnotification, switchuser, signout } from '../api/api';
 import { PUSHER_KEY } from '../common/config';
     
 export default class DefaultLayout extends React.Component {
@@ -24,9 +24,9 @@ export default class DefaultLayout extends React.Component {
     if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentorSession") {
+      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentorDashboard") {
         filterType = true;
-      } else if (props.location.pathname === "/studentWallet" || props.location.pathname === "/studentSession") {
+      } else if (props.location.pathname === "/studentWallet" || props.location.pathname === "/studentDashboard") {
         filterType = false;
       }
     }
@@ -38,7 +38,8 @@ export default class DefaultLayout extends React.Component {
       mentorUrl: Store.getMentorHistory(),
       studentUrl: Store.getStudentHistory(),
       noFooter: true,
-      notifications: []
+      notifications: [],
+      searchKey: {}
     }
 
     this.handleClick = this.handleClick.bind(this);
@@ -92,16 +93,13 @@ export default class DefaultLayout extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -115,9 +113,9 @@ export default class DefaultLayout extends React.Component {
     if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentorSession") {
+      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentorDashboard") {
         filterType = true;
-      } else if (this.props.location.pathname === "/studentWallet" || this.props.location.pathname === "/studentSession") {
+      } else if (this.props.location.pathname === "/studentWallet" || this.props.location.pathname === "/studentDashboard") {
         filterType = false;
       }
     }
@@ -158,16 +156,13 @@ export default class DefaultLayout extends React.Component {
       } else { 
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invaild") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -178,6 +173,18 @@ export default class DefaultLayout extends React.Component {
       this.showFail("Something Went wrong");
     };
   }
+
+  handleSearch(searchKey) {
+    // this.setState({
+    //   searchKey: searchKey
+    // });
+
+    const { history } = this.props;
+    if (JSON.parse(localStorage.getItem('user-type')))
+      history.push("/mentorDashboard");
+    else 
+      history.push("/studentDashboard");
+  } 
 
   showSuccess(text) {
     store.addNotification({
@@ -230,13 +237,40 @@ export default class DefaultLayout extends React.Component {
     });
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   render() {
     const { children } = this.props;
-    const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
+    const { noFooter, noNavbar, filterType, notifications, loading, searchKey } = this.state;
 
     return (
       <>
@@ -249,7 +283,7 @@ export default class DefaultLayout extends React.Component {
               className="main-content p-0 main-content-class"
               tag="main"
             >
-              {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications}/>}
+              {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications} toggle_search={(searchkey) => this.handleSearch(searchkey)}/>}
               {filterType && <SubMainNavbar/>}
               {children}
               {!noFooter && <MainFooter />}

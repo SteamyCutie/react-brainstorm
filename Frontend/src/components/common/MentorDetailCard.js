@@ -18,7 +18,6 @@ class MentorDetailCard extends React.Component {
 
     this.state = {
       more: false,
-      ModalOpenReview: false,
       teaches: [],
       call: false,
       registerState: 0,
@@ -52,15 +51,9 @@ class MentorDetailCard extends React.Component {
     });
   }
 
-  handleBookSession() {
+  handleBookSession(id) {
     const { toggle } = this.props;
-    toggle();
-  }
-
-  toggle_openmodalreview() {
-    this.setState({
-      ModalOpenReview: !this.state.ModalOpenReview
-    });
+    toggle(id);
   }
 
   readMore() {
@@ -78,17 +71,15 @@ class MentorDetailCard extends React.Component {
   }
 
   render() {
-    const {id, name, avatar, tag_name, online, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
-    const {ModalOpenReview} = this.state;
+    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
 
     return (
       <div className="mentor-detail-card">
-        <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview>
         <div style={{position: "relative"}} className="mentor-detail-avatar">
-            {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
-            {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
+          {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
+          {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
           {
-            online && <img src={Online} alt="Online" className="mentor-detail-avatar-status" />
+            status === 1 && <div className="carousel-component-online-class"></div>
           }
         </div>
         <div className="mentor-detail-desc">
@@ -129,15 +120,9 @@ class MentorDetailCard extends React.Component {
             </Button> : <></> }
           </Row>
           <Row className="center">
-            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession()}>
+            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
               <img src={Clock} alt="Clock" />
               Book a session
-            </Button>
-          </Row>
-          <Row className="center">
-            <Button className="btn-mentor-detail-book" onClick={() => this.toggle_openmodalreview()}>
-              <img src={Clock} alt="Clock" />
-              Review Mentor
             </Button>
           </Row>
         </div>

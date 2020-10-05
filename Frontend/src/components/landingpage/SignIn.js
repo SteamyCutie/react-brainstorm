@@ -127,9 +127,9 @@ export default class SignIn extends React.Component {
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
 
         if(result.data.user.is_mentor) {
-          window.location.href = '/mentorSession';
+          window.location.href = '/mentorDashboard';
         } else {
-          window.location.href = '/studentSession';
+          window.location.href = '/studentDashboard';
         }
       } else {
         this.setState({
@@ -205,7 +205,7 @@ export default class SignIn extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
-              <p>Don't have an account?&nbsp;<a href="/#" onClick={() => this.toggle_modal()}>Sign up</a></p>
+              <p>Don't have an account?&nbsp;<a href="javascript:void(0)" onClick={() => this.toggle_modal()}>Sign up</a></p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />

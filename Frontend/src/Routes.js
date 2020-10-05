@@ -1,5 +1,7 @@
 import { DefaultLayout, LandingPageLayout, ExtraPageLayout, SearchLayout } from "./layouts";
 
+import StudentDashboard from "./views/StudentDashboard";
+import MentorDashboard from "./views/MentorDashboard";
 import MentorSession from "./views/MentorSession";
 import Profile from "./views/Profile";
 import SetAvailability from "./views/SetAvailability";
@@ -29,6 +31,16 @@ export default [
     exact: true,
     layout: LandingPageLayout,
     component: LandingPage
+  },
+  {
+    path: "/mentordashboard",
+    layout: DefaultLayout,
+    component: MentorDashboard
+  },
+  {
+    path: "/studentdashboard",
+    layout: DefaultLayout,
+    component: StudentDashboard
   },
   {
     path: "/mentorSession",
@@ -134,5 +146,5 @@ export default [
     path: "/room-call",
     layout: ExtraPageLayout,
     component: RoomCall
-  }
+  },
 ];

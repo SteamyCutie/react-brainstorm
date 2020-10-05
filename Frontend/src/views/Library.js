@@ -12,7 +12,7 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import LoadingModal from "../components/common/LoadingModal";
-import { getlibrary } from '../api/api';
+import { getlibrary, signout } from '../api/api';
 import LibrarySavedContent from "../components/common/LibrarySavedContent"
 // import SmallCard3 from "../components/common/SmallCard3"
 
@@ -77,16 +77,13 @@ export default function Library() {
         } else {
           if (result.data.message === "Token is Expired") {
             showFail(result.data.message);
-            removeSession();
-            window.location.href = "/";
+            signout();
           } else if (result.data.message === "Token is Invalid") {
             showFail(result.data.message);
-            removeSession();
-            window.location.href = "/";
+            signout();
           } else if (result.data.message === "Authorization Token not found") {
             showFail(result.data.message);
-            removeSession();
-            window.location.href = "/";
+            signout();
           } else {
             showFail(result.data.message);
           }
@@ -106,6 +103,32 @@ export default function Library() {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
+
+  const signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        removeSession();
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          
+        } else if (result.data.message === "Token is Invalid") {
+          
+        } else if (result.data.message === "Authorization Token not found") {
+          
+        } else {
+        }
+      }
+    } catch(error) {
+
+    }
+  }
 
   const showFail = (text) => {
     store.addNotification({
@@ -143,6 +166,7 @@ export default function Library() {
 
   const removeSession = () => {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   return (

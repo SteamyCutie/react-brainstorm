@@ -10,8 +10,8 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
-import { getallmentors, signout } from '../api/api';
-export default class Trending extends React.Component {
+import { findmentorsbytags, signout } from '../api/api';
+export default class StudentDashboard extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,45 +23,39 @@ export default class Trending extends React.Component {
       totalCnt: 0,
       loading: false,
       mentors: [],
-      smallCards: [
-        {
-          title: "Act science",
-          content: "Mentors",
-          image: require ("../images/act-science.svg")
-        },
-        {
-          title: "English",
-          content: "Mentors",
-          image: require("../images/english.svg")
-        },
-        {
-          title: "Cooking",
-          content: "Mentors",
-          image: require("../images/cooking.svg")
-        }
-      ],
     };
 
     this.sendUser = this.sendUser.bind(this);
   }
 
   componentWillMount() {
-   this.getMentors(1);
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, 1);
   }
 
   sendUser(to, avatar, name) {
     this.props.setUser(to, avatar, name);
   }
 
-  getMentors = async(pageNo) => {
+  getMentors = async(category, pageNo) => {
     let param = {
-      email: localStorage.getItem('email'),
+      user_id: localStorage.getItem('user_id'),
+      tags_id: category,
       page: pageNo,
       rowsPerPage: 10
     }
+
     try {
       this.setState({loading: true});
-      const result = await getallmentors(param);
+      const result = await findmentorsbytags(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
@@ -92,7 +86,16 @@ export default class Trending extends React.Component {
   }
 
   onChangePagination(e, value) {
-    this.getMentors(value);
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, value);
   }
 
   signout = async() => {
@@ -185,30 +188,13 @@ export default class Trending extends React.Component {
   }
 
   render() {
-    const {loading, smallCards, mentors, totalCnt, ModalOpen, id} = this.state;
+    const {loading, mentors, totalCnt, ModalOpen, id} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
         <Container fluid className="main-content-container px-4 main-content-container-class">
-          <Row noGutters className="page-header py-4">
-            <Col xs="12" sm="12" className="page-title">
-              <h3>Trending</h3>
-            </Col>
-          </Row>
-          <Row>
-            <div className="card-container">
-            {smallCards.map((card, idx) => (
-                <SmallCard2
-                  key={idx}
-                  title={card.title}
-                  content={card.content}
-                  image={card.image}
-                />
-            ))}
-            </div>
-          </Row>
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>

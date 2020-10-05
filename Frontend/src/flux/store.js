@@ -8,8 +8,8 @@ import getSearchSidebarNavItems from "../data/search-sidebar-nav-items";
 let _store = {
   menuVisible: false,
   userType: true,
-  mentorUrl: "/mentorSession",
-  studentUrl: "/studentSession",
+  mentorUrl: "/mentorDashboard",
+  studentUrl: "/studentDashboard",
   navItems: getSidebarNavItems(),
   searchItems: getSearchSidebarNavItems()
 };
