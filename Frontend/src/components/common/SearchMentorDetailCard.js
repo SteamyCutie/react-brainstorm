@@ -5,7 +5,6 @@ import MentorReview from "../common/MentorReview";
 
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
-import Online from "../../images/Online.svg";
 import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
 import defaultavatar from "../../images/avatar.jpg"

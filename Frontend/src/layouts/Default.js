@@ -11,7 +11,6 @@ import MainSidebar from "../components/layout/MainSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 import Pusher from 'pusher-js';
 import { Store } from "../flux";
-import { Dispatcher, Constants } from "../flux";
 import { getnotification, switchuser, signout } from '../api/api';
 import { PUSHER_KEY } from '../common/config';
     
@@ -247,19 +246,20 @@ export default class DefaultLayout extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 
@@ -270,7 +270,7 @@ export default class DefaultLayout extends React.Component {
 
   render() {
     const { children } = this.props;
-    const { noFooter, noNavbar, filterType, notifications, loading, searchKey } = this.state;
+    const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
 
     return (
       <>

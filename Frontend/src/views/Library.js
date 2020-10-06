@@ -114,19 +114,20 @@ export default function Library() {
       if (result.data.result === "success") {
         removeSession();
       } else if (result.data.result === "warning") {
-
+        removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          removeSession();
         } else {
+          removeSession();
         }
       }
     } catch(error) {
-
+      removeSession();
     }
   }
 

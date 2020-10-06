@@ -100,16 +100,17 @@ class SetAvailability extends React.Component {
   handleUpdateto(dayIdx, timeIdx, e) {
     const {availableTimeList} = this.state;
     let list = availableTimeList;
-    let timeId = 0;
-
+    let timeId = 1;
+    let timeStr = "";
     for(var i = 0; i < Timelinelist.length; i ++) {
-      if(e.target.value === Timelinelist[i]['str']) {
+      if(parseInt(e.target.value) + 1 === Timelinelist[i]['id']) {
         timeId = i;
-        break;
+        timeStr = Timelinelist[i]['str'];
       }
     }
 
-    list[dayIdx].timeList[timeIdx].to = timeId + 1;
+    list[dayIdx].timeList[timeIdx].to = timeId;
+    list[dayIdx].timeList[timeIdx].toStr = timeStr;
     this.setState({
       availableTimeList: list,
     });
@@ -118,17 +119,17 @@ class SetAvailability extends React.Component {
   handleUpdatefrom(dayIdx, timeIdx, e) {
     const {availableTimeList} = this.state;
     let list = availableTimeList;
-    let timeId = 0;
-
+    let timeId = 1;
+    let timeStr = "";
     for(var i = 0; i < Timelinelist.length; i ++) {
-      if(e.target.value === Timelinelist[i]['str']) {
+      if(parseInt(e.target.value) + 1 === Timelinelist[i]['id']) {
         timeId = i;
-        break;
+        timeStr = Timelinelist[i]['str'];
       }
     }
     
-    list[dayIdx].timeList[timeIdx].from = timeId + 1;
-    list[dayIdx].timeList[timeIdx].to = timeId + 2;
+    list[dayIdx].timeList[timeIdx].from = timeId;
+    list[dayIdx].timeList[timeIdx].fromStr = timeStr;
     this.setState({
       availableTimeList: list,
     });
@@ -233,6 +234,8 @@ class SetAvailability extends React.Component {
             if(result.data.data[i].day_of_week === availableTimeListTemp[j].dayOfWeek) {
               availableTimeListTemp[j].timeList.push({from: result.data.data[i].fromTime, to: result.data.data[i].toTime});
               availableTimeListTemp[j].status = result.data.data[i].status === 1 ? true : false;
+              availableTimeListTemp[j].fromStr = result.data.data[i].fromTimeStr;
+              availableTimeListTemp[j].toStr = result.data.data[i].toTimeStr;
             }
           }
           timezone = result.data.data[i].timezone;
@@ -329,37 +332,35 @@ class SetAvailability extends React.Component {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.forEach(element => {
-          element.setAttribute("disabled", true);
-          element.classList.add("disable-event");
-        })
-
+        for (var i = 0; i < y.length; i ++) {
+          y[i].setAttribute("disabled", true);
+          y[i].classList.add("disable-event");
+        }
       } else {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
-
-        y.foreach(element => {
-          element.setAttribute("disabled", true);
-          element.classList.add("disable-event");
-        });
+        for (var j = 0; j < y.length; j ++) {
+          y[j].setAttribute("disabled", true);
+          y[j].classList.add("disable-event");
+        }
       }
     } else {
       if(this.state.availableTimeList[dayOfWeek].timeList.length) {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        y.foreach(element => {
-          element.removeAttribute("disabled");
-          element.classList.remove("disable-event")
-        });
+        for (var k = 0; k < y.length; k ++) {
+          y[k].removeAttribute("disabled");
+          y[k].classList.remove("disable-event");
+        }
       } else {
-        // const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
-        // let y = [...elements];
+        const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
+        let y = [...elements];
         
-        // y.foreach(element => {
-        //   element.removeAttribute("disabled");
-        //   element.classList.remove("disable-event")
-        // });
+        for (var l = 0; l < y.length; l ++) {
+          y[l].removeAttribute("disabled");
+          y[l].classList.remove("disable-event");
+        }
       }
     }
     temp[dayOfWeek] = !dayOfWeekStatus[dayOfWeek];
@@ -378,19 +379,20 @@ class SetAvailability extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 

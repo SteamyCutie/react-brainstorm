@@ -4,9 +4,6 @@ import Loginbygoogle from "../common/Loginbygoogle";
 import Loginbyfacebook from "../common/Loginbyfacebook";
 import "../../assets/landingpage.css"
 import { signup } from '../../api/api';
-
-import Facebook from '../../images/Facebook.svg'
-import Google from '../../images/Google.svg'
 import Close from '../../images/Close.svg'
 
 export default class SignUp extends React.Component {

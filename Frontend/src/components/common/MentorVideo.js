@@ -110,19 +110,20 @@ class MentorVideo extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 
@@ -183,7 +184,7 @@ class MentorVideo extends React.Component {
   }
 
   render() {
-    const { description, media_url, day, time, id, user_id } = this.props.item;
+    const { description, media_url, day, time, user_id } = this.props.item;
     const { open, loading } = this.state;
     return (
       <>

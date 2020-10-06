@@ -1,8 +1,8 @@
 import React from "react";
+import AdSense from 'react-adsense';
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
-import SmallCard2 from "./../components/common/SmallCard2";
 import MentorDetailCard from "./../components/common/MentorDetailCard"
 import BookSession from "./../components/common/BookSession"
 import LoadingModal from "../components/common/LoadingModal";
@@ -108,19 +108,20 @@ export default class StudentDashboard extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 
@@ -199,6 +200,12 @@ export default class StudentDashboard extends React.Component {
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>
             </Col>
+            <AdSense.Google
+              client='ca-pub-7292810486004926'
+              slot='7806394673'
+              style={{ width: 500, height: 300, float: 'left' }}
+              format=''
+            />
           </Row>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">

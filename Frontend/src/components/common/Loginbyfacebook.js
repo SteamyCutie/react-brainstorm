@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import FacebookLogin from 'react-facebook-login';
-import Facebook from '../../images/Facebook.svg'
 import { FACEBOOK_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
 

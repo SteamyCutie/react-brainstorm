@@ -2,8 +2,6 @@ import React from "react";
 import { Container, Row, Col, Card, CardBody } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
-import SmallCard2 from "./../components/common/SmallCard2";
-import MentorDetailCard from "./../components/common/MentorDetailCard";
 import MentorVideo from "./../components/common/MentorVideo";
 import BookSession from "./../components/common/BookSession";
 import LoadingModal from "../components/common/LoadingModal";
@@ -113,19 +111,20 @@ export default class MentorDashboard extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 

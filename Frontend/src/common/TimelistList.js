@@ -1,5 +1,5 @@
 const Timelinelist = [
-    {id: 1, str: "00 : 00 am"},
+  {id: 1, str: "00 : 00 am", value: "00:00"},
   {id: 2, str: "00 : 30 am", value: "00:30"},
   {id: 3, str: "01 : 00 am", value: "01:00"},
   {id: 4, str: "01 : 30 am", value: "01:30"},
