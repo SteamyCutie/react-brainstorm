@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import routes from "./Routes";
 import withTracker from "./withTracker";
 // import {webRtcPeer} from 'kurento-utils';
+import Draggable from 'react-draggable';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
@@ -487,6 +488,14 @@ export default class App extends React.Component{
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
+          <Draggable
+            defaultPosition={{x: 700, y: -500}}
+          >
+            <div>
+              <div className="handle">Drag from here</div>
+              <div>This readme is really dragging on...</div>
+            </div>
+          </Draggable>
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />

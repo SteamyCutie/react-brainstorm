@@ -296,14 +296,9 @@
   opacity: 0.6;
   border-radius: 8px;
   background-color: black;
-  /* position: absolute; */
-  /* bottom: 0px; */
 }
 
 .participant-video video {
-  /* height: 100vh - 40px; */
-  /* width: 100vw; */
-  /* object-fit: fill; */
   height: 100vh;
   min-height: 100%;
 }
@@ -428,6 +423,10 @@
   width: 100%;
 }
 
+.room-participant-video video[poster]{
+  object-fit: cover;
+}
+
 .room-participant-name {
   align-self: center;
   padding: 5px 10px;
@@ -435,4 +434,9 @@
   /* background-color: #04B5FAB0; */
   color: #04B5FA;
   border-radius: 4px;
+}
+
+.draggable-video-item {
+  width: 250px !important;
+  z-index: -1;
 }
