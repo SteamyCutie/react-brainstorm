@@ -1,8 +1,10 @@
 import React from "react";
 import { Modal, ModalBody, Button, ModalFooter, Col, Row } from "shards-react";
-import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
-import { createpayment } from '../../api/api';
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
+import { getavailabletimesforstudent, signout } from '../../api/api';
 import Close from '../../images/Close.svg'
 import BackIcon from "../../images/Back_icon.svg"
 import NextIcon from "../../images/Next_icon.svg"
@@ -12,17 +14,11 @@ export default class BookSession extends React.Component {
     super(props);
     let today = new Date();
     this.state = {
+      loading: false,
       date: today,
       weekdata: [],
       totalName: '',
-      schedule: [
-        [{value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}, {value: 6}, {value: 7}], 
-        [{value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}, {value: 6}, {value: 7}], 
-        [{value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}, {value: 6}, {value: 7}],
-        [{value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}, {value: 6}, {value: 7}],
-        [{value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}, {value: 6}, {value: 7}],
-        [{value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}, {value: 6}, {value: 7}],
-        [{value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}, {value: 6}, {value: 7}]],
+      schedule: [],
     };
   }
 
@@ -32,13 +28,47 @@ export default class BookSession extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.id && this.props.id !== nextProps.id) {
-      console.log(nextProps.id);
+      this.getAvailableTimeForStudent(nextProps.id);
     }
   }
 
   toggle() {
     const { toggle } = this.props;
     toggle();    
+  }
+
+  getAvailableTimeForStudent = async(id) => {
+    let param = {
+      user_id: id
+    }
+
+    try {
+      this.setState({loading: true});
+      const result = await getavailabletimesforstudent(param);
+
+      if (result.data.result === "success") {
+        this.setState({schedule: result.data.data});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
   }
 
   checkLabel = () => {
@@ -133,8 +163,87 @@ export default class BookSession extends React.Component {
   actionBookSession = async() => {
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+        this.removeSession();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+        } else if (result.data.message === "Token is Invalid") {
+          this.removeSession();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.removeSession();
+        } else {
+          this.removeSession();
+        }
+      }
+    } catch(error) {
+      this.removeSession();
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
+  }
+
+  showSuccess(text) {
+    store.addNotification({
+      title: "Success",
+      message: text,
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
   }
 
   render() {
@@ -142,6 +251,7 @@ export default class BookSession extends React.Component {
     const { loading, totalName, weekdata, schedule } = this.state;
     return (
       <div>
+        <ReactNotification />
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
@@ -187,7 +297,7 @@ export default class BookSession extends React.Component {
             </Row>
             <Row style={{marginTop: 70}}>
               {schedule.map((item, idx) => 
-                <Col key={idx}>
+                <Col key={idx} style={{paddingLeft: 0, paddingRight: 0}}>
                   <table>
                     {item.map((item1, idx1) => 
                       <tr>

@@ -228,19 +228,20 @@ export default class SearchLayout extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 
@@ -318,7 +319,6 @@ export default class SearchLayout extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
     const { noFooter, filterType, mentors, loading, totalCnt, pageNo } = this.state;
 
     return (
@@ -333,9 +333,7 @@ export default class SearchLayout extends React.Component {
               tag="main"
             >
               <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} onSearch={(searchKey) => this.onSearch(searchKey)}/>
-              {/* {children} */}
               <SearchResult item={mentors} count={totalCnt} pagination={(pageNo) => this.onChangePagination(pageNo)} showInfomation={(text) => this.showInformation(text)} searchFilter={(level, hourly) => this.onSearchFilter(level, hourly)}></SearchResult>
-              
               {!noFooter && <MainFooter />}
             </Col>
           </Row>

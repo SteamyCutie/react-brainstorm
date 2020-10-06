@@ -1,10 +1,11 @@
 import React from "react";
+import AdSense from 'react-adsense';
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
-import SmallCard2 from "./../components/common/SmallCard2";
-import MentorDetailCard from "./../components/common/MentorDetailCard"
-import BookSession from "./../components/common/BookSession"
+import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
+import BookSession from "./../components/common/BookSession";
+import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -20,6 +21,7 @@ export default class StudentDashboard extends React.Component {
     this.state = {
       id: 0,
       ModalOpen: false, 
+      ModalCallWithDescOpen: false,
       totalCnt: 0,
       loading: false,
       mentors: [],
@@ -108,19 +110,20 @@ export default class StudentDashboard extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 
@@ -133,6 +136,12 @@ export default class StudentDashboard extends React.Component {
     this.setState({
       ModalOpen: !this.state.ModalOpen,
       id: id
+    });
+  }
+
+  toggle_callwithdesc() {
+    this.setState({
+      ModalCallWithDescOpen: !this.state.CallWithDescription
     });
   }
 
@@ -188,22 +197,29 @@ export default class StudentDashboard extends React.Component {
   }
 
   render() {
-    const {loading, mentors, totalCnt, ModalOpen, id} = this.state;
+    const {loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
+        <OutcomingCallDesc open={ModalCallWithDescOpen} callwithdescription={() => this.toggle_callwithdesc()} id={id}></OutcomingCallDesc>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>
             </Col>
+            <AdSense.Google
+              client='ca-pub-7292810486004926'
+              slot='7806394673'
+              style={{ width: 500, height: 300, float: 'left' }}
+              format=''
+            />
           </Row>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)}/>
+                <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={() => this.toggle_callwithdesc()}/>
               ))}
             </Col>
           </Row>

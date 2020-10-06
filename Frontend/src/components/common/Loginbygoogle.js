@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import GoogleLogin from 'react-google-login';
-import { Redirect } from 'react-router-dom';
 import { GOOGLE_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
-import Google from '../../images/Google.svg'
 
 export class Loginbygoogle extends Component {
   constructor(props) {
