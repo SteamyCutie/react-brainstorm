@@ -247,6 +247,21 @@ export const setAvailableTimes = (param) => {
         }
     })
 }
+
+export const getavailabletimesforstudent = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getavailabletimesforstudent', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 //----------AvailableTimesController--------------
 
 

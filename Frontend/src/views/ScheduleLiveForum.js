@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button, Card, CardBody, CardHeader, FormSelect } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody, CardHeader } from "shards-react";
 import SmallCardForum from "../components/common/SmallCardForum";
 import CreateLiveForum from "../components/common/CreateLiveForum";
 import EditLiveForum from "../components/common/EditLiveForum";
@@ -198,19 +198,20 @@ export default class ScheduleLiveForum extends React.Component {
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 

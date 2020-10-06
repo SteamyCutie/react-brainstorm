@@ -5,7 +5,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  FormInput,
   Button
 } from "shards-react";
 import MultiSelect from "react-multi-select-component";
@@ -90,19 +89,20 @@ export default class NavbarSearch extends React.Component{
       if (result.data.result === "success") {
         this.removeSession();
       } else if (result.data.result === "warning") {
-
+        this.removeSession();
       } else {
         if (result.data.message === "Token is Expired") {
-          
+          this.removeSession();
         } else if (result.data.message === "Token is Invalid") {
-          
+          this.removeSession();
         } else if (result.data.message === "Authorization Token not found") {
-          
+          this.removeSession();
         } else {
+          this.removeSession();
         }
       }
     } catch(error) {
-
+      this.removeSession();
     }
   }
 
