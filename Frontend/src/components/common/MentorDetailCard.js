@@ -11,21 +11,9 @@ class MentorDetailCard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.videoCallModal = React.createRef();
-
     this.state = {
       more: false,
       teaches: [],
-      call: false,
-      registerState: 0,
-      callState: 0,
-      videoCallModal: 0,
-      from: '',
-      modal_isOpen: 0,
-      isCallingNow: 0,
-      isConnectingNow: 0,
-      incomingCallToggle: 0,
-      outcomingCallToggle: 0,
     }
   }
 
@@ -34,18 +22,6 @@ class MentorDetailCard extends React.Component {
 
   handleAvailableNow() {
     this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name);
-  }
-
-  toggle_videocall() {
-    this.setState({
-      videoCallModal: !this.state.videoCallModal
-    });
-  }
-
-  toggle_modal() {
-    this.setState({
-      videoCallModal: !this.state.videoCallModal,
-    });
   }
 
   handleBookSession(id) {
@@ -59,12 +35,6 @@ class MentorDetailCard extends React.Component {
 
   readLess() {
     this.setState({more: false});
-  }
-
-  toggle_incomingCall() {
-    this.setState({
-      incomingCallToggle: !this.state.incomingCallToggle,
-    })
   }
 
   render() {

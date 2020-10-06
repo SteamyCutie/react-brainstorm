@@ -1,34 +1,33 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
 
-import MentorReview from "../common/MentorReview";
-
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
 import defaultavatar from "../../images/avatar.jpg"
 
-class SearchMentorDetailCard extends React.Component {
+class MentorDetailCardStudentDashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       more: false,
-      ModalOpenReview: false,
       teaches: [],
     }
   }
 
   componentWillMount() {
   }
-  modal_toggle() {
 
+  handleInstantLive() {
+    const { callwithdescription } = this.props;
+    callwithdescription();
   }
 
-  toggle_signin() {
-    const { toggle_signin } = this.props;
-    toggle_signin();
+  handleBookSession(id) {
+    const { toggle } = this.props;
+    toggle(id);
   }
 
   readMore() {
@@ -38,14 +37,12 @@ class SearchMentorDetailCard extends React.Component {
   readLess() {
     this.setState({more: false});
   }
-
+  
   render() {
     const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
-    const {ModalOpenReview} = this.state;
 
     return (
       <div className="mentor-detail-card">
-        <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview>
         <div style={{position: "relative"}} className="mentor-detail-avatar">
           {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
           {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
@@ -85,13 +82,13 @@ class SearchMentorDetailCard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.toggle_signin()}>
+            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive()}>
               <img src={Lightening} alt="Lightening"/>
-              Available now
-            </Button> : <></>}
+              Instant LIve
+            </Button> : <></> }
           </Row>
           <Row className="center">
-            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.toggle_signin()}>
+            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
               <img src={Clock} alt="Clock" />
               Book a session
             </Button>
@@ -102,4 +99,4 @@ class SearchMentorDetailCard extends React.Component {
   }
 }
 
-export default SearchMentorDetailCard;
+export default MentorDetailCardStudentDashboard;
