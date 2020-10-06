@@ -1,39 +1,63 @@
 import React from "react";
+import AdSense from 'react-adsense';
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
-import MentorDetailCard from "./../components/common/MentorDetailCard"
+import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
+import BookSession from "./../components/common/BookSession";
+import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
-import { getallmentors, signout } from '../api/api';
-
-export default class Recommended extends React.Component {
+import { findmentorsbytags, signout } from '../api/api';
+export default class StudentDashboard extends React.Component {
   constructor(props) {
     super(props);
 
+    this.mentorRef = React.createRef();
+
     this.state = {
+      id: 0,
+      ModalOpen: false, 
+      ModalCallWithDescOpen: false,
       totalCnt: 0,
       loading: false,
       mentors: [],
     };
+
+    this.sendUser = this.sendUser.bind(this);
   }
 
   componentWillMount() {
-   this.getMentors(1);
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, 1);
   }
 
-  getMentors = async(pageNo) => {
-    let param  = {
-      email: localStorage.getItem('email'),
+  sendUser(to, avatar, name) {
+    this.props.setUser(to, avatar, name);
+  }
+
+  getMentors = async(category, pageNo) => {
+    let param = {
+      user_id: localStorage.getItem('user_id'),
+      tags_id: category,
       page: pageNo,
       rowsPerPage: 10
     }
+
     try {
       this.setState({loading: true});
-      const result = await getallmentors(param);
+      const result = await findmentorsbytags(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
@@ -64,7 +88,61 @@ export default class Recommended extends React.Component {
   }
 
   onChangePagination(e, value) {
-    this.getMentors(value);
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, value);
+  }
+
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+        this.removeSession();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+        } else if (result.data.message === "Token is Invalid") {
+          this.removeSession();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.removeSession();
+        } else {
+          this.removeSession();
+        }
+      }
+    } catch(error) {
+      this.removeSession();
+    }
+  }
+
+  removeSession() {
+    localStorage.clear();
+    window.location.href = "/";
+  }
+
+  toggle(id) {
+    this.setState({
+      ModalOpen: !this.state.ModalOpen,
+      id: id
+    });
+  }
+
+  toggle_callwithdesc() {
+    this.setState({
+      ModalCallWithDescOpen: !this.state.CallWithDescription
+    });
   }
 
   showSuccess(text) {
@@ -118,55 +196,30 @@ export default class Recommended extends React.Component {
     });
   }
 
-  signout = async() => {
-    const param = {
-      email: localStorage.getItem('email')
-    }
-
-    try {
-      const result = await signout(param);
-      if (result.data.result === "success") {
-        this.removeSession();
-      } else if (result.data.result === "warning") {
-        this.removeSession();
-      } else {
-        if (result.data.message === "Token is Expired") {
-          this.removeSession();
-        } else if (result.data.message === "Token is Invalid") {
-          this.removeSession();
-        } else if (result.data.message === "Authorization Token not found") {
-          this.removeSession();
-        } else {
-          this.removeSession();
-        }
-      }
-    } catch(error) {
-      this.removeSession();
-    }
-  }
-
-  removeSession() {
-    localStorage.clear();
-    window.location.href = "/";
-  }
-
   render() {
-    const {mentors, loading, totalCnt} = this.state;
+    const {loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
+        <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
+        <OutcomingCallDesc open={ModalCallWithDescOpen} callwithdescription={() => this.toggle_callwithdesc()} id={id}></OutcomingCallDesc>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
-              <h3>Recommended mentors for you</h3>
+              <h3>Top Brainsshare mentors</h3>
             </Col>
+            <AdSense.Google
+              client='ca-pub-7292810486004926'
+              slot='7806394673'
+              style={{ width: 500, height: 300, float: 'left' }}
+              format=''
+            />
           </Row>
-
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCard mentorData={data} key={idx}/>
+                <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={() => this.toggle_callwithdesc()}/>
               ))}
             </Col>
           </Row>
@@ -176,5 +229,5 @@ export default class Recommended extends React.Component {
         </Container>
       </>
     )
-  }
+  };
 };

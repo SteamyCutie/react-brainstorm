@@ -4,7 +4,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import LoadingModal from "../components/common/LoadingModal";
-import { getUpcomingSession } from '../api/api';
+import { getUpcomingSession, signout } from '../api/api';
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -127,16 +127,13 @@ export default class MentorSession extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -190,8 +187,36 @@ export default class MentorSession extends React.Component {
     this.setState({loading: value});
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+        this.removeSession();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+        } else if (result.data.message === "Token is Invalid") {
+          this.removeSession();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.removeSession();
+        } else {
+          this.removeSession();
+        }
+      }
+    } catch(error) {
+      this.removeSession();
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   render() {
@@ -341,14 +366,11 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
         changeMonth(data_arr);
       } else {
         if (result.data.message === "Token is Expired") {
-          removeSession();
-          window.location.href = "/";
+          signout();
         } else if (result.data.message === "Token is Invalid") {
-          removeSession();
-          window.location.href = "/";
+          signout();
         } else if (result.data.message === "Authorization Token not found") {
-          removeSession();
-          window.location.href = "/";
+          signout();
         } else {
           this.showFail(result.data.message);
         }

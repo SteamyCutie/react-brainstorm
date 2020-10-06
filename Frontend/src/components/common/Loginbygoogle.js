@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import GoogleLogin from 'react-google-login';
-import { Redirect } from 'react-router-dom';
 import { GOOGLE_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
-import Google from '../../images/Google.svg'
 
 export class Loginbygoogle extends Component {
   constructor(props) {
@@ -33,9 +31,9 @@ export class Loginbygoogle extends Component {
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
         if (result.data.user.is_mentor === 1)
-          window.location.href = "/mentorSession";
+          window.location.href = "/mentorDashboard";
         else
-          window.location.href = "/studentSession";
+          window.location.href = "/studentDashboard";
       } else {
         errorOccur(result.data.message);
       }

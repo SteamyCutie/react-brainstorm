@@ -8,7 +8,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { findmentors } from '../api/api';
+import { findmentors, signout } from '../api/api';
 
 import { Store } from "../flux";
 import { Dispatcher, Constants } from "../flux";
@@ -101,16 +101,13 @@ export default class SearchLayout extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -149,16 +146,13 @@ export default class SearchLayout extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -206,16 +200,13 @@ export default class SearchLayout extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -227,8 +218,36 @@ export default class SearchLayout extends React.Component {
     };
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+        this.removeSession();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+        } else if (result.data.message === "Token is Invalid") {
+          this.removeSession();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.removeSession();
+        } else {
+          this.removeSession();
+        }
+      }
+    } catch(error) {
+      this.removeSession();
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   showSuccess(text) {
@@ -300,7 +319,6 @@ export default class SearchLayout extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
     const { noFooter, filterType, mentors, loading, totalCnt, pageNo } = this.state;
 
     return (
@@ -315,9 +333,7 @@ export default class SearchLayout extends React.Component {
               tag="main"
             >
               <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} onSearch={(searchKey) => this.onSearch(searchKey)}/>
-              {/* {children} */}
               <SearchResult item={mentors} count={totalCnt} pagination={(pageNo) => this.onChangePagination(pageNo)} showInfomation={(text) => this.showInformation(text)} searchFilter={(level, hourly) => this.onSearchFilter(level, hourly)}></SearchResult>
-              
               {!noFooter && <MainFooter />}
             </Col>
           </Row>

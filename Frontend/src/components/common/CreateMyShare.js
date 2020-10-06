@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput } from "shards-react";
-import { uploadvideo, createshareinfo } from '../../api/api';
+import { uploadvideo, createshareinfo, signout } from '../../api/api';
 import {DropzoneArea} from 'material-ui-dropzone';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -96,16 +96,13 @@ export default class CreateMyShare extends React.Component {
           this.showFail(result.data.message);
           if (result.data.message === "Token is Expired") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Token is Invalid") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Authorization Token not found") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else {
             this.showFail(result.data.message);
           }
@@ -119,8 +116,36 @@ export default class CreateMyShare extends React.Component {
     };
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+        this.removeSession();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+        } else if (result.data.message === "Token is Invalid") {
+          this.removeSession();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.removeSession();
+        } else {
+          this.removeSession();
+        }
+      }
+    } catch(error) {
+      this.removeSession();
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   onChnageVideo = async(e) => {
@@ -208,7 +233,7 @@ export default class CreateMyShare extends React.Component {
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Upload photo/video</h1>
+          <h1 className="content-center modal-header-class">Upload video</h1>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail" className="profile-detail-important">Title</label>
             {this.state.requiremessage.dtitle !== '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
@@ -222,7 +247,7 @@ export default class CreateMyShare extends React.Component {
             {this.state.requiremessage.ddescription === '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description}/>}
           </div>
           <div className="content-center block-content-class modal-input-group-class">
-            <label htmlFor="feEmail">Photo/Video</label>
+            <label htmlFor="feEmail">Video</label>
             <DropzoneArea acceptedFiles={['video/mp4']} onChange={(e) => this.onChnageVideo(e)}/>
           </div>
           {/* <div className="content-center block-content-class button-text-group-class"> */}

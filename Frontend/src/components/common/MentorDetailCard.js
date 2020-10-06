@@ -1,11 +1,8 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
 
-import MentorReview from "../common/MentorReview";
-
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
-import Online from "../../images/Online.svg";
 import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
 import defaultavatar from "../../images/avatar.jpg"
@@ -14,21 +11,9 @@ class MentorDetailCard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.videoCallModal = React.createRef();
-
     this.state = {
       more: false,
       teaches: [],
-      call: false,
-      registerState: 0,
-      callState: 0,
-      videoCallModal: 0,
-      from: '',
-      modal_isOpen: 0,
-      isCallingNow: 0,
-      isConnectingNow: 0,
-      incomingCallToggle: 0,
-      outcomingCallToggle: 0,
     }
   }
 
@@ -37,18 +22,6 @@ class MentorDetailCard extends React.Component {
 
   handleAvailableNow() {
     this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name);
-  }
-
-  toggle_videocall() {
-    this.setState({
-      videoCallModal: !this.state.videoCallModal
-    });
-  }
-
-  toggle_modal() {
-    this.setState({
-      videoCallModal: !this.state.videoCallModal,
-    });
   }
 
   handleBookSession(id) {
@@ -64,22 +37,16 @@ class MentorDetailCard extends React.Component {
     this.setState({more: false});
   }
 
-  toggle_incomingCall() {
-    this.setState({
-      incomingCallToggle: !this.state.incomingCallToggle,
-    })
-  }
-
   render() {
-    const {id, name, avatar, tag_name, online, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
+    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
 
     return (
       <div className="mentor-detail-card">
         <div style={{position: "relative"}} className="mentor-detail-avatar">
-            {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
-            {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
+          {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
+          {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
           {
-            online && <img src={Online} alt="Online" className="mentor-detail-avatar-status" />
+            status === 1 && <div className="carousel-component-online-class"></div>
           }
         </div>
         <div className="mentor-detail-desc">

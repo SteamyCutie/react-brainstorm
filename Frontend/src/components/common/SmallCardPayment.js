@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Card, CardBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
+import visa from '../../images/VisaCard-logo.png'
+import master from '../../images/Mastercard-logo.png'
 
 import MoreButtonImage from "../../images/more.svg"
 
@@ -23,14 +25,18 @@ class SmallCardPayment extends React.Component {
   }
 
   render() {
-    const { title, image, expireDate, isPrimary } = this.props;
+    const { title, type, expireDate, isPrimary } = this.props;
     const { open } = this.state;
     return (
       <Card small className="small-card-payment" >
         <CardBody className="no-padding">
           <div className="items-container">
             <div className="no-padding">
-                <img src={image} className="small-card-payment-logo" alt="card"/>
+              { type == 4 ?
+                <img src={visa} className="small-card-payment-logo" alt="card"/>
+                :
+                <img src={master} className="small-card-payment-logo" alt="card"/>
+              }
             </div>
             <div className="small-card-payment-desc">
                 <h4 className="small-card-payment-title no-margin">{title}</h4>
@@ -45,7 +51,7 @@ class SmallCardPayment extends React.Component {
                 :
                 null
               }
-              <Dropdown open={this.state.open} toggle={this.toggle}>
+              <Dropdown open={open} toggle={this.toggle}>
                 <DropdownToggle className="no-padding" style={{marginTop: 20}}>
                   <div className="nav-link-icon__wrapper">
                     <img
