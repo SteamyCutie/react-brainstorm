@@ -165,9 +165,16 @@ export default class App extends React.Component{
           errorMsg: "Call Rejected",
         })
       } else {
-        this.setState({
-          errorMsg: message.message,
-        })
+        if(message.message.indexOf("is not reigstered")) {
+          this.setState({
+            errorMsg: "The user " + this.state.toName + " is offline."
+          })
+          
+        } else {
+          this.setState({
+            errorMsg: message.message,
+          })
+        }
       }
 
       this.stop(true);
@@ -177,7 +184,11 @@ export default class App extends React.Component{
           if (error)
             return console.error(error);
         });
-
+        // this.setState({
+        //   callState: IN_CALL,
+        //   call: true,
+        //   sdpAnswer: message.sdpAnswer
+        // })
         this.setState({
           isAccepted: true,
         })
