@@ -53,31 +53,22 @@ class PaymentController extends Controller
         'message'=> 'already same card number',
       ]);
     }
+    
     //Begin create source
     $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
-    $src_result = $stripe->sources->create([
-      "type" => "ach_credit_transfer",
-      "currency" => "usd",
-      "token" => $token,
-      "owner" => [
-        "email" => $user_info->email,
-      ]
-    ]);
-    
-    $stripe->customers->createSource(
+    $card = $stripe->customers->createSource(
       $user_info->customer_id,
-      [
-        'source' => $src_result->id,
-      ]
+      ['source' => $token]
     );
     //End create source
+    
     Payment::create([
       'user_id' => $user_id,
       'email' => $user_info->email,
       'customer_id' => $user_info->customer_id,
       'card_name' => $card_name,
       'card_number' => $card_number,
-      'card_src' => $src_result->id,
+      'card_src' => $card->id,
       'card_expiration' => $card_expiration,
       'cvc_code' => $cvc_code,
       'card_type' => $card_type,
@@ -120,42 +111,65 @@ class PaymentController extends Controller
   public function payBySession(Request $request) {
 //    $session_name = $request['session_name'];
 //    $amount = $request['amount'];
-    $card_number = $request['card_number'];
-    $card_info = Payment::select('card_src', 'customer_id')->where('card_number', $card_number)->first();
-    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
-    $res_charge = $stripe->charges->create([
-      'amount' => 100,
+//    $card_number = $request['card_number'];
+//    $card_info = Payment::select('card_src', 'customer_id')->where('card_number', $card_number)->first();
+    
+//    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+    \Stripe\Stripe::setApiKey(env("SK_LIVE"));
+  
+    $charge = \Stripe\Charge::create([
+      'amount' => 50000,
       'currency' => 'usd',
-      'source' => "src_1HYpAZGRfXBTO7BEhWYEsOIt",
-      'customer' => "cus_I97OREjr3YSXIA",
-      'description' => 'My First Test Charge (created for API docs)',
-      //      'amount' => $amount,
-      //      'currency' => 'usd',
-      //      'source' => $card_info->card_src,
-      //      'customer' => $card_info->customer_id,
-      //      'description' => 'Charge for '.$session_name,
+      'customer' => "cus_I9c8AvLBuGMMVs",
+      'source' => "card_1HZIurGRfXBTO7BEnGIN3kih"
+//      'description' => 'My session Charge for Mentor'
+//          'description' => 'Charge for '.$session_name,
     ]);
-    echo $res_charge;
+    echo $charge;
   }
   
   public function testpayment(Request $request) {
-
-//    $result_payment = \Stripe\PaymentIntent::create([
-//      'amount' => 1000,
+//    Begin create source
+//    $stripe = new \Stripe\StripeClient(
+//      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+//    );
+//    $card = $stripe->customers->createSource(
+//      'cus_I9Zpq1G7IDmXIU',
+//      ['source' => 'card_1HZHtNGRfXBTO7BEbqmFMSL5']
+//    );
+//    echo $card;
+//    End create source
+//    Begin update source
+  
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+    $stripe->customers->updateSource(
+      'cus_I9c8AvLBuGMMVs',
+      'card_1HZIwBGRfXBTO7BElYaNwmOE',
+      ['name' => 'paul']
+    );
+  
+//    \Stripe\Stripe::setApiKey(env("SK_LIVE"));
+//
+//    $charge = \Stripe\Charge::create([
+//      'amount' => 20000,
 //      'currency' => 'usd',
-//      'payment_method_types' => ['card'],
-////      'receipt_email' => 'paul425@protonmail.com',
+//      'customer' => "cus_I9c8AvLBuGMMVs",
+//      'source' => "tok_1HZIwBGRfXBTO7BEHDhRVzzz",
+//      'description' => 'My session Charge for Mentor'
+//          'description' => 'Charge for '.$session_name,
 //    ]);
-    
-    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
-    $stripe->charges->create([
-      'amount' => 10000,
-      'currency' => 'usd',
-      'source' => "src_1HYgkFGRfXBTO7BEOvondX7C",
-      'customer' => "cus_I7zDAyz6yqYTdp",
-      'description' => 'My First Test Charge (created for API docs)',
-    ]);
+//    echo $charge;
+
+//    $stripe->customers->updateSource(
+//      'cus_I9c8AvLBuGMMVs',
+//      'card_1HZIvEGRfXBTO7BEhrkYLQrH',
+//      ['name' => 'paul']
+//    );
+//    End update source
   }
+  
   
   public function finishedsession(Request $request) {
     $user_id = $request['user_id'];
@@ -165,25 +179,6 @@ class PaymentController extends Controller
     if (!$pay_info) {
       return;
     }
-    
-    $expir_date = $pay_info->card_expiration;
-    $temp = explode('-', $expir_date);
-    $exp_year = $temp[0];
-    $exp_month = $temp[1];
-    $temp = $pay_info['card_number'];
-    $card_cvd = $pay_info['cvc_code'];
-    $card_number = str_replace(' ','', $temp);
-
-//    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
-//    $result = $stripe->paymentMethods->create([
-//      'type' => 'card',
-//      'card' => [
-//        'number' => $card_number,
-//        'exp_month' => $exp_month,
-//        'exp_year' => $exp_year,
-//        'cvc' => $card_cvd,
-//      ],
-//    ]);
     \Stripe\Stripe::setApiKey(env("SK_LIVE"));
     $intent = \Stripe\PaymentIntent::create([
       'amount' => 100000,
@@ -206,23 +201,15 @@ class PaymentController extends Controller
     $token = $request['token'];
     $email= $request['email'];
     $customer_id = $request['customer_id'];
-    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
-    $src_result = $stripe->sources->create([
-      "type" => "ach_credit_transfer",
-      "currency" => "usd",
-      "token" => $token,
-      "owner" => [
-        "email" => $email,
-      ]
-    ]);
-    echo $src_result."==============================\n";
-    $card_src = $stripe->customers->createSource(
-      $customer_id,
-      [
-        'source' => $src_result->id,
-      ]
+    //Begin create source
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
     );
-    echo $card_src;
+    $stripe->customers->createSource(
+      'cus_I9YW0KCueJnZYO',
+      ['source' => 'tok_visa']
+    );
+    //End create source
   }
   
   public function createcustomer(Request $request) {
@@ -237,10 +224,10 @@ class PaymentController extends Controller
   }
   
   public function test(Request $request) {
-//    $user_id = $request['user_id'];
-//    $user = Payment::where('user_id', $user_id)
-//      ->where('card_number','!=', '')->first();
-    $user = User::where('email_verified_at', null)->delete();
-    echo $user;
+
+  }
+  
+  public function createaccount(Request $request) {
+  
   }
 }

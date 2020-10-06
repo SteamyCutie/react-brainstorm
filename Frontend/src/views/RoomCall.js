@@ -40,18 +40,26 @@ function Participant(user_info, isLocalVideo) {
   var rtcPeer;
 
 	container.appendChild(video);
-  // container.appendChild(span);
-  document.getElementById('room-video-container').appendChild(container);
+  container.appendChild(span);
+  if(isLocalVideo) {
+    document.getElementById('room-video-container').appendChild(container);
+  } else {
+    span.classList.add("room-participant-name")
+    span.appendChild(document.createTextNode(this.user_name));
+    document.getElementById('room-member-video').appendChild(container);
+  }
 
 	video.id = 'video-' + name;
 	video.autoplay = true;
   video.controls = false;
 
   if(isLocalVideo) {
-    container.classList.add("local-video");
+    container.classList.add("room-local-video");
   } else {
-    container.classList.add("room-video-display-none");
-    container.classList.add("participant-video");
+    // container.classList.add("room-video-display-none");
+    container.classList.add("room-participant-video");
+
+    // room-member-video
   }
 
 	this.getElement = function() {
@@ -122,7 +130,8 @@ export default class RoomCall extends React.Component {
   }
 
   componentWillMount() {
-    this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
+    // this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
+    this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');
   }
 
   componentDidMount() {
@@ -369,7 +378,7 @@ export default class RoomCall extends React.Component {
           <div className="room-video-container center" id="room-video-container">
             <h1 className="room-call-session-titile">{session_name}</h1>  
           </div>
-          <div id="room-member" width="20%" className="room-member" style={{marginLeft: "auto"}}>
+          {/* <div id="room-member" width="20%" className="room-member" style={{marginLeft: "auto"}}>
             <List dense >
               {this.state.participants.map((participant, key) => {
                 return (
@@ -389,6 +398,9 @@ export default class RoomCall extends React.Component {
                 );
               })}
             </List>
+          </div> */}
+          <div id="room-member-video" width="20%" className="room-member-video" style={{marginLeft: "auto"}}>
+
           </div>
         </div>
         <div>
