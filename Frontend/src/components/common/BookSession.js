@@ -27,6 +27,8 @@ export default class BookSession extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps, "+++");
+    console.log(this.props.id, "---");
     if (nextProps.id && this.props.id !== nextProps.id) {
       this.getAvailableTimeForStudent(nextProps.id);
     }

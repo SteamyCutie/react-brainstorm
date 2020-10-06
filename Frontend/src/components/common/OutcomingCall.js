@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Modal, ModalBody, Row } from "shards-react";
-import "../../assets/landingpage.css"
+import "../../assets/landingpage.css";
+import defaultavatar from '../../images/avatar.jpg';
 
 import DeclineImg from '../../images/call-decline.svg'
 
@@ -22,20 +23,21 @@ export default class IncomingCall extends React.Component {
   }
 
   render() {
-    const { open } = this.props;
+    const { open, avatar, name, errMsg } = this.props;
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-incoming-call center" backdrop={true} backdropClassName="backdrop-class">
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333", textAlign: "center"}}>Calling to {this.props.name}</label>
+                <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333", textAlign: "center"}}>Calling to {name}</label>
               </Row>
               <Row className="center">
-                <img src={this.props.avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />
+                {avatar && <img src={avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />}
+                {!avatar && <img src={defaultavatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />}
               </Row>
               <Row className="center">
-                <label style={{fontSize: "15px", fontWeight: "bolder", color: "#333333", textAlign: "center", height: "20px"}}>{this.props.errMsg}</label>
+                <label style={{fontSize: "15px", fontWeight: "bolder", color: "#333333", textAlign: "center", height: "20px"}}>{errMsg}</label>
               </Row>
               <Row className="center btn-group-call">
                 <Button className="btn-video-call-decline" onClick={() => this.toggle()}>
