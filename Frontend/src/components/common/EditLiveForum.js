@@ -5,7 +5,7 @@ import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { gettags, editforum, getforum, getallstudents } from '../../api/api';
+import { gettags, editforum, getforum, getallstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Close from '../../images/Close.svg'
 
@@ -144,16 +144,13 @@ export default class EditLiveForum extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -187,16 +184,13 @@ export default class EditLiveForum extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token in Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -237,16 +231,13 @@ export default class EditLiveForum extends React.Component {
         } else {
           if (result.data.message === "Token is Expired") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Token is Invalid") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else if (result.data.message === "Authorization Token not found") {
             this.showFail(result.data.message);
-            this.removeSession();
-            window.location.href = "/";
+            this.signout();
           } else {
             toggle_editfail("Edit Forum Fail");
           }
@@ -259,8 +250,36 @@ export default class EditLiveForum extends React.Component {
     };
   }
 
+  signout = async() => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+        this.removeSession();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+        } else if (result.data.message === "Token is Invalid") {
+          this.removeSession();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.removeSession();
+        } else {
+          this.removeSession();
+        }
+      }
+    } catch(error) {
+      this.removeSession();
+    }
+  }
+
   removeSession() {
     localStorage.clear();
+    window.location.href = "/";
   }
 
   getSession = async(id) => {
@@ -297,9 +316,9 @@ export default class EditLiveForum extends React.Component {
           param = {};
         }
 
-        for (var i = 0; i < result.data.data.students.length; i ++) {
-          param1.label = result.data.data.students_email[i].trim();
-          param1.value = result.data.data.students_id[i];
+        for (var j = 0; j < result.data.data.students.length; j ++) {
+          param1.label = result.data.data.students_email[j].trim();
+          param1.value = result.data.data.students_id[j];
           params1.push(param1);
           param1 = {};
         }
@@ -314,16 +333,13 @@ export default class EditLiveForum extends React.Component {
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Token is Invalid") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else if (result.data.message === "Authorization Token not found") {
           this.showFail(result.data.message);
-          this.removeSession();
-          window.location.href = "/";
+          this.signout();
         } else {
           this.showFail(result.data.message);
         }
@@ -435,6 +451,7 @@ export default class EditLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
             <label htmlFor="feEmail">Tags</label>
             <MultiSelect
+              hasSelectAll={false}
               options={tags}
               value={selectedTags}
               onChange={(e) => this.setSelectedTags(e)}
@@ -444,6 +461,7 @@ export default class EditLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
             <label htmlFor="feEmail">Students</label> 
             <MultiSelect
+              hasSelectAll={false}            
               options={students}
               value={selectedUsers}
               onChange={(e) => this.setSelectedUsers(e)}

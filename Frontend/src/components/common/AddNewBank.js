@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Modal, Button } from "shards-react";
+import { Modal, Button } from "shards-react";
 import { PlaidLink } from 'react-plaid-link';
 import axios from 'axios';
 import Close from '../../images/Close.svg'

@@ -1,18 +1,18 @@
 export default function() {
   return [
     {
+      title: "Mentor Dashboard",
+      htmlBefore: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M1 8L10 1L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 21V11H13V21" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      to: "/mentordashboard",
+      filter: true,
+    },
+    {
       title: "Upcoming Session",
       to: "/mentorSession",
       htmlBefore: '<svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H17C18.1046 21 19 20.1046 19 19V5C19 3.89543 18.1046 3 17 3Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 1V5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 1V5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 9H19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       htmlAfter: "",
       filter: true
     },
-    // {
-    //   title: "Profile Settings",
-    //   htmlBefore: '<svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 19V17C17 15.9391 16.5786 14.9217 15.8284 14.1716C15.0783 13.4214 14.0609 13 13 13H5C3.93913 13 2.92172 13.4214 2.17157 14.1716C1.42143 14.9217 1 15.9391 1 17V19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9C11.2091 9 13 7.20914 13 5C13 2.79086 11.2091 1 9 1C6.79086 1 5 2.79086 5 5C5 7.20914 6.79086 9 9 9Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    //   to: "/profile",
-    //   filter: true,
-    // },
     {
       title: "Set availability",
       htmlBefore: '<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 21C16.5228 21 21 16.5228 21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11C1 16.5228 5.47715 21 11 21Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 5V11L15 13" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -36,6 +36,12 @@ export default function() {
       htmlBefore: '<svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23 3L16 8L23 13V3Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 1H3C1.89543 1 1 1.89543 1 3V13C1 14.1046 1.89543 15 3 15H14C15.1046 15 16 14.1046 16 13V3C16 1.89543 15.1046 1 14 1Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       to: "/scheduleLiveForum",
       filter: true,
+    },
+    {
+      title: "Student Dashboard",
+      htmlBefore: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M1 8L10 1L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 21V11H13V21" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      to: "/studentdashboard",
+      filter: false,
     },
     {
       title: "Upcoming Session",

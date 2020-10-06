@@ -15,16 +15,17 @@ class CreatePaymentsTable extends Migration
   {
     Schema::create('payments', function (Blueprint $table) {
       $table->id();
-      $table->integer('user_id')->nullable();
-      $table->string('email')->nullable();
-      $table->string('customer_id')->default("")->unique();
-      $table->string('token')->default("");
-      $table->string('card_name')->default("");
-      $table->string('card_number')->default("")->unique();
-      $table->integer('card_type')->default(0);
+      $table->integer('user_id');
+      $table->string('email');
+      $table->string('customer_id');
+      $table->string('token')->nullable();
+      $table->string('card_name')->nullable();
+      $table->string('card_number')->nullable()->unique();
+      $table->string('card_src')->nullable();
+      $table->integer('card_type')->nullable();
       $table->timestamp('card_expiration')->nullable();
-      $table->integer('cvc_code')->default(0);
-      $table->boolean('is_primary')->default(false);
+      $table->integer('cvc_code')->nullable();
+      $table->boolean('is_primary')->nullable();;
       $table->timestamps();
     });
   }

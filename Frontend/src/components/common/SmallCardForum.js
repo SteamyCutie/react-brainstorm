@@ -54,15 +54,15 @@ class SmallCardForum extends React.Component {
   }
 
   render() {
-    const {title, description, avatar, invited, tags, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
+    const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
     const {toggle_editliveforum, toggle_confirm} = this.props;
-    const { ModalInviteOpen } = this.state;
+    const { ModalInviteOpen, open } = this.state;
     return (
       <div className="small-card-forum">
         <InvitedStudent open={ModalInviteOpen} id={id} students={student_info} toggle={() => this.toggle_invite()} toggle_invitemore={(id) => this.toggle_invitemore(id)}></InvitedStudent>
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
-          <Dropdown open={this.state.open} toggle={this.toggle}>
+          <Dropdown open={open} toggle={this.toggle}>
             <DropdownToggle>
               <div className="nav-link-icon__wrapper">
                 <img
