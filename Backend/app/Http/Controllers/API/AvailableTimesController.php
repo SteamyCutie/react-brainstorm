@@ -14,6 +14,35 @@ class AvailableTimesController extends Controller
   
   }
   
+  public function getavailableTimesForStudent(Request $request) {
+    try{
+      $user_id = $request->user_id;
+      $week = ['Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday'];
+      $res_week = [];
+      for ($i = 0; $i < 7; $i++) {
+        $week_list = AvailableTimes::where('user_id', $user_id)->where('day_of_week', $week[$i])->get();
+        if (count($week_list) > 0) {
+          $temp_list = [];
+          for ($j = 0; $j < count($week_list); $j++){
+            $temp_list[]['value'] = str_replace(' ', '', $week_list[$j]->fromTimeStr);
+          }
+          $res_week[$i] = $temp_list;
+        } else {
+          $res_week[$i] = [];
+        }
+      }
+      return response()->json([
+        'result'=> 'success',
+        'data' => $res_week
+      ]);
+    } catch (\Throwable $th) {
+      return response()->json([
+        'result'   => "failed",
+        'message'   => config('messages.errors.cannot_get'),
+      ], 500);
+    }
+  }
+  
   public function getAvailableTimes(Request $request)
   {
     try{
@@ -47,6 +76,8 @@ class AvailableTimesController extends Controller
             'day_of_week' => $timeList[$i]['dayOfWeek'],
             'fromTime' => $timeList[$i]['timeList'][$j]['from'],
             'toTime' => $timeList[$i]['timeList'][$j]['to'],
+            'fromTimeStr' => $timeList[$i]['timeList'][$j]['fromStr'],
+            'toTimeStr' => $timeList[$i]['timeList'][$j]['toStr'],
             'status' => $timeList[$i]['status'],
             'timezone' => $timeZone,
           ]);
