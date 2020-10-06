@@ -191,7 +191,7 @@ class UserSeeder extends Seeder
       [
         'id' => 20, 'name' => "Paul", 'email' => 'Paul425@protonmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
         'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
-        'password' => '$2y$10$K8UzdelN7Usk2y3z0GjCXubK3wYvWTdpD.g2rlI3JPD4A.sSz9vRW',
+        'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/6.png',
         'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
