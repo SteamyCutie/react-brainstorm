@@ -488,14 +488,14 @@ export default class App extends React.Component{
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
-          <Draggable
-            defaultPosition={{x: 700, y: -500}}
-          >
-            <div>
-              <div className="handle">Drag from here</div>
-              <div>This readme is really dragging on...</div>
-            </div>
-          </Draggable>
+          <div className="draggable-video-item">
+            <Draggable
+            >
+              <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                I already have an absolute position.
+              </div>
+            </Draggable>
+          </div>
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />
