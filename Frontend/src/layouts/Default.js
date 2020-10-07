@@ -67,6 +67,9 @@ export default class DefaultLayout extends React.Component {
     var self = this;
     var channel = pusher.subscribe('session-channel');
     channel.bind('brainsshare-session-event', function(data) {
+      for (var j = 0; j < data.message.length; j ++) {
+        this.showAlert(data.message[j].session_title + " session will start from " + data.message[j].from);
+      }
       var {notifications} = self.state;
       notifications = [];
       for (var i = 0; i < data.message.length; i ++) {
@@ -174,10 +177,6 @@ export default class DefaultLayout extends React.Component {
   }
 
   handleSearch(searchKey) {
-    // this.setState({
-    //   searchKey: searchKey
-    // });
-
     const { history } = this.props;
     if (JSON.parse(localStorage.getItem('user-type')))
       history.push("/mentorDashboard");
@@ -231,6 +230,23 @@ export default class DefaultLayout extends React.Component {
         onScreeen: false,
         waitForAnimation: false,
         showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showAlert(text) {
+    store.addNotification({
+      title: "Alert",
+      message: text,
+      type: "default",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 5500,
+        onScreen: false,
+        waitForAnimation: true,
+        showIcon: true,
         pauseOnHover: false
       }
     });
