@@ -14,7 +14,7 @@ import "../src/assets/mentor.css";
 import "../src/assets/common.css";
 
 import VideoCall from "../src/components/common/VideoCall";
-import VideoCallMin from "../src/components/common/VideoCallMin";
+import VideoCallMin from "./components/common/One2OneMin";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
