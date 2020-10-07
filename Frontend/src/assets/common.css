@@ -121,6 +121,77 @@
   width: 100%;
 }
 
+.video-call-element-min {
+  padding: 10px;
+  width: 100%;
+  /* display: ; */
+  /* background-color: #04B5FA; */
+}
+
+.btn-one2one-min-close {
+  padding: 0px !important;
+  width: 35px !important;
+  height: 35px !important;
+  background: #00000000 !important;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  border: none;
+}
+
+.btn-one2one-min-close:hover {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-close:active {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-close:focus {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-fullscreen {
+  padding: 0px !important;
+  width: 35px !important;
+  height: 35px !important;
+  background: #00000000 !important;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  border: none;
+}
+
+.btn-one2one-min-fullscreen:hover {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-fullscreen:active {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-fullscreen:focus {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.video-call-mini-disable {
+  visibility: hidden;
+  /* position: relative; */
+  /* z-index: -1; */
+}
+
+.video-call-mini-enable {
+  visibility: visible;
+  /* position: relative; */
+  /* z-index: auto; */
+}
+
 .video-tags {
   margin: 20px;
 }

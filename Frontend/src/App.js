@@ -14,6 +14,7 @@ import "../src/assets/mentor.css";
 import "../src/assets/common.css";
 
 import VideoCall from "../src/components/common/VideoCall";
+import VideoCallMin from "../src/components/common/VideoCallMin";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
@@ -61,7 +62,7 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    var wsUri = 'wss://media.brainsshare.com/one2one';
+    var wsUri = 'wss://192.168.136.129:443/one2one';
     // var wsUri = 'wss://192.168.136.129:8443/broadcast';
     this.setWebsocket(wsUri);
   }
@@ -473,29 +474,38 @@ export default class App extends React.Component{
               );
           })}
           {this.state.call && 
-            <VideoCall
-              accepted={this.state.isAccepted}
-              open={true} 
-              toggle={() => this.toggle_videocall()}
-              onDecline={() => this.outcomingCallDecline()}
-              sendErrorMsg={this.sendErrorMsg}
-              from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
-              callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
-            />
+            // <VideoCall
+            //   accepted={this.state.isAccepted}
+            //   open={true} 
+            //   toggle={() => this.toggle_videocall()}
+            //   onDecline={() => this.outcomingCallDecline()}
+            //   sendErrorMsg={this.sendErrorMsg}
+            //   from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+            //   callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+            // />
+            <div className="draggable-video-item">
+              <Draggable
+              >
+                <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                  <VideoCallMin 
+                    accepted={this.state.isAccepted}
+                    open={true} 
+                    toggle={() => this.toggle_videocall()}
+                    onDecline={() => this.outcomingCallDecline()}
+                    sendErrorMsg={this.sendErrorMsg}
+                    from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+                    callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+                  />
+                </div>
+              </Draggable>
+            </div>
           }
               
           <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} errMsg={this.state.errorMsg} 
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
-          <div className="draggable-video-item">
-            <Draggable
-            >
-              <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
-                I already have an absolute position.
-              </div>
-            </Draggable>
-          </div>
+          
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />
