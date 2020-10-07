@@ -50,6 +50,7 @@ export default class App extends React.Component{
       toAvatar: '',
       fromName: '', 
       toName: '', 
+      dragegableOnStart: true, 
     }
 
     this.ws = null;
@@ -59,10 +60,11 @@ export default class App extends React.Component{
     this.call = this.call.bind(this);
     this.setUser = this.setUser.bind(this);
     this.sendErrorMsg = this.sendErrorMsg.bind(this);
+    this.fullScreen = this.fullScreen.bind(this)
   }
 
   componentWillMount() {
-    var wsUri = 'wss://192.168.136.129:443/one2one';
+    var wsUri = 'wss://192.168.136.130:443/one2one';
     // var wsUri = 'wss://192.168.136.129:8443/broadcast';
     this.setWebsocket(wsUri);
   }
@@ -435,6 +437,16 @@ export default class App extends React.Component{
     console.log(this.state.errorMsg)
   }
 
+  fullScreen() {
+    this.setState({
+      dragegableOnStart: !this.state.dragegableOnStart
+    })
+  }
+
+  dragegableOnStart() {
+    return this.state.dragegableOnStart;
+  }
+
   render() {
     const { incomingCallStatus, outcomingCallStatus, errorModalStatus} = this.state;
     return (
@@ -485,6 +497,7 @@ export default class App extends React.Component{
             // />
             <div className="draggable-video-item">
               <Draggable
+               onStart={() => this.dragegableOnStart()}
               >
                 <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
                   <VideoCallMin 
@@ -493,6 +506,7 @@ export default class App extends React.Component{
                     toggle={() => this.toggle_videocall()}
                     onDecline={() => this.outcomingCallDecline()}
                     sendErrorMsg={this.sendErrorMsg}
+                    fullScreen={this.fullScreen}
                     from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
                     callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
                   />

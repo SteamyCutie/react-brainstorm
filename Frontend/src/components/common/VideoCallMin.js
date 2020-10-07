@@ -135,21 +135,21 @@ export default class VideoCallMin extends React.Component {
   }
 
   handleFullScreen() {
-
+    // this.props.fullScreen();
   }
 
   render() {
     const { open, accepted, callState } = this.props;
     return (
-      <div className={ (callState === INCOMING_CALL) ? "video-call-mini-enable" :(callState === OUTGOING_CALL && accepted) ? "video-call-mini-enable" : "video-call-mini-disable"}>
-        <div className="video-call-element-min">
+      <div id="one2one-call-conatainer" className={ (callState === INCOMING_CALL) ? "video-call-mini-enable" :(callState === OUTGOING_CALL && accepted) ? "video-call-mini-enable" : "video-call-mini-disable"}>
+        <div className="video-call-element-min" id="video-call-element-min">
           <div>
-            <video id="videoInput" autoPlay width="200px" height="150px" poster={PosterImg}>
+            <video id="videoInput" autoPlay width="300px" height="225px" poster={PosterImg}>
               
             </video>
           </div>
           <div>
-            <video id="videoOutput" autoPlay width="200px" height="150px" poster={PosterImg}>
+            <video id="videoOutput" autoPlay width="300px" height="225px" poster={PosterImg}>
               
             </video>
           </div>

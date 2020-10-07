@@ -182,14 +182,10 @@
 
 .video-call-mini-disable {
   visibility: hidden;
-  /* position: relative; */
-  /* z-index: -1; */
 }
 
 .video-call-mini-enable {
   visibility: visible;
-  /* position: relative; */
-  /* z-index: auto; */
 }
 
 .video-tags {
@@ -508,7 +504,7 @@
 }
 
 .draggable-video-item {
-  width: 250px !important;
+  width: 400px !important;
   height: 100%;
   /* z-index: -1;
   position: absolute;
