@@ -64,8 +64,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    var wsUri = 'wss://192.168.136.130:443/one2one';
-    // var wsUri = 'wss://192.168.136.129:8443/broadcast';
+    // var wsUri = 'wss://media.brainsshare.com/one2one';
+    var wsUri = 'wss://192.168.136.129:443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -184,10 +184,10 @@ export default class App extends React.Component{
       this.stop(true);
     } else {
       if(this.state.callState) {
-        this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
-          if (error)
-            return console.error(error);
-        });
+        // this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
+        //   if (error)
+        //     return console.error(error);
+        // });
         // this.setState({
         //   callState: IN_CALL,
         //   call: true,
@@ -268,6 +268,14 @@ export default class App extends React.Component{
   }
 
   stop(message) {
+    if(this.state.callState !== NO_CALL) {
+      var response = {
+        id : 'stop'
+      }
+      this.sendMessage(response);
+      console.log("++++++++++++++++");
+    }
+
     this.setState({
       callState: NO_CALL,
       incomingCallStatus: false,
@@ -276,17 +284,18 @@ export default class App extends React.Component{
       call: false,
       isAccepted: false,
     });
-    if (this.webRtcPeer) {
-      this.webRtcPeer.dispose();
-      this.webRtcPeer = null;
+    // if (this.webRtcPeer) {
+      // this.webRtcPeer.dispose();
+      // this.webRtcPeer = null;
 
-      if (!message) {
-        var response = {
-          id : 'stop'
-        }
-        this.sendMessage(response);
-      }
-    }
+    //   if (!message) {
+        // var response = {
+        //   id : 'stop'
+        // }
+        // this.sendMessage(response);
+        // console.log("++++++++++++++++");
+    //   }
+    // }
   }
 
   sendMessage(message) {
