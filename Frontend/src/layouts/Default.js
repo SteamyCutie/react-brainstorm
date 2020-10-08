@@ -287,7 +287,9 @@ export default class DefaultLayout extends React.Component {
   render() {
     const { children } = this.props;
     const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
-
+    if (children.props.location.pathname === "/mentorDashboard" || children.props.location.pathname === "/studentDashboard") {
+      children.props.location.search = "search";
+    }
     return (
       <>
         {loading && <LoadingModal open={true} />}

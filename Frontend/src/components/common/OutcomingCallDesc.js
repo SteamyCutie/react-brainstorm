@@ -74,7 +74,7 @@ export default class OutcomingCallDesc extends React.Component {
     if (array.length > 150) {
       return;
     } else {
-      var { remaincount, description } = this.state;
+      var { remaincount } = this.state;
       remaincount = 150 - array.length;
       this.setState({
         remaincount: remaincount,
