@@ -1,4 +1,6 @@
 import React from "react";
+import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
+import AWS from 'aws-sdk'
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
 import Loginbygoogle from "../common/Loginbygoogle";
 import Loginbyfacebook from "../common/Loginbyfacebook";
@@ -13,6 +15,7 @@ export default class SignUp extends React.Component {
       name: "", 
       email: "", 
       password: "", 
+      channel_name: "",
       confirmpassword: "",
       validationError: {
         name: '',
@@ -52,10 +55,17 @@ export default class SignUp extends React.Component {
   }
 
   actionSignup = async() => {
-    try {console.log(this.state)
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  
+    for (var i = 0; i < 6; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    
+    this.setState({channel_name: text});
+    try {
       const result = await signup(this.state);
       if (result.data.result === "success") {
-        window.location.href = '/verification';
+        this.createAWSKinesisChannel();
       } else {
         this.setState({
           signUpError: result.data.message
@@ -63,6 +73,20 @@ export default class SignUp extends React.Component {
       }
     } catch(err) {
     };
+  }
+
+  createAWSKinesisChannel() {
+    var params = {
+      ChannelName: this.state.channel_name,
+    };
+    var kinesisvideo = new AWS.KinesisVideo();
+    kinesisvideo.createSignalingChannel(params, function (err, data) {
+      if (err) 
+        console.log(err, err.stack); // an error occurred
+      else
+        console.log(data);           // successful response
+    });
+    window.location.href = '/verification';
   }
 
   handleNameKeyDown = (e) => {
