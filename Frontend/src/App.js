@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import routes from "./Routes";
 import withTracker from "./withTracker";
 // import {webRtcPeer} from 'kurento-utils';
+import Draggable from 'react-draggable';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
@@ -13,6 +14,7 @@ import "../src/assets/mentor.css";
 import "../src/assets/common.css";
 
 import VideoCall from "../src/components/common/VideoCall";
+import VideoCallMin from "./components/common/One2OneMin";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
@@ -48,6 +50,7 @@ export default class App extends React.Component{
       toAvatar: '',
       fromName: '', 
       toName: '', 
+      dragegableOnStart: true, 
     }
 
     this.ws = null;
@@ -57,10 +60,11 @@ export default class App extends React.Component{
     this.call = this.call.bind(this);
     this.setUser = this.setUser.bind(this);
     this.sendErrorMsg = this.sendErrorMsg.bind(this);
+    this.fullScreen = this.fullScreen.bind(this)
   }
 
   componentWillMount() {
-    var wsUri = 'wss://media.brainsshare.com/one2one';
+    var wsUri = 'wss://192.168.136.130:443/one2one';
     // var wsUri = 'wss://192.168.136.129:8443/broadcast';
     this.setWebsocket(wsUri);
   }
@@ -165,9 +169,16 @@ export default class App extends React.Component{
           errorMsg: "Call Rejected",
         })
       } else {
-        this.setState({
-          errorMsg: message.message,
-        })
+        if(message.message.indexOf("is not reigstered")) {
+          this.setState({
+            errorMsg: "The user " + this.state.toName + " is offline."
+          })
+          
+        } else {
+          this.setState({
+            errorMsg: message.message,
+          })
+        }
       }
 
       this.stop(true);
@@ -177,7 +188,11 @@ export default class App extends React.Component{
           if (error)
             return console.error(error);
         });
-
+        // this.setState({
+        //   callState: IN_CALL,
+        //   call: true,
+        //   sdpAnswer: message.sdpAnswer
+        // })
         this.setState({
           isAccepted: true,
         })
@@ -433,6 +448,16 @@ export default class App extends React.Component{
     console.log(this.state.errorMsg)
   }
 
+  fullScreen() {
+    this.setState({
+      dragegableOnStart: !this.state.dragegableOnStart
+    })
+  }
+
+  dragegableOnStart() {
+    return this.state.dragegableOnStart;
+  }
+
   render() {
     const { incomingCallStatus, outcomingCallStatus, errorModalStatus} = this.state;
     return (
@@ -472,21 +497,40 @@ export default class App extends React.Component{
               );
           })}
           {this.state.call && 
-            <VideoCall
-              accepted={this.state.isAccepted}
-              open={true} 
-              toggle={() => this.toggle_videocall()}
-              onDecline={() => this.outcomingCallDecline()}
-              sendErrorMsg={this.sendErrorMsg}
-              from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
-              callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
-            />
+            // <VideoCall
+            //   accepted={this.state.isAccepted}
+            //   open={true} 
+            //   toggle={() => this.toggle_videocall()}
+            //   onDecline={() => this.outcomingCallDecline()}
+            //   sendErrorMsg={this.sendErrorMsg}
+            //   from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+            //   callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+            // />
+            <div className="draggable-video-item">
+              <Draggable
+               onStart={() => this.dragegableOnStart()}
+              >
+                <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                  <VideoCallMin 
+                    accepted={this.state.isAccepted}
+                    open={true} 
+                    toggle={() => this.toggle_videocall()}
+                    onDecline={() => this.outcomingCallDecline()}
+                    sendErrorMsg={this.sendErrorMsg}
+                    fullScreen={this.fullScreen}
+                    from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+                    callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+                  />
+                </div>
+              </Draggable>
+            </div>
           }
               
           <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} errMsg={this.state.errorMsg} 
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
+          
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />
