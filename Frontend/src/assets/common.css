@@ -121,6 +121,73 @@
   width: 100%;
 }
 
+.video-call-element-min {
+  padding: 10px;
+  width: 100%;
+  /* display: ; */
+  /* background-color: #04B5FA; */
+}
+
+.btn-one2one-min-close {
+  padding: 0px !important;
+  width: 35px !important;
+  height: 35px !important;
+  background: #00000000 !important;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  border: none;
+}
+
+.btn-one2one-min-close:hover {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-close:active {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-close:focus {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-fullscreen {
+  padding: 0px !important;
+  width: 35px !important;
+  height: 35px !important;
+  background: #00000000 !important;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  border: none;
+}
+
+.btn-one2one-min-fullscreen:hover {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-fullscreen:active {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.btn-one2one-min-fullscreen:focus {
+  box-shadow: none;
+  background: #00000064 !important;
+}
+
+.video-call-mini-disable {
+  visibility: hidden;
+}
+
+.video-call-mini-enable {
+  visibility: visible;
+}
+
 .video-tags {
   margin: 20px;
 }
@@ -296,14 +363,9 @@
   opacity: 0.6;
   border-radius: 8px;
   background-color: black;
-  /* position: absolute; */
-  /* bottom: 0px; */
 }
 
 .participant-video video {
-  /* height: 100vh - 40px; */
-  /* width: 100vw; */
-  /* object-fit: fill; */
   height: 100vh;
   min-height: 100%;
 }
@@ -428,6 +490,10 @@
   width: 100%;
 }
 
+.room-participant-video video[poster]{
+  object-fit: cover;
+}
+
 .room-participant-name {
   align-self: center;
   padding: 5px 10px;
@@ -435,4 +501,15 @@
   /* background-color: #04B5FAB0; */
   color: #04B5FA;
   border-radius: 4px;
+}
+
+.draggable-video-item {
+  width: 400px !important;
+  height: 100%;
+  /* z-index: -1;
+  position: absolute;
+  top: 100px;
+  right: 100px;
+  visibility: hidden;
+  background: #00000000; */
 }
