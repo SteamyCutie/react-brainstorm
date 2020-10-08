@@ -62,52 +62,70 @@ export default class One2OneMin extends React.Component {
       this.setState({
         callState: IN_CALL
       })
-      this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
-        function (error) {
-          if (error) {
-            console.error(error);
-            that.props.sendErrorMsg("You have no webcam or microphone");
-          }
+      // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
+      //   function (error) {
+      //     if (error) {
+      //       console.error(error);
+      //       that.props.sendErrorMsg("You have no webcam or microphone");
+      //     }
   
-          this.generateOffer(function (error, offerSdp) {
-            if (error) {
-              console.error(error);
-            }
-            var response = {
-              id: 'incomingCallResponse',
-              from: that.props.from,
-              callResponse: 'accept',
-              sdpOffer: offerSdp
-            };
-            that.sendMessage(response);
-          });
-        });
-      this.props.setWebRtcPeer(this.webRtcPeer);
-    } else if (this.props.callState === OUTGOING_CALL) {
-      this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
-        if (error) {
-          that.props.sendErrorMsg("You have no webcam or microphone");
-        }
+      //     this.generateOffer(function (error, offerSdp) {
+      //       if (error) {
+      //         console.error(error);
+      //       }
+      //       var response = {
+      //         id: 'incomingCallResponse',
+      //         from: that.props.from,
+      //         callResponse: 'accept',
+      //         sdpOffer: offerSdp
+      //       };
+      //       that.sendMessage(response);
+      //     });
+      //   });
+      // this.props.setWebRtcPeer(this.webRtcPeer);
 
-        this.generateOffer(function(error, offerSdp) {
-          if (error) {
-            console.error(error);
-            // that.setState({
-            //   callState: NO_CALL
-            // })
-          }
-          var message = {
-            id : 'call',
-            from : localStorage.getItem("email"),
-            name: localStorage.getItem('user_name'), 
-            avatarURL: localStorage.getItem("avatar"),
-            to : that.props.to,
-            sdpOffer : offerSdp
-          };
-          that.sendMessage(message);
-        });
-      });
-      this.props.setWebRtcPeer(this.webRtcPeer);
+      var response = {
+        id: 'incomingCallResponse',
+        from: that.props.from,
+        callResponse: 'accept',
+        sdpOffer: "offerSdp"
+      };
+      that.sendMessage(response);
+    } else if (this.props.callState === OUTGOING_CALL) {
+      // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
+      //   if (error) {
+      //     that.props.sendErrorMsg("You have no webcam or microphone");
+      //   }
+
+      //   this.generateOffer(function(error, offerSdp) {
+      //     if (error) {
+      //       console.error(error);
+      //       // that.setState({
+      //       //   callState: NO_CALL
+      //       // })
+      //     }
+      //     var message = {
+      //       id : 'call',
+      //       from : localStorage.getItem("email"),
+      //       name: localStorage.getItem('user_name'), 
+      //       avatarURL: localStorage.getItem("avatar"),
+      //       to : that.props.to,
+      //       sdpOffer : offerSdp
+      //     };
+      //     that.sendMessage(message);
+      //   });
+      // });
+      // this.props.setWebRtcPeer(this.webRtcPeer);
+
+      var message = {
+        id : 'call',
+        from : localStorage.getItem("email"),
+        name: localStorage.getItem('user_name'), 
+        avatarURL: localStorage.getItem("avatar"),
+        to : that.props.to,
+        sdpOffer : "offerSdp"
+      };
+      that.sendMessage(message);
 
       // timeout = setTimeout(function() {
       //   that.props.onDecline();
