@@ -4,7 +4,7 @@ import LoadingModal from "./LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getavailabletimesforstudent, signout } from '../../api/api';
+import { getavailabletimesforstudent, signout, booksession } from '../../api/api';
 import Close from '../../images/Close.svg'
 import BackIcon from "../../images/Back_icon.svg"
 import NextIcon from "../../images/Next_icon.svg"
@@ -19,16 +19,17 @@ export default class BookSession extends React.Component {
       weekdata: [],
       totalName: '',
       schedule: [],
+      day: '',
+      from: ''
     };
   }
 
   componentWillMount() {
+    this.setState({day: new Date().getFullYear() + "-" + new Date().getMonth() + "-" + new Date().getDate()});
     this.checkLabel();
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps, "+++");
-    console.log(this.props.id, "---");
     if (nextProps.id && this.props.id !== nextProps.id) {
       this.getAvailableTimeForStudent(nextProps.id);
     }
@@ -157,12 +158,52 @@ export default class BookSession extends React.Component {
     this.checkLabel();
   }
 
-  bookSchedule(idx, idx1) {
+  bookSchedule(idx, idx1, time) {
     this.state.schedule[idx][idx1].book = !this.state.schedule[idx][idx1].book;
-    this.setState({schedule: this.state.schedule});
+    this.setState({
+      schedule: this.state.schedule,
+      from: time
+    });
   }
 
   actionBookSession = async() => {
+    const {day, from} = this.state;
+    let param = {
+      user_id: localStorage.getItem('user_id'),
+      mentor_id: this.props.id,
+      day: day,
+      from: from,
+      description: "desc",
+      title: "title"
+    }
+
+    try {
+      this.setState({loading: true});
+      const result = await booksession(param);
+
+      if (result.data.result === "success") {
+        this.setState({schedule: result.data.data});
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
   }
 
   signout = async() => {
@@ -190,6 +231,18 @@ export default class BookSession extends React.Component {
     } catch(error) {
       this.removeSession();
     }
+  }
+
+  changeDate(day) {
+    const { totalName } = this.state;
+    let monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    let month = monthNames.indexOf(totalName.split("-")[0].split(" ")[0]) + 1 + "";
+    let year = totalName.split(",")[1] + "";
+    let date = day + "";
+    this.setState({day: year+"-"+month+"-"+date});
   }
 
   removeSession() {
@@ -274,24 +327,24 @@ export default class BookSession extends React.Component {
                   if (item.day === new Date().getDate() && item.month === new Date().getMonth() && item.year === new Date().getFullYear()) {
                     return <Col className="week-style-header-disable" key={idx}>
                       <p>{item.date}</p>
-                      <button type="button" className="btn btn-primary today">{item.day}</button>
+                      <button type="button" className="btn btn-primary today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
                     </Col>;
                   } else {
                     return <Col className="week-style-header-disable" key={idx}>
                       <p>{item.date}</p>
-                      <button type="button" className="btn btn-primary not-today">{item.day}</button>
+                      <button type="button" className="btn btn-primary not-today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
                     </Col>;
                   }
                 } else {
                   if (item.day === new Date().getDate() && item.month === new Date().getMonth() && item.year === new Date().getFullYear()) {
                     return <Col className="week-style-header-available" key={idx}>
                       <p>{item.date}</p>
-                      <button type="button" className="btn btn-primary today">{item.day}</button>
+                      <button type="button" className="btn btn-primary today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
                     </Col>;
                   } else {
                     return <Col className="week-style-header-available" key={idx}>
                       <p>{item.date}</p>
-                      <button type="button" className="btn btn-primary not-today">{item.day}</button>
+                      <button type="button" className="btn btn-primary not-today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
                     </Col>;
                   }
                 }
@@ -303,7 +356,7 @@ export default class BookSession extends React.Component {
                   <table>
                     {item.map((item1, idx1) => 
                       <tr>
-                        <button key={idx1} type="button" className={item1.book ? "btn btn-primary schedule active" : "btn btn-primary schedule"} onClick={() => this.bookSchedule(idx, idx1)}>{item1.value}</button>
+                        <button key={idx1} type="button" className={item1.book ? "btn btn-primary schedule active" : "btn btn-primary schedule"} onClick={() => this.bookSchedule(idx, idx1, item1.value)}>{item1.value}</button>
                       </tr>
                     )}
                   </table>

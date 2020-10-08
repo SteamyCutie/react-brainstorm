@@ -30,6 +30,19 @@ export default class StudentDashboard extends React.Component {
     this.sendUser = this.sendUser.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, 1);
+  }
+
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
     let searchParams = [];

@@ -48,16 +48,11 @@ export class Loginbygoogle extends Component {
     }
 
     return (
-      // <div className="App">
-      //   <div className="row">
-      //     <div style={{paddingBottom: 20}} className="col-sm-12">
-            <GoogleLogin clientId={GOOGLE_KEY}
-              buttonText="Login with Google"
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}></GoogleLogin>
-      //     </div>
-      //   </div>
-      // </div>
+      <GoogleLogin clientId={GOOGLE_KEY}
+        buttonText="Login with Google"
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}>
+      </GoogleLogin>
     )
   }
 }

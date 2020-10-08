@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invited;
+use App\Models\Session;
 use App\Models\User;
 use Carbon\Carbon;
 use function GuzzleHttp\Psr7\str;
@@ -108,21 +110,27 @@ class PaymentController extends Controller
     ]);
   }
   
+  public function createBank(Request $request) {
+  
+  }
+  
+  public function getBank(Request $request) {
+  
+  }
   public function payBySession(Request $request) {
 //    $session_name = $request['session_name'];
 //    $amount = $request['amount'];
 //    $card_number = $request['card_number'];
 //    $card_info = Payment::select('card_src', 'customer_id')->where('card_number', $card_number)->first();
-    
+
 //    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
     \Stripe\Stripe::setApiKey(env("SK_LIVE"));
-  
     $charge = \Stripe\Charge::create([
-      'amount' => 50000,
+      'amount' => 80000,
       'currency' => 'usd',
-      'customer' => "cus_I9c8AvLBuGMMVs",
-      'source' => "card_1HZIurGRfXBTO7BEnGIN3kih"
-//      'description' => 'My session Charge for Mentor'
+      'customer' => "cus_I9cBtmuKThEmkA",
+      'source' => "card_1HZIxbGRfXBTO7BEENqtq1RO",
+      'description' => 'My session Charge for Mentor'
 //          'description' => 'Charge for '.$session_name,
     ]);
     echo $charge;
@@ -140,7 +148,7 @@ class PaymentController extends Controller
 //    echo $card;
 //    End create source
 //    Begin update source
-  
+    
     $stripe = new \Stripe\StripeClient(
       'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
     );
@@ -149,7 +157,7 @@ class PaymentController extends Controller
       'card_1HZIwBGRfXBTO7BElYaNwmOE',
       ['name' => 'paul']
     );
-  
+
 //    \Stripe\Stripe::setApiKey(env("SK_LIVE"));
 //
 //    $charge = \Stripe\Charge::create([
@@ -170,46 +178,13 @@ class PaymentController extends Controller
 //    End update source
   }
   
-  
-  public function finishedsession(Request $request) {
-    $user_id = $request['user_id'];
-    $token = $request['token'];
-    $customer_id = $request['customer_id'];
-    $pay_info = Payment::where('user_id', $user_id)->first();
-    if (!$pay_info) {
-      return;
-    }
-    \Stripe\Stripe::setApiKey(env("SK_LIVE"));
-    $intent = \Stripe\PaymentIntent::create([
-      'amount' => 100000,
-      'currency' => 'usd',
-      'customer' => $customer_id,
-    ]);
-    echo $intent;
-  }
-  
   public function removesource(Request $request) {
     $stripe = new \Stripe\StripeClient(env('SK_LIVE') );
     $res_remove = $stripe->customers->deleteSource(
-      'cus_I97OREjr3YSXIA',
+      'cus_I9cBtmuKThEmkA',
       'src_1HYpt2GRfXBTO7BEY5r7h2AG'
     );
     echo $res_remove;
-  }
-  
-  public function createsource(Request $request) {
-    $token = $request['token'];
-    $email= $request['email'];
-    $customer_id = $request['customer_id'];
-    //Begin create source
-    $stripe = new \Stripe\StripeClient(
-      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
-    );
-    $stripe->customers->createSource(
-      'cus_I9YW0KCueJnZYO',
-      ['source' => 'tok_visa']
-    );
-    //End create source
   }
   
   public function createcustomer(Request $request) {
@@ -223,11 +198,44 @@ class PaymentController extends Controller
     echo $result;
   }
   
-  public function test(Request $request) {
-
-  }
-  
   public function createaccount(Request $request) {
+    //=========Begin Create Bank account token
+//    $stripe = new \Stripe\StripeClient(
+//      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+//    );
+//    $result = $stripe->tokens->create([
+//      'bank_account' => [
+//        'country' => 'US',
+//        'currency' => 'usd',
+//        'account_holder_name' => 'Jenny Rosen',
+//        'account_holder_type' => 'individual',
+//        'routing_number' => '110000000',
+//        'account_number' => '000123456789',
+//      ],
+//    ]);
+//    echo $result;
+    //=========End Create Bank account token
+    
+    //=========Begin create Bank
+//    $stripe = new \Stripe\StripeClient(
+//      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+//    );
+//    $res = $stripe->customers->createSource(
+//      'cus_I9cBtmuKThEmkA',
+//      ['source' => "btok_1HZbiXGRfXBTO7BEeTzsqKQF"]
+//    );
+//    echo $res;
+    //=========End craete Bank
   
+    //============Begin payout create
+    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+    $res = \Stripe\Payout::create([
+      'amount' => 24784,
+      'currency' => 'usd',
+//      'source_type' => 'bank_account'
+      'source_type' => 'ba_1HZbgIGRfXBTO7BEeY8KIqPE'
+    ]);
+    echo $res;
+    //============Begin payout create
   }
 }

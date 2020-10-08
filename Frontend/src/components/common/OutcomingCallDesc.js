@@ -18,7 +18,9 @@ export default class OutcomingCallDesc extends React.Component {
     this.emailInput = React.createRef();
     this.state = {
       loading: false,
-      userinfo: {}
+      userinfo: {},
+      remaincount: 150,
+      description: ''
     };
   }
 
@@ -65,6 +67,20 @@ export default class OutcomingCallDesc extends React.Component {
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     };
+  }
+
+  changeDescription(e) {
+    var array = e.target.value.split("");
+    if (array.length > 150) {
+      return;
+    } else {
+      var { remaincount } = this.state;
+      remaincount = 150 - array.length;
+      this.setState({
+        remaincount: remaincount,
+        description: e.target.value
+      });
+    }
   }
 
   toggle(accepted) {
@@ -135,7 +151,7 @@ export default class OutcomingCallDesc extends React.Component {
 
   render() {
     const { open } = this.props;
-    const { loading, userinfo } = this.state;
+    const { loading, userinfo, remaincount, description } = this.state;
     return (
       <div>
         <ReactNotification />
@@ -155,7 +171,8 @@ export default class OutcomingCallDesc extends React.Component {
                 </Col>
                 <Col md="8" className="project-detail-input-group">
                   <label htmlFor="fePassword">Call description</label>
-                  <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" />
+                  <label htmlFor="fePassword" className="remain-symbols">{remaincount} symbols left</label>
+                  <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.changeDescription(e)} value={description}/>
                 </Col>
               </Row>
               <Row className="center btn-group-call">
