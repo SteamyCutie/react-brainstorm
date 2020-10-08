@@ -139,9 +139,10 @@ export default class StudentDashboard extends React.Component {
     });
   }
 
-  toggle_callwithdesc() {
+  toggle_callwithdesc(id) {
     this.setState({
-      ModalCallWithDescOpen: !this.state.CallWithDescription
+      ModalCallWithDescOpen: !this.state.ModalCallWithDescOpen,
+      id: id
     });
   }
 
@@ -219,7 +220,7 @@ export default class StudentDashboard extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={() => this.toggle_callwithdesc()}/>
+                <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={(id) => this.toggle_callwithdesc(id)}/>
               ))}
             </Col>
           </Row>
