@@ -20,9 +20,9 @@ class MentorDetailCardStudentDashboard extends React.Component {
   componentWillMount() {
   }
 
-  handleInstantLive() {
+  handleInstantLive(id) {
     const { callwithdescription } = this.props;
-    callwithdescription();
+    callwithdescription(id);
   }
 
   handleBookSession(id) {
@@ -82,7 +82,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             </p>
           </Row>
           <Row className="center">
-            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive()}>
+            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive(id)}>
               <img src={Lightening} alt="Lightening"/>
               Instant LIve
             </Button> : <></> }

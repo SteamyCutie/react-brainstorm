@@ -4,10 +4,10 @@ import LoadingModal from "./LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import "../../assets/landingpage.css"
-import DeclineImg from '../../images/call-decline.svg'
-import AcceptImg from '../../images/call-accept.svg'
-import defaultavatar from '../../images/avatar.jpg'
+import "../../assets/landingpage.css";
+import DeclineImg from '../../images/call-decline.svg';
+import AcceptImg from '../../images/call-accept.svg';
+import defaultavatar from '../../images/avatar.jpg';
 
 import { getuserinfobyid } from '../../api/api';
 
@@ -18,7 +18,9 @@ export default class OutcomingCallDesc extends React.Component {
     this.emailInput = React.createRef();
     this.state = {
       loading: false,
-      userinfo: {}
+      userinfo: {},
+      remaincount: 150,
+      description: ''
     };
   }
 
@@ -27,16 +29,14 @@ export default class OutcomingCallDesc extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps, "+++");
-    console.log(this.props.id, "---");
     if (nextProps.id && this.props.id !== nextProps.id) {
       this.getUserInfo(nextProps.id);
     }
   }
 
-  getUserinfo = async(id) => {
+  getUserInfo = async(id) => {
     let param = {
-      user_id: id
+      id: id
     }
     try {
       this.setState({loading: true});
@@ -67,6 +67,20 @@ export default class OutcomingCallDesc extends React.Component {
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     };
+  }
+
+  changeDescription(e) {
+    var array = e.target.value.split("");
+    if (array.length > 150) {
+      return;
+    } else {
+      var { remaincount } = this.state;
+      remaincount = 150 - array.length;
+      this.setState({
+        remaincount: remaincount,
+        description: e.target.value
+      });
+    }
   }
 
   toggle(accepted) {
@@ -137,7 +151,7 @@ export default class OutcomingCallDesc extends React.Component {
 
   render() {
     const { open } = this.props;
-    const { loading, userinfo } = this.state;
+    const { loading, userinfo, remaincount, description } = this.state;
     return (
       <div>
         <ReactNotification />
@@ -151,10 +165,14 @@ export default class OutcomingCallDesc extends React.Component {
                 <Col md="4">
                   {userinfo.avatar && <img src={userinfo.avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />}
                   {!userinfo.avatar && <img src={defaultavatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />}
+                  {
+                    userinfo.status === 1 && <div className="carousel-component-online-class"></div>
+                  }
                 </Col>
                 <Col md="8" className="project-detail-input-group">
                   <label htmlFor="fePassword">Call description</label>
-                  <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" />
+                  <label htmlFor="fePassword" className="remain-symbols">{remaincount} symbols left</label>
+                  <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.changeDescription(e)} value={description}/>
                 </Col>
               </Row>
               <Row className="center btn-group-call">
