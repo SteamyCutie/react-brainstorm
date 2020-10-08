@@ -6,7 +6,8 @@ import Loginbygoogle from "../common/Loginbygoogle";
 import Loginbyfacebook from "../common/Loginbyfacebook";
 import "../../assets/landingpage.css"
 import { signup } from '../../api/api';
-import Close from '../../images/Close.svg'
+import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
+import Close from '../../images/Close.svg';
 
 export default class SignUp extends React.Component {
   constructor(props) {
@@ -61,9 +62,10 @@ export default class SignUp extends React.Component {
     for (var i = 0; i < 6; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     
-    this.setState({channel_name: text});
+    let param = this.state;
+    param.channel_name = text;
     try {
-      const result = await signup(this.state);
+      const result = await signup(param);
       if (result.data.result === "success") {
         this.createAWSKinesisChannel();
       } else {
@@ -79,14 +81,19 @@ export default class SignUp extends React.Component {
     var params = {
       ChannelName: this.state.channel_name,
     };
-    var kinesisvideo = new AWS.KinesisVideo();
-    kinesisvideo.createSignalingChannel(params, function (err, data) {
-      if (err) 
-        console.log(err, err.stack); // an error occurred
-      else
-        console.log(data);           // successful response
+
+    var kinesisvideo = new AWS.KinesisVideo({
+      region: AWS_REGION,
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
     });
-    window.location.href = '/verification';
+    kinesisvideo.createSignalingChannel(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack);
+      } else {
+        window.location.href = '/verification';
+      } 
+    });
   }
 
   handleNameKeyDown = (e) => {
