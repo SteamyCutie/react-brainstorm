@@ -69,6 +69,7 @@ class UserController extends Controller
     $email = $request['email'];
     $name = $request['name'];
     $password = $request['password'];
+    $channel_name = $request['channel_name'];
     $subject = "Welcome to BransShare!";
     $fronturl = env("FRONT_URL");
     $toEmail = $email;
@@ -83,6 +84,7 @@ class UserController extends Controller
       $user = new User();
       $user->name = $name;
       $user->email = $email;
+      $user->channel_name = $channel_name;
       if ($request['is_mentor']) {
         $user->is_mentor = $request['is_mentor'];
       } else {
@@ -104,11 +106,12 @@ class UserController extends Controller
           'message' => 'Sorry, fail send mail'
         ]);
       }
+      
       //Begin register customer ID for stripe
       $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
       $stripe_customer = $stripe->customers->create([
         'email' => $email,
-        'description' => 'registered'.$name.'customer',
+        'description' => 'registered <'.$name.'>   customer',
         'name' => $name,
       ]);
 //      Payment::create([
