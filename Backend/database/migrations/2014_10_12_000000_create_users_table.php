@@ -41,6 +41,7 @@ class CreateUsersTable extends Migration
       $table->enum('provider', ['Manual', 'Google', 'Facebook']);
       $table->string('provider_id')->nullable();
       $table->string('customer_id')->nullable();
+      $table->string('channel_name')->nullable()->unique();
       $table->rememberToken();
       $table->timestamps();
     });

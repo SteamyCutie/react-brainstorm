@@ -511,7 +511,7 @@ class SessionController extends Controller
   public function bookSession(Request $request) {
     try{
       $mentor_id = $request['mentor_id'];
-      $student_id = $request['student_id'];
+      $student_id = $request['user_id'];
       $title = $request['title'];
       $description = $request['description'];
       $tags = User::select('tags_id')->where('id', $mentor_id)->first();

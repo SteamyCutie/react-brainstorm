@@ -111,10 +111,7 @@ class PaymentController extends Controller
   }
   
   public function createBank(Request $request) {
-    $name = $request->name;
-    $email = $request->email;
-    $iban = $request->iban;
-    
+  
   }
   
   public function getBank(Request $request) {
@@ -128,7 +125,6 @@ class PaymentController extends Controller
 
 //    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
     \Stripe\Stripe::setApiKey(env("SK_LIVE"));
-    
     $charge = \Stripe\Charge::create([
       'amount' => 80000,
       'currency' => 'usd',
@@ -182,46 +178,13 @@ class PaymentController extends Controller
 //    End update source
   }
   
-  
-  public function finishedsession(Request $request) {
-    $user_id = $request['user_id'];
-    $token = $request['token'];
-    $customer_id = $request['customer_id'];
-    $pay_info = Payment::where('user_id', $user_id)->first();
-    if (!$pay_info) {
-      return;
-    }
-    \Stripe\Stripe::setApiKey(env("SK_LIVE"));
-    $intent = \Stripe\PaymentIntent::create([
-      'amount' => 100000,
-      'currency' => 'usd',
-      'customer' => $customer_id,
-    ]);
-    echo $intent;
-  }
-  
   public function removesource(Request $request) {
     $stripe = new \Stripe\StripeClient(env('SK_LIVE') );
     $res_remove = $stripe->customers->deleteSource(
-      'cus_I97OREjr3YSXIA',
+      'cus_I9cBtmuKThEmkA',
       'src_1HYpt2GRfXBTO7BEY5r7h2AG'
     );
     echo $res_remove;
-  }
-  
-  public function createsource(Request $request) {
-    $token = $request['token'];
-    $email= $request['email'];
-    $customer_id = $request['customer_id'];
-    //Begin create source
-    $stripe = new \Stripe\StripeClient(
-      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
-    );
-    $stripe->customers->createSource(
-      'cus_I9YW0KCueJnZYO',
-      ['source' => 'tok_visa']
-    );
-    //End create source
   }
   
   public function createcustomer(Request $request) {
@@ -235,16 +198,7 @@ class PaymentController extends Controller
     echo $result;
   }
   
-  public function test(Request $request) {
-    $session = Invited::select('session_id')->where('student_id', 30)->get();
-    echo $session."\n";
-    $result = Session::where('title', '2222')->whereIn('id',$session)->get();
-    echo $result;
-  }
-  
   public function createaccount(Request $request) {
-    
-    
     //=========Begin Create Bank account token
 //    $stripe = new \Stripe\StripeClient(
 //      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
