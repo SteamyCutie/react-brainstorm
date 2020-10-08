@@ -39,6 +39,9 @@ Route::post('/createcustomer', 'PaymentController@createcustomer');
 Route::post('/test', 'PaymentController@test');
 Route::post('/finishedsession', 'PaymentController@finishedsession');
 Route::post('/createaccount', 'PaymentController@createaccount');
+Route::post('/createbank', 'PaymentController@createBank');
+Route::post('/getbank', 'PaymentController@getBank');
+
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
@@ -56,6 +59,9 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/deleteforum', 'SessionController@deleteForum');
   Route::post('/editforum', 'SessionController@editForum');
   Route::post('/getforum', 'SessionController@getForum');
+  Route::post('/schedulepost', 'SessionController@schedulePost');
+  Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
+  Route::post('/booksession', 'SessionController@bookSession');
   Route::post('/getweekdata', 'DayController@index');
   Route::post('/setavailabletimes', 'AvailableTimesController@setAvailableTimes');
   Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
@@ -70,8 +76,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
 //  Route::post('/createpayment', 'PaymentController@createPayment');
 //  Route::post('/getpayment', 'PaymentController@getPayment');
 //  Route::post('/finishedsession', 'PaymentController@finishedsession');
-  Route::post('/schedulepost', 'SessionController@schedulePost');
-  Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
   Route::post('/addlibrary', 'LibraryController@addLibrary');
   Route::post('/getlibrary', 'LibraryController@getLibrary');
   Route::post('/addreport', 'ReportController@addReport');
