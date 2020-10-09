@@ -63,11 +63,11 @@ export default class NavbarSearch extends React.Component{
         } else if (result.data.message === "Authorization Token not found") {
           this.signout();
         } else {
-          this.signout();
+          // this.signout();
         }
       }
     } catch(err) {
-      this.signout();
+      // this.signout();
     };
   }
 

@@ -44,7 +44,7 @@ export class Loginbygoogle extends Component {
 
   render() {
     const responseGoogle = (response) => {
-      this.signup(response);
+      this.signup(response);  
     }
 
     return (

@@ -5,7 +5,8 @@ import routes from "./Routes";
 import withTracker from "./withTracker";
 // import {webRtcPeer} from 'kurento-utils';
 import Draggable from 'react-draggable';
-
+import { stopMaster } from './utils/master';
+import { stopViewer } from './utils/viewer';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
 import "../src/assets/mentorWallet.css";
@@ -66,8 +67,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    // var wsUri = 'wss://media.brainsshare.com/one2one';
-    var wsUri = 'wss://192.168.105.13:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -279,6 +280,8 @@ export default class App extends React.Component{
         id : 'stop'
       }
       this.sendMessage(response);
+      stopMaster();
+      stopViewer();
     }
 
     this.setState({
@@ -289,6 +292,8 @@ export default class App extends React.Component{
       call: false,
       isAccepted: false,
     });
+    stopMaster();
+    stopViewer();
     // if (this.webRtcPeer) {
       // this.webRtcPeer.dispose();
       // this.webRtcPeer = null;
