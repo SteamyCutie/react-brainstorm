@@ -1,5 +1,8 @@
 import React from "react";
 import { Button, Modal, ModalBody, Row } from "shards-react";
+import { startMaster } from '../../utils/master';
+import { startViewer } from '../../utils/viewer';
+import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import "../../assets/landingpage.css"
 import kurentoUtils from 'kurento-utils';
 
@@ -46,12 +49,59 @@ export default class One2OneMin extends React.Component {
     this.handleStop();
     toggle();
   }
-
+  getRandomClientId() {
+    return Math.random()
+      .toString(36)
+      .substring(2)
+      .toUpperCase()
+  }
+  getFormValuesMaster() {
+    return {
+      region: AWS_REGION,
+      channelName: localStorage.getItem('channel_name'),
+      clientId: this.getRandomClientId(),
+      sendVideo: true,
+      sendAudio: true,
+      openDataChannel: false,
+      widescreen: true,
+      fullscreen: false,
+      useTrickleICE: true,
+      natTraversalDisabled: false,
+      forceTURN: false,
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      endpoint: null,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+      sessionToken: null
+    }
+  }
+  getFormValuesViewer() {
+    return {
+      region: AWS_REGION,
+      channelName: this.props.channel_name,
+      clientId: this.getRandomClientId(),
+      sendVideo: true,
+      sendAudio: true,
+      openDataChannel: false,
+      widescreen: true,
+      fullscreen: false,
+      useTrickleICE: true,
+      natTraversalDisabled: false,
+      forceTURN: false,
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      endpoint: null,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+      sessionToken: null
+    }
+  }
+  onStatsReport(report) {
+    // TODO: Publish stats
+  }
   componentDidMount() {
     const that = this;
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
     this.videoOutput = document.getElementById('videoOutput');
+    console.log(this.videoInput, this.videoOutput);
     var options = {
       localVideo: this.videoInput,
       remoteVideo: this.videoOutput,
@@ -62,6 +112,10 @@ export default class One2OneMin extends React.Component {
       this.setState({
         callState: IN_CALL
       })
+      const formValues = this.getFormValuesMaster();
+      startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      })
+
       // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
       //   function (error) {
       //     if (error) {
@@ -92,6 +146,10 @@ export default class One2OneMin extends React.Component {
       };
       that.sendMessage(response);
     } else if (this.props.callState === OUTGOING_CALL) {
+      const formValues = this.getFormValuesViewer();
+      console.log(formValues.channelName)
+      startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      })
       // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
       //   if (error) {
       //     that.props.sendErrorMsg("You have no webcam or microphone");
@@ -123,7 +181,8 @@ export default class One2OneMin extends React.Component {
         name: localStorage.getItem('user_name'), 
         avatarURL: localStorage.getItem("avatar"),
         to : that.props.to,
-        sdpOffer : "offerSdp"
+        sdpOffer : "offerSdp",
+        channel_name: this.props.channel_name
       };
       that.sendMessage(message);
 
