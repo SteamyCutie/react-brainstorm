@@ -20,7 +20,7 @@ class MentorDetailCard extends React.Component {
   }
 
   handleAvailableNow() {
-    this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name, this.props.mentorData.channel_name);
+    this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name, this.props.mentorData.channel_name, "");
   }
 
   handleBookSession(id) {

@@ -182,7 +182,8 @@ export default class One2OneMin extends React.Component {
         avatarURL: localStorage.getItem("avatar"),
         to : that.props.to,
         sdpOffer : "offerSdp",
-        channel_name: this.props.channel_name
+        channel_name: this.props.channel_name, 
+        description: this.props.description, 
       };
       that.sendMessage(message);
 
