@@ -4,7 +4,9 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import routes from "./Routes";
 import withTracker from "./withTracker";
 // import {webRtcPeer} from 'kurento-utils';
-
+import Draggable from 'react-draggable';
+import { stopMaster } from './utils/master';
+import { stopViewer } from './utils/viewer';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
 import "../src/assets/mentorWallet.css";
@@ -13,6 +15,7 @@ import "../src/assets/mentor.css";
 import "../src/assets/common.css";
 
 import VideoCall from "../src/components/common/VideoCall";
+import VideoCallMin from "./components/common/One2OneMin";
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
@@ -48,6 +51,9 @@ export default class App extends React.Component{
       toAvatar: '',
       fromName: '', 
       toName: '', 
+      dragegableOnStart: true, 
+      callDescription: '', 
+      toDescription: '',
     }
 
     this.ws = null;
@@ -57,11 +63,12 @@ export default class App extends React.Component{
     this.call = this.call.bind(this);
     this.setUser = this.setUser.bind(this);
     this.sendErrorMsg = this.sendErrorMsg.bind(this);
+    this.fullScreen = this.fullScreen.bind(this)
   }
 
   componentWillMount() {
     var wsUri = 'wss://media.brainsshare.com/one2one';
-    // var wsUri = 'wss://192.168.136.129:8443/broadcast';
+    // var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -180,10 +187,10 @@ export default class App extends React.Component{
       this.stop(true);
     } else {
       if(this.state.callState) {
-        this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
-          if (error)
-            return console.error(error);
-        });
+        // this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
+        //   if (error)
+        //     return console.error(error);
+        // });
         // this.setState({
         //   callState: IN_CALL,
         //   call: true,
@@ -236,19 +243,19 @@ export default class App extends React.Component{
     const ring = document.getElementById("incoming-ring");
     ring.loop = true;
     ring.play();
-    console.log("11111111111111111111")
 
     this.setState({
       from: message.from,
       fromName: message.name, 
       avatarURL: message.avatarURL,
+      toDescription: message.description, 
     })
       
     this.toggle_incomingCall_modal(message)
 
   }
 
-  call(to) {
+  call(to, withDescription) {
     this.setState({
       callState: OUTGOING_CALL,
       call: true,
@@ -260,10 +267,23 @@ export default class App extends React.Component{
     ring.loop = true;
     ring.play();
 
-    this.toggle_outcomingCall_modal();
+    if(withDescription) {
+
+    } else {
+      this.toggle_outcomingCall_modal();
+    }
   }
 
   stop(message) {
+    if(this.state.callState !== NO_CALL) {
+      var response = {
+        id : 'stop'
+      }
+      this.sendMessage(response);
+      stopMaster();
+      stopViewer();
+    }
+
     this.setState({
       callState: NO_CALL,
       incomingCallStatus: false,
@@ -272,17 +292,20 @@ export default class App extends React.Component{
       call: false,
       isAccepted: false,
     });
-    if (this.webRtcPeer) {
-      this.webRtcPeer.dispose();
-      this.webRtcPeer = null;
+    stopMaster();
+    stopViewer();
+    // if (this.webRtcPeer) {
+      // this.webRtcPeer.dispose();
+      // this.webRtcPeer = null;
 
-      if (!message) {
-        var response = {
-          id : 'stop'
-        }
-        this.sendMessage(response);
-      }
-    }
+    //   if (!message) {
+        // var response = {
+        //   id : 'stop'
+        // }
+        // this.sendMessage(response);
+        // console.log("++++++++++++++++");
+    //   }
+    // }
   }
 
   sendMessage(message) {
@@ -425,16 +448,20 @@ export default class App extends React.Component{
     this.toggle_videocall()
   }
 
-  setUser(user, avatar, name) {
+  setUser(user, avatar, name, channel_name, callDescription) {
     this.setState({
+      channel_name: channel_name,
       to: user,
       outcomingCallStatus: false,
       incomingCallStatus: false,
       call: false,
       toAvatar: avatar,
-      toName: name,  
+      toName: name, 
+      callDescription: callDescription, 
     })
-    this.call(user);
+
+    const withDescription = callDescription.length ? true : false;
+    this.call(user, withDescription);
   }
 
   sendErrorMsg(message) {
@@ -444,28 +471,23 @@ export default class App extends React.Component{
     console.log(this.state.errorMsg)
   }
 
+  fullScreen() {
+    this.setState({
+      dragegableOnStart: !this.state.dragegableOnStart
+    })
+  }
+
+  dragegableOnStart() {
+    return this.state.dragegableOnStart;
+  }
+
   render() {
     const { incomingCallStatus, outcomingCallStatus, errorModalStatus} = this.state;
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
           {routes.map((route, index) => {
-            if (route.path !== '/trending')
-              return (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-                  component={withTracker(props => {
-                    return (
-                      <route.layout {...props}>
-                        <route.component {...props} />
-                      </route.layout>
-                    );
-                  })}
-                />
-              );
-            else 
+            if (route.path === '/trending' || route.path === '/studentdashboard')
               return (
                 <Route
                   key={index}
@@ -481,23 +503,58 @@ export default class App extends React.Component{
                   })}
                 />
               );
+            else 
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  exact={route.exact}
+                  component={withTracker(props => {
+                    return (
+                      <route.layout {...props}>
+                        <route.component {...props} />
+                      </route.layout>
+                    );
+                  })}
+                />
+              );
           })}
           {this.state.call && 
-            <VideoCall
-              accepted={this.state.isAccepted}
-              open={true} 
-              toggle={() => this.toggle_videocall()}
-              onDecline={() => this.outcomingCallDecline()}
-              sendErrorMsg={this.sendErrorMsg}
-              from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
-              callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
-            />
+            // <VideoCall
+            //   accepted={this.state.isAccepted}
+            //   open={true} 
+            //   toggle={() => this.toggle_videocall()}
+            //   onDecline={() => this.outcomingCallDecline()}
+            //   sendErrorMsg={this.sendErrorMsg}
+            //   from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+            //   callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+            // />
+            <div className="draggable-video-item">
+              <Draggable
+               onStart={() => this.dragegableOnStart()}
+              >
+                <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                  <VideoCallMin 
+                    accepted={this.state.isAccepted}
+                    open={true} 
+                    toggle={() => this.toggle_videocall()}
+                    onDecline={() => this.outcomingCallDecline()}
+                    sendErrorMsg={this.sendErrorMsg}
+                    fullScreen={this.fullScreen}
+                    from={this.state.from} fromName={this.state.fromName} channel_name={this.state.channel_name} to={this.state.to} toName={this.state.toName} 
+                    description={this.state.callDescription}
+                    callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+                  />
+                </div>
+              </Draggable>
+            </div>
           }
               
           <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} errMsg={this.state.errorMsg} 
-            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
+            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL} description={this.state.toDescription}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
-            onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
+            onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar}  errMsg={this.state.errorMsg} />
+          
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />

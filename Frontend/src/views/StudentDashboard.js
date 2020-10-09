@@ -25,9 +25,23 @@ export default class StudentDashboard extends React.Component {
       totalCnt: 0,
       loading: false,
       mentors: [],
+      callDescription: '', 
     };
 
     this.sendUser = this.sendUser.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i ++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+    this.getMentors(searchParams, 1);
   }
 
   componentWillMount() {
@@ -146,6 +160,43 @@ export default class StudentDashboard extends React.Component {
     });
   }
 
+  setDescription(description) {
+    this.setState({
+      callDescription: description, 
+    }, () => this.handleCall());
+  }
+
+  handleCall(){
+    var callerInfo = {};
+    var index;
+
+    for (index = 0; index < this.state.mentors.length; index ++) {
+      if(this.state.mentors[index].id == this.state.id) {
+        callerInfo = this.state.mentors[index];
+      }
+    }
+
+    console.log(callerInfo, this.state.callDescription);
+    
+    this.props.setUser(callerInfo.email, callerInfo.avatar, callerInfo.name, callerInfo.channel_name, this.state.callDescription);
+  }
+
+  handleCancel(){
+    this.toggle_callwithdesc();
+
+    this.setState({
+      callDescription: '', 
+    });
+  }
+
+  handleCallEnd() {
+    this.toggle_callwithdesc();
+
+    this.setState({
+      callDescription: '', 
+    });
+  }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",
@@ -204,7 +255,15 @@ export default class StudentDashboard extends React.Component {
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
-        <OutcomingCallDesc open={ModalCallWithDescOpen} callwithdescription={() => this.toggle_callwithdesc()} id={id}></OutcomingCallDesc>
+        <OutcomingCallDesc 
+          id={id}
+          open={ModalCallWithDescOpen} 
+          // onCall={() => this.handleCall()}
+          onCancel={() => this.handleCancel()}
+          onCallEnd={() => this.handleCallEnd()}
+          // callwithdescription={() => this.toggle_callwithdesc()} 
+          setDescription={(description) => this.setDescription(description)} 
+        />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
