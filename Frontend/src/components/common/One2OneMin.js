@@ -221,14 +221,10 @@ export default class One2OneMin extends React.Component {
       <div id="one2one-call-conatainer" className={ (callState === INCOMING_CALL) ? "video-call-mini-enable" :(callState === OUTGOING_CALL && accepted) ? "video-call-mini-enable" : "video-call-mini-disable"}>
         <div className="video-call-element-min" id="video-call-element-min">
           <div>
-            <video id="videoInput" autoPlay width="300px" height="225px" poster={PosterImg}>
-              
-            </video>
+            <video id="videoInput" autoPlay width="320px" height="180px" poster={PosterImg}></video>
           </div>
           <div>
-            <video id="videoOutput" autoPlay width="300px" height="225px" poster={PosterImg}>
-              
-            </video>
+            <video id="videoOutput" autoPlay width="320px" height="180px" poster={PosterImg}></video>
           </div>
           <Row className="center btn-group-call">
             {/* <Button className="btn-video-call-mic-camera">
