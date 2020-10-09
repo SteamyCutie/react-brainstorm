@@ -52,6 +52,8 @@ export default class App extends React.Component{
       fromName: '', 
       toName: '', 
       dragegableOnStart: true, 
+      callDescription: '', 
+      toDescription: '',
     }
 
     this.ws = null;
@@ -246,13 +248,14 @@ export default class App extends React.Component{
       from: message.from,
       fromName: message.name, 
       avatarURL: message.avatarURL,
+      toDescription: message.description, 
     })
       
     this.toggle_incomingCall_modal(message)
 
   }
 
-  call(to) {
+  call(to, withDescription) {
     this.setState({
       callState: OUTGOING_CALL,
       call: true,
@@ -264,7 +267,11 @@ export default class App extends React.Component{
     ring.loop = true;
     ring.play();
 
-    this.toggle_outcomingCall_modal();
+    if(withDescription) {
+
+    } else {
+      this.toggle_outcomingCall_modal();
+    }
   }
 
   stop(message) {
@@ -273,7 +280,6 @@ export default class App extends React.Component{
         id : 'stop'
       }
       this.sendMessage(response);
-
       stopMaster();
       stopViewer();
     }
@@ -442,7 +448,7 @@ export default class App extends React.Component{
     this.toggle_videocall()
   }
 
-  setUser(user, avatar, name, channel_name) {
+  setUser(user, avatar, name, channel_name, callDescription) {
     this.setState({
       channel_name: channel_name,
       to: user,
@@ -450,9 +456,12 @@ export default class App extends React.Component{
       incomingCallStatus: false,
       call: false,
       toAvatar: avatar,
-      toName: name,  
+      toName: name, 
+      callDescription: callDescription, 
     })
-    this.call(user);
+
+    const withDescription = callDescription.length ? true : false;
+    this.call(user, withDescription);
   }
 
   sendErrorMsg(message) {
@@ -478,7 +487,7 @@ export default class App extends React.Component{
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
           {routes.map((route, index) => {
-            if (route.path !== '/trending')
+            if (route.path === '/trending' || route.path === '/studentdashboard')
               return (
                 <Route
                   key={index}
@@ -487,7 +496,8 @@ export default class App extends React.Component{
                   component={withTracker(props => {
                     return (
                       <route.layout {...props}>
-                        <route.component {...props} />
+                        <route.component {...props} from={this.state.from} callState={this.state.callState} ws={this.ws} 
+                          setWebRtcPeer={this.setWebRtcPeer} setUser={this.setUser} stop={this.stop}/>
                       </route.layout>
                     );
                   })}
@@ -502,8 +512,7 @@ export default class App extends React.Component{
                   component={withTracker(props => {
                     return (
                       <route.layout {...props}>
-                        <route.component {...props} from={this.state.from} callState={this.state.callState} ws={this.ws} 
-                          setWebRtcPeer={this.setWebRtcPeer} setUser={this.setUser} stop={this.stop}/>
+                        <route.component {...props} />
                       </route.layout>
                     );
                   })}
@@ -533,6 +542,7 @@ export default class App extends React.Component{
                     sendErrorMsg={this.sendErrorMsg}
                     fullScreen={this.fullScreen}
                     from={this.state.from} fromName={this.state.fromName} channel_name={this.state.channel_name} to={this.state.to} toName={this.state.toName} 
+                    description={this.state.callDescription}
                     callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
                   />
                 </div>
@@ -541,9 +551,9 @@ export default class App extends React.Component{
           }
               
           <IncomingCall open={incomingCallStatus} toggle={() => this.toggle_incomingCall_modal()} errMsg={this.state.errorMsg} 
-            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL}/>
+            onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL} description={this.state.toDescription}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
-            onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar} errMsg={this.state.errorMsg} />
+            onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar}  errMsg={this.state.errorMsg} />
           
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
