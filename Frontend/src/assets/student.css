@@ -1271,3 +1271,9 @@ body {
 .schedule:hover {
     background-color: #04B5FA;
 }
+
+.remain-symbols {
+    float: right;
+    font-weight: normal !important;
+    font-size: 11px !important;
+}

@@ -15,6 +15,8 @@ import MuteVideoImg from '../images/mute-video.svg'
 import ChatImg from '../images/room-chat.svg'
 import ScreenshareImg from '../images/room-screenshare.svg'
 import AddUserImg from '../images/room-adduser.svg'
+import Spinner from  '../images/spinner.gif'
+import VideoBackground from '../images/videobackground.png'
 
 import { Height } from "@material-ui/icons";
 
@@ -52,7 +54,9 @@ function Participant(user_info, isLocalVideo) {
 	video.id = 'video-' + name;
 	video.autoplay = true;
   video.controls = false;
-
+  video.poster = VideoBackground;
+  video.style.background = 'center transparent url("../images/spinner.gif") no-repeat';
+  
   if(isLocalVideo) {
     container.classList.add("room-local-video");
   } else {
@@ -60,6 +64,11 @@ function Participant(user_info, isLocalVideo) {
     container.classList.add("room-participant-video");
 
     // room-member-video
+  }
+
+  this.showSpinner = function() {
+    video.poster = VideoBackground;
+    video.style.background = 'center transparent url("../images/spinner.gif") no-repeat';
   }
 
 	this.getElement = function() {
@@ -130,8 +139,8 @@ export default class RoomCall extends React.Component {
   }
 
   componentWillMount() {
-    // this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
-    this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');
+    this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
+    //this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');
   }
 
   componentDidMount() {
@@ -399,7 +408,7 @@ export default class RoomCall extends React.Component {
               })}
             </List>
           </div> */}
-          <div id="room-member-video" width="20%" className="room-member-video" style={{marginLeft: "auto"}}>
+          <div id="room-member-video" className="room-member-video" style={{marginLeft: "auto"}}>
 
           </div>
         </div>

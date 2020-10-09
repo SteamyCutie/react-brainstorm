@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col } from "shards-react";
+import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
@@ -96,11 +96,11 @@ export default class MentorWallet extends React.Component {
   componentDidMount() {
   }
 
-  // toggle_add() {
-  //   this.setState({
-  //     ModalOpen: !this.state.ModalOpen
-  //   });
-  // }
+  toggle_add() {
+    this.setState({
+      ModalOpen: !this.state.ModalOpen
+    });
+  }
 
   getHistory = async(pageNo) => {
     let param = {
@@ -229,14 +229,18 @@ export default class MentorWallet extends React.Component {
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
-        {/* <AddNewBank 
+        <AddNewBank 
           open={ModalOpen} 
-          toggle={() => this.toggle_add()} >
-        </AddNewBank> */}
+          toggle={() => this.toggle_add()} 
+          toggle_success={(text) => this.showSuccess(text)}
+          toggle_fail={(text) => this.showFail(text)}
+          toggle_warning={(text) => this.showWarning(text)}>
+        </AddNewBank>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             {/* <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true} click_add={() => this.toggle_add()}/> */}
-            <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/>
+            {/* <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/> */}
+            <Button className="btn-add-payment-mentor" onClick={() => this.toggle_add()}>Add payment method</Button>
           </Row>
 
           <Row>

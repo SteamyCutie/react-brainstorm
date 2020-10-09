@@ -54,6 +54,7 @@ export default class NavbarSearch extends React.Component{
         }
         this.setState({tags: params});
       } else if (result.data.result === "warning") {
+        
       } else {
         if (result.data.message === "Token is Expired") {
           this.signout();
@@ -62,11 +63,11 @@ export default class NavbarSearch extends React.Component{
         } else if (result.data.message === "Authorization Token not found") {
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          // this.signout();
         }
       }
     } catch(err) {
-      this.showFail("Something Went wrong");
+      // this.signout();
     };
   }
 

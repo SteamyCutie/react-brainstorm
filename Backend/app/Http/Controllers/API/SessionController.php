@@ -387,7 +387,13 @@ class SessionController extends Controller
       if ($user['is_mentor'] == 0) {
         $temp1 = [];
         $temp2 = [];
-        $result_infos = Session::where('user_id', '!=', $user->id)->where('from','>=',date('y-m-d h:i:s', strtotime($current_time)))->get();
+        
+        $invited_session_id = Invited::select('session_id')->where('student_id', $user->id)->get();
+        $result_infos = Session::where('user_id', '!=', $user->id)
+          ->where('from','>=',date('y-m-d h:i:s', strtotime($current_time)))
+          ->whereIn('id',$invited_session_id)
+          ->get();
+        
         if ($tag_id == "" || $tag_id == null) {
           $temp1 = $result_infos;
         } else {
@@ -493,6 +499,74 @@ class SessionController extends Controller
       return response()->json([
         'result'=> 'success',
         'data'=> $result_res,
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'data'=> $th,
+      ]);
+    }
+  }
+  
+  public function bookSession(Request $request) {
+    try{
+      $mentor_id = $request['mentor_id'];
+      $student_id = $request['user_id'];
+      $title = $request['title'];
+      $description = $request['description'];
+      $tags = User::select('tags_id')->where('id', $mentor_id)->first();
+//      $tags = ','.implode(",", $request['tags']).',';
+      $rules = array(
+        'title' => 'required',
+        'description' => 'required',
+      );
+      $from = date('H:i:s', strtotime($request['from']));
+//      $to = $request['to'];
+      $day = $request['day'];
+      $from_arr = explode(":", $from);
+//      $to_arr = explode(":", $to);
+      
+      $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
+//      $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
+      $messages = array(
+        'required' => 'This field is required.',
+      );
+      $validator = Validator::make( $request->all(), $rules, $messages );
+      
+      if ($validator->fails())
+      {
+        return [
+          'result' => 'failed',
+          'type' => 'require',
+          'message' => $validator->messages()
+        ];
+      }
+      $same_session = Session::where('user_id', $mentor_id)->where('from', $from_day_str)->get();
+      if (count($same_session) > 0) {
+        return [
+          'result' => 'warning',
+          'message' => 'The same Forum already exists.'
+        ];
+      }
+      $res_session = Session::create([
+        'user_id' => $mentor_id,
+        'title' => $title,
+        'description' => $description,
+        'tags_id' => $tags->tags_id,
+        'from' => $from_day_str,
+//        'to' => $to_day_str,
+        'status' => 0,
+        'room_id' => mt_rand(100000,999999),
+      ]);
+      
+      Invited::create([
+        'mentor_id' => $mentor_id,
+        'student_id' => $student_id,
+        'session_id' => $res_session->id,
+      ]);
+      return response()->json([
+        'result'=> 'success',
+        'data'=> [],
       ]);
     } catch (Exception $th) {
       return response()->json([

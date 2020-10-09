@@ -12,7 +12,6 @@ export default class AddNewCard extends React.Component {
     this.state = {
       cvc: '',
       expiry: '',
-      focus: '',
       name: '',
       number: '',
       loading: false,
@@ -198,16 +197,6 @@ export default class AddNewCard extends React.Component {
   removeSession() {
     localStorage.clear();
     window.location.href = "/";
-  }
-
-  handleInputFocus = (e) => {
-    this.setState({ focus: e.target.name });
-  }
-
-  handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    this.setState({ [name]: value });
   }
 
   render() {
