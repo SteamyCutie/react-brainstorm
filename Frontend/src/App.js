@@ -65,7 +65,7 @@ export default class App extends React.Component{
 
   componentWillMount() {
     // var wsUri = 'wss://media.brainsshare.com/one2one';
-    var wsUri = 'wss://192.168.136.129:443/one2one';
+    var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -438,8 +438,9 @@ export default class App extends React.Component{
     this.toggle_videocall()
   }
 
-  setUser(user, avatar, name) {
+  setUser(user, avatar, name, channel_name) {
     this.setState({
+      channel_name: channel_name,
       to: user,
       outcomingCallStatus: false,
       incomingCallStatus: false,
@@ -527,7 +528,7 @@ export default class App extends React.Component{
                     onDecline={() => this.outcomingCallDecline()}
                     sendErrorMsg={this.sendErrorMsg}
                     fullScreen={this.fullScreen}
-                    from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
+                    from={this.state.from} fromName={this.state.fromName} channel_name={this.state.channel_name} to={this.state.to} toName={this.state.toName} 
                     callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
                   />
                 </div>
