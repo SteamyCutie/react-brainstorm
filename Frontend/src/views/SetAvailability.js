@@ -23,31 +23,38 @@ class SetAvailability extends React.Component {
       availableTimeList: [
         {
           dayOfWeek: "Sunday",
-          timeList: []
+          timeList: [],
+          status: false
         },
         {
           dayOfWeek: "Monday",
-          timeList: []
+          timeList: [],
+          status: false
         },
         {
           dayOfWeek: "Tuesday",
-          timeList: []
+          timeList: [],
+          status: false
         },
         {
           dayOfWeek: "Wednesday",
-          timeList: []
+          timeList: [],
+          status: false
         },
         {
           dayOfWeek: "Thursday",
-          timeList: []
+          timeList: [],
+          status: false
         },
         {
           dayOfWeek: "Friday",
-          timeList: []
+          timeList: [],
+          status: false
         },
         {
           dayOfWeek: "Saturday",
-          timeList: []
+          timeList: [],
+          status: false
         }
       ],
       dayOfWeekStatus: [
@@ -232,11 +239,53 @@ class SetAvailability extends React.Component {
         for(var i = 0; i < result.data.data.length; i ++) {
           for (var j = 0; j < availableTimeListTemp.length; j ++){
             if(result.data.data[i].day_of_week === availableTimeListTemp[j].dayOfWeek) {
-              availableTimeListTemp[j].timeList.push({from: result.data.data[i].fromTime, to: result.data.data[i].toTime});
+              availableTimeListTemp[j].timeList.push({
+                from: result.data.data[i].fromTime, 
+                to: result.data.data[i].toTime, 
+                fromStr: result.data.data[i].fromTimeStr, 
+                toStr: result.data.data[i].toTimeStr,
+                status: result.data.data[i].status === 1 ? true : false
+              });
               availableTimeListTemp[j].status = result.data.data[i].status === 1 ? true : false;
-              availableTimeListTemp[j].fromStr = result.data.data[i].fromTimeStr;
-              availableTimeListTemp[j].toStr = result.data.data[i].toTimeStr;
+              // availableTimeListTemp[j].timeList[i].fromStr = result.data.data[i].fromStr;
+              // availableTimeListTemp[j].timeList[i].toStr = result.data.data[i].toStr;
             }
+          }
+          if (result.data.data[i].day_of_week === "Sunday") {
+            let {dayOfWeekStatus} = this.state;
+            let temp = dayOfWeekStatus;
+            temp[0] = result.data.data[i].status === 1 ? true : false;
+            this.setState({dayOfWeekStatus: temp});
+          } else if (result.data.data[i].day_of_week === "Monday") {
+            let {dayOfWeekStatus} = this.state;
+            let temp = dayOfWeekStatus;
+            temp[1] = result.data.data[i].status === 1 ? true : false;
+            this.setState({dayOfWeekStatus: temp});
+          } else if (result.data.data[i].day_of_week === "Tuesday") {
+            let {dayOfWeekStatus} = this.state;
+            let temp = dayOfWeekStatus;
+            temp[2] = result.data.data[i].status === 1 ? true : false;
+            this.setState({dayOfWeekStatus: temp});
+          } else if (result.data.data[i].day_of_week === "Wednesday") {
+            let {dayOfWeekStatus} = this.state;
+            let temp = dayOfWeekStatus;
+            temp[3] = result.data.data[i].status === 1 ? true : false;
+            this.setState({dayOfWeekStatus: temp});
+          } else if (result.data.data[i].day_of_week === "Thursday") {
+            let {dayOfWeekStatus} = this.state;
+            let temp = dayOfWeekStatus;
+            temp[4] = result.data.data[i].status === 1 ? true : false;
+            this.setState({dayOfWeekStatus: temp});
+          } else if (result.data.data[i].day_of_week === "Friday") {
+            let {dayOfWeekStatus} = this.state;
+            let temp = dayOfWeekStatus;
+            temp[5] = result.data.data[i].status === 1 ? true : false;
+            this.setState({dayOfWeekStatus: temp});
+          } else if (result.data.data[i].day_of_week === "Saturday") {
+            let {dayOfWeekStatus} = this.state;
+            let temp = dayOfWeekStatus;
+            temp[6] = result.data.data[i].status === 1 ? true : false;
+            this.setState({dayOfWeekStatus: temp});
           }
           timezone = result.data.data[i].timezone;
         }
@@ -326,8 +375,8 @@ class SetAvailability extends React.Component {
   handleChange(e, dayIdx, dayOfWeek) {
     const {dayOfWeekStatus} = this.state;
     let temp = dayOfWeekStatus;
-    
-    if(this.state.dayOfWeekStatus[dayOfWeek]) {
+    // if(this.state.dayOfWeekStatus[dayOfWeek]) {
+    if(this.state.availableTimeList[dayOfWeek].status) { 
       if(this.state.availableTimeList[dayOfWeek].timeList.length) {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
@@ -363,7 +412,7 @@ class SetAvailability extends React.Component {
         }
       }
     }
-    temp[dayOfWeek] = !dayOfWeekStatus[dayOfWeek];
+    temp[dayOfWeek] = !this.state.availableTimeList[dayOfWeek].status;
     this.setState({
       dayOfWeekStatus: temp
     });
