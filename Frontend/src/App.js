@@ -5,8 +5,8 @@ import routes from "./Routes";
 import withTracker from "./withTracker";
 // import {webRtcPeer} from 'kurento-utils';
 import Draggable from 'react-draggable';
-import { startMaster, stopMaster } from './utils/master';
-import { startViewer, stopViewer } from './utils/viewer';
+import { stopMaster } from './utils/master';
+import { stopViewer } from './utils/viewer';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
 import "../src/assets/mentorWallet.css";
@@ -273,7 +273,7 @@ export default class App extends React.Component{
         id : 'stop'
       }
       this.sendMessage(response);
-      
+
       stopMaster();
       stopViewer();
     }
