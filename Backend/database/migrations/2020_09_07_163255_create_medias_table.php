@@ -20,12 +20,10 @@ class CreateMediasTable extends Migration
             $table->string('description')->nullable();
             $table->string('media_url')->nullable();
             $table->string('media_type')->nullable();
-
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *

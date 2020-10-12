@@ -17,6 +17,8 @@ import ScreenshareImg from '../images/room-screenshare.svg'
 import AddUserImg from '../images/room-adduser.svg'
 import Spinner from  '../images/spinner.gif'
 import VideoBackground from '../images/videobackground.png'
+import WhiteboardFullscreenImg from '../images/whiteboard-fullscreen.svg'
+import WhiteboardCloseImg from '../images/whiteboard-close.svg'
 
 import { Height } from "@material-ui/icons";
 
@@ -133,6 +135,8 @@ export default class RoomCall extends React.Component {
       self_info: {}, 
       roomName: '', 
       fullScreen: false, 
+      showChat: false, 
+      showWhiteBoard: false,
     }
     
     this.room_id = "";
@@ -379,6 +383,40 @@ export default class RoomCall extends React.Component {
 
   }
 
+  chat() {
+    this.setState({
+      showChat: !this.state.showChat, 
+      showWhiteBoard: false, 
+    })
+  }
+  
+  screenShare() {
+    this.setState({
+      showWhiteBoard: !this.state.showWhiteBoard, 
+      showChat: false, 
+    })
+  }
+  
+  addUser() {
+
+  }
+
+  chatClose() {
+    this.setState({
+      showChat: !this.state.showChat, 
+    })
+  }
+  
+  whiteboardFullscreen() {
+
+  }
+
+  whiteboardClose() {
+    this.setState({
+      showWhiteBoard: !this.state.showWhiteBoard, 
+    })
+  }
+
   render() {
     const session_name = localStorage.getItem("session_name");
     return (
@@ -411,6 +449,32 @@ export default class RoomCall extends React.Component {
           <div id="room-member-video" className="room-member-video" style={{marginLeft: "auto"}}>
 
           </div>
+          {this.state.showChat &&
+            <div className="room-group-chat">
+              <div className="room-chat-header">
+                <h2 style={{width: "100%", textAlign: "center", fontSize: "38px", fontWeight: "bold", margin: "0px", marginLeft: "50px"}}>Chat</h2>
+                <Button className="btn-rooom-control2 float-center" onClick={() => this.chatClose()}>
+                  <img src={WhiteboardCloseImg} alt="Add user"/>
+                </Button>
+              </div>
+
+            </div>
+          }
+          {this.state.showWhiteBoard &&
+            <div className="room-whitboard">
+              <div className="room-whitboard-header">
+                <Button className="btn-rooom-control2 float-center" style={{marginRight: "auto", padding: "0px"}} onClick={() => this.whiteboardFullscreen()}>
+                  <img src={WhiteboardFullscreenImg} alt="Add user"/>
+                </Button>
+                
+                <h2 style={{fontSize: "38px", fontWeight: "bold", margin: "0px"}}>Whiteboard</h2>
+                <Button className="btn-rooom-control2 float-center" style={{marginLeft: "auto", padding: "0px"}} onClick={() => this.whiteboardClose()}>
+                  <img src={WhiteboardCloseImg} alt="Add user"/>
+                </Button>
+              </div>
+
+            </div>
+          }
         </div>
         <div>
           <div className="room-control-container">
@@ -425,13 +489,13 @@ export default class RoomCall extends React.Component {
               <Button className="btn-rooom-control float-center">
                 <img src={MuteVideoImg} alt="Mute video"/>
               </Button>
-              <Button className="btn-rooom-control float-center">
+              <Button className="btn-rooom-control float-center" onClick={() => this.chat()}>
                 <img src={ChatImg} alt="Chat"/>
               </Button>
-              <Button className="btn-rooom-control float-center">
+              <Button className="btn-rooom-control float-center" onClick={() => this.screenShare()}>
                 <img src={ScreenshareImg} alt="Screenshare"/>
               </Button>
-              <Button className="btn-rooom-control float-center">
+              <Button className="btn-rooom-control float-center" onClick={() => this.addUser()}>
                 <img src={AddUserImg} alt="Add user"/>
               </Button>
             </div>

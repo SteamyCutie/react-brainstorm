@@ -178,6 +178,7 @@ export default class StudentDashboard extends React.Component {
     }
 
     console.log(callerInfo, this.state.callDescription);
+    this.toggle_callwithdesc();
     
     this.props.setUser(callerInfo.email, callerInfo.avatar, callerInfo.name, callerInfo.channel_name, this.state.callDescription);
   }

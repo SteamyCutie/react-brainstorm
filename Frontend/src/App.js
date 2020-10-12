@@ -461,6 +461,11 @@ export default class App extends React.Component{
     })
 
     const withDescription = callDescription.length ? true : false;
+
+    if(withDescription) {
+      this.toggle_outcomingCall_modal();
+    }
+
     this.call(user, withDescription);
   }
 
@@ -531,7 +536,8 @@ export default class App extends React.Component{
             // />
             <div className="draggable-video-item">
               <Draggable
-               onStart={() => this.dragegableOnStart()}
+                bounds="parent"
+                onStart={() => this.dragegableOnStart()}
               >
                 <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
                   <VideoCallMin 
