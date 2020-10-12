@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1.jpg', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '111111',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/2.png', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '','channel_name' => '222222',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/3.png', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '333333',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/4.png', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,'average_mark' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '444444',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -54,7 +54,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/5.png', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '555555',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -63,7 +63,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/6.png', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '','average_mark' => 0,
+        'sub_plan_fee' => 0, 'description' => '',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -108,7 +108,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 1,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '666666',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -145,7 +145,7 @@ class UserSeeder extends Seeder
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png',
         'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 1,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => 'aaaaaa',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -155,7 +155,7 @@ class UserSeeder extends Seeder
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png',
         'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 1,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => 'bbbbbb',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -165,7 +165,7 @@ class UserSeeder extends Seeder
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png',
         'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 1,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => 'cccccc',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -173,9 +173,9 @@ class UserSeeder extends Seeder
         'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
         'password' => '$2y$10$K8UzdelN7Usk2y3z0GjCXubK3wYvWTdpD.g2rlI3JPD4A.sSz9vRW',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/1599809234_839772_2020-08-29_00h35_30.png',
-        'dob' => null, 'two_factor_code' => '0',
+        'dob' => null, 'two_factor_code' => '0', 'channel_name' => 'dddddd',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 1,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'provider' => 'Google', 'provider_id' => '109193159974746050648',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -183,9 +183,9 @@ class UserSeeder extends Seeder
         'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
         'password' => '$2y$10$K8UzdelN7Usk2y3z0GjCXubK3wYvWTdpD.g2rlI3JPD4A.sSz9vRW',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/6.png',
-        'dob' => null, 'two_factor_code' => '0',
+        'dob' => null, 'two_factor_code' => '0', 'channel_name' => 'eeeeee',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '','provider' => 'Google', 'provider_id' => '116067816796842107434',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -195,7 +195,7 @@ class UserSeeder extends Seeder
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/6.png',
         'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '777777',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -205,7 +205,7 @@ class UserSeeder extends Seeder
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/full.jpg  ',
         'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '888888',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [
@@ -215,7 +215,17 @@ class UserSeeder extends Seeder
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/full.jpg  ',
         'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '999999',
+        'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
+      ],
+      [
+        'id' => 23, 'name' => "Shyan Walker", 'email' => 'shyanw78@gmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+        'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
+        'password' => '$2y$10$M.0m9.vOX7XTCriX4kfTwOjVjAigWe9RqwIR.9PieMCUFWHdxcm.6',
+        'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/full.jpg  ',
+        'dob' => null, 'two_factor_code' => '0', 'channel_name' => '000000',
+        'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
+        'sub_plan_fee' => 0, 'description' => '','provider' => 'Google', 'provider_id' => '117367785969188675905',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ]
     ];

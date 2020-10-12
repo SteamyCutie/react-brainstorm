@@ -29,8 +29,11 @@ Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
 
 Route::post('/createpayment', 'PaymentController@createPayment');
+Route::post('/createbank', 'PaymentController@createBank');
+
 Route::post('/getpayment', 'PaymentController@getPayment');
-Route::post('/paybysession', 'PaymentController@payBySession');
+Route::post('/paysessionpayment', 'PaymentController@paySessionPayment');
+Route::post('/getsessionpayment', 'PaymentController@getPaymentSession');
 Route::post('/removesource', 'PaymentController@removesource');
 Route::post('/testpayment', 'PaymentController@testpayment');
 Route::post('/createcustomer', 'PaymentController@createcustomer');

@@ -74,7 +74,8 @@ class PaymentController extends Controller
       'card_expiration' => $card_expiration,
       'cvc_code' => $cvc_code,
       'card_type' => $card_type,
-      'token' => $token,
+      'card_token' => $token,
+      'payment_type' => 'Card',
       'is_primary' => true,
     ]);
     return response()->json([
@@ -87,6 +88,67 @@ class PaymentController extends Controller
 //        'message'=> 'failed card register',
 //      ]);
 //    }
+  }
+
+  public function createBank(Request $request) {
+    $routing_number = $request['bank_number'];
+    $account_number = $request['bank_ifsc'];
+    $bank_token = $request['bank_swift'];
+    $user_id = $request['user_id'];
+    $payment_type = "Bank";
+    $user_info = User::select('customer_id', 'email')->where('id', $user_id)->first();
+    
+    
+    //Begin Create bank account
+//    $stripe = new \Stripe\StripeClient(
+//      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+//    );
+//    $result = $stripe->customers->createSource(
+//      'cus_IAkhzrGmHexPR1',
+//      ['source' => 'btok_1HaPCxGRfXBTO7BEf6kvkPAf']
+//    );
+//    echo $result;
+    //End Create bank account
+    
+    
+    //Begin verify bank account
+//    $stripe = new \Stripe\StripeClient(
+//      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+//    );
+//    $result = $stripe->customers->verifySource(
+//      'cus_IAkhzrGmHexPR1',
+//      'ba_1HaPCxGRfXBTO7BE2IRLCmVm',
+//      ['amounts' => [32, 45]]
+//    );
+//    echo $result;
+    //End verify bank account
+  
+// Set your secret key. Remember to switch to your live secret key in production!
+// See your keys here: https://dashboard.stripe.com/account/apikeys
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+    $result = $stripe->transfers->create([
+      'amount' => 400,
+      'currency' => 'usd',
+      'destination' => 'acct_1HaRHxGzaE7oOvmc',
+//      'transfer_group' => 'ORDER_95',
+    ]);
+    echo $result;
+//    Payment::create([
+//      'user_id' => $user_id,
+//      'email' => $user_info->email,
+//      'customer_id' => $user_info->customer_id,
+////      'bank_src' => $bank->id,
+//      'bank_token' => $bank_token,
+//      'payment_type' => $payment_type,
+//      'is_primary' => true,
+//    ]);
+    
+    return response()->json([
+      'result'=> 'success',
+      'message'=> 'Bank registered successfully',
+    ]);
   }
   
   public function getPayment(Request $request) {
@@ -110,14 +172,10 @@ class PaymentController extends Controller
     ]);
   }
   
-  public function createBank(Request $request) {
-  
-  }
-  
   public function getBank(Request $request) {
   
   }
-  public function payBySession(Request $request) {
+  public function paySessionPayment(Request $request) {
 //    $session_name = $request['session_name'];
 //    $amount = $request['amount'];
 //    $card_number = $request['card_number'];
@@ -128,12 +186,16 @@ class PaymentController extends Controller
     $charge = \Stripe\Charge::create([
       'amount' => 80000,
       'currency' => 'usd',
-      'customer' => "cus_I9cBtmuKThEmkA",
-      'source' => "card_1HZIxbGRfXBTO7BEENqtq1RO",
+      'customer' => "cus_IAkybOKYqnRNNR",
+      'source' => "card_1HaPUAGRfXBTO7BEm3pD8Esw",
       'description' => 'My session Charge for Mentor'
 //          'description' => 'Charge for '.$session_name,
     ]);
     echo $charge;
+  }
+  
+  public function getPaymentSession(Request $request) {
+  
   }
   
   public function testpayment(Request $request) {
