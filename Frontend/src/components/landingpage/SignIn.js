@@ -119,7 +119,7 @@ export default class SignIn extends React.Component {
     try {
       const result = await signin(this.state);
       if (result.data.result === "success") {
-        localStorage.setItem('email', this.state.email);
+        localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('user_id', result.data.user.id);
         localStorage.setItem('avatar', result.data.user.avatar);
         localStorage.setItem('user_name', result.data.user.name);
