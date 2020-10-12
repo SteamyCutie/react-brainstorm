@@ -107,14 +107,16 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
     // Get a stream from the webcam and display it in the local view. 
     // If no video/audio needed, no need to request for the sources. 
     // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-    if (formValues.sendVideo || formValues.sendAudio) {
-        try {
-            master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            localView.srcObject = master.localStream
-        } catch (e) {
-            console.error('[MASTER] Could not find webcam')
-        }
+    // if (formValues.sendVideo || formValues.sendAudio) {
+    try {
+        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        localView.srcObject = master.localStream
+    } catch (e) {
+        console.error('[MASTER] Could not find webcam')
+        alert("Please connect camera!")
+        return
     }
+    // }
 
     master.signalingClient.on('open', async () => {
         console.log('[MASTER] Connected to signaling service')
