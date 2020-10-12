@@ -18,10 +18,13 @@ class CreatePaymentsTable extends Migration
       $table->integer('user_id');
       $table->string('email');
       $table->string('customer_id');
-      $table->string('token')->nullable();
+      $table->string('card_token')->nullable();
+      $table->string('bank_token')->nullable();
+      $table->enum('payment_type', ['Card', 'Bank']);
+      $table->string('card_src')->nullable();
+      $table->string('bank_src')->nullable();
       $table->string('card_name')->nullable();
       $table->string('card_number')->nullable()->unique();
-      $table->string('card_src')->nullable();
       $table->integer('card_type')->nullable();
       $table->timestamp('card_expiration')->nullable();
       $table->integer('cvc_code')->nullable();

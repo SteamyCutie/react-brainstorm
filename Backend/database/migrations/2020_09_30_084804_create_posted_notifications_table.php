@@ -17,10 +17,10 @@ class CreatePostedNotificationsTable extends Migration
       $table->id();
       $table->integer('user_id')->nullable();
       $table->integer('session_id')->nullable();
+      $table->integer('notification_posted')->default(0);
       $table->string('session_title')->nullable();
       $table->timestamp('from')->nullable();
       $table->timestamp('to')->nullable();
-      $table->integer('notification_posted')->default(0);
       $table->timestamps();
     });
   }
