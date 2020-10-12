@@ -2,7 +2,10 @@ import React from "react";
 import AdSense from 'react-adsense';
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
-import CanvasDraw from "react-canvas-draw";
+// import WhiteBoard, {
+//   getWhiteBoardData,
+//   loadWhiteBoardData,
+// } from 'fabric-whiteboard'
 
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
 import BookSession from "./../components/common/BookSession";
@@ -18,8 +21,11 @@ export default class StudentDashboard extends React.Component {
     super(props);
 
     this.mentorRef = React.createRef();
-
     this.state = {
+      // mode: 'select',
+      // width: '600px',
+      // height: '600px',
+      // brushColor: '#f44336',
       id: 0,
       ModalOpen: false, 
       ModalCallWithDescOpen: false,
@@ -30,6 +36,11 @@ export default class StudentDashboard extends React.Component {
     };
 
     this.sendUser = this.sendUser.bind(this);
+    // this.calcBoundsSize = this.calcBoundsSize.bind(this);
+    // this.handleBoundsSizeChange = this.handleBoundsSizeChange.bind(this);
+
+    // this.handleOnModeClick = this.handleOnModeClick.bind(this);
+    // this.handleOnBrushColorChange = this.handleOnBrushColorChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,6 +56,12 @@ export default class StudentDashboard extends React.Component {
     this.getMentors(searchParams, 1);
   }
 
+  // componentDidMount() {
+  //   this.calcBoundsSize()
+
+  //   window.addEventListener('resize', this.handleBoundsSizeChange);
+  // }
+
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
     let searchParams = [];
@@ -56,6 +73,8 @@ export default class StudentDashboard extends React.Component {
       }
     }
     this.getMentors(searchParams, 1);
+    
+    // window.removeEventListener('resize', this.handleBoundsSizeChange);
   }
 
   sendUser(to, avatar, name) {
@@ -199,6 +218,42 @@ export default class StudentDashboard extends React.Component {
     });
   }
 
+  // handleOnModeClick(mode) {
+  //   console.log(mode, "mode");
+  //   this.setState({
+  //     mode: mode,
+  //   });
+  // }
+
+  // handleOnBrushColorChange(color) {
+  //   console.log(color, "color");
+  //   this.setState({
+  //     brushColor: color.hex,
+  //   });
+  // }
+
+  // calcBoundsSize() {
+  //   return
+  //   const domApp = document.getElementById('App')
+  //   const domToolbar = document.getElementById('toolbar')
+
+  //   const domAppStyle = window.getComputedStyle(domApp)
+  //   const domToolbarStyle = window.getComputedStyle(domToolbar)
+
+  //   this.setState({
+  //     width: domAppStyle.width,
+  //     height: `${
+  //       parseInt(domAppStyle.height, 10) -
+  //       parseInt(domToolbarStyle.height, 10) -
+  //       20
+  //     }px`,
+  //   })
+  // }
+
+  // handleBoundsSizeChange() {
+  //   this.calcBoundsSize()
+  // }
+
   showSuccess(text) {
     store.addNotification({
       title: "Success",
@@ -251,7 +306,7 @@ export default class StudentDashboard extends React.Component {
   }
 
   render() {
-    const {loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id} = this.state;
+    const {loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id, mode, width, height, brushColor} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -278,7 +333,24 @@ export default class StudentDashboard extends React.Component {
               format=''
             /> */}
           </Row>
-          <CanvasDraw></CanvasDraw>
+          {/* <WhiteBoard
+            width={width}
+            height={height}
+            showToolbar={true}
+            showBoard={true}
+            mode={mode}
+            onModeClick={this.handleOnModeClick}
+            brushColor={brushColor}
+            brushColors={[
+              '#f44336',
+              '#e91e63',
+              '#9c27b0',
+              '#673ab7',
+              '#3f51b5',
+              '#2196f3',
+            ]}
+            onBrushColorChange={this.handleOnBrushColorChange}
+          /> */}
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
