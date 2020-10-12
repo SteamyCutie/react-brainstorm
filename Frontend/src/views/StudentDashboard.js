@@ -2,6 +2,7 @@ import React from "react";
 import AdSense from 'react-adsense';
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
+import CanvasDraw from "react-canvas-draw";
 
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
 import BookSession from "./../components/common/BookSession";
@@ -276,6 +277,7 @@ export default class StudentDashboard extends React.Component {
               format=''
             /> */}
           </Row>
+          <CanvasDraw></CanvasDraw>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
