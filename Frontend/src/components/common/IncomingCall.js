@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, ModalBody,  Row} from "shards-react";
+import { Button, Modal, ModalBody, Row, FormTextarea} from "shards-react";
 import "../../assets/landingpage.css"
 
 import DeclineImg from '../../images/call-decline.svg'
@@ -39,7 +39,7 @@ export default class IncomingCall extends React.Component {
   }
 
   render() {
-    const { open, avatar, name } = this.props;
+    const { open, avatar, name, description } = this.props;
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-incoming-call center" backdrop={true} backdropClassName="backdrop-class">
@@ -51,6 +51,10 @@ export default class IncomingCall extends React.Component {
               <Row className="center">
                 {avatar && <img src={avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" /> }
                 {!avatar && <img src={defaultavatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" /> }
+                {description.length ? 
+                  <FormTextarea className="profile-detail-desc profile-detail-input" value={description} style={{marginLeft: "40px"}}/>
+                  : null
+                }
               </Row>
               <Row className="center btn-group-call">
                 <Button className="btn-video-call-accept" onClick={() => this.toggle(false)}>

@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
-
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
@@ -21,7 +20,7 @@ class MentorDetailCard extends React.Component {
   }
 
   handleAvailableNow() {
-    this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name);
+    this.props.sendUser(this.props.mentorData.email, this.props.mentorData.avatar, this.props.mentorData.name, this.props.mentorData.channel_name, "");
   }
 
   handleBookSession(id) {

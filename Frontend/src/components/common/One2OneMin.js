@@ -1,5 +1,8 @@
 import React from "react";
 import { Button, Modal, ModalBody, Row } from "shards-react";
+import { startMaster, stopMaster } from '../../utils/master';
+import { startViewer, stopViewer } from '../../utils/viewer';
+import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import "../../assets/landingpage.css"
 import kurentoUtils from 'kurento-utils';
 
@@ -46,7 +49,53 @@ export default class One2OneMin extends React.Component {
     this.handleStop();
     toggle();
   }
-
+  getRandomClientId() {
+    return Math.random()
+      .toString(36)
+      .substring(2)
+      .toUpperCase()
+  }
+  getFormValuesMaster() {
+    return {
+      region: AWS_REGION,
+      channelName: localStorage.getItem('channel_name'),
+      clientId: this.getRandomClientId(),
+      sendVideo: true,
+      sendAudio: true,
+      openDataChannel: false,
+      widescreen: true,
+      fullscreen: false,
+      useTrickleICE: true,
+      natTraversalDisabled: false,
+      forceTURN: false,
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      endpoint: null,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+      sessionToken: null
+    }
+  }
+  getFormValuesViewer() {
+    return {
+      region: AWS_REGION,
+      channelName: this.props.channel_name,
+      clientId: this.getRandomClientId(),
+      sendVideo: true,
+      sendAudio: true,
+      openDataChannel: false,
+      widescreen: true,
+      fullscreen: false,
+      useTrickleICE: true,
+      natTraversalDisabled: false,
+      forceTURN: false,
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      endpoint: null,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+      sessionToken: null
+    }
+  }
+  onStatsReport(report) {
+    // TODO: Publish stats
+  }
   componentDidMount() {
     const that = this;
     this.ws = this.props.ws;
@@ -62,6 +111,10 @@ export default class One2OneMin extends React.Component {
       this.setState({
         callState: IN_CALL
       })
+      const formValues = this.getFormValuesMaster();
+      startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      })
+
       // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
       //   function (error) {
       //     if (error) {
@@ -92,6 +145,9 @@ export default class One2OneMin extends React.Component {
       };
       that.sendMessage(response);
     } else if (this.props.callState === OUTGOING_CALL) {
+      const formValues = this.getFormValuesViewer();
+      startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      })
       // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
       //   if (error) {
       //     that.props.sendErrorMsg("You have no webcam or microphone");
@@ -123,7 +179,9 @@ export default class One2OneMin extends React.Component {
         name: localStorage.getItem('user_name'), 
         avatarURL: localStorage.getItem("avatar"),
         to : that.props.to,
-        sdpOffer : "offerSdp"
+        sdpOffer : "offerSdp",
+        channel_name: this.props.channel_name, 
+        description: this.props.description, 
       };
       that.sendMessage(message);
 
@@ -149,6 +207,8 @@ export default class One2OneMin extends React.Component {
   }
 
   handleStop = () => {
+    stopMaster();
+    stopViewer();
     this.props.stop();
   }
 
@@ -162,14 +222,10 @@ export default class One2OneMin extends React.Component {
       <div id="one2one-call-conatainer" className={ (callState === INCOMING_CALL) ? "video-call-mini-enable" :(callState === OUTGOING_CALL && accepted) ? "video-call-mini-enable" : "video-call-mini-disable"}>
         <div className="video-call-element-min" id="video-call-element-min">
           <div>
-            <video id="videoInput" autoPlay width="300px" height="225px" poster={PosterImg}>
-              
-            </video>
+            <video id="videoInput" autoPlay width="320px" height="180px" poster={PosterImg}></video>
           </div>
           <div>
-            <video id="videoOutput" autoPlay width="300px" height="225px" poster={PosterImg}>
-              
-            </video>
+            <video id="videoOutput" autoPlay width="320px" height="180px" poster={PosterImg}></video>
           </div>
           <Row className="center btn-group-call">
             {/* <Button className="btn-video-call-mic-camera">

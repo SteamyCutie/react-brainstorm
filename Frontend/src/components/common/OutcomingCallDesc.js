@@ -20,7 +20,8 @@ export default class OutcomingCallDesc extends React.Component {
       loading: false,
       userinfo: {},
       remaincount: 150,
-      description: ''
+      description: '',
+      callState: false,
     };
   }
 
@@ -84,13 +85,17 @@ export default class OutcomingCallDesc extends React.Component {
   }
 
   toggle(accepted) {
-    const { callwithdescription } = this.props;
-    // if(accepted){
-    //   this.onDecline()
-    // } else {
-    //   this.onAccept()
-    // }
-    callwithdescription();
+    const { callwithdescription, setDescription } = this.props;
+    if(accepted){
+      // this.onDecline()
+    } else {
+      // this.onAccept()
+      setDescription(this.state.description);
+      // callwithdescription();
+      this.setState({
+        description: '',
+      })
+    }
   }
 
   removeSession() {
@@ -149,6 +154,38 @@ export default class OutcomingCallDesc extends React.Component {
     });
   }
 
+  handleCancel() {
+    const {onCancel} = this.props;
+    onCancel();
+
+    this.setState({
+      callState: false, 
+      description: '', 
+    })
+  }
+
+  handleCall() {
+    const {setDescription} = this.props;
+
+    setDescription(this.state.description, this.state.userinfo);
+
+    this.setState({
+      callState: true, 
+    })
+
+    document.getElementById("call-description").disabled = true;
+  }
+
+  handleEndCall() {
+    const {onCallEnd} = this.props;
+    onCallEnd();
+
+    this.setState({
+      callState: false, 
+      description: '', 
+    })
+  }
+
   render() {
     const { open } = this.props;
     const { loading, userinfo, remaincount, description } = this.state;
@@ -159,7 +196,7 @@ export default class OutcomingCallDesc extends React.Component {
           <ModalBody className="modal-video-call">
             <div className="video-call-element">
               <Row className="center video-tags">
-                <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333"}}>Call to {userinfo.name}</label>
+                <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333"}}>{this.state.callState ? "Calling" : "Call"} to {userinfo.name}</label>
               </Row>
               <Row className="center">
                 <Col md="4">
@@ -172,18 +209,27 @@ export default class OutcomingCallDesc extends React.Component {
                 <Col md="8" className="project-detail-input-group">
                   <label htmlFor="fePassword">Call description</label>
                   <label htmlFor="fePassword" className="remain-symbols">{remaincount} symbols left</label>
-                  <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.changeDescription(e)} value={description}/>
+                  <FormTextarea id="call-description" placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.changeDescription(e)} value={description}/>
                 </Col>
               </Row>
               <Row className="center btn-group-call">
-                <Button className="btn-video-call-decline" onClick={() => this.toggle(true)}>
-                  <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Decline"/>
-                  Cancel
-                </Button>
-                <Button className="btn-video-call-accept" onClick={() => this.toggle(false)}>
-                  <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Accept"/>
-                  Call
-                </Button>
+                {!this.state.callState && 
+                  <Button id="btn-call-cancel" className="btn-video-call-decline" onClick={() => this.handleCancel()}>
+                    Cancel
+                  </Button>
+                }
+                {!this.state.callState && 
+                  <Button id="btn-call-call" className="btn-video-call-accept" onClick={() => this.handleCall()}>
+                    <img src={AcceptImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Accept"/>
+                    Call
+                  </Button>
+                }
+                {this.state.callState && 
+                  <Button id="btn-call-end" className="btn-video-call-decline" onClick={() => this.handleEndCall()}>
+                    <img src={DeclineImg} placeholder="Phone" style={{paddingRight: "10px"}} alt="Decline"/>
+                    End
+                  </Button>
+                }
               </Row>
             </div>
           </ModalBody>
