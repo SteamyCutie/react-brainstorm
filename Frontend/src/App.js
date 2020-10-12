@@ -67,8 +67,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    // var wsUri = 'wss://media.brainsshare.com/one2one';
-    var wsUri = 'wss://192.168.105.13:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -536,7 +536,8 @@ export default class App extends React.Component{
             // />
             <div className="draggable-video-item">
               <Draggable
-               onStart={() => this.dragegableOnStart()}
+                bounds="parent"
+                onStart={() => this.dragegableOnStart()}
               >
                 <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
                   <VideoCallMin 
