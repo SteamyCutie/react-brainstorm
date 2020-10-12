@@ -122,7 +122,7 @@
 }
 
 .video-call-element-min {
-  padding: 10px;
+  /* padding: 10px; */
   width: 100%;
   /* display: ; */
   /* background-color: #04B5FA; */
@@ -561,4 +561,43 @@
 
 .react-draggable {
   z-index: 9000;
+}
+
+.one2one-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+
+.scroll-none {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+.fullscreen-self-video {
+  width: 100% !important;
+  height: 100vh !important;
+  object-fit: fill;
+}
+
+.fullscreen-other-video {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+}
+
+.btn-group-one2one-full {
+  margin-left: 0px;
+  width: 100vw;
+  height: 100px;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  background: #00000066;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
