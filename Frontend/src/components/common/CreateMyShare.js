@@ -248,7 +248,7 @@ export default class CreateMyShare extends React.Component {
           </div>
           <div className="content-center block-content-class modal-input-group-class">
             <label htmlFor="feEmail">Video</label>
-            <DropzoneArea acceptedFiles={['video/mp4']} onChange={(e) => this.onChnageVideo(e)}/>
+            <DropzoneArea onChange={(e) => this.onChnageVideo(e)} maxFileSize={300000000}/>
           </div>
           {/* <div className="content-center block-content-class button-text-group-class"> */}
           <div className={JSON.parse(localStorage.getItem('user-type')) ? "content-center block-content-class button-text-group-class-mentor" : "content-center block-content-class button-text-group-class" }>

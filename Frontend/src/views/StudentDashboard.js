@@ -270,12 +270,12 @@ export default class StudentDashboard extends React.Component {
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>
             </Col>
-            <AdSense.Google
+            {/* <AdSense.Google
               client='ca-pub-7292810486004926'
               slot='7806394673'
               style={{ width: 500, height: 300, float: 'left' }}
               format=''
-            />
+            /> */}
           </Row>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
