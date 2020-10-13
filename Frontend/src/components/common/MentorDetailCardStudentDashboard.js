@@ -84,7 +84,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
           <Row className="center">
             {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive(id)}>
               <img src={Lightening} alt="Lightening"/>
-              Instant LIve
+              Available now
             </Button> : <></> }
           </Row>
           <Row className="center">

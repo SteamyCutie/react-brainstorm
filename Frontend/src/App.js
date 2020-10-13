@@ -16,6 +16,7 @@ import "../src/assets/common.css";
 
 import VideoCall from "../src/components/common/VideoCall";
 import VideoCallMin from "./components/common/One2OneMin";
+import Many2Many from "./components/common/Many2Many"
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
 // import { message } from "antd";
@@ -54,6 +55,7 @@ export default class App extends React.Component{
       dragegableOnStart: true, 
       callDescription: '', 
       toDescription: '',
+      roomCall: true, 
     }
 
     this.ws = null;
@@ -552,6 +554,18 @@ export default class App extends React.Component{
                     callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
                   />
                 </div>
+              </Draggable>
+            </div>
+          }
+          {this.state.roomCall && 
+            <div className="draggable-room-item">
+              <Draggable
+                bounds="parent"
+                onStart={() => this.dragegableOnStart()}
+              >
+                <Many2Many 
+
+                />
               </Draggable>
             </div>
           }
