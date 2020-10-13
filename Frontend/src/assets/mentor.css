@@ -536,3 +536,7 @@ button:focus {
 .more-drop-down {
     float: right;
 }
+
+.video-react-controls-enabled {
+    padding-top: 50% !important;
+}
