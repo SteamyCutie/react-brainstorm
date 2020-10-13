@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { Container, Row, Col, Card, CardBody } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
-import 'simplewebrtc-screenshare-application/dist/index.css';
-
 import MentorVideo from "./../components/common/MentorVideo";
 import BookSession from "./../components/common/BookSession";
 import LoadingModal from "../components/common/LoadingModal";
