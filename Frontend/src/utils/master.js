@@ -108,14 +108,17 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
     // If no video/audio needed, no need to request for the sources. 
     // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
     // if (formValues.sendVideo || formValues.sendAudio) {
-    try {
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+    // try {
+        //streaming with camera
+        // master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        //-----------
+        //streaming with screen share
+        master.localStream = await navigator.mediaDevices.getDisplayMedia(constraints)
+        //-------
         localView.srcObject = master.localStream
-    } catch (e) {
-        console.error('[MASTER] Could not find webcam')
-        alert("Please connect camera!")
-        return
-    }
+    // } catch (e) {
+    //     console.error('[MASTER] Could not find webcam')
+    // }
     // }
 
     master.signalingClient.on('open', async () => {
