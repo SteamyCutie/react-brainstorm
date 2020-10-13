@@ -499,7 +499,7 @@
 }
 
 .room-group-chat {
-  width: 400px;
+  width: 600px;
   height: calc(100vh - 100px);
   position: absolute;
   right: 0px;
