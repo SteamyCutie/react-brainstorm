@@ -116,14 +116,14 @@ export async function startViewer(localView, remoteView, formValues, onStatsRepo
         // If no video/audio needed, no need to request for the sources. 
         // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
         // if (formValues.sendVideo || formValues.sendAudio) {
-        try {
+        // try {
             viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
             viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
             localView.srcObject = viewer.localStream;
-        } catch (e) {
-            console.error('[VIEWER] Could not find webcam');
-            return;
-        }
+        // } catch (e) {
+        //     console.error('[VIEWER] Could not find webcam');
+        //     return;
+        // }
         // }
 
         // Create an SDP offer to send to the master
