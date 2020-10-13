@@ -266,9 +266,9 @@ export default class One2OneMin extends React.Component {
                 <img src={Camera} placeholder="Camera" />
               </Button>
 
-              <Button className="btn-rooom-control">
-              <img src={FullScreenImg} alt="Full Screen"/>
-            </Button>
+              <Button className="btn-rooom-control" onClick={() => this.handleFullScreen()}>
+                <img src={FullScreenImg} alt="Full Screen"/>
+              </Button>
             </Row>
           }
         </div>
