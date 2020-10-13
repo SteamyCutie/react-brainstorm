@@ -45,9 +45,11 @@ const master = {
 const viewer = {};
 
 async function startViewer(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+  var addEventListenerCount = false;
+
   viewer.localView = localView;
   viewer.remoteView = remoteView;
-
+  
   // Create KVS client
   const kinesisVideoClient = new AWS.KinesisVideo({
       region: formValues.region,
@@ -155,14 +157,14 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, onR
       // If no video/audio needed, no need to request for the sources. 
       // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
       // if (formValues.sendVideo || formValues.sendAudio) {
-      try {
+      // try {
           viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
           viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
           localView.srcObject = viewer.localStream;
-      } catch (e) {
-          console.error('[VIEWER] Could not find webcam');
-          return;
-      }
+      // } catch (e) {
+          // console.error('[VIEWER] Could not find webcam');
+          // return;
+      // }
       // }
 
       // Create an SDP offer to send to the master
@@ -226,11 +228,33 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, onR
   // As remote tracks are received, add them to the remote view
   viewer.peerConnection.addEventListener('track', event => {
       console.log('[VIEWER] Received remote track');
-      if (remoteView.srcObject) {
-          return;
+      // if (remoteView.srcObject) {
+      //     return;
+      // }
+      // viewer.remoteStream = event.streams[0];
+      // remoteView.srcObject = viewer.remoteStream;
+
+      if (!addEventListenerCount) {
+        var container = document.getElementById("participants-video-container");
+        var participantVideo = document.createElement("video");
+        var divContainer = document.createElement("div");
+        divContainer.appendChild(participantVideo);
+        container.appendChild(divContainer);
+        
+        participantVideo.className = "many2many-participant-video";
+        participantVideo.autoplay = true;
+        participantVideo.poster = PosterImg;
+
+        var participantVideos = document.getElementsByClassName("many2many-participant-video");
+        if (participantVideos[participantVideos.length - 1].srcObject) {
+          return
+        }
+        participantVideos[participantVideos.length - 1].srcObject = event.streams[0]
+
+        addEventListenerCount = true;
+      } else {
+        addEventListenerCount = false;
       }
-      viewer.remoteStream = event.streams[0];
-      remoteView.srcObject = viewer.remoteStream;
   });
 
   console.log('[VIEWER] Starting viewer connection');
@@ -277,15 +301,15 @@ function stopViewer() {
   }
 }
 
-function sendViewerMessage(message) {
-  if (viewer.dataChannel) {
-      try {
-          viewer.dataChannel.send(message);
-      } catch (e) {
-          console.error('[VIEWER] Send DataChannel: ', e.toString());
-      }
-  }
-}
+// function sendViewerMessage(message) {
+//   if (viewer.dataChannel) {
+//       try {
+//           viewer.dataChannel.send(message);
+//       } catch (e) {
+//           console.error('[VIEWER] Send DataChannel: ', e.toString());
+//       }
+//   }
+// }
 
 async function startMaster(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
   master.localView = localView
@@ -385,14 +409,14 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
   // If no video/audio needed, no need to request for the sources. 
   // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
   // if (formValues.sendVideo || formValues.sendAudio) {
-  try {
+  // try {
       master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
       localView.srcObject = master.localStream
-  } catch (e) {
-      console.error('[MASTER] Could not find webcam')
-      alert("Please connect camera!")
-      return
-  }
+  // } catch (e) {
+      // console.error('[MASTER] Could not find webcam')
+      // alert("Please connect camera!")
+      // return
+  // }
   // }
 
   master.signalingClient.on('open', async () => {
@@ -401,6 +425,18 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
 
   master.signalingClient.on('sdpOffer', async (offer, remoteClientId) => {
       console.log('[MASTER] Received SDP offer from client: ' + remoteClientId)
+
+      var container = document.getElementById("participants-video-container");
+      var participantVideo = document.createElement("video");
+      var divContainer = document.createElement("div");
+      divContainer.appendChild(participantVideo);
+      container.appendChild(divContainer);
+      
+      participantVideo.id = "participant-video-" + remoteClientId;
+      participantVideo.className = "many2many-participant-video";
+      participantVideo.autoplay = true;
+      participantVideo.poster = PosterImg;
+      // participantVideo
 
       // Create a new peer connection using the offer from the given client
       const peerConnection = new RTCPeerConnection(configuration)
@@ -441,10 +477,18 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
       // As remote tracks are received, add them to the remote view
       peerConnection.addEventListener('track', event => {
           console.log('[MASTER] Received remote track from client: ' + remoteClientId)
-          if (remoteView.srcObject) {
-              return
+          
+          // if (remoteView.srcObject) {
+          //   return
+          // }
+          // remoteView.srcObject = event.streams[0]
+
+          var participantVideos = document.getElementsByClassName("many2many-participant-video");
+          if (participantVideos[participantVideos.length - 1].srcObject) {
+            return
           }
-          remoteView.srcObject = event.streams[0]
+          participantVideos[participantVideos.length - 1].srcObject = event.streams[0]
+          console.log(participantVideos[participantVideos.length - 1])
       })
 
       // If there's no video/audio, master.localStream will be null. So, we should skip adding the tracks from it.
@@ -528,15 +572,15 @@ function stopMaster() {
   }
 }
 
-function sendMasterMessage(message) {
-  Object.keys(master.dataChannelByClientId).forEach(clientId => {
-      try {
-          master.dataChannelByClientId[clientId].send(message)
-      } catch (e) {
-          console.error('[MASTER] Send DataChannel: ', e.toString())
-      }
-  })
-}
+// function sendMasterMessage(message) {
+//   Object.keys(master.dataChannelByClientId).forEach(clientId => {
+//       try {
+//           master.dataChannelByClientId[clientId].send(message)
+//       } catch (e) {
+//           console.error('[MASTER] Send DataChannel: ', e.toString())
+//       }
+//   })
+// }
 
 export default class Many2Many extends React.Component {
   constructor(props) {
@@ -576,7 +620,7 @@ export default class Many2Many extends React.Component {
   getFormValuesMaster() {
     return {
       region: AWS_REGION,
-      channelName: localStorage.getItem('channel_name'),
+      channelName: this.props.sessionChannelName,
       clientId: this.getRandomClientId(),
       sendVideo: true,
       sendAudio: true,
@@ -595,7 +639,7 @@ export default class Many2Many extends React.Component {
   getFormValuesViewer() {
     return {
       region: AWS_REGION,
-      channelName: this.props.channel_name,
+      channelName: this.props.sessionChannelName,
       clientId: this.getRandomClientId(),
       sendVideo: true,
       sendAudio: true,
@@ -625,38 +669,38 @@ export default class Many2Many extends React.Component {
       onicecandidate: this.onIceCandidate
     }
 
-    if (this.props.callState === INCOMING_CALL) {
+    if (this.props.isMaster) {
       this.setState({
         callState: IN_CALL
       })
       const formValues = this.getFormValuesMaster();
+      console.log("Channel Name", formValues.channelName)
       startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
       })
 
-      var response = {
-        id: 'incomingCallResponse',
-        from: that.props.from,
-        callResponse: 'accept',
-        sdpOffer: "offerSdp"
-      };
-      that.sendMessage(response);
-    } else if (this.props.callState === OUTGOING_CALL) {
+      // var response = {
+      //   id: 'incomingCallResponse',
+      //   from: that.props.from,
+      //   callResponse: 'accept',
+      //   sdpOffer: "offerSdp"
+      // };
+      // that.sendMessage(response);
+    } else {
       const formValues = this.getFormValuesViewer();
       startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
       })
-
-      var message = {
-        id : 'call',
-        from : localStorage.getItem("email"),
-        name: localStorage.getItem('user_name'), 
-        avatarURL: localStorage.getItem("avatar"),
-        to : that.props.to,
-        sdpOffer : "offerSdp",
-        channel_name: this.props.channel_name, 
-        description: this.props.description, 
-      };
-      that.sendMessage(message);
-
+      console.log("Channel Name", formValues.channelName)
+      // var message = {
+      //   id : 'call',
+      //   from : localStorage.getItem("email"),
+      //   name: localStorage.getItem('user_name'), 
+      //   avatarURL: localStorage.getItem("avatar"),
+      //   to : that.props.to,
+      //   sdpOffer : "offerSdp",
+      //   channel_name: this.props.channel_name, 
+      //   description: this.props.description, 
+      // };
+      // that.sendMessage(message);
     }
   }
 
@@ -676,7 +720,7 @@ export default class Many2Many extends React.Component {
   handleStop = () => {
     stopMaster();
     stopViewer();
-    this.props.stop();
+    // this.props.stop();
   }
 
   handleFullScreen() {
@@ -743,8 +787,12 @@ export default class Many2Many extends React.Component {
           <div>
             <video id="videoInput" autoPlay width="320px" height="180px" poster={PosterImg} muted></video>
           </div>
-          <div>
-            <video id="videoOutput" autoPlay width="320px" height="180px" poster={PosterImg}></video>
+          <div id="participants-video-container" className="participants-video-container">
+            {/* <div> */}
+              {/* <video id="videoOutput" autoPlay width="320px" height="180px" poster={PosterImg}></video> */}
+            {/* </div> */}
+              {/* <video id="videoOutput1" autoPlay width="320px" height="180px" poster={PosterImg}></video> */}
+              {/* <video id="videoOutput2" autoPlay width="320px" height="180px" poster={PosterImg}></video> */}
           </div>
           {this.state.showChat &&
             <div className="room-group-chat">

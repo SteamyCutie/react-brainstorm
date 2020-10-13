@@ -14,7 +14,7 @@ import "../src/assets/student.css";
 import "../src/assets/mentor.css";
 import "../src/assets/common.css";
 
-import VideoCall from "../src/components/common/VideoCall";
+// import VideoCall from "../src/components/common/VideoCall";
 import VideoCallMin from "./components/common/One2OneMin";
 import Many2Many from "./components/common/Many2Many"
 import IncomingCall from "../src/components/common/IncomingCall"
@@ -55,7 +55,8 @@ export default class App extends React.Component{
       dragegableOnStart: true, 
       callDescription: '', 
       toDescription: '',
-      roomCall: true, 
+      roomCall: false, 
+      sessionChannelName: '', 
     }
 
     this.ws = null;
@@ -65,7 +66,10 @@ export default class App extends React.Component{
     this.call = this.call.bind(this);
     this.setUser = this.setUser.bind(this);
     this.sendErrorMsg = this.sendErrorMsg.bind(this);
-    this.fullScreen = this.fullScreen.bind(this)
+    this.fullScreen = this.fullScreen.bind(this);
+
+    this.startSession = this.startSession.bind(this);
+    this.joinSession = this.joinSession.bind(this);
   }
 
   componentWillMount() {
@@ -141,24 +145,24 @@ export default class App extends React.Component{
   }
 
   resgisterResponse(message) {
-    if (message.response === 'accepted') {
-      // this.setState({
-      //   registerState: REGISTERED
-      // })
-    } else {
-      // if(message.response === 'rejected ') {
-      //   this.setState({
-      //     registerState: REGISTERED
-      //   })
-      // } else {
-      //   this.setState({
-      //     registerState: NOT_REGISTERED
-      //   })
-      //   var errorMessage = message.message ? message.message
-      //       : 'Unknown reason for register rejection.';
-      //   console.log(errorMessage);
-      // }
-    }
+    // if (message.response === 'accepted') {
+    //   // this.setState({
+    //   //   registerState: REGISTERED
+    //   // })
+    // } else {
+    //   // if(message.response === 'rejected ') {
+    //   //   this.setState({
+    //   //     registerState: REGISTERED
+    //   //   })
+    //   // } else {
+    //   //   this.setState({
+    //   //     registerState: NOT_REGISTERED
+    //   //   })
+    //   //   var errorMessage = message.message ? message.message
+    //   //       : 'Unknown reason for register rejection.';
+    //   //   console.log(errorMessage);
+    //   // }
+    // }
   }
 
   callResponse(message) {
@@ -269,9 +273,7 @@ export default class App extends React.Component{
     ring.loop = true;
     ring.play();
 
-    if(withDescription) {
-
-    } else {
+    if(!withDescription) {
       this.toggle_outcomingCall_modal();
     }
   }
@@ -380,11 +382,11 @@ export default class App extends React.Component{
       errorModalStatus: !this.state.errorModalStatus,
     })
 
-    if(this.state.outcomingCallStatus) {
-      // this.toggle_outcomingCall_modal()
-    } else {
-      // this.toggle_incomingCall_modal()
-    }
+    // if(this.state.outcomingCallStatus) {
+    //   // this.toggle_outcomingCall_modal()
+    // } else {
+    //   // this.toggle_incomingCall_modal()
+    // }
   }
 
   incomingCallDecline() {
@@ -488,13 +490,31 @@ export default class App extends React.Component{
     return this.state.dragegableOnStart;
   }
 
+  startSession(sessionChannelName) {
+    console.log("START SESSION", sessionChannelName);
+
+    this.setState({
+      sessionChannelName: sessionChannelName.toString(), 
+      roomCall: true, 
+      isMaster: true, 
+    })
+  }
+
+  joinSession(sessionChannelName) {
+    this.setState({
+      sessionChannelName: sessionChannelName.toString(), 
+      roomCall: true, 
+      isMaster: false, 
+    })
+  }
+
   render() {
-    const { incomingCallStatus, outcomingCallStatus, errorModalStatus} = this.state;
+    const { incomingCallStatus, outcomingCallStatus} = this.state;
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
           {routes.map((route, index) => {
-            if (route.path === '/trending' || route.path === '/studentdashboard')
+            if (route.path === '/trending' || route.path === '/studentdashboard') {
               return (
                 <Route
                   key={index}
@@ -510,21 +530,41 @@ export default class App extends React.Component{
                   })}
                 />
               );
-            else 
-              return (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-                  component={withTracker(props => {
-                    return (
-                      <route.layout {...props}>
-                        <route.component {...props} />
-                      </route.layout>
-                    );
-                  })}
-                />
-              );
+            }
+            else {
+              if (route.path === '/studentSession' || route.path === '/scheduleLiveForum') {
+                return (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    component={withTracker(props => {
+                      return (
+                        <route.layout {...props}>
+                          <route.component {...props} startSession={this.startSession} joinSession={this.joinSession} stop={this.stop}/>
+                        </route.layout>
+                      );
+                    })}
+                  />
+                );
+              }
+              else {
+                return (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    component={withTracker(props => {
+                      return (
+                        <route.layout {...props}>
+                          <route.component {...props} />
+                        </route.layout>
+                      );
+                    })}
+                  />
+                );
+              }
+            }
           })}
           {this.state.call && 
             // <VideoCall
@@ -563,9 +603,13 @@ export default class App extends React.Component{
                 bounds="parent"
                 onStart={() => this.dragegableOnStart()}
               >
-                <Many2Many 
-
-                />
+                <div className="box test-class" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                  <Many2Many 
+                    callState={INCOMING_CALL}
+                    sessionChannelName={this.state.sessionChannelName}
+                    isMaster={this.state.isMaster}
+                  />
+                </div>
               </Draggable>
             </div>
           }
@@ -578,12 +622,10 @@ export default class App extends React.Component{
           {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />
-            {/* <source src="horse.mp3" type="audio/mpeg" /> */}
             Your browser does not support the audio element.
           </audio>
           <audio id="outgoing-ring">
             <source src={incomingSound} type="audio/mpeg" />
-            {/* <source src="horse.mp3" type="audio/mpeg" /> */}
             Your browser does not support the audio element.
           </audio>
         </div>
