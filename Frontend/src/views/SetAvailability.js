@@ -501,7 +501,7 @@ class SetAvailability extends React.Component {
                             day.timeList.map((time, timeIdx) => {
                               return (
                                 <Row key={timeIdx} form>
-                                  <Col md="5" className="available-time-group" style={{marginRight: "70px"}}>
+                                  <Col md="5" xs="4" className="available-time-group" style={{marginRight: "70px"}}>
                                     <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
@@ -512,7 +512,7 @@ class SetAvailability extends React.Component {
                                       })}
                                     </FormSelect>
                                   </Col>
-                                  <Col md="5" className="available-time-group">
+                                  <Col md="5" xs="4">
                                     <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
@@ -540,7 +540,7 @@ class SetAvailability extends React.Component {
                             })
                             // : null
                             :<Row form>
-                              <Col md="5" className="available-time-group" style={{marginRight: "70px"}}>
+                              <Col md="5" xs="4" className="available-time-group">
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
                                   {Timelinelist.map((item, idx) => {
                                     return (
@@ -549,7 +549,7 @@ class SetAvailability extends React.Component {
                                   })}
                                 </FormSelect>
                               </Col>
-                              <Col md="5" className="available-time-group">
+                              <Col md="5" xs="4">
                                 <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
                                   {Timelinelist.map((item, idx) => {
                                     return (
