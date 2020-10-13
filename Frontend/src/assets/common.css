@@ -643,3 +643,22 @@
 .toolbar-ul-pen {
   background-image: url("../images/whiteboard-draw.svg") !important;
 } */
+
+.draggable-room-item {
+  height: 100vh;
+}
+
+.test-class {
+  /* background-color: #04B5FA; */
+  border: #04B5FA 2px solid;
+  border-radius: 6px;
+}
+
+.participants-video-container {
+  width: 100%;
+}
+
+.many2many-participant-video {
+  width: 320px;
+  height: 180px;
+}
