@@ -102,11 +102,11 @@ export default class One2OneMin extends React.Component {
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
     this.videoOutput = document.getElementById('videoOutput');
-    var options = {
-      localVideo: this.videoInput,
-      remoteVideo: this.videoOutput,
-      onicecandidate: this.onIceCandidate
-    }
+    // var options = {
+    //   localVideo: this.videoInput,
+    //   remoteVideo: this.videoOutput,
+    //   onicecandidate: this.onIceCandidate
+    // }
 
     if (this.props.callState === INCOMING_CALL) {
       this.setState({
