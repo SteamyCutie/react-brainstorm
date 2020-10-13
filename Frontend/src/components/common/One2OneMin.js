@@ -6,12 +6,12 @@ import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../comm
 import "../../assets/landingpage.css"
 import kurentoUtils from 'kurento-utils';
 
-// import Camera from '../../images/call-camera.svg'
+import Camera from '../../images/call-camera.svg'
 import Phone from '../../images/call-phone.svg'
 import CloseImg from '../../images/one2on-min-close.svg'
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/logo.png'
-// import Mic from '../../images/call-mic.svg'
+import Mic from '../../images/call-mic.svg'
 
 // const NOT_REGISTERED = 0;
 // const REGISTERING = 1;
@@ -34,6 +34,7 @@ export default class One2OneMin extends React.Component {
       isCallingNow: 0,
       isConnected: 0,
       isDisplay: true,
+      isFullscreen: false, 
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.handleStop = this.handleStop.bind(this);
@@ -101,11 +102,11 @@ export default class One2OneMin extends React.Component {
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
     this.videoOutput = document.getElementById('videoOutput');
-    var options = {
-      localVideo: this.videoInput,
-      remoteVideo: this.videoOutput,
-      onicecandidate: this.onIceCandidate
-    }
+    // var options = {
+    //   localVideo: this.videoInput,
+    //   remoteVideo: this.videoOutput,
+    //   onicecandidate: this.onIceCandidate
+    // }
 
     if (this.props.callState === INCOMING_CALL) {
       this.setState({
@@ -213,7 +214,23 @@ export default class One2OneMin extends React.Component {
   }
 
   handleFullScreen() {
-    // this.props.fullScreen();
+    this.setState({
+      isFullscreen: !this.state.isFullscreen, 
+    });
+
+    if (document.getElementById("one2one-call-conatainer").classList.contains("one2one-fullscreen")) {
+      document.getElementById("one2one-call-conatainer").classList.remove("one2one-fullscreen");
+      document.getElementsByTagName("body")[0].classList.remove("scroll-none")
+      document.getElementsByClassName("react-draggable")[0].style.transform = "translate(0px, 0px)";
+      document.getElementById("videoInput").classList.remove("fullscreen-other-video");
+      document.getElementById("videoOutput").classList.remove("fullscreen-self-video");
+    } else {
+      document.getElementsByClassName("react-draggable")[0].style.transform = "translate(69px, -120px)";
+      document.getElementById("one2one-call-conatainer").classList.add("one2one-fullscreen");
+      document.getElementsByTagName("body")[0].classList.add("scroll-none")
+      document.getElementById("videoInput").classList.add("fullscreen-other-video");
+      document.getElementById("videoOutput").classList.add("fullscreen-self-video");
+    }
   }
 
   render() {
@@ -227,23 +244,33 @@ export default class One2OneMin extends React.Component {
           <div>
             <video id="videoOutput" autoPlay width="320px" height="180px" poster={PosterImg}></video>
           </div>
-          <Row className="center btn-group-call">
-            {/* <Button className="btn-video-call-mic-camera">
-              <img src={Mic} placeholder="Mic" />
-            </Button> */}
-            {/* <Button className="btn-video-call-end" onClick={() => this.toggle()}>
-              <img src={Phone} placeholder="Phone" alt="phone"/>
-            </Button> */}
-            {/* <Button className="btn-video-call-mic-camera">
-              <img src={Camera} placeholder="Camera" />
-            </Button> */}
-            <Button className="btn-one2one-min-close" onClick={() => this.toggle()}>
-              <img src={CloseImg} alt="close"/>
-            </Button>
-            <Button className="btn-one2one-min-fullscreen" onClick={() => this.handleFullScreen()}>
-              <img src={FullScreenImg} alt="fullscreen"/>
-            </Button>
-          </Row>
+          {!this.state.isFullscreen && 
+            <Row className="center btn-group-call-min">
+              <Button className="btn-one2one-min-close" onClick={() => this.toggle()}>
+                <img src={CloseImg} alt="close"/>
+              </Button>
+              <Button className="btn-one2one-min-fullscreen" onClick={() => this.handleFullScreen()}>
+                <img src={FullScreenImg} alt="fullscreen"/>
+              </Button>
+            </Row>
+          }
+          {this.state.isFullscreen && 
+            <Row className="center btn-group-one2one-full">
+              <Button className="btn-video-call-mic-camera">
+                <img src={Mic} placeholder="Mic" />
+              </Button>
+              <Button className="btn-video-call-end" onClick={() => this.toggle()}>
+                <img src={Phone} placeholder="Phone" alt="phone"/>
+              </Button>
+              <Button className="btn-video-call-mic-camera">
+                <img src={Camera} placeholder="Camera" />
+              </Button>
+
+              <Button className="btn-rooom-control" onClick={() => this.handleFullScreen()}>
+                <img src={FullScreenImg} alt="Full Screen"/>
+              </Button>
+            </Row>
+          }
         </div>
       </div>
     );

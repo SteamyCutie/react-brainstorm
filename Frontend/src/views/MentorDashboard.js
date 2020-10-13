@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Container, Row, Col, Card, CardBody } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
@@ -217,7 +217,6 @@ export default class MentorDashboard extends React.Component {
                 <h3>My share page</h3>
               </Col>
             </Row>
-            
             {mentors && mentors.map((mentor, idx) => 
             <Card small className="share-page-card" style={{marginBottom: 30}}>
               <CardBody>

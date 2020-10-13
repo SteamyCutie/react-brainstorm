@@ -1,6 +1,10 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormInput, CardFooter, FormSelect, Button, FormTextarea, ListGroup, ListGroupItem, FormGroup } from "shards-react";
 import kurentoUtils from 'kurento-utils';
+import WhiteBoard, {
+  getWhiteBoardData,
+  loadWhiteBoardData,
+} from 'fabric-whiteboard'
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -148,6 +152,10 @@ export default class RoomCall extends React.Component {
     super(props);
 
     this.state = {
+      mode: 'select',
+      width: '600px',
+      height: '600px',
+      brushColor: '#f44336',
       errorMsg: '',
       code: '',
       participants: [],
@@ -159,20 +167,30 @@ export default class RoomCall extends React.Component {
     }
 
     this.room_id = "";
+    
+    this.calcBoundsSize = this.calcBoundsSize.bind(this);
+    this.handleBoundsSizeChange = this.handleBoundsSizeChange.bind(this);
+
+    this.handleOnModeClick = this.handleOnModeClick.bind(this);
+    this.handleOnBrushColorChange = this.handleOnBrushColorChange.bind(this);
   }
 
   componentWillMount() {
     this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
     //this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');
+    
+    window.removeEventListener('resize', this.handleBoundsSizeChange);
   }
 
   componentDidMount() {
     this.room_id = localStorage.getItem("room_id");
     console.log("++++++++++++++++ " + this.room_id);
 
-    // channel = chatClient.channel('messaging', this.room_id, {
-      channel = chatClient.channel('messaging', "godevs", {
-      // add as many custom fields as you'd like
+    this.calcBoundsSize()
+    window.addEventListener('resize', this.handleBoundsSizeChange);
+  
+    channel = chatClient.channel('messaging', "godevs", {
+    // add as many custom fields as you'd like
       image: 'https://cdn.chrisshort.net/testing-certificate-chains-in-go/GOPHER_MIC_DROP.png',
       name: 'Talk about Go',
     });
@@ -444,8 +462,45 @@ export default class RoomCall extends React.Component {
     })
   }
 
+  handleOnModeClick(mode) {
+    console.log(mode, "mode");
+    this.setState({
+      mode: mode,
+    });
+  }
+
+  handleOnBrushColorChange(color) {
+    console.log(color, "color");
+    this.setState({
+      brushColor: color.hex,
+    });
+  }
+
+  calcBoundsSize() {
+    return
+    const domApp = document.getElementById('App')
+    const domToolbar = document.getElementById('toolbar')
+
+    const domAppStyle = window.getComputedStyle(domApp)
+    const domToolbarStyle = window.getComputedStyle(domToolbar)
+
+    this.setState({
+      width: domAppStyle.width,
+      height: `${
+        parseInt(domAppStyle.height, 10) -
+        parseInt(domToolbarStyle.height, 10) -
+        20
+      }px`,
+    })
+  }
+
+  handleBoundsSizeChange() {
+    this.calcBoundsSize()
+  }
+
   render() {
     const session_name = localStorage.getItem("session_name");
+    const { mode, width, height, brushColor } = this.state;
     return (
       <div className="room-container" id="room-container">
         <div style={{ height: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
@@ -507,7 +562,24 @@ export default class RoomCall extends React.Component {
                   <img src={WhiteboardCloseImg} alt="Add user" />
                 </Button>
               </div>
-
+              <WhiteBoard
+                width={width}
+                height={height}
+                showToolbar={true}
+                showBoard={true}
+                mode={mode}
+                onModeClick={this.handleOnModeClick}
+                brushColor={brushColor}
+                brushColors={[
+                  '#f44336',
+                  '#e91e63',
+                  '#9c27b0',
+                  '#673ab7',
+                  '#3f51b5',
+                  '#2196f3',
+                ]}
+                onBrushColorChange={this.handleOnBrushColorChange}
+              />
             </div>
           }
         </div>

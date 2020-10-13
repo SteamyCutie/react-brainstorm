@@ -161,6 +161,7 @@ export default class OutcomingCallDesc extends React.Component {
     this.setState({
       callState: false, 
       description: '', 
+      userinfo: {}, 
     })
   }
 
@@ -171,6 +172,7 @@ export default class OutcomingCallDesc extends React.Component {
 
     this.setState({
       callState: true, 
+      userinfo: {}, 
     })
 
     document.getElementById("call-description").disabled = true;
@@ -183,6 +185,7 @@ export default class OutcomingCallDesc extends React.Component {
     this.setState({
       callState: false, 
       description: '', 
+      userinfo: {}, 
     })
   }
 
@@ -198,18 +201,18 @@ export default class OutcomingCallDesc extends React.Component {
               <Row className="center video-tags">
                 <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333"}}>{this.state.callState ? "Calling" : "Call"} to {userinfo.name}</label>
               </Row>
-              <Row className="center">
-                <Col md="4">
-                  {userinfo.avatar && <img src={userinfo.avatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />}
-                  {!userinfo.avatar && <img src={defaultavatar} alt="avatar" style={{width: "206px", height: "206px", marginTop: "10px", marginBottom: "50px"}} alter="User avatar" />}
+              <Row style={{marginBottom: "50px"}}>
+                <Col md="4" className="no-padding calling-avatar">
+                  {userinfo.avatar && <img src={userinfo.avatar} alt="avatar" style={{width: "206px", height: "206px", borderRadius: "6px"}} alter="User avatar" />}
+                  {!userinfo.avatar && <img src={defaultavatar} alt="avatar" style={{width: "206px", height: "206px", borderRadius: "6px"}} alter="User avatar" />}
                   {
                     userinfo.status === 1 && <div className="carousel-component-online-class"></div>
                   }
                 </Col>
-                <Col md="8" className="project-detail-input-group">
+                <Col md="8" xs="12" className="no-padding">
                   <label htmlFor="fePassword">Call description</label>
                   <label htmlFor="fePassword" className="remain-symbols">{remaincount} symbols left</label>
-                  <FormTextarea id="call-description" placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.changeDescription(e)} value={description}/>
+                  <FormTextarea id="call-description" placeholder="Type here" style={{height: "175px", fontSize: "17px"}}onChange={(e) => this.changeDescription(e)} value={description}/>
                 </Col>
               </Row>
               <Row className="center btn-group-call">

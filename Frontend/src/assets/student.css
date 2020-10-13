@@ -1277,3 +1277,10 @@ body {
     font-weight: normal !important;
     font-size: 11px !important;
 }
+
+
+@media (max-width: 760px) {
+    .calling-avatar {
+        text-align: center;
+    }
+}
