@@ -29,21 +29,12 @@ import { Height } from "@material-ui/icons";
 import { Chat, Channel, ChannelHeader, Thread, Window } from 'stream-chat-react';
 import { MessageList, MessageInput } from 'stream-chat-react';
 import { StreamChat } from 'stream-chat';
-
 import 'stream-chat-react/dist/css/index.css';
+import { ACCESS_API_KEY, ACCESS_TOKEN_SECRET } from '../common/config';
 
-const chatClient = new StreamChat('rhded9sg3939');
-const userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidGlnaHQtYmFyLTkifQ.d3uZ52gEe6ghy0jgwI47hcb3COMH7Fzied10G3Gu6q8';
-
-chatClient.setUser(
-  {
-    id: 'tight-bar-9',
-    name: 'Tight bar',
-    image: 'https://getstream.io/random_png/?id=tight-bar-9&name=Tight+bar'
-  },
-  userToken,
-);
 var channel;
+var chatClient;
+const jwt = require('jsonwebtoken');
 
 const PARTICIPANT_MAIN_CLASS = 'participant main';
 const PARTICIPANT_CLASS = 'participant';
@@ -167,7 +158,7 @@ export default class RoomCall extends React.Component {
     }
 
     this.room_id = "";
-    
+
     this.calcBoundsSize = this.calcBoundsSize.bind(this);
     this.handleBoundsSizeChange = this.handleBoundsSizeChange.bind(this);
 
@@ -177,24 +168,38 @@ export default class RoomCall extends React.Component {
 
   componentWillMount() {
     this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
-    //this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');
-    
+    //this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');    
     window.removeEventListener('resize', this.handleBoundsSizeChange);
   }
 
   componentDidMount() {
     this.room_id = localStorage.getItem("room_id");
-    console.log("++++++++++++++++ " + this.room_id);
+    let avatar = localStorage.getItem("avatar");
+    var user_name = localStorage.getItem("user_name").replace(" ", "-");
+    const first_name = user_name.split('-')[0];
+    const last_name = user_name.split('-')[1];
+
+    const userToken = jwt.sign({ user_id: user_name }, ACCESS_TOKEN_SECRET);
+    chatClient = new StreamChat(ACCESS_API_KEY);
+    if (avatar === 'null') {
+      avatar = 'https://getstream.io/random_png/?id=' + user_name + '&name=' + user_name.replace("-", "+");
+    }
+    chatClient.setUser(
+      {
+        id: user_name,
+        name: localStorage.getItem("user_name"),
+        image: avatar
+      },
+      userToken,
+    );
+    //replace docs1 to this.room_id  
+    channel = chatClient.channel('messaging', 'docs', {
+      image: avatar,
+      name: 'Talk about the Session',
+    });
 
     this.calcBoundsSize()
     window.addEventListener('resize', this.handleBoundsSizeChange);
-  
-    channel = chatClient.channel('messaging', "godevs", {
-    // add as many custom fields as you'd like
-      image: 'https://cdn.chrisshort.net/testing-certificate-chains-in-go/GOPHER_MIC_DROP.png',
-      name: 'Talk about Go',
-    });
-    
     // this.register();
   }
 
@@ -486,11 +491,10 @@ export default class RoomCall extends React.Component {
 
     this.setState({
       width: domAppStyle.width,
-      height: `${
-        parseInt(domAppStyle.height, 10) -
+      height: `${parseInt(domAppStyle.height, 10) -
         parseInt(domToolbarStyle.height, 10) -
         20
-      }px`,
+        }px`,
     })
   }
 
@@ -539,9 +543,10 @@ export default class RoomCall extends React.Component {
                   <img src={WhiteboardCloseImg} alt="Add user" />
                 </Button>
               </div>
-              <Chat client={chatClient} theme={'messaging light'}>
+              <Chat client={chatClient} theme={'messaging light'}>
                 <Channel channel={channel}>
                   <Window>
+                    <ChannelHeader type="Team" />
                     <MessageList />
                     <MessageInput />
                   </Window>
