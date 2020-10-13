@@ -234,6 +234,19 @@ export default class ScheduleLiveForum extends React.Component {
 
   }
 
+  startSession(id) {
+    var sessionChannelName = "";
+    var index;
+
+    for (index = 0; index < this.state.forumInfos.length; index ++) {
+      if (this.state.forumInfos[index].id === id) {
+        sessionChannelName = this.state.forumInfos[index].room_id;
+      }
+    }
+
+    this.props.startSession(sessionChannelName);
+  }
+
   render() {
     const { ModalOpen, ModalEditOpen, ModalConfirmOpen, loading, forumInfos, id, user } = this.state;
     
@@ -258,7 +271,9 @@ export default class ScheduleLiveForum extends React.Component {
                       key={idx} 
                       item={item} 
                       toggle_editliveforum={(id) => this.toggle_editliveforum(id)} 
-                      toggle_confirm={(id) => this.toggle_confirm(id)} />
+                      toggle_confirm={(id) => this.toggle_confirm(id)} 
+                      startSession = {(id) => this.startSession(id)}
+                    />
                   </Col>
                 )}
               </Row>
