@@ -26,6 +26,7 @@ class SmallCardForum extends React.Component {
   componentDidMount() {
     this.name = this.props.item.title;
     this.room_id = this.props.item.room_id;
+    this.startSession = this.props.startSession;
     
     localStorage.setItem("session_name", this.name);
     localStorage.setItem("room_id", this.room_id);
@@ -50,12 +51,14 @@ class SmallCardForum extends React.Component {
   }
 
   toggle_startliveforum() {
-    window.open("/room-call");
+    // window.open("/room-call");
+    const { startSession } = this.props;
+    startSession("1234");
   }
 
   render() {
     const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
-    const {toggle_editliveforum, toggle_confirm} = this.props;
+    const {toggle_editliveforum, toggle_confirm, startSession} = this.props;
     const { ModalInviteOpen, open } = this.state;
     return (
       <div className="small-card-forum">
@@ -73,7 +76,7 @@ class SmallCardForum extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem onClick={this.toggle_startliveforum}>
+              <DropdownItem onClick={() => startSession(id)}>
                 Start Forum
               </DropdownItem>
               <DropdownItem onClick={() => toggle_editliveforum(id)}>

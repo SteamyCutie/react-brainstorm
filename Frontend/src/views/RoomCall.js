@@ -468,14 +468,12 @@ export default class RoomCall extends React.Component {
   }
 
   handleOnModeClick(mode) {
-    console.log(mode, "mode");
     this.setState({
       mode: mode,
     });
   }
 
   handleOnBrushColorChange(color) {
-    console.log(color, "color");
     this.setState({
       brushColor: color.hex,
     });

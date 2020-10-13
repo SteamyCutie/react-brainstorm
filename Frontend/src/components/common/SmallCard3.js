@@ -39,11 +39,13 @@ class SmallCard3 extends React.Component {
   }
 
   toggle_startSession() {
-    window.open("/room-call");
+    // window.open("/room-call");
+
   }
 
   render() {
-    const {name, day, from_time, to_time, tag_name, avatar} = this.props.data
+    const {name, day, from_time, to_time, tag_name, avatar, room_id} = this.props.data
+    const { joinSession } = this.props;
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
@@ -74,8 +76,8 @@ class SmallCard3 extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu >
-              <DropdownItem onClick={this.toggle_startSession}>
-                Start Forum
+              <DropdownItem onClick={() => joinSession(room_id)}>
+                Join Forum
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
