@@ -202,14 +202,14 @@ export default class OutcomingCallDesc extends React.Component {
                 <label style={{fontSize: "25px", fontWeight: "bolder", color: "#333333"}}>{this.state.callState ? "Calling" : "Call"} to {userinfo.name}</label>
               </Row>
               <Row style={{marginBottom: "50px"}}>
-                <Col md="4" className="no-padding">
+                <Col md="4" className="no-padding calling-avatar">
                   {userinfo.avatar && <img src={userinfo.avatar} alt="avatar" style={{width: "206px", height: "206px", borderRadius: "6px"}} alter="User avatar" />}
                   {!userinfo.avatar && <img src={defaultavatar} alt="avatar" style={{width: "206px", height: "206px", borderRadius: "6px"}} alter="User avatar" />}
                   {
                     userinfo.status === 1 && <div className="carousel-component-online-class"></div>
                   }
                 </Col>
-                <Col md="8" className="no-padding">
+                <Col md="8" xs="12" className="no-padding">
                   <label htmlFor="fePassword">Call description</label>
                   <label htmlFor="fePassword" className="remain-symbols">{remaincount} symbols left</label>
                   <FormTextarea id="call-description" placeholder="Type here" style={{height: "175px", fontSize: "17px"}}onChange={(e) => this.changeDescription(e)} value={description}/>
