@@ -74,6 +74,8 @@
     "redux": "^4.0.5",
     "shards-react": "^1.0.0",
     "shortid": "^2.2.15",
+    "stream-chat": "^2.6.0",
+    "stream-chat-react": "^3.0.2",
     "styled-components": "^5.2.0",
     "video-react": "^0.14.1",
     "webrtc-adapter": "v6.4.0"
