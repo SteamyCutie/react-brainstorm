@@ -6,6 +6,7 @@ import AWS from 'aws-sdk';
 const viewer = {};
 
 export async function startViewer(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+    navigator.mediaDevices.getUserMedia({audio: true});
     viewer.localView = localView;
     viewer.remoteView = remoteView;
 
@@ -115,16 +116,15 @@ export async function startViewer(localView, remoteView, formValues, onStatsRepo
         // Get a stream from the webcam, add it to the peer connection, and display it in the local view.
         // If no video/audio needed, no need to request for the sources. 
         // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-        // if (formValues.sendVideo || formValues.sendAudio) {
-        // try {
-            viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
-            viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
-            localView.srcObject = viewer.localStream;
-        // } catch (e) {
-        //     console.error('[VIEWER] Could not find webcam');
-        //     return;
-        // }
-        // }
+        if (formValues.sendVideo || formValues.sendAudio) {
+            try {
+                viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
+                localView.srcObject = viewer.localStream;
+            } catch (e) {
+                console.error('[VIEWER] Could not find webcam');
+            }
+        }
 
         // Create an SDP offer to send to the master
         console.log('[VIEWER] Creating SDP offer');

@@ -51,6 +51,7 @@ const master = {
 const viewer = {};
 
 async function startViewer(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+  navigator.mediaDevices.getUserMedia({audio: true});
   var addEventListenerCount = false;
 
   viewer.localView = localView;
@@ -162,16 +163,15 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, onR
       // Get a stream from the webcam, add it to the peer connection, and display it in the local view.
       // If no video/audio needed, no need to request for the sources. 
       // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-      // if (formValues.sendVideo || formValues.sendAudio) {
-      // try {
-          viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
-          viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
-          localView.srcObject = viewer.localStream;
-      // } catch (e) {
-          // console.error('[VIEWER] Could not find webcam');
-          // return;
-      // }
-      // }
+      if (formValues.sendVideo || formValues.sendAudio) {
+        try {
+            viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+            viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
+            localView.srcObject = viewer.localStream;
+        } catch (e) {
+            console.error('[VIEWER] Could not find webcam');
+        }
+      }
 
       // Create an SDP offer to send to the master
       console.log('[VIEWER] Creating SDP offer');
@@ -318,6 +318,7 @@ function stopViewer() {
 // }
 
 async function startMaster(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+  navigator.mediaDevices.getUserMedia({audio: true});
   master.localView = localView
   master.remoteView = remoteView
 
@@ -414,16 +415,14 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
   // Get a stream from the webcam and display it in the local view. 
   // If no video/audio needed, no need to request for the sources. 
   // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-  // if (formValues.sendVideo || formValues.sendAudio) {
-  // try {
-      master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-      localView.srcObject = master.localStream
-  // } catch (e) {
-      // console.error('[MASTER] Could not find webcam')
-      // alert("Please connect camera!")
-      // return
-  // }
-  // }
+  if (formValues.sendVideo || formValues.sendAudio) {
+    try {
+        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        localView.srcObject = master.localStream
+    } catch (e) {
+        console.error('[MASTER] Could not find webcam')
+    }
+  }
 
   master.signalingClient.on('open', async () => {
       console.log('[MASTER] Connected to signaling service')
