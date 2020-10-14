@@ -604,7 +604,9 @@
   border-bottom-right-radius: 0px;
 }
 
-.fabric-whiteboard-board {}
+/* .fabric-whiteboard-board {
+  
+} */
 
 .toolbar-ul-li {
   margin: 14px 0px !important;
