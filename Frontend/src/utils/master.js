@@ -11,6 +11,7 @@ const master = {
 }
 
 export async function startMaster(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+    navigator.mediaDevices.getUserMedia({audio: true})
     master.localView = localView
     master.remoteView = remoteView
 
@@ -107,19 +108,19 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
     // Get a stream from the webcam and display it in the local view. 
     // If no video/audio needed, no need to request for the sources. 
     // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-    // if (formValues.sendVideo || formValues.sendAudio) {
-    // try {
-        //streaming with camera
-        // master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-        //-----------
-        //streaming with screen share
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-        //-------
-        localView.srcObject = master.localStream
-    // } catch (e) {
-    //     console.error('[MASTER] Could not find webcam')
-    // }
-    // }
+    if (formValues.sendVideo || formValues.sendAudio) {
+        try {
+            // streaming with camera
+            // master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+            //-----------
+            //streaming with screen share
+            master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+            //-------
+            localView.srcObject = master.localStream
+        } catch (e) {
+            console.error('[MASTER] Could not find webcam')
+        }
+    }
 
     master.signalingClient.on('open', async () => {
         console.log('[MASTER] Connected to signaling service')
