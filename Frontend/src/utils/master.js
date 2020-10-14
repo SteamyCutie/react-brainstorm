@@ -110,12 +110,7 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
     // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
     if (formValues.sendVideo || formValues.sendAudio) {
         try {
-            // streaming with camera
-            // master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            //-----------
-            //streaming with screen share
             master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            //-------
             localView.srcObject = master.localStream
         } catch (e) {
             console.error('[MASTER] Could not find webcam')

@@ -47,7 +47,7 @@ const master = {
 
 const viewer = {};
 
-async function startViewer(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+async function startViewerMany(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
   navigator.mediaDevices.getUserMedia({audio: true});
   var addEventListenerCount = false;
 
@@ -259,7 +259,7 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, onR
   viewer.signalingClient.open();
 }
 
-function stopViewer() {
+function stopViewerMany() {
   console.log('[VIEWER] Stopping viewer connection');
   if (viewer.signalingClient) {
       viewer.signalingClient.close();
@@ -297,9 +297,11 @@ function stopViewer() {
   if (viewer.dataChannel) {
       viewer.dataChannel = null;
   }
+
+  console.log(viewer, "---------");
 }
 
-async function startMaster(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+async function startMasterMany(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
   navigator.mediaDevices.getUserMedia({audio: true});
   master.localView = localView
   master.remoteView = remoteView
@@ -504,7 +506,7 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
   })
 
   master.signalingClient.on('close', () => {
-      console.log('[MASTER] Disconnected from signaling channel')
+    console.log('[MASTER] Disconnected from signaling channel')
   })
 
   master.signalingClient.on('error', () => {
@@ -515,7 +517,7 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
   master.signalingClient.open()
 }
 
-function stopMaster() {
+function stopMasterMany() {
   console.log('[MASTER] Stopping master connection')
   if (master.signalingClient) {
       master.signalingClient.close()
@@ -551,6 +553,8 @@ function stopMaster() {
   if (master.dataChannelByClientId) {
       master.dataChannelByClientId = {}
   }
+
+  console.log(master, "+++++++++");
 }
 
 export default class Many2Many extends React.Component {
@@ -571,6 +575,7 @@ export default class Many2Many extends React.Component {
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.handleStop = this.handleStop.bind(this);
+    this.handleEnd = this.handleEnd.bind(this);
 
     this.calcBoundsSize = this.calcBoundsSize.bind(this);
     this.handleBoundsSizeChange = this.handleBoundsSizeChange.bind(this);
@@ -658,16 +663,15 @@ export default class Many2Many extends React.Component {
         callState: IN_CALL
       })
       const formValues = this.getFormValuesMaster();
-      startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      startMasterMany(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
       });
 
     } else {
       const formValues = this.getFormValuesViewer();
-      startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      startViewerMany(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
       });
     }
 
-    this.room_id = localStorage.getItem("room_id");
     let avatar = localStorage.getItem("avatar");
     var user_name = localStorage.getItem("user_name").replace(" ", "-");
     const first_name = user_name.split('-')[0];
@@ -686,7 +690,6 @@ export default class Many2Many extends React.Component {
       },
       userToken,
     );
-    //replace docs1 to this.room_id  
     channel = chatClient.channel('messaging', 'docs', {
       image: avatar,
       name: 'Talk about the Session',
@@ -710,9 +713,9 @@ export default class Many2Many extends React.Component {
   }
 
   handleStop = () => {
-    stopMaster();
-    stopViewer();
-    this.props.stop();
+    stopMasterMany();
+    stopViewerMany();
+    this.props.stop(false);
   }
 
   swithFullScreen() {
