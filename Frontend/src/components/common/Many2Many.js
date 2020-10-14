@@ -22,6 +22,12 @@ import ScreenshareImg from '../../images/room-screenshare.svg'
 import AddUserImg from '../../images/room-adduser.svg'
 import DeclineImg from '../../images/call-decline.svg'
 
+import MiniEndCall from '../../images/many2many-mini-end.svg'
+import MiniFullScreen from '../../images/many2many-mini-fullscreen.svg'
+import MiniMuteMic from '../../images/many2many-mini-mute-mic.svg'
+import MiniMuteVideo from '../../images/many2many-mini-mute-video.svg'
+
+
 /***************************************************/
 
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
@@ -611,6 +617,13 @@ export default class Many2Many extends React.Component {
     this.handleStop();
     toggle();
   }
+
+  handleEnd() {
+    const { toggle } = this.props;
+    this.handleStop();
+    // toggle();
+  }
+
   getRandomClientId() {
     return Math.random()
       .toString(36)
@@ -720,7 +733,7 @@ export default class Many2Many extends React.Component {
   handleStop = () => {
     stopMaster();
     stopViewer();
-    // this.props.stop();
+    this.props.stop();
   }
 
   handleFullScreen() {
@@ -778,14 +791,33 @@ export default class Many2Many extends React.Component {
   }
 
   render() {
-    const { open, accepted, callState } = this.props;
     const { mode, width, height, brushColor } = this.state;
 
     return (
-      <div id="many2many-call-conatainer" className={ (callState === INCOMING_CALL) ? "video-call-mini-enable" :(callState === OUTGOING_CALL && accepted) ? "video-call-mini-enable" : "video-call-mini-disable"}>
+      <div id="many2many-call-conatainer" className="video-call-mini-enable">
         <div className="video-call-element-min" id="video-call-element-min">
+          {!this.state.isFullscreen && 
+            <div className="room-control-container-mini">
+              <Button className="btn-rooom-control-mini margin-right-auto" onClick={() => this.handleFullScreen()}>
+                <img src={MiniFullScreen} alt="Full Screen"/>
+              </Button>
+              
+              <div className="">
+                <Button className="btn-rooom-control-mini float-center">
+                  <img src={MiniMuteMic} alt="Mute mic"/>
+                </Button>
+                <Button className="btn-rooom-control-mini float-center">
+                  <img src={MiniMuteVideo} alt="Mute video"/>
+                </Button>
+              </div>
+              
+              <Button className="btn-room-call-decline-mini margin-left-auto" style={{marginRight: "10px", padding: "0px"}} onClick={() => this.handleEnd()}>
+                <img src={MiniEndCall} alt="End"/>
+              </Button>
+            </div>
+          }
           <div>
-            <video id="videoInput" autoPlay width="320px" height="180px" poster={PosterImg} muted></video>
+            <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
           </div>
           <div id="participants-video-container" className="participants-video-container">
             {/* <div> */}
@@ -839,12 +871,12 @@ export default class Many2Many extends React.Component {
           }
           {!this.state.isFullscreen && 
             <Row className="center btn-group-call-min">
-              <Button className="btn-one2one-min-close" onClick={() => this.toggle()}>
+              {/* <Button className="btn-one2one-min-close" onClick={() => this.toggle()}>
                 <img src={CloseImg} alt="close"/>
               </Button>
               <Button className="btn-one2one-min-fullscreen" onClick={() => this.handleFullScreen()}>
                 <img src={FullScreenImg} alt="fullscreen"/>
-              </Button>
+              </Button> */}
             </Row>
           }
           {this.state.isFullscreen && 
@@ -876,6 +908,7 @@ export default class Many2Many extends React.Component {
               </Button>
             </div>
           }
+          
         </div>
       </div>
     );
