@@ -113,7 +113,7 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
         // master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
         //-----------
         //streaming with screen share
-        master.localStream = await navigator.mediaDevices.getDisplayMedia(constraints)
+        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
         //-------
         localView.srcObject = master.localStream
     // } catch (e) {

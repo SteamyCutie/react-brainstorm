@@ -295,6 +295,7 @@ export default class App extends React.Component{
       videoCallStatus: false,
       call: false,
       isAccepted: false,
+      roomCall: false, 
     });
     stopMaster();
     stopViewer();
@@ -603,11 +604,11 @@ export default class App extends React.Component{
                 bounds="parent"
                 onStart={() => this.dragegableOnStart()}
               >
-                <div className="box test-class" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '50px'}}>
                   <Many2Many 
-                    callState={INCOMING_CALL}
                     sessionChannelName={this.state.sessionChannelName}
                     isMaster={this.state.isMaster}
+                    stop={this.stop}
                   />
                 </div>
               </Draggable>

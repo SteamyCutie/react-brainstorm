@@ -1,6 +1,6 @@
-// export const SERVER_URL = 'https://brainsshare.com:8000';
+export const SERVER_URL = 'https://brainsshare.com:8000';
 // export const SERVER_URL = 'http://localhost:8000';
-export const SERVER_URL = 'http://192.168.105.47:80';
+// export const SERVER_URL = 'http://192.168.105.47:80';
 // export const SERVER_URL = 'http://192.168.136.129:8000';
 // export const SERVER_URL = 'http://127.0.0.1:8000';
 export const PUSHER_KEY = 'e89985ed54dad44cf61e';
@@ -10,3 +10,6 @@ export const REACT_APP_STRIPE_KEY = 'pk_test_51HV0m8GRfXBTO7BEo7Gs4S8ESPUkumh52C
 export const AWS_REGION = 'us-west-2';
 export const AWS_ACCESS_KEY_ID = 'AKIAUBTWQ2NEYQTLHWVA';
 export const AWS_SECRET_ACCESS_KEY = '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';
+
+export const ACCESS_API_KEY = "h4q4k2knn5dr";
+export const ACCESS_TOKEN_SECRET = "6zq52mp3xadfk69ypqtt9k4qz4vztukwjtw6tgdhaybubfk324s5yje72w73bc7q";
