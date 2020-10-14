@@ -51,6 +51,7 @@ const master = {
 const viewer = {};
 
 async function startViewer(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+  navigator.mediaDevices.getUserMedia({audio: true});
   var addEventListenerCount = false;
 
   viewer.localView = localView;
@@ -162,16 +163,15 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, onR
       // Get a stream from the webcam, add it to the peer connection, and display it in the local view.
       // If no video/audio needed, no need to request for the sources. 
       // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-      // if (formValues.sendVideo || formValues.sendAudio) {
-      // try {
-          viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
-          viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
-          localView.srcObject = viewer.localStream;
-      // } catch (e) {
-          // console.error('[VIEWER] Could not find webcam');
-          // return;
-      // }
-      // }
+      if (formValues.sendVideo || formValues.sendAudio) {
+        try {
+            viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+            viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
+            localView.srcObject = viewer.localStream;
+        } catch (e) {
+            console.error('[VIEWER] Could not find webcam');
+        }
+      }
 
       // Create an SDP offer to send to the master
       console.log('[VIEWER] Creating SDP offer');
@@ -318,6 +318,7 @@ function stopViewer() {
 // }
 
 async function startMaster(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+  navigator.mediaDevices.getUserMedia({audio: true});
   master.localView = localView
   master.remoteView = remoteView
 
@@ -414,16 +415,14 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
   // Get a stream from the webcam and display it in the local view. 
   // If no video/audio needed, no need to request for the sources. 
   // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-  // if (formValues.sendVideo || formValues.sendAudio) {
-  // try {
-      master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-      localView.srcObject = master.localStream
-  // } catch (e) {
-      // console.error('[MASTER] Could not find webcam')
-      // alert("Please connect camera!")
-      // return
-  // }
-  // }
+  if (formValues.sendVideo || formValues.sendAudio) {
+    try {
+        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        localView.srcObject = master.localStream
+    } catch (e) {
+        console.error('[MASTER] Could not find webcam')
+    }
+  }
 
   master.signalingClient.on('open', async () => {
       console.log('[MASTER] Connected to signaling service')
@@ -621,6 +620,8 @@ export default class Many2Many extends React.Component {
   handleEnd() {
     const { toggle } = this.props;
     this.handleStop();
+    
+    document.getElementsByTagName("body")[0].classList.remove("scroll-none")
     // toggle();
   }
 
@@ -736,23 +737,31 @@ export default class Many2Many extends React.Component {
     this.props.stop();
   }
 
-  handleFullScreen() {
+  swithFullScreen() {
     this.setState({
       isFullscreen: !this.state.isFullscreen, 
     });
 
-    if (document.getElementById("one2one-call-conatainer").classList.contains("one2one-fullscreen")) {
-      document.getElementById("one2one-call-conatainer").classList.remove("one2one-fullscreen");
+    if (document.getElementById("many2many-call-conatainer").classList.contains("one2one-fullscreen")) {
+      document.getElementById("many2many-call-conatainer").classList.remove("one2one-fullscreen");
       document.getElementsByTagName("body")[0].classList.remove("scroll-none")
       document.getElementsByClassName("react-draggable")[0].style.transform = "translate(0px, 0px)";
-      document.getElementById("videoInput").classList.remove("fullscreen-other-video");
-      document.getElementById("videoOutput").classList.remove("fullscreen-self-video");
+      // document.getElementById("videoOutput").classList.remove("fullscreen-self-video");
+
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen");
+      document.getElementById("videoInput").classList.remove("room-local-video-fullscreen");
+      document.getElementById("participants-video-container").classList.add("participants-video-container");
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-fullscreen");
     } else {
       document.getElementsByClassName("react-draggable")[0].style.transform = "translate(69px, -120px)";
-      document.getElementById("one2one-call-conatainer").classList.add("one2one-fullscreen");
+      document.getElementById("many2many-call-conatainer").classList.add("one2one-fullscreen");
       document.getElementsByTagName("body")[0].classList.add("scroll-none")
-      document.getElementById("videoInput").classList.add("fullscreen-other-video");
-      document.getElementById("videoOutput").classList.add("fullscreen-self-video");
+      // document.getElementById("videoOutput").classList.add("fullscreen-self-video");
+
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen");
+      document.getElementById("videoInput").classList.add("room-local-video-fullscreen");
+      document.getElementById("participants-video-container").classList.remove("participants-video-container");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-fullscreen");
     }
   }
 
@@ -798,7 +807,7 @@ export default class Many2Many extends React.Component {
         <div className="video-call-element-min" id="video-call-element-min">
           {!this.state.isFullscreen && 
             <div className="room-control-container-mini">
-              <Button className="btn-rooom-control-mini margin-right-auto" onClick={() => this.handleFullScreen()}>
+              <Button className="btn-rooom-control-mini margin-right-auto" onClick={() => this.swithFullScreen()}>
                 <img src={MiniFullScreen} alt="Full Screen"/>
               </Button>
               
@@ -816,7 +825,7 @@ export default class Many2Many extends React.Component {
               </Button>
             </div>
           }
-          <div>
+          <div id="room-local-video-container">
             <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
           </div>
           <div id="participants-video-container" className="participants-video-container">
@@ -881,7 +890,7 @@ export default class Many2Many extends React.Component {
           }
           {this.state.isFullscreen && 
             <div className="room-control-container">
-              <Button className="btn-rooom-control margin-right-auto">
+              <Button className="btn-rooom-control margin-right-auto" onClick={() => this.swithFullScreen()}>
                 <img src={FullScreenImg} alt="Full Screen"/>
               </Button>
               
@@ -903,7 +912,7 @@ export default class Many2Many extends React.Component {
                 </Button>
               </div>
               
-              <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px"}} onClick={() => this.leaveRoom()}>
+              <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px"}} onClick={() => this.handleEnd()}>
                 <img src={DeclineImg} alt="Phone" style={{height: "60px", width: "60px", color: "#"}} alt="Decline"/>
               </Button>
             </div>
