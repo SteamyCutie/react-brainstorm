@@ -40,9 +40,10 @@ const master = {
 	signalingClient: null,
 	peerConnectionByClientId: {},
 	dataChannelByClientId: {},
-	localStream: null,
+	localStream: [],
 	remoteStreams: [],
-	peerConnectionStatsInterval: null,
+  peerConnectionStatsInterval: null,
+  isCamera: false, 
 }
 
 const viewer = {};
@@ -398,8 +399,9 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
   // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
   if (formValues.sendVideo || formValues.sendAudio) {
     try {
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-        localView.srcObject = master.localStream
+        master.localStream[0] = await navigator.mediaDevices.getUserMedia(constraints)
+        master.localStream[1] = await navigator.mediaDevices.getDisplayMedia(constraints)
+        localView.srcObject = master.localStream[0];
     } catch (e) {
         console.error('[MASTER] Could not find webcam')
     }
@@ -474,7 +476,11 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
 
       // If there's no video/audio, master.localStream will be null. So, we should skip adding the tracks from it.
       if (master.localStream) {
-          master.localStream.getTracks().forEach(track => peerConnection.addTrack(track, master.localStream))
+        if (master.isCamera){  
+          master.localStream[0].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[0]))
+        } else {
+          master.localStream[1].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[1]))
+        }
       }
       await peerConnection.setRemoteDescription(offer)
 
@@ -513,6 +519,16 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
 
   console.log('[MASTER] Starting master connection')
   master.signalingClient.open()
+}
+
+function master_switchToScreenshare() {
+  if (master.isCamera) {
+    document.getElementById("videoInput").srcObject = master.localStream[1];
+    master.isCamera = !master.isCamera;
+  } else {
+    document.getElementById("videoInput").srcObject = master.localStream[0];
+    master.isCamera = !master.isCamera;
+  }
 }
 
 function stopMaster() {
@@ -753,6 +769,7 @@ export default class Many2Many extends React.Component {
       showWhiteBoard: !this.state.showWhiteBoard, 
       showChat: false, 
     })
+    master_switchToScreenshare();
   }
   
   addUser() {
