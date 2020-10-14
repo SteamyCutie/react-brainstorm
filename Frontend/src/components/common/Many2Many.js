@@ -2,13 +2,10 @@ import React from "react";
 import { Button, Modal, ModalBody, Row } from "shards-react";
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import "../../assets/landingpage.css"
-
-import Camera from '../../images/call-camera.svg'
-import Phone from '../../images/call-phone.svg'
-import CloseImg from '../../images/one2on-min-close.svg'
+import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
+import AWS from 'aws-sdk'
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/logo.png'
-import Mic from '../../images/call-mic.svg'
 import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
 import WhiteBoard, {
@@ -27,17 +24,17 @@ import MiniFullScreen from '../../images/many2many-mini-fullscreen.svg'
 import MiniMuteMic from '../../images/many2many-mini-mute-mic.svg'
 import MiniMuteVideo from '../../images/many2many-mini-mute-video.svg'
 
+import { Chat, Channel, ChannelHeader, Thread, Window } from 'stream-chat-react';
+import { MessageList, MessageInput } from 'stream-chat-react';
+import { StreamChat } from 'stream-chat';
+import 'stream-chat-react/dist/css/index.css';
+import { ACCESS_API_KEY, ACCESS_TOKEN_SECRET } from '../../common/config';
 
-/***************************************************/
-
-import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
-import AWS from 'aws-sdk'
-
-/***************************************************/
+var channel;
+var chatClient;
+const jwt = require('jsonwebtoken');
 
 const IN_CALL = 1;
-const INCOMING_CALL = 2;
-const OUTGOING_CALL = 3;
 
 const master = {
 	signalingClient: null,
@@ -158,109 +155,104 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, onR
   viewer.peerConnectionStatsInterval = setInterval(() => viewer.peerConnection.getStats().then(onStatsReport), 1000);
 
   viewer.signalingClient.on('open', async () => {
-      console.log('[VIEWER] Connected to signaling service');
+    console.log('[VIEWER] Connected to signaling service');
 
-      // Get a stream from the webcam, add it to the peer connection, and display it in the local view.
-      // If no video/audio needed, no need to request for the sources. 
-      // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
-      if (formValues.sendVideo || formValues.sendAudio) {
-        try {
-            viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
-            viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
-            localView.srcObject = viewer.localStream;
-        } catch (e) {
-            console.error('[VIEWER] Could not find webcam');
-        }
+    // Get a stream from the webcam, add it to the peer connection, and display it in the local view.
+    // If no video/audio needed, no need to request for the sources. 
+    // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
+    if (formValues.sendVideo || formValues.sendAudio) {
+      try {
+          viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+          viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
+          localView.srcObject = viewer.localStream;
+      } catch (e) {
+          console.error('[VIEWER] Could not find webcam');
       }
+    }
 
-      // Create an SDP offer to send to the master
-      console.log('[VIEWER] Creating SDP offer');
-      await viewer.peerConnection.setLocalDescription(
-          await viewer.peerConnection.createOffer({
-              offerToReceiveAudio: true,
-              offerToReceiveVideo: true,
-          }),
-      );
+    // Create an SDP offer to send to the master
+    console.log('[VIEWER] Creating SDP offer');
+    await viewer.peerConnection.setLocalDescription(
+        await viewer.peerConnection.createOffer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true,
+        }),
+    );
 
-      // When trickle ICE is enabled, send the offer now and then send ICE candidates as they are generated. Otherwise wait on the ICE candidates.
-      if (formValues.useTrickleICE) {
-          console.log('[VIEWER] Sending SDP offer');
-          viewer.signalingClient.sendSdpOffer(viewer.peerConnection.localDescription);
-      }
-      console.log('[VIEWER] Generating ICE candidates');
+    // When trickle ICE is enabled, send the offer now and then send ICE candidates as they are generated. Otherwise wait on the ICE candidates.
+    if (formValues.useTrickleICE) {
+        console.log('[VIEWER] Sending SDP offer');
+        viewer.signalingClient.sendSdpOffer(viewer.peerConnection.localDescription);
+    }
+    console.log('[VIEWER] Generating ICE candidates');
   });
 
   viewer.signalingClient.on('sdpAnswer', async answer => {
-      // Add the SDP answer to the peer connection
-      console.log('[VIEWER] Received SDP answer');
-      await viewer.peerConnection.setRemoteDescription(answer);
+    // Add the SDP answer to the peer connection
+    console.log('[VIEWER] Received SDP answer');
+    await viewer.peerConnection.setRemoteDescription(answer);
   });
 
   viewer.signalingClient.on('iceCandidate', candidate => {
-      // Add the ICE candidate received from the MASTER to the peer connection
-      console.log('[VIEWER] Received ICE candidate');
-      viewer.peerConnection.addIceCandidate(candidate);
+    // Add the ICE candidate received from the MASTER to the peer connection
+    console.log('[VIEWER] Received ICE candidate');
+    viewer.peerConnection.addIceCandidate(candidate);
   });
 
   viewer.signalingClient.on('close', () => {
-      console.log('[VIEWER] Disconnected from signaling channel');
+    console.log('[VIEWER] Disconnected from signaling channel');
   });
 
   viewer.signalingClient.on('error', error => {
-      console.error('[VIEWER] Signaling client error: ', error);
+    console.error('[VIEWER] Signaling client error: ', error);
   });
 
   // Send any ICE candidates to the other peer
   viewer.peerConnection.addEventListener('icecandidate', ({ candidate }) => {
-      if (candidate) {
-          console.log('[VIEWER] Generated ICE candidate');
+    if (candidate) {
+        console.log('[VIEWER] Generated ICE candidate');
 
-          // When trickle ICE is enabled, send the ICE candidates as they are generated.
-          if (formValues.useTrickleICE) {
-              console.log('[VIEWER] Sending ICE candidate');
-              viewer.signalingClient.sendIceCandidate(candidate);
-          }
-      } else {
-          console.log('[VIEWER] All ICE candidates have been generated');
+        // When trickle ICE is enabled, send the ICE candidates as they are generated.
+        if (formValues.useTrickleICE) {
+            console.log('[VIEWER] Sending ICE candidate');
+            viewer.signalingClient.sendIceCandidate(candidate);
+        }
+    } else {
+        console.log('[VIEWER] All ICE candidates have been generated');
 
-          // When trickle ICE is disabled, send the offer now that all the ICE candidates have ben generated.
-          if (!formValues.useTrickleICE) {
-              console.log('[VIEWER] Sending SDP offer');
-              viewer.signalingClient.sendSdpOffer(viewer.peerConnection.localDescription);
-          }
-      }
+        // When trickle ICE is disabled, send the offer now that all the ICE candidates have ben generated.
+        if (!formValues.useTrickleICE) {
+            console.log('[VIEWER] Sending SDP offer');
+            viewer.signalingClient.sendSdpOffer(viewer.peerConnection.localDescription);
+        }
+    }
   });
 
   // As remote tracks are received, add them to the remote view
   viewer.peerConnection.addEventListener('track', event => {
-      console.log('[VIEWER] Received remote track');
-      // if (remoteView.srcObject) {
-      //     return;
-      // }
-      // viewer.remoteStream = event.streams[0];
-      // remoteView.srcObject = viewer.remoteStream;
+    console.log('[VIEWER] Received remote track');
 
-      if (!addEventListenerCount) {
-        var container = document.getElementById("participants-video-container");
-        var participantVideo = document.createElement("video");
-        var divContainer = document.createElement("div");
-        divContainer.appendChild(participantVideo);
-        container.appendChild(divContainer);
-        
-        participantVideo.className = "many2many-participant-video";
-        participantVideo.autoplay = true;
-        participantVideo.poster = PosterImg;
+    if (!addEventListenerCount) {
+      var container = document.getElementById("participants-video-container");
+      var participantVideo = document.createElement("video");
+      var divContainer = document.createElement("div");
+      divContainer.appendChild(participantVideo);
+      container.appendChild(divContainer);
+      
+      participantVideo.className = "many2many-participant-video";
+      participantVideo.autoplay = true;
+      participantVideo.poster = PosterImg;
 
-        var participantVideos = document.getElementsByClassName("many2many-participant-video");
-        if (participantVideos[participantVideos.length - 1].srcObject) {
-          return
-        }
-        participantVideos[participantVideos.length - 1].srcObject = event.streams[0]
-
-        addEventListenerCount = true;
-      } else {
-        addEventListenerCount = false;
+      var participantVideos = document.getElementsByClassName("many2many-participant-video");
+      if (participantVideos[participantVideos.length - 1].srcObject) {
+        return
       }
+      participantVideos[participantVideos.length - 1].srcObject = event.streams[0]
+
+      addEventListenerCount = true;
+    } else {
+      addEventListenerCount = false;
+    }
   });
 
   console.log('[VIEWER] Starting viewer connection');
@@ -307,16 +299,6 @@ function stopViewer() {
   }
 }
 
-// function sendViewerMessage(message) {
-//   if (viewer.dataChannel) {
-//       try {
-//           viewer.dataChannel.send(message);
-//       } catch (e) {
-//           console.error('[VIEWER] Send DataChannel: ', e.toString());
-//       }
-//   }
-// }
-
 async function startMaster(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
   navigator.mediaDevices.getUserMedia({audio: true});
   master.localView = localView
@@ -358,7 +340,6 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
   console.log('[MASTER] Endpoints: ', endpointsByProtocol)
 
   // Create Signaling Client
-  // master.signalingClient = new KVSWebRTC.SignalingClient({
   master.signalingClient = new SignalingClient({
       channelARN,
       channelEndpoint: endpointsByProtocol.WSS,
@@ -482,11 +463,6 @@ async function startMaster(localView, remoteView, formValues, onStatsReport, onR
       // As remote tracks are received, add them to the remote view
       peerConnection.addEventListener('track', event => {
           console.log('[MASTER] Received remote track from client: ' + remoteClientId)
-          
-          // if (remoteView.srcObject) {
-          //   return
-          // }
-          // remoteView.srcObject = event.streams[0]
 
           var participantVideos = document.getElementsByClassName("many2many-participant-video");
           if (participantVideos[participantVideos.length - 1].srcObject) {
@@ -577,16 +553,6 @@ function stopMaster() {
   }
 }
 
-// function sendMasterMessage(message) {
-//   Object.keys(master.dataChannelByClientId).forEach(clientId => {
-//       try {
-//           master.dataChannelByClientId[clientId].send(message)
-//       } catch (e) {
-//           console.error('[MASTER] Send DataChannel: ', e.toString())
-//       }
-//   })
-// }
-
 export default class Many2Many extends React.Component {
   constructor(props) {
     super(props);
@@ -605,6 +571,12 @@ export default class Many2Many extends React.Component {
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.handleStop = this.handleStop.bind(this);
+
+    this.calcBoundsSize = this.calcBoundsSize.bind(this);
+    this.handleBoundsSizeChange = this.handleBoundsSizeChange.bind(this);
+
+    this.handleOnModeClick = this.handleOnModeClick.bind(this);
+    this.handleOnBrushColorChange = this.handleOnBrushColorChange.bind(this);
   }
 
   componentWillMount() {
@@ -618,11 +590,9 @@ export default class Many2Many extends React.Component {
   }
 
   handleEnd() {
-    const { toggle } = this.props;
     this.handleStop();
     
-    document.getElementsByTagName("body")[0].classList.remove("scroll-none")
-    // toggle();
+    document.getElementsByTagName("body")[0].classList.remove("scroll-none");
   }
 
   getRandomClientId() {
@@ -688,34 +658,42 @@ export default class Many2Many extends React.Component {
         callState: IN_CALL
       })
       const formValues = this.getFormValuesMaster();
-      console.log("Channel Name", formValues.channelName)
       startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
-      })
+      });
 
-      // var response = {
-      //   id: 'incomingCallResponse',
-      //   from: that.props.from,
-      //   callResponse: 'accept',
-      //   sdpOffer: "offerSdp"
-      // };
-      // that.sendMessage(response);
     } else {
       const formValues = this.getFormValuesViewer();
       startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
-      })
-      console.log("Channel Name", formValues.channelName)
-      // var message = {
-      //   id : 'call',
-      //   from : localStorage.getItem("email"),
-      //   name: localStorage.getItem('user_name'), 
-      //   avatarURL: localStorage.getItem("avatar"),
-      //   to : that.props.to,
-      //   sdpOffer : "offerSdp",
-      //   channel_name: this.props.channel_name, 
-      //   description: this.props.description, 
-      // };
-      // that.sendMessage(message);
+      });
     }
+
+    this.room_id = localStorage.getItem("room_id");
+    let avatar = localStorage.getItem("avatar");
+    var user_name = localStorage.getItem("user_name").replace(" ", "-");
+    const first_name = user_name.split('-')[0];
+    const last_name = user_name.split('-')[1];
+
+    const userToken = jwt.sign({ user_id: user_name }, ACCESS_TOKEN_SECRET);
+    chatClient = new StreamChat(ACCESS_API_KEY);
+    if (avatar === 'null') {
+      avatar = 'https://getstream.io/random_png/?id=' + user_name + '&name=' + user_name.replace("-", "+");
+    }
+    chatClient.setUser(
+      {
+        id: user_name,
+        name: localStorage.getItem("user_name"),
+        image: avatar
+      },
+      userToken,
+    );
+    //replace docs1 to this.room_id  
+    channel = chatClient.channel('messaging', 'docs', {
+      image: avatar,
+      name: 'Talk about the Session',
+    });
+
+    this.calcBoundsSize()
+    window.addEventListener('resize', this.handleBoundsSizeChange);
   }
 
   sendMessage(message) {
@@ -746,7 +724,6 @@ export default class Many2Many extends React.Component {
       document.getElementById("many2many-call-conatainer").classList.remove("one2one-fullscreen");
       document.getElementsByTagName("body")[0].classList.remove("scroll-none")
       document.getElementsByClassName("react-draggable")[0].style.transform = "translate(0px, 0px)";
-      // document.getElementById("videoOutput").classList.remove("fullscreen-self-video");
 
       document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen");
       document.getElementById("videoInput").classList.remove("room-local-video-fullscreen");
@@ -756,7 +733,6 @@ export default class Many2Many extends React.Component {
       document.getElementsByClassName("react-draggable")[0].style.transform = "translate(69px, -120px)";
       document.getElementById("many2many-call-conatainer").classList.add("one2one-fullscreen");
       document.getElementsByTagName("body")[0].classList.add("scroll-none")
-      // document.getElementById("videoOutput").classList.add("fullscreen-self-video");
 
       document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen");
       document.getElementById("videoInput").classList.add("room-local-video-fullscreen");
@@ -799,6 +775,39 @@ export default class Many2Many extends React.Component {
     })
   }
 
+  handleOnModeClick(mode) {
+    this.setState({
+      mode: mode,
+    });
+  }
+
+  handleOnBrushColorChange(color) {
+    this.setState({
+      brushColor: color.hex,
+    });
+  }
+
+  calcBoundsSize() {
+    return
+    const domApp = document.getElementById('App')
+    const domToolbar = document.getElementById('toolbar')
+
+    const domAppStyle = window.getComputedStyle(domApp)
+    const domToolbarStyle = window.getComputedStyle(domToolbar)
+
+    this.setState({
+      width: domAppStyle.width,
+      height: `${parseInt(domAppStyle.height, 10) -
+        parseInt(domToolbarStyle.height, 10) -
+        20
+        }px`,
+    })
+  }
+
+  handleBoundsSizeChange() {
+    this.calcBoundsSize()
+  }
+
   render() {
     const { mode, width, height, brushColor } = this.state;
 
@@ -829,11 +838,6 @@ export default class Many2Many extends React.Component {
             <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
           </div>
           <div id="participants-video-container" className="participants-video-container">
-            {/* <div> */}
-              {/* <video id="videoOutput" autoPlay width="320px" height="180px" poster={PosterImg}></video> */}
-            {/* </div> */}
-              {/* <video id="videoOutput1" autoPlay width="320px" height="180px" poster={PosterImg}></video> */}
-              {/* <video id="videoOutput2" autoPlay width="320px" height="180px" poster={PosterImg}></video> */}
           </div>
           {this.state.showChat &&
             <div className="room-group-chat">
@@ -843,7 +847,16 @@ export default class Many2Many extends React.Component {
                   <img src={WhiteboardCloseImg} alt="Add user"/>
                 </Button>
               </div>
-
+              <Chat client={chatClient} theme={'messaging light'}>
+                <Channel channel={channel}>
+                  <Window>
+                    <ChannelHeader type="Team" />
+                    <MessageList />
+                    <MessageInput />
+                  </Window>
+                  <Thread />
+                </Channel>
+              </Chat>
             </div>
           }
           {this.state.showWhiteBoard &&
@@ -877,16 +890,6 @@ export default class Many2Many extends React.Component {
                 onBrushColorChange={this.handleOnBrushColorChange}
               />
             </div>
-          }
-          {!this.state.isFullscreen && 
-            <Row className="center btn-group-call-min">
-              {/* <Button className="btn-one2one-min-close" onClick={() => this.toggle()}>
-                <img src={CloseImg} alt="close"/>
-              </Button>
-              <Button className="btn-one2one-min-fullscreen" onClick={() => this.handleFullScreen()}>
-                <img src={FullScreenImg} alt="fullscreen"/>
-              </Button> */}
-            </Row>
           }
           {this.state.isFullscreen && 
             <div className="room-control-container">
