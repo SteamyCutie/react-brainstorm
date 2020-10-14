@@ -30,6 +30,7 @@
     "history": "^5.0.0",
     "immutable": "^4.0.0-rc.12",
     "input-moment": "^0.4.0",
+    "jsonwebtoken": "^8.5.1",
     "kurento-utils": "^6.14.0",
     "laravel-echo": "^1.8.1",
     "lodash.find": "^4.6.0",
