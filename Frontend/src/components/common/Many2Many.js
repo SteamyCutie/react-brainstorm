@@ -598,6 +598,10 @@ export default class Many2Many extends React.Component {
 
     this.handleOnModeClick = this.handleOnModeClick.bind(this);
     this.handleOnBrushColorChange = this.handleOnBrushColorChange.bind(this);
+
+    this.existingParticipants = this.existingParticipants.bind(this);
+    this.newParticipant = this.newParticipant.bind(this);
+    this.leftRoom = this.leftRoom.bind(this);
   }
 
   componentWillMount() {
@@ -826,6 +830,18 @@ export default class Many2Many extends React.Component {
 
   handleBoundsSizeChange() {
     this.calcBoundsSize()
+  }
+
+  existingParticipants(participants) {
+    console.log(participants);
+  }
+
+  newParticipant(channelName) {
+    console.log(channelName);
+  }
+
+  leftRoom(channelName) {
+    console.log(channelName);
   }
 
   render() {
