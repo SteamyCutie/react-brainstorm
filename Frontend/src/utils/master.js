@@ -116,6 +116,7 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
         } catch (e) {
             alert("Could not find camera, Please retry with camera");
             stopMaster();
+            return;
             console.error('[MASTER] Could not find webcam')
         }
     }

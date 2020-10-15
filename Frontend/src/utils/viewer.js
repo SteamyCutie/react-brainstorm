@@ -124,6 +124,7 @@ export async function startViewer(localView, remoteView, formValues, onStatsRepo
             } catch (e) {
                 alert("Could not find camera, Please retry with camera");
                 stopViewer();
+                return;
                 console.error('[VIEWER] Could not find webcam');
             }
         }
