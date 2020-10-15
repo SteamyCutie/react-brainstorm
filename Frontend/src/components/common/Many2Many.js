@@ -43,13 +43,12 @@ const master = {
 	localStream: [],
 	remoteStreams: [],
   peerConnectionStatsInterval: null,
-  isCamera: false, 
+  isCamera: true, 
 }
 
 const viewer = {};
 
 async function startViewerMany(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
-  navigator.mediaDevices.getUserMedia({audio: true});
   var addEventListenerCount = false;
 
   viewer.localView = localView;
@@ -167,7 +166,9 @@ async function startViewerMany(localView, remoteView, formValues, onStatsReport,
           viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
           localView.srcObject = viewer.localStream;
       } catch (e) {
-          console.error('[VIEWER] Could not find webcam');
+        alert("Could not find camera, Please retry with camera");
+        stopViewer();
+        console.error('[VIEWER] Could not find webcam');
       }
     }
 
@@ -303,7 +304,6 @@ function stopViewerMany() {
 }
 
 async function startMasterMany(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
-  navigator.mediaDevices.getUserMedia({audio: true});
   master.localView = localView
   master.remoteView = remoteView
 
@@ -401,11 +401,12 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
   // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
   if (formValues.sendVideo || formValues.sendAudio) {
     try {
-        master.localStream[0] = await navigator.mediaDevices.getUserMedia(constraints)
-        master.localStream[1] = await navigator.mediaDevices.getDisplayMedia(constraints)
-        localView.srcObject = master.localStream[0];
+        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        localView.srcObject = master.localStream
     } catch (e) {
-        console.error('[MASTER] Could not find webcam')
+      alert("Could not find camera, Please retry with camera");
+      stopMaster();
+      console.error('[MASTER] Could not find webcam')
     }
   }
 
@@ -466,23 +467,18 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
 
       // As remote tracks are received, add them to the remote view
       peerConnection.addEventListener('track', event => {
-          console.log('[MASTER] Received remote track from client: ' + remoteClientId)
+        console.log('[MASTER] Received remote track from client: ' + remoteClientId)
 
-          var participantVideos = document.getElementsByClassName("many2many-participant-video");
-          if (participantVideos[participantVideos.length - 1].srcObject) {
-            return
-          }
-          participantVideos[participantVideos.length - 1].srcObject = event.streams[0]
-          console.log(participantVideos[participantVideos.length - 1])
+        var participantVideos = document.getElementsByClassName("many2many-participant-video");
+        if (participantVideos[participantVideos.length - 1].srcObject) {
+          return
+        }
+        participantVideos[participantVideos.length - 1].srcObject = event.streams[0]
       })
 
       // If there's no video/audio, master.localStream will be null. So, we should skip adding the tracks from it.
       if (master.localStream) {
-        if (master.isCamera){  
-          master.localStream[0].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[0]))
-        } else {
-          master.localStream[1].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[1]))
-        }
+        master.localStream.getTracks().forEach(track => peerConnection.addTrack(track, master.localStream))
       }
       await peerConnection.setRemoteDescription(offer)
 
@@ -523,12 +519,12 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
   master.signalingClient.open()
 }
 
-function master_switchToScreenshare() {
-  if (master.isCamera) {
-    document.getElementById("videoInput").srcObject = master.localStream[1];
+async function master_switchToScreenshare() {
+  if (!master.isCamera) {
+    document.getElementById("videoInput").srcObject = master.localStream;
     master.isCamera = !master.isCamera;
   } else {
-    document.getElementById("videoInput").srcObject = master.localStream[0];
+    document.getElementById("videoInput").srcObject = master.localStream;
     master.isCamera = !master.isCamera;
   }
 }
@@ -706,7 +702,7 @@ export default class Many2Many extends React.Component {
       },
       userToken,
     );
-    channel = chatClient.channel('messaging', 'docs', {
+    channel = chatClient.channel('messaging', localStorage.getItem('room_id') + '', {
       image: avatar,
       name: 'Talk about the Session',
     });
@@ -870,7 +866,6 @@ export default class Many2Many extends React.Component {
               <Chat client={chatClient} theme={'messaging light'}>
                 <Channel channel={channel}>
                   <Window>
-                    <ChannelHeader type="Team" />
                     <MessageList />
                     <MessageInput />
                   </Window>

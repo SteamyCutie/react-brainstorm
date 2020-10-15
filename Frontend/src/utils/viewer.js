@@ -6,7 +6,6 @@ import AWS from 'aws-sdk';
 const viewer = {};
 
 export async function startViewer(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
-    navigator.mediaDevices.getUserMedia({audio: true});
     viewer.localView = localView;
     viewer.remoteView = remoteView;
 
@@ -119,9 +118,12 @@ export async function startViewer(localView, remoteView, formValues, onStatsRepo
         if (formValues.sendVideo || formValues.sendAudio) {
             try {
                 viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                console.log(viewer.localStream, "[VIEWER]Get Audio Stream +++++++++++++++++++");
                 viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
                 localView.srcObject = viewer.localStream;
             } catch (e) {
+                alert("Could not find camera, Please retry with camera");
+                stopViewer();
                 console.error('[VIEWER] Could not find webcam');
             }
         }
