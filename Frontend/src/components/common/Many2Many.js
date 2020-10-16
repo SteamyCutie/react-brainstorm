@@ -383,6 +383,10 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
 
   if (formValues.sendVideo || formValues.sendAudio) {
     try {
+        // master.localStream[0] = await navigator.mediaDevices.getUserMedia(constraints)
+        // master.localStream[1] = await navigator.mediaDevices.getDisplayMedia(constraints)
+        // localView.srcObject = master.localStream[0]
+
         master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
         localView.srcObject = master.localStream
     } catch (e) {
@@ -441,6 +445,9 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
       })
 
       if (master.localStream) {
+        // master.localStream[0].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[0]))
+        // master.localStream[1].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[1]))
+
         master.localStream.getTracks().forEach(track => peerConnection.addTrack(track, master.localStream))
       }
       await peerConnection.setRemoteDescription(offer)
@@ -471,11 +478,11 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
 
 async function master_switchToScreenshare() {
   if (!master.isCamera) {
-    document.getElementById("videoInput").srcObject = master.localStream;
-    master.isCamera = !master.isCamera;
+    // document.getElementById("videoInput").srcObject = master.localStream[1];
+    // master.isCamera = !master.isCamera;
   } else {
-    document.getElementById("videoInput").srcObject = master.localStream;
-    master.isCamera = !master.isCamera;
+    // document.getElementById("videoInput").srcObject = master.localStream[0];
+    // master.isCamera = !master.isCamera;
   }
 }
 
@@ -491,6 +498,11 @@ function stopMasterMany() {
   master.peerConnectionByClientId = []
 
   if (master.localStream) {
+      // master.localStream[0].getTracks().forEach(track => track.stop())
+      // master.localStream[0] = null
+      // master.localStream[1].getTracks().forEach(track => track.stop())
+      // master.localStream[1] = null
+
       master.localStream.getTracks().forEach(track => track.stop())
       master.localStream = null
   }
@@ -784,19 +796,24 @@ export default class Many2Many extends React.Component {
       var participantVideo = document.createElement("video");
       var masterVideo = document.createElement("video");
       var divContainer = document.createElement("div");
+      var namespan = document.createElement("span");
       divContainer.appendChild(participantVideo);
       divContainer.appendChild(masterVideo);
+      divContainer.appendChild(namespan);
       container.appendChild(divContainer);
       
-      divContainer.id = "participant-container-" + participant
-      participantVideo.id = participant;
+      namespan.textContent = participant.userName;
+      namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
+      
+      divContainer.id = "participant-container-" + participant.channelName
+      participantVideo.id = participant.channelName;
       participantVideo.style = "display: none";
       // participantVideo.className = "many2many-participant-video";
       participantVideo.autoplay = true;
       participantVideo.muted = true;
       participantVideo.poster = PosterImg;
 
-      masterVideo.id = participant + "-master";
+      masterVideo.id = participant.channelName + "-master";
       masterVideo.style = "display: none";
       // masterVideo.className = "many2many-participant-video";
       masterVideo.autoplay = true;
@@ -806,7 +823,7 @@ export default class Many2Many extends React.Component {
       // Start Viewer
       const formValues = {
         region: AWS_REGION,
-        channelName: participant,
+        channelName: participant.channelName,
         clientId: localStorage.getItem("channel_name"),
         sendVideo: true,
         sendAudio: true,
@@ -827,16 +844,21 @@ export default class Many2Many extends React.Component {
     })
   }
 
-  newParticipant(channelName) {
+  newParticipant(channelName, userName) {
     viewer.push({});
     var index = viewer.length - 1;
     var container = document.getElementById("participants-video-container");
     var participantVideo = document.createElement("video");
     var masterVideo = document.createElement("video");
     var divContainer = document.createElement("div");
+    var namespan = document.createElement("span");
     divContainer.appendChild(participantVideo);
     divContainer.appendChild(masterVideo);
+    divContainer.appendChild(namespan);
     container.appendChild(divContainer);
+    
+    namespan.textContent = userName;
+    namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
     
     participantVideo.id = channelName;
     participantVideo.style = "display: none";
@@ -918,6 +940,7 @@ export default class Many2Many extends React.Component {
           }
           <div id="room-local-video-container">
             <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
+            <span className="local-video-name">{localStorage.getItem("user_name")} (you)</span>
           </div>
           <div id="participants-video-container" className="participants-video-container">
           </div>
