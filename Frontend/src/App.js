@@ -65,8 +65,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    // var wsUri = 'wss://media.brainsshare.com/one2one';
-    var wsUri = 'wss://192.168.105.13:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
