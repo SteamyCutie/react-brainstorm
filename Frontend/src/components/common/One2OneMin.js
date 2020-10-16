@@ -182,7 +182,7 @@ export default class One2OneMin extends React.Component {
   }
 
   render() {
-    const { open, accepted, callState, isAccepted } = this.props;
+    const { open, accepted, callState, isAccepted, toName, fromName } = this.props;
     return (
       <div id="one2one-call-conatainer" className={ (callState === INCOMING_CALL) ? "video-call-mini-enable" :(callState === OUTGOING_CALL && accepted) ? "video-call-mini-enable" : "video-call-mini-disable"}>
         <div className="video-call-element-min" id="video-call-element-min">
@@ -192,7 +192,7 @@ export default class One2OneMin extends React.Component {
                 <img src={MiniFullScreen} alt="Full Screen"/>
               </Button>
               
-              <div className="">
+              <div>
                 <Button className="btn-rooom-control-mini float-center">
                   <img src={MiniMuteMic} alt="Mute mic"/>
                 </Button>
@@ -206,22 +206,14 @@ export default class One2OneMin extends React.Component {
               </Button>
             </div>
           }
-          <div>
+          <div id="local-video-container">
+            <span style={{color: "#04B5FA", fontWeight: "bold", position: "absolute", background: "#00000099", padding: "0px 6px", borderRadius: "3px", marginTop: "9px", marginLeft: "3px"}}>{localStorage.getItem("user_name")} (You)</span>
             <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
           </div>
           <div>
+            <span style={{color: "#04B5FA", fontWeight: "bold", position: "absolute", background: "#00000099", padding: "0px 6px", borderRadius: "3px", marginTop: "5px", marginLeft: "3px"}}>{this.props.callState === INCOMING_CALL ? fromName: toName}</span>
             <video id="videoOutput" autoPlay width="320px" height="180px" style={{borderRadius: "6px"}} poster={PosterImg}></video>
           </div>
-          {/* {!this.state.isFullscreen && 
-            <Row className="center btn-group-call-min">
-              <Button className="btn-one2one-min-close" onClick={() => this.toggle()}>
-                <img src={CloseImg} alt="close"/>
-              </Button>
-              <Button className="btn-one2one-min-fullscreen" onClick={() => this.handleFullScreen()}>
-                <img src={FullScreenImg} alt="fullscreen"/>
-              </Button>
-            </Row>
-          } */}
           {this.state.isFullscreen && 
             <Row className="center btn-group-one2one-full">
               <Button className="btn-video-call-mic-camera">
