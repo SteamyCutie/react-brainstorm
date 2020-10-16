@@ -110,14 +110,13 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
     // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
     if (formValues.sendVideo || formValues.sendAudio) {
         try {
-            // streaming with camera
-            // master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            //-----------
-            //streaming with screen share
             master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-            //-------
             localView.srcObject = master.localStream
+            console.log(master.localStream, "[MASTER]Get Audio Stream +++++++++++++++++++");
         } catch (e) {
+            alert("Could not find camera, Please retry with camera");
+            stopMaster();
+            return;
             console.error('[MASTER] Could not find webcam')
         }
     }
@@ -176,6 +175,7 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
 
         // If there's no video/audio, master.localStream will be null. So, we should skip adding the tracks from it.
         if (master.localStream) {
+            console.log(master.localStream, "[MASTER]Audio Streaming--------------------------------");
             master.localStream.getTracks().forEach(track => peerConnection.addTrack(track, master.localStream))
         }
         await peerConnection.setRemoteDescription(offer)

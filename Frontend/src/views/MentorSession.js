@@ -278,6 +278,7 @@ class CustomMonthEvent extends React.Component {
 
 const ToolBar = ({changeMonth, showLoading}) => props => {
   const [alignment, setAlignment] = React.useState("right");
+  const [selectedTag, setSelectedTag] = React.useState("");
   const [tags] = React.useState([
     {id: 1, name: 'Algebra'}, 
     {id: 2, name: 'Mathematics'},
@@ -451,7 +452,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
     return `${dayName}, ${monthName} ${date}`;
   }
 
-  const onChangeTag = async(e) => {
+  const onChangeTag = async (e) => {
     try {
       showLoading(true);
       const result = await getUpcomingSession({email: localStorage.getItem('email'), tag_id: e.target.value});
@@ -544,11 +545,12 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
             </FormSelect>
           </div> */}
           <div className="toolbar-select-label">
-            <label className="">Tag: </label>
+            <label className="">Tag: {selectedTag}</label>
             <FormSelect id="feInputState" onChange={(e) => onChangeTag(e)}>
               <option value="">select tag</option>
               {tags.map((item, idx) =>                 
-                <option key={idx} value={item.id}>{item.name}</option>
+                selectedTag == item.id ? <option key={idx} value={item.id} selected>{item.name}</option>
+                  : <option key={idx} value={item.id}>{item.name}</option>
               )}
             </FormSelect>
           </div>

@@ -3,10 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import routes from "./Routes";
 import withTracker from "./withTracker";
-// import {webRtcPeer} from 'kurento-utils';
 import Draggable from 'react-draggable';
-import { stopMaster } from './utils/master';
-import { stopViewer } from './utils/viewer';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
 import "../src/assets/mentorWallet.css";
@@ -14,20 +11,13 @@ import "../src/assets/student.css";
 import "../src/assets/mentor.css";
 import "../src/assets/common.css";
 
-// import VideoCall from "../src/components/common/VideoCall";
 import VideoCallMin from "./components/common/One2OneMin";
 import Many2Many from "./components/common/Many2Many"
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
-// import { message } from "antd";
 import incomingSound from '../src/audio/incoming.mp3'
 
-// const NOT_REGISTERED = 0;
-// const REGISTERING = 1;
-// const REGISTERED = 2;
-
 const NO_CALL = 0;
-// const IN_CALL = 1;
 const INCOMING_CALL = 2;
 const OUTGOING_CALL = 3;
 
@@ -58,6 +48,8 @@ export default class App extends React.Component{
       roomCall: false, 
       sessionChannelName: '', 
     }
+
+    this.many2manyRef = React.createRef();
 
     this.ws = null;
     this.webRtcPeer = null;
@@ -113,13 +105,30 @@ export default class App extends React.Component{
         case 'iceCandidate':
           that.setIceCandidate(parsedMessage.candidate);
           break;
+
+        // Room call with KVS
+        case 'joinRoomResponse':
+          that.joinRoomResponse(parsedMessage);
+          break;
+
+        case 'existingParticipants':
+          that.existingParticipants(parsedMessage);
+          break;
+
+        case 'newParticipant': 
+          that.newParticipant(parsedMessage);
+          break;
+
+        case 'leftRoom': 
+          that.leftRoom(parsedMessage);
+          break;
+
         default:
           console.error('Unrecognized message', parsedMessage);
       }
     }
 
     this.ws.onclose = function (e) {
-      console.log('Socket is closed. Reconnect will be attempted in 5 second.');
       setTimeout(() => {
         that.setWebsocket(wsUri);
       }, 5000);
@@ -131,39 +140,17 @@ export default class App extends React.Component{
     };
 
     localStorage.setItem('ws', JSON.stringify(this.ws));
-    // If bussy just reject without disturbing user
   }
 
   register(user) {
-    // if(this.state.registerState === NOT_REGISTERED) {
-      var message = {
-        id: 'register',
-        name: user
-      };
-      this.sendMessage(message);
-    // }
+    var message = {
+      id: 'register',
+      name: user
+    };
+    this.sendMessage(message);
   }
 
-  resgisterResponse(message) {
-    // if (message.response === 'accepted') {
-    //   // this.setState({
-    //   //   registerState: REGISTERED
-    //   // })
-    // } else {
-    //   // if(message.response === 'rejected ') {
-    //   //   this.setState({
-    //   //     registerState: REGISTERED
-    //   //   })
-    //   // } else {
-    //   //   this.setState({
-    //   //     registerState: NOT_REGISTERED
-    //   //   })
-    //   //   var errorMessage = message.message ? message.message
-    //   //       : 'Unknown reason for register rejection.';
-    //   //   console.log(errorMessage);
-    //   // }
-    // }
-  }
+  resgisterResponse(message) {}
 
   callResponse(message) {
     if (message.response !== 'accepted') {
@@ -172,7 +159,6 @@ export default class App extends React.Component{
         callState: NO_CALL,
       })
 
-      // console.log("REJECT******************************");
       if(message.response === 'rejected') {
         this.setState({
           errorMsg: "Call Rejected",
@@ -193,19 +179,9 @@ export default class App extends React.Component{
       this.stop(true);
     } else {
       if(this.state.callState) {
-        // this.webRtcPeer.processAnswer(message.sdpAnswer, function (error) {
-        //   if (error)
-        //     return console.error(error);
-        // });
-        // this.setState({
-        //   callState: IN_CALL,
-        //   call: true,
-        //   sdpAnswer: message.sdpAnswer
-        // })
         this.setState({
           isAccepted: true,
         })
-        // 
         this.toggle_outcomingCall_modal();
       }
     }
@@ -284,33 +260,27 @@ export default class App extends React.Component{
         id : 'stop'
       }
       this.sendMessage(response);
-      stopMaster();
-      stopViewer();
+    }
+
+    if (this.state.roomCall) {
+      var message = {
+        id: "leaveRoom", 
+        userId: localStorage.getItem("user_id"), 
+        roomName: localStorage.getItem("room_id"),
+      }
+
+      this.sendMessage(message);
     }
 
     this.setState({
       callState: NO_CALL,
       incomingCallStatus: false,
-      message: message,
       videoCallStatus: false,
+      message: message,
       call: false,
       isAccepted: false,
       roomCall: false, 
     });
-    stopMaster();
-    stopViewer();
-    // if (this.webRtcPeer) {
-      // this.webRtcPeer.dispose();
-      // this.webRtcPeer = null;
-
-    //   if (!message) {
-        // var response = {
-        //   id : 'stop'
-        // }
-        // this.sendMessage(response);
-        // console.log("++++++++++++++++");
-    //   }
-    // }
   }
 
   sendMessage(message) {
@@ -379,15 +349,8 @@ export default class App extends React.Component{
 
   toggle_error_modal() {
     this.setState({
-      // message: message,
       errorModalStatus: !this.state.errorModalStatus,
     })
-
-    // if(this.state.outcomingCallStatus) {
-    //   // this.toggle_outcomingCall_modal()
-    // } else {
-    //   // this.toggle_incomingCall_modal()
-    // }
   }
 
   incomingCallDecline() {
@@ -430,9 +393,6 @@ export default class App extends React.Component{
       const ring = document.getElementById("outgoing-ring");
       ring.pause();
       ring.currentTime = 0;
-
-      // this.sendMessage(response);
-      // this.toggle_outcomingCall_modal();
       this.stop(true);
     }
   }
@@ -478,7 +438,6 @@ export default class App extends React.Component{
     this.setState({
       errorMsg: message,
     })
-    console.log(this.state.errorMsg)
   }
 
   fullScreen() {
@@ -492,13 +451,21 @@ export default class App extends React.Component{
   }
 
   startSession(sessionChannelName) {
-    console.log("START SESSION", sessionChannelName);
-
     this.setState({
       sessionChannelName: sessionChannelName.toString(), 
       roomCall: true, 
       isMaster: true, 
-    })
+    });
+
+    var message = {
+      id: "joinRoom", 
+      userId: localStorage.getItem("user_id"), 
+      userName: localStorage.getItem("user_name"), 
+      channelName: localStorage.getItem("channel_name"), 
+      roomName: localStorage.getItem("room_id"),
+    }
+
+    this.sendMessage(message);
   }
 
   joinSession(sessionChannelName) {
@@ -507,6 +474,32 @@ export default class App extends React.Component{
       roomCall: true, 
       isMaster: false, 
     })
+
+    var message = {
+      id: "joinRoom", 
+      userId: localStorage.getItem("user_id"), 
+      userName: localStorage.getItem("user_name"), 
+      channelName: localStorage.getItem("channel_name"), 
+      roomName: localStorage.getItem("room_id"),
+    }
+
+    this.sendMessage(message);
+  }
+
+  joinRoomResponse(message) {
+    console.log(message.response)
+  }
+
+  existingParticipants(message) {
+    this.many2manyRef.current.existingParticipants(message.data)
+  }
+
+  newParticipant(message) {
+    this.many2manyRef.current.newParticipant(message.channelName);
+  }
+
+  leftRoom(message) {
+    this.many2manyRef.current.leftRoom(message.channelName);
   }
 
   render() {
@@ -568,15 +561,6 @@ export default class App extends React.Component{
             }
           })}
           {this.state.call && 
-            // <VideoCall
-            //   accepted={this.state.isAccepted}
-            //   open={true} 
-            //   toggle={() => this.toggle_videocall()}
-            //   onDecline={() => this.outcomingCallDecline()}
-            //   sendErrorMsg={this.sendErrorMsg}
-            //   from={this.state.from} fromName={this.state.fromName} to={this.state.to} toName={this.state.toName} 
-            //   callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
-            // />
             <div className="draggable-video-item">
               <Draggable
                 bounds="parent"
@@ -606,8 +590,7 @@ export default class App extends React.Component{
               >
                 <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '50px'}}>
                   <Many2Many 
-                    sessionChannelName={this.state.sessionChannelName}
-                    isMaster={this.state.isMaster}
+                    ref = {this.many2manyRef}
                     stop={this.stop}
                   />
                 </div>
@@ -620,7 +603,6 @@ export default class App extends React.Component{
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar}  errMsg={this.state.errorMsg} />
           
-          {/* <ErrorModal toggle={() => this.toggle_error_modal()} handleClick={() => this.toggle_error_modal()} message={this.state.message}/> */}
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />
             Your browser does not support the audio element.
