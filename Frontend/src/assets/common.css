@@ -737,3 +737,7 @@
   top: 40px;
   right: 40px;
 }
+
+.str-chat-channel {
+  max-height: calc(100vh - 200px);
+}
