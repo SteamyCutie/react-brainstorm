@@ -65,8 +65,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    // var wsUri = 'wss://media.brainsshare.com/one2one';
-    var wsUri = 'wss://192.168.105.13:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -499,7 +499,7 @@ export default class App extends React.Component{
   }
 
   leftRoom(message) {
-    this.many2manyRef.current.newParticipant(message.channelName);
+    this.many2manyRef.current.leftRoom(message.channelName);
   }
 
   render() {
@@ -591,8 +591,6 @@ export default class App extends React.Component{
                 <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '50px'}}>
                   <Many2Many 
                     ref = {this.many2manyRef}
-                    sessionChannelName={this.state.sessionChannelName}
-                    // isMaster={this.state.isMaster}
                     stop={this.stop}
                   />
                 </div>

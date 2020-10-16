@@ -41,7 +41,7 @@ const master = {
 	peerConnectionByClientId: {},
 	dataChannelByClientId: {},
 	localStream: [],
-	remoteStreams: [],
+  remoteStreams: [],
   peerConnectionStatsInterval: null,
   isCamera: true, 
 }
@@ -54,6 +54,8 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
 
   viewer[index].localView = localView;
   viewer[index].remoteView = remoteView;
+  viewer[index].channelName = formValues.channelName;
+  viewer[index].remoteClientId = formValues.clientId;
   
   const kinesisVideoClient = new AWS.KinesisVideo({
       region: formValues.region,
@@ -395,12 +397,14 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
   master.signalingClient.on('open', async () => {})
 
   master.signalingClient.on('sdpOffer', async (offer, remoteClientId) => {
+      console.log("#399")
       var container = document.getElementById("participants-video-container");
       var participantVideo = document.createElement("video");
       var divContainer = document.createElement("div");
       divContainer.appendChild(participantVideo);
       container.appendChild(divContainer);
       
+      divContainer.id = "master-participant-container-" + remoteClientId
       participantVideo.id = "participant-video-" + remoteClientId;
       participantVideo.className = "many2many-participant-video";
       participantVideo.autoplay = true;
@@ -549,11 +553,11 @@ export default class Many2Many extends React.Component {
 
   componentWillMount() {}
 
-  toggle() {
-    const { toggle } = this.props;
-    this.handleStop();
-    toggle();
-  }
+  // toggle() {
+  //   const { toggle } = this.props;
+  //   this.handleStop();
+  //   toggle();
+  // }
 
   handleEnd() {
     this.handleStop();
@@ -628,7 +632,7 @@ export default class Many2Many extends React.Component {
     const last_name = user_name.split('-')[1];
 
     const userToken = jwt.sign({ user_id: user_name }, ACCESS_TOKEN_SECRET);
-    chatClient = new StreamChat(ACCESS_API_KEY);
+    chatClient = new StreamChat(ACCESS_API_KEY, { timeout: 6000 });
     if (avatar === 'null') {
       avatar = 'https://getstream.io/random_png/?id=' + user_name + '&name=' + user_name.replace("-", "+");
     }
@@ -664,13 +668,26 @@ export default class Many2Many extends React.Component {
 
   handleStop = () => {
     stopMasterMany();
-    stopViewerMany();
+    viewer.forEach((participant, index) => {
+      stopViewerMany(index);
+
+      // document.getElementById("participant-container-" + participant.channelName).remove();
+    });
+
+    var elements = document.getElementsByClassName("master-participant-container");
+    while(elements.length > 0){
+      elements[0].parentNode.removeChild(elements[0]);
+    }
+
+    viewer = [];
     this.props.stop(false);
   }
 
   swithFullScreen() {
     this.setState({
       isFullscreen: !this.state.isFullscreen, 
+      showChat: false, 
+      showWhiteBoard: false,
     });
 
     if (document.getElementById("many2many-call-conatainer").classList.contains("one2one-fullscreen")) {
@@ -764,7 +781,6 @@ export default class Many2Many extends React.Component {
 
   existingParticipants(participants) {
     console.log(participants);
-    console.log(viewer.length, "#846");
     
     participants.forEach((participant, index) => {
       viewer.push({});
@@ -776,23 +792,26 @@ export default class Many2Many extends React.Component {
       divContainer.appendChild(masterVideo);
       container.appendChild(divContainer);
       
+      divContainer.id = "participant-container-" + participant
       participantVideo.id = participant;
       participantVideo.style = "display: none";
       // participantVideo.className = "many2many-participant-video";
       participantVideo.autoplay = true;
+      participantVideo.muted = true;
       participantVideo.poster = PosterImg;
 
       masterVideo.id = participant + "-master";
       masterVideo.style = "display: none";
       // masterVideo.className = "many2many-participant-video";
       masterVideo.autoplay = true;
+      masterVideo.muted = true;
       masterVideo.poster = PosterImg;
       
       // Start Viewer
       const formValues = {
         region: AWS_REGION,
         channelName: participant,
-        clientId: this.getRandomClientId(),
+        clientId: localStorage.getItem("channel_name"),
         sendVideo: true,
         sendAudio: true,
         openDataChannel: false,
@@ -827,19 +846,21 @@ export default class Many2Many extends React.Component {
     participantVideo.style = "display: none";
     // participantVideo.className = "many2many-participant-video";
     participantVideo.autoplay = true;
+    participantVideo.muted = true;
     participantVideo.poster = PosterImg;
 
     masterVideo.id = channelName + "-master";
     masterVideo.style = "display: none";
     // masterVideo.className = "many2many-participant-video";
     masterVideo.autoplay = true;
+    masterVideo.muted = true;
     masterVideo.poster = PosterImg;
     
     // Start Viewer
     const formValues = {
       region: AWS_REGION,
       channelName: channelName,
-      clientId: this.getRandomClientId(),
+      clientId: localStorage.getItem("channel_name"),
       sendVideo: true,
       sendAudio: true,
       openDataChannel: false,
@@ -859,10 +880,18 @@ export default class Many2Many extends React.Component {
   }
 
   leftRoom(channelName) {
-    console.log(channelName);
-
+    console.log(channelName,"#885");
+    var index = 0;
+    
     // Stop Viewer
-
+    for(index = 0; index < viewer.length; index ++) {
+      if(viewer[index].channelName === channelName) {
+        stopViewerMany(index);
+        document.getElementById("master-participant-container-" + channelName).remove();
+        viewer.slice(index, 1);
+        break;
+      }
+    }
   }
 
   render() {
@@ -976,7 +1005,6 @@ export default class Many2Many extends React.Component {
               </Button>
             </div>
           }
-          
         </div>
       </div>
     );
