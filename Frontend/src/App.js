@@ -49,6 +49,8 @@ export default class App extends React.Component{
       sessionChannelName: '', 
     }
 
+    this.many2manyRef = React.createRef();
+
     this.ws = null;
     this.webRtcPeer = null;
     this.setWebRtcPeer = this.setWebRtcPeer.bind(this);
@@ -63,8 +65,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    var wsUri = 'wss://media.brainsshare.com/one2one';
-    // var wsUri = 'wss://192.168.105.13:8443/one2one';
+    // var wsUri = 'wss://media.brainsshare.com/one2one';
+    var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -103,6 +105,24 @@ export default class App extends React.Component{
         case 'iceCandidate':
           that.setIceCandidate(parsedMessage.candidate);
           break;
+
+        // Room call with KVS
+        case 'joinRoomResponse':
+          that.joinRoomResponse(parsedMessage);
+          break;
+
+        case 'existingParticipants':
+          that.existingParticipants(parsedMessage);
+          break;
+
+        case 'newParticipant': 
+          that.newParticipant(parsedMessage);
+          break;
+
+        case 'leftRoom': 
+          that.leftRoom(parsedMessage);
+          break;
+
         default:
           console.error('Unrecognized message', parsedMessage);
       }
@@ -240,6 +260,16 @@ export default class App extends React.Component{
         id : 'stop'
       }
       this.sendMessage(response);
+    }
+
+    if (this.state.roomCall) {
+      var message = {
+        id: "leaveRoom", 
+        userId: localStorage.getItem("user_id"), 
+        roomName: localStorage.getItem("room_id"),
+      }
+
+      this.sendMessage(message);
     }
 
     this.setState({
@@ -425,7 +455,17 @@ export default class App extends React.Component{
       sessionChannelName: sessionChannelName.toString(), 
       roomCall: true, 
       isMaster: true, 
-    })
+    });
+
+    var message = {
+      id: "joinRoom", 
+      userId: localStorage.getItem("user_id"), 
+      userName: localStorage.getItem("user_name"), 
+      channelName: localStorage.getItem("channel_name"), 
+      roomName: localStorage.getItem("room_id"),
+    }
+
+    this.sendMessage(message);
   }
 
   joinSession(sessionChannelName) {
@@ -434,6 +474,32 @@ export default class App extends React.Component{
       roomCall: true, 
       isMaster: false, 
     })
+
+    var message = {
+      id: "joinRoom", 
+      userId: localStorage.getItem("user_id"), 
+      userName: localStorage.getItem("user_name"), 
+      channelName: localStorage.getItem("channel_name"), 
+      roomName: localStorage.getItem("room_id"),
+    }
+
+    this.sendMessage(message);
+  }
+
+  joinRoomResponse(message) {
+    console.log(message.response)
+  }
+
+  existingParticipants(message) {
+    this.many2manyRef.current.existingParticipants(message.data)
+  }
+
+  newParticipant(message) {
+    this.many2manyRef.current.newParticipant(message.channelName);
+  }
+
+  leftRoom(message) {
+    this.many2manyRef.current.newParticipant(message.channelName);
   }
 
   render() {
@@ -524,8 +590,9 @@ export default class App extends React.Component{
               >
                 <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '50px'}}>
                   <Many2Many 
+                    ref = {this.many2manyRef}
                     sessionChannelName={this.state.sessionChannelName}
-                    isMaster={this.state.isMaster}
+                    // isMaster={this.state.isMaster}
                     stop={this.stop}
                   />
                 </div>
