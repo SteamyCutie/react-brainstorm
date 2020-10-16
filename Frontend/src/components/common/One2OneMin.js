@@ -211,7 +211,8 @@ export default class One2OneMin extends React.Component {
             <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
           </div>
           <div>
-            <span style={{color: "#04B5FA", fontWeight: "bold", position: "absolute", background: "#00000099", padding: "0px 6px", borderRadius: "3px", marginTop: "5px", marginLeft: "3px"}}>{this.props.callState === INCOMING_CALL ? fromName: toName}</span>
+          {!this.state.isFullscreen && <span style={{color: "#04B5FA", fontWeight: "bold", position: "absolute", background: "#00000099", padding: "0px 6px", borderRadius: "3px", marginTop: "5px", marginLeft: "3px"}}>{this.props.callState === INCOMING_CALL ? fromName: toName}</span>}
+          {this.state.isFullscreen && <span style={{color: "#04B5FA", fontWeight: "bold", position: "absolute", background: "#00000099", padding: "0px 6px", borderRadius: "3px", right: "260px", top: "60px"}}>{this.props.callState === INCOMING_CALL ? fromName: toName}</span>}
             <video id="videoOutput" autoPlay width="320px" height="180px" style={{borderRadius: "6px"}} poster={PosterImg}></video>
           </div>
           {this.state.isFullscreen && 
@@ -225,7 +226,6 @@ export default class One2OneMin extends React.Component {
               <Button className="btn-video-call-mic-camera">
                 <img src={Camera} placeholder="Camera" />
               </Button>
-
               <Button className="btn-rooom-control" onClick={() => this.handleFullScreen()}>
                 <img src={FullScreenImg} alt="Full Screen"/>
               </Button>
