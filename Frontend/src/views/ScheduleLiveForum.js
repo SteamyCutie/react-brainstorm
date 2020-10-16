@@ -244,7 +244,7 @@ export default class ScheduleLiveForum extends React.Component {
       }
     }
 
-    this.props.startSession(sessionChannelName);
+    this.props.startSession(localStorage.getItem("channel_name"));
   }
 
   render() {
