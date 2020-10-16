@@ -124,8 +124,8 @@
 .video-call-element-min {
   /* padding: 10px; */
   width: 100%;
-  /* display: ; */
-  /* background-color: #04B5FA; */
+  background-color: #00000099;
+  border-radius: 6px;
 }
 
 .btn-one2one-min-close {
@@ -563,6 +563,8 @@
 
 .react-draggable {
   z-index: 9000;
+  box-shadow: 0.125rem 0 0.9rem rgb(4, 181, 250);
+  border-radius: 6px;
 }
 
 .one2one-fullscreen {
@@ -736,4 +738,19 @@
   position: absolute;
   top: 40px;
   right: 40px;
+}
+
+.local-video-name {
+  position: absolute;
+  left: 3px;
+  top: 50px;
+  color: #04B5FA;
+  font-weight: bold;
+  background: #00000099;
+  padding: 0px 6px;
+  border-radius: 3px;
+}
+
+.str-chat-channel {
+  max-height: calc(100vh - 200px);
 }
