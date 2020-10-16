@@ -385,8 +385,9 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
 
   if (formValues.sendVideo || formValues.sendAudio) {
     try {
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-        localView.srcObject = master.localStream
+        master.localStream[0] = await navigator.mediaDevices.getUserMedia(constraints)
+        master.localStream[1] = await navigator.mediaDevices.getDisplayMedia(constraints)
+        localView.srcObject = master.localStream[0]
     } catch (e) {
       alert("Could not find camera, Please retry with camera");
       stopMasterMany();
@@ -445,7 +446,8 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
       })
 
       if (master.localStream) {
-        master.localStream.getTracks().forEach(track => peerConnection.addTrack(track, master.localStream))
+        master.localStream[0].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[0]))
+        master.localStream[1].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[1]))
       }
       await peerConnection.setRemoteDescription(offer)
 
@@ -475,10 +477,10 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
 
 async function master_switchToScreenshare() {
   if (!master.isCamera) {
-    document.getElementById("videoInput").srcObject = master.localStream;
+    document.getElementById("videoInput").srcObject = master.localStream[1];
     master.isCamera = !master.isCamera;
   } else {
-    document.getElementById("videoInput").srcObject = master.localStream;
+    document.getElementById("videoInput").srcObject = master.localStream[0];
     master.isCamera = !master.isCamera;
   }
 }
@@ -495,8 +497,10 @@ function stopMasterMany() {
   master.peerConnectionByClientId = []
 
   if (master.localStream) {
-      master.localStream.getTracks().forEach(track => track.stop())
-      master.localStream = null
+      master.localStream[0].getTracks().forEach(track => track.stop())
+      master.localStream[0] = null
+      master.localStream[1].getTracks().forEach(track => track.stop())
+      master.localStream[1] = null
   }
 
   master.remoteStreams.forEach(remoteStream => remoteStream.getTracks().forEach(track => track.stop()))
