@@ -803,6 +803,7 @@ export default class Many2Many extends React.Component {
       container.appendChild(divContainer);
       
       namespan.textContent = participant.userName;
+      namespan.id = "participant-name-" + participant.channelName;
       namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
       
       divContainer.id = "participant-container-" + participant.channelName
@@ -858,6 +859,7 @@ export default class Many2Many extends React.Component {
     container.appendChild(divContainer);
     
     namespan.textContent = userName;
+    namespan.id = "participant-name-" + channelName;
     namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
     
     participantVideo.id = channelName;
@@ -906,6 +908,7 @@ export default class Many2Many extends React.Component {
       if(viewer[index].channelName === channelName) {
         stopViewerMany(index);
         document.getElementById("master-participant-container-" + channelName).remove();
+        document.getElementById("participant-name-" + channelName).remove();
         viewer.slice(index, 1);
         break;
       }
