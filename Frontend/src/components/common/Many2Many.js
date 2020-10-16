@@ -20,7 +20,7 @@ import AddUserImg from '../../images/room-adduser.svg'
 import DeclineImg from '../../images/call-decline.svg'
 
 import MiniEndCall from '../../images/many2many-mini-end.svg'
-import MiniFullScreen from '../../images/many2many-mini-fullscreen.svg'
+import MiniFullScreen from '../../images/maximize.png'
 import MiniMuteMic from '../../images/many2many-mini-mute-mic.svg'
 import MiniMuteVideo from '../../images/many2many-mini-mute-video.svg'
 
@@ -162,9 +162,7 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           viewer[index].localStream.getTracks().forEach(track => viewer[index].peerConnection.addTrack(track, viewer[index].localStream));
           localView.srcObject = viewer[index].localStream;
       } catch (e) {
-        alert("Could not find camera, Please retry with camera");
-        stopViewerMany();
-        return;
+        console.error('[VIEWER] Could not find webcam');
       }
     }
 
@@ -392,9 +390,7 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
         master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
         localView.srcObject = master.localStream
     } catch (e) {
-      alert("Could not find camera, Please retry with camera");
-      stopMasterMany();
-      return;
+      console.error('[MASTER] Could not find webcam');
     }
   }
 
