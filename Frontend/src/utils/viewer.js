@@ -122,9 +122,6 @@ export async function startViewer(localView, remoteView, formValues, onStatsRepo
                 viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
                 localView.srcObject = viewer.localStream;
             } catch (e) {
-                alert("Could not find camera, Please retry with camera");
-                stopViewer();
-                return;
                 console.error('[VIEWER] Could not find webcam');
             }
         }

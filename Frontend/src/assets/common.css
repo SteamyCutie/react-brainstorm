@@ -750,3 +750,7 @@
   padding: 0px 6px;
   border-radius: 3px;
 }
+
+.str-chat-channel {
+  max-height: calc(100vh - 200px);
+}

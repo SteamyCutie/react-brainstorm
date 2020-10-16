@@ -114,9 +114,6 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
             localView.srcObject = master.localStream
             console.log(master.localStream, "[MASTER]Get Audio Stream +++++++++++++++++++");
         } catch (e) {
-            alert("Could not find camera, Please retry with camera");
-            stopMaster();
-            return;
             console.error('[MASTER] Could not find webcam')
         }
     }
