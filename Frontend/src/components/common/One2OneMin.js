@@ -94,19 +94,14 @@ export default class One2OneMin extends React.Component {
       sessionToken: null
     }
   }
-  onStatsReport(report) {
-    // TODO: Publish stats
-  }
+  
+  onStatsReport(report) {}
+
   componentDidMount() {
     const that = this;
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
     this.videoOutput = document.getElementById('videoOutput');
-    // var options = {
-    //   localVideo: this.videoInput,
-    //   remoteVideo: this.videoOutput,
-    //   onicecandidate: this.onIceCandidate
-    // }
 
     if (this.props.callState === INCOMING_CALL) {
       this.setState({
@@ -114,29 +109,7 @@ export default class One2OneMin extends React.Component {
       })
       const formValues = this.getFormValuesMaster();
       startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
-      })
-
-      // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options,
-      //   function (error) {
-      //     if (error) {
-      //       console.error(error);
-      //       that.props.sendErrorMsg("You have no webcam or microphone");
-      //     }
-  
-      //     this.generateOffer(function (error, offerSdp) {
-      //       if (error) {
-      //         console.error(error);
-      //       }
-      //       var response = {
-      //         id: 'incomingCallResponse',
-      //         from: that.props.from,
-      //         callResponse: 'accept',
-      //         sdpOffer: offerSdp
-      //       };
-      //       that.sendMessage(response);
-      //     });
-      //   });
-      // this.props.setWebRtcPeer(this.webRtcPeer);
+      });
 
       var response = {
         id: 'incomingCallResponse',
@@ -148,31 +121,7 @@ export default class One2OneMin extends React.Component {
     } else if (this.props.callState === OUTGOING_CALL) {
       const formValues = this.getFormValuesViewer();
       startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
-      })
-      // this.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
-      //   if (error) {
-      //     that.props.sendErrorMsg("You have no webcam or microphone");
-      //   }
-
-      //   this.generateOffer(function(error, offerSdp) {
-      //     if (error) {
-      //       console.error(error);
-      //       // that.setState({
-      //       //   callState: NO_CALL
-      //       // })
-      //     }
-      //     var message = {
-      //       id : 'call',
-      //       from : localStorage.getItem("email"),
-      //       name: localStorage.getItem('user_name'), 
-      //       avatarURL: localStorage.getItem("avatar"),
-      //       to : that.props.to,
-      //       sdpOffer : offerSdp
-      //     };
-      //     that.sendMessage(message);
-      //   });
-      // });
-      // this.props.setWebRtcPeer(this.webRtcPeer);
+      });
 
       var message = {
         id : 'call',
@@ -185,12 +134,6 @@ export default class One2OneMin extends React.Component {
         description: this.props.description, 
       };
       that.sendMessage(message);
-
-      // timeout = setTimeout(function() {
-      //   that.props.onDecline();
-      //   clearTimeout(timeout);
-      //   console.log("time out *********************")
-      // }, 30000)
     }
   }
 
