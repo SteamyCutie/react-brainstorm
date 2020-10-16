@@ -4,8 +4,6 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import routes from "./Routes";
 import withTracker from "./withTracker";
 import Draggable from 'react-draggable';
-import { stopMaster } from './utils/master';
-import { stopViewer } from './utils/viewer';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./shards-dashboard/styles/shards-dashboards.1.1.0.min.css";
 import "../src/assets/mentorWallet.css";
@@ -131,7 +129,6 @@ export default class App extends React.Component{
     }
 
     this.ws.onclose = function (e) {
-      console.log('Socket is closed. Reconnect will be attempted in 5 second.');
       setTimeout(() => {
         that.setWebsocket(wsUri);
       }, 5000);
@@ -162,7 +159,6 @@ export default class App extends React.Component{
         callState: NO_CALL,
       })
 
-      // console.log("REJECT******************************");
       if(message.response === 'rejected') {
         this.setState({
           errorMsg: "Call Rejected",
@@ -442,7 +438,6 @@ export default class App extends React.Component{
     this.setState({
       errorMsg: message,
     })
-    console.log(this.state.errorMsg)
   }
 
   fullScreen() {
@@ -456,8 +451,6 @@ export default class App extends React.Component{
   }
 
   startSession(sessionChannelName) {
-    console.log("START SESSION", sessionChannelName);
-
     this.setState({
       sessionChannelName: sessionChannelName.toString(), 
       roomCall: true, 
