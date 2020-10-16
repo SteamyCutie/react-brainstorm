@@ -566,7 +566,7 @@ export default class App extends React.Component{
                 bounds="parent"
                 onStart={() => this.dragegableOnStart()}
               >
-                <div className="box" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                <div className="box" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <VideoCallMin 
                     accepted={this.state.isAccepted}
                     open={true} 
@@ -588,7 +588,7 @@ export default class App extends React.Component{
                 bounds="parent"
                 onStart={() => this.dragegableOnStart()}
               >
-                <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '50px'}}>
+                <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <Many2Many 
                     ref = {this.many2manyRef}
                     stop={this.stop}
