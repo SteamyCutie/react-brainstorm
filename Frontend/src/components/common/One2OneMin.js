@@ -1,14 +1,12 @@
 import React from "react";
-import { Button, Modal, ModalBody, Row } from "shards-react";
+import { Button, Row } from "shards-react";
 import { startMaster, stopMaster } from '../../utils/master';
 import { startViewer, stopViewer } from '../../utils/viewer';
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import "../../assets/landingpage.css"
-import kurentoUtils from 'kurento-utils';
 
 import Camera from '../../images/call-camera.svg'
 import Phone from '../../images/call-phone.svg'
-import CloseImg from '../../images/one2on-min-close.svg'
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/logo.png'
 import Mic from '../../images/call-mic.svg'
@@ -182,7 +180,7 @@ export default class One2OneMin extends React.Component {
   }
 
   render() {
-    const { open, accepted, callState, isAccepted, toName, fromName } = this.props;
+    const { accepted, callState, toName, fromName } = this.props;
     return (
       <div id="one2one-call-conatainer" className={ (callState === INCOMING_CALL) ? "video-call-mini-enable" :(callState === OUTGOING_CALL && accepted) ? "video-call-mini-enable" : "video-call-mini-disable"}>
         <div className="video-call-element-min" id="video-call-element-min">
@@ -217,13 +215,13 @@ export default class One2OneMin extends React.Component {
           {this.state.isFullscreen && 
             <Row className="center btn-group-one2one-full">
               <Button className="btn-video-call-mic-camera">
-                <img src={Mic} placeholder="Mic" />
+                <img src={Mic} alt="Mic" />
               </Button>
               <Button className="btn-video-call-end" onClick={() => this.toggle()}>
-                <img src={Phone} placeholder="Phone" alt="phone"/>
+                <img src={Phone} alt="phone"/>
               </Button>
               <Button className="btn-video-call-mic-camera">
-                <img src={Camera} placeholder="Camera" />
+                <img src={Camera} alt="Camera" />
               </Button>
 
               <Button className="btn-rooom-control" onClick={() => this.handleFullScreen()}>

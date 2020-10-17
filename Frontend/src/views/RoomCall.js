@@ -1,16 +1,7 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, CardHeader, FormInput, CardFooter, FormSelect, Button, FormTextarea, ListGroup, ListGroupItem, FormGroup } from "shards-react";
+import { Button } from "shards-react";
 import kurentoUtils from 'kurento-utils';
-import WhiteBoard, {
-  getWhiteBoardData,
-  loadWhiteBoardData,
-} from 'fabric-whiteboard'
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
+import WhiteBoard from 'fabric-whiteboard'
 
 import DeclineImg from '../images/call-decline.svg'
 import FullScreenImg from '../images/switch-fullscreen.svg'
@@ -19,12 +10,9 @@ import MuteVideoImg from '../images/mute-video.svg'
 import ChatImg from '../images/room-chat.svg'
 import ScreenshareImg from '../images/room-screenshare.svg'
 import AddUserImg from '../images/room-adduser.svg'
-import Spinner from '../images/spinner.gif'
 import VideoBackground from '../images/videobackground.png'
 import WhiteboardFullscreenImg from '../images/whiteboard-fullscreen.svg'
 import WhiteboardCloseImg from '../images/whiteboard-close.svg'
-
-import { Height } from "@material-ui/icons";
 
 import { Chat, Channel, ChannelHeader, Thread, Window } from 'stream-chat-react';
 import { MessageList, MessageInput } from 'stream-chat-react';
@@ -55,7 +43,6 @@ function Participant(user_info, isLocalVideo) {
   container.id = this.user_id;
   var span = document.createElement('span');
   var video = document.createElement('video');
-  var rtcPeer;
 
   container.appendChild(video);
   container.appendChild(span);
@@ -96,7 +83,7 @@ function Participant(user_info, isLocalVideo) {
   }
 
   function isPresentMainParticipant() {
-    return ((document.getElementsByClassName(PARTICIPANT_MAIN_CLASS)).length != 0);
+    return ((document.getElementsByClassName(PARTICIPANT_MAIN_CLASS)).length !== 0);
   }
 
   this.offerToReceiveVideo = function (error, offerSdp, wp) {
@@ -176,8 +163,6 @@ export default class RoomCall extends React.Component {
     this.room_id = localStorage.getItem("room_id");
     let avatar = localStorage.getItem("avatar");
     var user_name = localStorage.getItem("user_name").replace(" ", "-");
-    const first_name = user_name.split('-')[0];
-    const last_name = user_name.split('-')[1];
 
     const userToken = jwt.sign({ user_id: user_name }, ACCESS_TOKEN_SECRET);
     chatClient = new StreamChat(ACCESS_API_KEY);
@@ -295,7 +280,7 @@ export default class RoomCall extends React.Component {
   }
 
   callResponse(message) {
-    if (message.response != 'accepted') {
+    if (message.response !== 'accepted') {
       console.info('Call not accepted by peer. Closing call');
       this.stop();
     } else {
@@ -364,7 +349,6 @@ export default class RoomCall extends React.Component {
     var participant = new Participant(sender, false);
     participants[sender.user_id] = participant;
     var video = participant.getVideoElement();
-    const that = this;
 
     var options = {
       remoteVideo: video,
@@ -425,7 +409,6 @@ export default class RoomCall extends React.Component {
       } else {
         document.getElementById(participant.user_id).classList.add("room-video-display-none");
       }
-
     })
   }
 
@@ -481,19 +464,19 @@ export default class RoomCall extends React.Component {
 
   calcBoundsSize() {
     return
-    const domApp = document.getElementById('App')
-    const domToolbar = document.getElementById('toolbar')
+    // const domApp = document.getElementById('App')
+    // const domToolbar = document.getElementById('toolbar')
 
-    const domAppStyle = window.getComputedStyle(domApp)
-    const domToolbarStyle = window.getComputedStyle(domToolbar)
+    // const domAppStyle = window.getComputedStyle(domApp)
+    // const domToolbarStyle = window.getComputedStyle(domToolbar)
 
-    this.setState({
-      width: domAppStyle.width,
-      height: `${parseInt(domAppStyle.height, 10) -
-        parseInt(domToolbarStyle.height, 10) -
-        20
-        }px`,
-    })
+    // this.setState({
+    //   width: domAppStyle.width,
+    //   height: `${parseInt(domAppStyle.height, 10) -
+    //     parseInt(domToolbarStyle.height, 10) -
+    //     20
+    //     }px`,
+    // })
   }
 
   handleBoundsSizeChange() {
@@ -611,7 +594,7 @@ export default class RoomCall extends React.Component {
             </div>
 
             <Button className="btn-room-call-decline margin-left-auto" style={{ marginRight: "10px" }} onClick={() => this.leaveRoom()}>
-              <img src={DeclineImg} alt="Phone" style={{ height: "60px", width: "60px", color: "#" }} alt="Decline" />
+              <img src={DeclineImg} style={{ height: "60px", width: "60px", color: "#" }} alt="Decline" />
             </Button>
           </div>
         </div>

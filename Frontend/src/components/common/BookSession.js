@@ -159,9 +159,11 @@ export default class BookSession extends React.Component {
   }
 
   bookSchedule(idx, idx1, time) {
-    this.state.schedule[idx][idx1].book = !this.state.schedule[idx][idx1].book;
+    const {schedule} = this.state;
+    var temp = schedule;
+    temp[idx][idx1].book = !this.state.schedule[idx][idx1].book;
     this.setState({
-      schedule: this.state.schedule,
+      schedule: temp,
       from: time
     });
   }

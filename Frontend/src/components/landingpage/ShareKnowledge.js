@@ -19,7 +19,6 @@ export default class ShareKnowledge extends React.Component{
   };
 
   render() {
-    const { signInOpen, signUpOpen } = this.state;
     return (
     <div className="share-knowledge">
       <ScrollAnimation animateIn='animation-class'
