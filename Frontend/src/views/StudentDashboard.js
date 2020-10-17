@@ -1,5 +1,4 @@
 import React from "react";
-import AdSense from 'react-adsense';
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 
@@ -170,7 +169,7 @@ export default class StudentDashboard extends React.Component {
     var index;
 
     for (index = 0; index < this.state.mentors.length; index ++) {
-      if(this.state.mentors[index].id == this.state.id) {
+      if(this.state.mentors[index].id === this.state.id) {
         callerInfo = this.state.mentors[index];
       }
     }

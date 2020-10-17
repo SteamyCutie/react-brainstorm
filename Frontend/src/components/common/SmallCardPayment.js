@@ -32,7 +32,7 @@ class SmallCardPayment extends React.Component {
         <CardBody className="no-padding">
           <div className="items-container">
             <div className="no-padding">
-              { type == 4 ?
+              { type === 4 ?
                 <img src={visa} className="small-card-payment-logo" alt="card"/>
                 :
                 <img src={master} className="small-card-payment-logo" alt="card"/>

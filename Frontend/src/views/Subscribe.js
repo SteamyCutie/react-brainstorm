@@ -199,7 +199,7 @@ export default class Subscribe extends React.Component {
                           if (idx < 3)
                             return <p key={idx} className="brainsshare-tag" title={tag}>{tag}</p>
                           else if (idx === 3)
-                            return <p key={idx} href="javascript:void(0)">{mentorData.tags.length - 3} more</p>
+                            return <p key={idx}>{mentorData.tags.length - 3} more</p>
                           else 
                             return <></>;
                       })}
@@ -215,7 +215,7 @@ export default class Subscribe extends React.Component {
                       
                     </Row>
                     <div className="mentor-detail-myself" style={{marginTop: 30}}>
-                      {mentorData.description != "" && <p>{mentorData.description}...</p>}
+                      {mentorData.description !== "" && <p>{mentorData.description}...</p>}
                       <p>{mentorData.description}</p>
                     </div>
                     <div className="mentor-detail-video">

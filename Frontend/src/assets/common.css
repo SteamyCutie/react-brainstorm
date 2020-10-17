@@ -642,16 +642,12 @@
   display: none;
 }
 
-/* .toolbar-ul-select {
-  background-image: url("../images/whiteboard-select.svg") !important;
-}
-
-.toolbar-ul-pen {
-  background-image: url("../images/whiteboard-draw.svg") !important;
-} */
-
 .draggable-room-item {
-  height: 100vh;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 .draggable-room-background{
