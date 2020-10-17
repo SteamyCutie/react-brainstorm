@@ -20,8 +20,16 @@ export default class NavbarSearch extends React.Component{
       searchText: ''
     }
   }
+  
   onChangeSearchText(e) {
     this.setState({searchText: e.target.value});
+  }
+
+  handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.onSearch();
+    }
   }
 
   onSearch() {
@@ -38,6 +46,7 @@ export default class NavbarSearch extends React.Component{
           <FormInput
             className="navbar-search"
             placeholder="Enter the category or mentor's name"
+            onKeyDown={(e) => this.handleKeyDown(e)}
             onChange={(e) => this.onChangeSearchText(e)}
           />
           <InputGroupAddon type="append">
