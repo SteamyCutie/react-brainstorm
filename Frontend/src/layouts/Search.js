@@ -40,11 +40,6 @@ export default class SearchLayout extends React.Component {
   }
 
   componentWillMount() {
-    // if(!localStorage.getItem('token')) {
-    //   window.location.href = '/';
-    //   return;
-    // }
-
     Store.addChangeListener(this.onChange);
     let { pageNo } = this.state;
     this.menuClicked("", pageNo);
