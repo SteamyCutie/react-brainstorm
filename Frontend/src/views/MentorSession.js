@@ -278,7 +278,7 @@ class CustomMonthEvent extends React.Component {
 
 const ToolBar = ({changeMonth, showLoading}) => props => {
   const [alignment, setAlignment] = React.useState("right");
-  const [selectedTag, setSelectedTag] = React.useState("");
+  const [selectedTag] = React.useState("");
   const [tags] = React.useState([
     {id: 1, name: 'Algebra'}, 
     {id: 2, name: 'Mathematics'},
@@ -492,13 +492,6 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
     }
   }
 
-  const removeSession = () => {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('ws');
-  }
-
   return (
     <div>
       <div className="toolbar-class">
@@ -549,7 +542,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
             <FormSelect id="feInputState" onChange={(e) => onChangeTag(e)}>
               <option value="">select tag</option>
               {tags.map((item, idx) =>                 
-                selectedTag == item.id ? <option key={idx} value={item.id} selected>{item.name}</option>
+                selectedTag === item.id ? <option key={idx} value={item.id} selected>{item.name}</option>
                   : <option key={idx} value={item.id}>{item.name}</option>
               )}
             </FormSelect>

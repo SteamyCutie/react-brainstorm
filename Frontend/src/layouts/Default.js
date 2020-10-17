@@ -20,7 +20,7 @@ export default class DefaultLayout extends React.Component {
 
     this.outcomingRef = React.createRef();
     let filterType = false;
-    if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
+    if (JSON.parse(localStorage.getItem('user-type')) !== null || JSON.parse(localStorage.getItem('user-type')) !== undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
       if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentorDashboard") {
@@ -73,7 +73,7 @@ export default class DefaultLayout extends React.Component {
       var {notifications} = self.state;
       notifications = [];
       for (var i = 0; i < data.message.length; i ++) {
-        if (localStorage.getItem('user_id') == data.message[i].user_id){
+        if (localStorage.getItem('user_id') === data.message[i].user_id){
           var temp = notifications;
           temp.push(data.message[i]);
         }
@@ -112,7 +112,7 @@ export default class DefaultLayout extends React.Component {
 
   onChange() {
     let filterType = false;
-    if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
+    if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) !== undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
       if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentorDashboard") {

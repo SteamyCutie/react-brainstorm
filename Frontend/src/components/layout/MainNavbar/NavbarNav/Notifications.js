@@ -1,4 +1,3 @@
-import { notification } from "antd";
 import React from "react";
 import { NavItem, NavLink, Badge, Collapse, DropdownItem } from "shards-react";
 import NotificationsNone from '@material-ui/icons/NotificationsNone';

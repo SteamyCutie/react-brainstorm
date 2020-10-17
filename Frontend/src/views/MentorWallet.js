@@ -5,7 +5,6 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import WalletHeader from "../components/common/WalletHeader";
 import SmallCard from "../components/common/SmallCard";
 import AddNewBank from "../components/common/AddNewBank";
 import CustomDataTable from "../components/common/CustomDataTable";

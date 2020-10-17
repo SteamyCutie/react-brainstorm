@@ -22,8 +22,6 @@ class NavbarDropdown extends React.Component {
       signInOpen: false,
       signUpOpen: false,
     };
-
-    let is_Mentor = false;
   }
 
   toggle(which) {

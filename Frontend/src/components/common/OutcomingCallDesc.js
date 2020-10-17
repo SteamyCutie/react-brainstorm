@@ -85,7 +85,7 @@ export default class OutcomingCallDesc extends React.Component {
   }
 
   toggle(accepted) {
-    const { callwithdescription, setDescription } = this.props;
+    const { setDescription } = this.props;
     if(accepted){
       // this.onDecline()
     } else {

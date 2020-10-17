@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, ModalBody, Row } from "shards-react";
+import { Button } from "shards-react";
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import "../../assets/landingpage.css"
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
@@ -8,10 +8,7 @@ import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/logo.png'
 import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
-import WhiteBoard, {
-  getWhiteBoardData,
-  loadWhiteBoardData,
-} from 'fabric-whiteboard'
+import WhiteBoard from 'fabric-whiteboard'
 import MuteMicImg from '../../images/mute-microphone.svg'
 import MuteVideoImg from '../../images/mute-video.svg'
 import ChatImg from '../../images/room-chat.svg'
@@ -24,7 +21,7 @@ import MiniFullScreen from '../../images/maximize.png'
 import MiniMuteMic from '../../images/many2many-mini-mute-mic.svg'
 import MiniMuteVideo from '../../images/many2many-mini-mute-video.svg'
 
-import { Chat, Channel, ChannelHeader, Thread, Window } from 'stream-chat-react';
+import { Chat, Channel, Thread, Window } from 'stream-chat-react';
 import { MessageList, MessageInput } from 'stream-chat-react';
 import { StreamChat } from 'stream-chat';
 import 'stream-chat-react/dist/css/index.css';
@@ -33,8 +30,6 @@ import { ACCESS_API_KEY, ACCESS_TOKEN_SECRET } from '../../common/config';
 var channel;
 var chatClient;
 const jwt = require('jsonwebtoken');
-
-const IN_CALL = 1;
 
 const master = {
 	signalingClient: null,
@@ -45,6 +40,8 @@ const master = {
   peerConnectionStatsInterval: null,
   isCamera: true, 
 }
+
+var viewerNamesByClientId = [];
 
 var viewer = [];
 
@@ -401,14 +398,30 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
       var container = document.getElementById("participants-video-container");
       var participantVideo = document.createElement("video");
       var divContainer = document.createElement("div");
+      var namespan = document.createElement("span");
       divContainer.appendChild(participantVideo);
+      divContainer.appendChild(namespan);
       container.appendChild(divContainer);
       
       divContainer.id = "master-participant-container-" + remoteClientId
+      divContainer.style = "position: relative";
+
       participantVideo.id = "participant-video-" + remoteClientId;
       participantVideo.className = "many2many-participant-video";
       participantVideo.autoplay = true;
       participantVideo.poster = PosterImg;
+
+      
+      console.log(viewerNamesByClientId, remoteClientId, "#419");
+      var index = 0
+      while(viewerNamesByClientId[index].clientId !== remoteClientId && index < viewerNamesByClientId.length) {
+        index ++;
+      }
+
+      console.log(viewerNamesByClientId[index].name, "#426");
+      namespan.textContent = viewerNamesByClientId[index].name;
+      namespan.id = "participant-name-" + viewerNamesByClientId[index].clientId;
+      namespan.style = "position: absolute; left: 0px; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
 
       const peerConnection = new RTCPeerConnection(configuration)
       master.peerConnectionByClientId[remoteClientId] = peerConnection
@@ -620,15 +633,9 @@ export default class Many2Many extends React.Component {
   onStatsReport(report) {}
 
   componentDidMount() {
-    const that = this;
     this.ws = this.props.ws;
     this.videoInput = document.getElementById('videoInput');
     this.videoOutput = document.getElementById('videoOutput');
-    var options = {
-      localVideo: this.videoInput,
-      remoteVideo: this.videoOutput,
-      onicecandidate: this.onIceCandidate
-    }
 
     const formValues = this.getFormValuesMaster();
     startMasterMany(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
@@ -636,8 +643,6 @@ export default class Many2Many extends React.Component {
 
     let avatar = localStorage.getItem("avatar");
     var user_name = localStorage.getItem("user_name").replace(" ", "-");
-    const first_name = user_name.split('-')[0];
-    const last_name = user_name.split('-')[1];
 
     const userToken = jwt.sign({ user_id: user_name }, ACCESS_TOKEN_SECRET);
     chatClient = new StreamChat(ACCESS_API_KEY, { timeout: 6000 });
@@ -768,19 +773,19 @@ export default class Many2Many extends React.Component {
 
   calcBoundsSize() {
     return
-    const domApp = document.getElementById('App')
-    const domToolbar = document.getElementById('toolbar')
+    // const domApp = document.getElementById('App')
+    // const domToolbar = document.getElementById('toolbar')
 
-    const domAppStyle = window.getComputedStyle(domApp)
-    const domToolbarStyle = window.getComputedStyle(domToolbar)
+    // const domAppStyle = window.getComputedStyle(domApp)
+    // const domToolbarStyle = window.getComputedStyle(domToolbar)
 
-    this.setState({
-      width: domAppStyle.width,
-      height: `${parseInt(domAppStyle.height, 10) -
-        parseInt(domToolbarStyle.height, 10) -
-        20
-        }px`,
-    })
+    // this.setState({
+    //   width: domAppStyle.width,
+    //   height: `${parseInt(domAppStyle.height, 10) -
+    //     parseInt(domToolbarStyle.height, 10) -
+    //     20
+    //     }px`,
+    // })
   }
 
   handleBoundsSizeChange() {
@@ -792,19 +797,21 @@ export default class Many2Many extends React.Component {
     
     participants.forEach((participant, index) => {
       viewer.push({});
+      viewerNamesByClientId.push({name: participant.userName, clientId: participant.channelName});
+
       var container = document.getElementById("participants-video-container");
       var participantVideo = document.createElement("video");
       var masterVideo = document.createElement("video");
       var divContainer = document.createElement("div");
-      var namespan = document.createElement("span");
+      // var namespan = document.createElement("span");
       divContainer.appendChild(participantVideo);
       divContainer.appendChild(masterVideo);
-      divContainer.appendChild(namespan);
+      // divContainer.appendChild(namespan);
       container.appendChild(divContainer);
       
-      namespan.textContent = participant.userName;
-      namespan.id = "participant-name-" + participant.channelName;
-      namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
+      // namespan.textContent = participant.userName;
+      // namespan.id = "participant-name-" + participant.channelName;
+      // namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
       
       divContainer.id = "participant-container-" + participant.channelName
       participantVideo.id = participant.channelName;
@@ -847,20 +854,22 @@ export default class Many2Many extends React.Component {
 
   newParticipant(channelName, userName) {
     viewer.push({});
+    viewerNamesByClientId.push({name: userName, clientId: channelName});
+
     var index = viewer.length - 1;
     var container = document.getElementById("participants-video-container");
     var participantVideo = document.createElement("video");
     var masterVideo = document.createElement("video");
     var divContainer = document.createElement("div");
-    var namespan = document.createElement("span");
+    // var namespan = document.createElement("span");
     divContainer.appendChild(participantVideo);
     divContainer.appendChild(masterVideo);
-    divContainer.appendChild(namespan);
+    // divContainer.appendChild(namespan);
     container.appendChild(divContainer);
     
-    namespan.textContent = userName;
-    namespan.id = "participant-name-" + channelName;
-    namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
+    // namespan.textContent = userName;
+    // namespan.id = "participant-name-" + channelName;
+    // namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
     
     participantVideo.id = channelName;
     participantVideo.style = "display: none";
@@ -908,7 +917,7 @@ export default class Many2Many extends React.Component {
       if(viewer[index].channelName === channelName) {
         stopViewerMany(index);
         document.getElementById("master-participant-container-" + channelName).remove();
-        document.getElementById("participant-name-" + channelName).remove();
+        // document.getElementById("participant-name-" + channelName).remove();
         viewer.slice(index, 1);
         break;
       }
@@ -1023,7 +1032,7 @@ export default class Many2Many extends React.Component {
               </div>
               
               <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px"}} onClick={() => this.handleEnd()}>
-                <img src={DeclineImg} alt="Phone" style={{height: "60px", width: "60px", color: "#"}} alt="Decline"/>
+                <img src={DeclineImg} style={{height: "60px", width: "60px", color: "#"}} alt="Decline"/>
               </Button>
             </div>
           }

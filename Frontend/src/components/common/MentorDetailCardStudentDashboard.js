@@ -61,7 +61,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
               if (idx < 3)
                 return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
               else if (idx === 3)
-                return <p key={idx} href="javascript:void(0)">{tag_name.length - 3} more</p>
+                return <p key={idx}>{tag_name.length - 3} more</p>
               else 
                 return <></>;
             })}

@@ -65,8 +65,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    var wsUri = 'wss://media.brainsshare.com/one2one';
-    // var wsUri = 'wss://192.168.105.13:8443/one2one';
+    // var wsUri = 'wss://media.brainsshare.com/one2one';
+    var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -254,7 +254,7 @@ export default class App extends React.Component{
     }
   }
 
-  stop(message) {
+  stop(status) {
     if(this.state.callState !== NO_CALL) {
       var response = {
         id : 'stop'
@@ -486,9 +486,7 @@ export default class App extends React.Component{
     this.sendMessage(message);
   }
 
-  joinRoomResponse(message) {
-    console.log(message.response)
-  }
+  joinRoomResponse(message) {}
 
   existingParticipants(message) {
     this.many2manyRef.current.existingParticipants(message.data)
@@ -503,7 +501,7 @@ export default class App extends React.Component{
   }
 
   render() {
-    const { incomingCallStatus, outcomingCallStatus} = this.state;
+    const { incomingCallStatus, outcomingCallStatus, callState, from, call, isAccepted, channel_name } = this.state;
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
@@ -517,8 +515,7 @@ export default class App extends React.Component{
                   component={withTracker(props => {
                     return (
                       <route.layout {...props}>
-                        <route.component {...props} from={this.state.from} callState={this.state.callState} ws={this.ws} 
-                          setWebRtcPeer={this.setWebRtcPeer} setUser={this.setUser} stop={this.stop}/>
+                        <route.component {...props} ws={this.ws} setUser={this.setUser} stop={this.stop}/>
                       </route.layout>
                     );
                   })}
@@ -560,7 +557,7 @@ export default class App extends React.Component{
               }
             }
           })}
-          {this.state.call && 
+          {call && 
             <div className="draggable-video-item">
               <Draggable
                 bounds="parent"
@@ -568,15 +565,15 @@ export default class App extends React.Component{
               >
                 <div className="box" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <VideoCallMin 
-                    accepted={this.state.isAccepted}
+                    accepted={isAccepted}
                     open={true} 
                     toggle={() => this.toggle_videocall()}
                     onDecline={() => this.outcomingCallDecline()}
                     sendErrorMsg={this.sendErrorMsg}
                     fullScreen={this.fullScreen}
-                    from={this.state.from} fromName={this.state.fromName} channel_name={this.state.channel_name} to={this.state.to} toName={this.state.toName} 
+                    from={from} fromName={this.state.fromName} channel_name={channel_name} to={this.state.to} toName={this.state.toName} 
                     description={this.state.callDescription}
-                    callState={this.state.callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
+                    callState={callState} ws={this.ws} setWebRtcPeer={this.setWebRtcPeer} stop={this.stop}
                   />
                 </div>
               </Draggable>

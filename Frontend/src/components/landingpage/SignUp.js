@@ -1,5 +1,4 @@
 import React from "react";
-import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
 import AWS from 'aws-sdk'
 import { Button, Modal, ModalBody, FormInput } from "shards-react";
 import Loginbygoogle from "../common/Loginbygoogle";
