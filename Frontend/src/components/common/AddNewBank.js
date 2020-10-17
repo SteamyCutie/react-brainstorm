@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput, Col, Row, FormSelect } from "shards-react";
+import { Modal, ModalBody, Button, FormSelect } from "shards-react";
 import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
 import { createpayment, signout } from '../../api/api';

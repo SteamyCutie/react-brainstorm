@@ -12,7 +12,7 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 import LoadingModal from "../components/common/LoadingModal";
-import { getlibrary, signout } from '../api/api';
+import { getlibrary } from '../api/api';
 import LibrarySavedContent from "../components/common/LibrarySavedContent"
 // import SmallCard3 from "../components/common/SmallCard3"
 

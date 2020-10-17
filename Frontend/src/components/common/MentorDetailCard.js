@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Row, Col } from "shards-react";
+import { Button, Row } from "shards-react";
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
@@ -60,7 +60,7 @@ class MentorDetailCard extends React.Component {
                 if (idx < 3)
                   return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
                 else if (idx === 3)
-                  return <p key={idx} href="javascript:void(0)">{tag_name.length - 3} more</p>
+                  return <p key={idx}>{tag_name.length - 3} more</p>
                 else 
                   return <></>;
               })}

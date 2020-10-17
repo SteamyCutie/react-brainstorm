@@ -23,9 +23,7 @@ export default class MainNavbar extends React.Component{
     this.state = {
       signInOpen: false,
       signUpOpen: false,
-      // isMentor: true, 
     }
-    let is_Mentor = false;
   }
 
   toggle_signin() {
