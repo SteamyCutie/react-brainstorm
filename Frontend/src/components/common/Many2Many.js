@@ -954,7 +954,7 @@ export default class Many2Many extends React.Component {
             <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
             <span className="local-video-name">{localStorage.getItem("user_name")} (You)</span>
           </div>
-          <div id="participants-video-container" className="participants-video-container">
+          <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
           </div>
           {this.state.showChat &&
             <div className="room-group-chat">
