@@ -383,9 +383,13 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
         // master.localStream[0] = await navigator.mediaDevices.getUserMedia(constraints)
         // master.localStream[1] = await navigator.mediaDevices.getDisplayMedia(constraints)
         // localView.srcObject = master.localStream[0]
-
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-        localView.srcObject = master.localStream
+        // if((navigator.mediaDevices && navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia) && !!window.AudioContext && !!window.Worker) {
+          master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+          localView.srcObject = master.localStream
+        // } else {
+          // master.localStream = null;
+          // console.error('[MASTER] Could not find webcam');      
+        // }
     } catch (e) {
       master.localStream = null;
       console.error('[MASTER] Could not find webcam');
