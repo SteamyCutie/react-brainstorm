@@ -387,6 +387,7 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
         master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
         localView.srcObject = master.localStream
     } catch (e) {
+      master.localStream = null;
       console.error('[MASTER] Could not find webcam');
     }
   }
