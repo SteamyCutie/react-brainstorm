@@ -719,6 +719,28 @@ export default class Many2Many extends React.Component {
     }
   }
 
+  muteAudio() {
+    master.localStream.getAudioTracks()[0].enabled = !master.localStream.getAudioTracks()[0].enabled;
+    
+    viewer.forEach(participant => {
+      participant.localStream.getAudioTracks().forEach(track => {
+        track.enabled = !track.enabled;
+      });
+    });
+  }
+
+  muteVideo() {
+    master.localStream.getTracks().forEach(track => {
+      track.enabled = !track.enabled;
+    });
+
+    viewer.forEach(participant => {
+      participant.localStream.getTracks().forEach(track => {
+        track.enabled = !track.enabled;
+      })
+    });
+  }
+
   chat() {
     this.setState({
       showChat: !this.state.showChat, 
@@ -856,26 +878,18 @@ export default class Many2Many extends React.Component {
     var participantVideo = document.createElement("video");
     var masterVideo = document.createElement("video");
     var divContainer = document.createElement("div");
-    // var namespan = document.createElement("span");
     divContainer.appendChild(participantVideo);
     divContainer.appendChild(masterVideo);
-    // divContainer.appendChild(namespan);
     container.appendChild(divContainer);
-    
-    // namespan.textContent = userName;
-    // namespan.id = "participant-name-" + channelName;
-    // namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
     
     participantVideo.id = channelName;
     participantVideo.style = "display: none";
-    // participantVideo.className = "many2many-participant-video";
     participantVideo.autoplay = true;
     participantVideo.muted = true;
     participantVideo.poster = PosterImg;
 
     masterVideo.id = channelName + "-master";
     masterVideo.style = "display: none";
-    // masterVideo.className = "many2many-participant-video";
     masterVideo.autoplay = true;
     masterVideo.muted = true;
     masterVideo.poster = PosterImg;
@@ -932,10 +946,10 @@ export default class Many2Many extends React.Component {
               </Button>
               
               <div className="">
-                <Button className="btn-rooom-control-mini float-center">
+                <Button className="btn-rooom-control-mini float-center" onClick={() => this.muteAudio()}>
                   <img src={MiniMuteMic} alt="Mute mic"/>
                 </Button>
-                <Button className="btn-rooom-control-mini float-center">
+                <Button className="btn-rooom-control-mini float-center" onClick={() => this.muteVideo()}>
                   <img src={MiniMuteVideo} alt="Mute video"/>
                 </Button>
               </div>
