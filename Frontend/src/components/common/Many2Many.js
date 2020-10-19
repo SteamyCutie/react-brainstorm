@@ -46,7 +46,6 @@ var viewerNamesByClientId = [];
 var viewer = [];
 
 async function startViewerMany(index, localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
-  // navigator.mediaDevices.getUserMedia({audio: true});
   var addEventListenerCount = false;
 
   viewer[index].localView = localView;
@@ -127,11 +126,6 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
       systemClockOffset: kinesisVideoClient.config.systemClockOffset,
   });
 
-  const resolution = formValues.widescreen ? { width: { ideal: 1280 }, height: { ideal: 720 } } : { width: { ideal: 640 }, height: { ideal: 480 } };
-  const constraints = {
-    video: formValues.sendVideo ? resolution : false,
-    audio: formValues.sendAudio,
-  };
   const configuration = {
     iceServers,
     iceTransportPolicy: formValues.forceTURN ? 'relay' : 'all',
@@ -155,11 +149,28 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
     // Otherwise, the browser will throw an error saying that either video or audio has to be enabled.
     if (formValues.sendVideo || formValues.sendAudio) {
       try {
+        const resolution = formValues.widescreen ? { width: { ideal: 1280 }, height: { ideal: 720 } } : { width: { ideal: 640 }, height: { ideal: 480 } };
+        const constraints = {
+          video: formValues.sendVideo ? resolution : false,
+          audio: formValues.sendAudio,
+        };
+
+        viewer[index].localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        viewer[index].localStream.getTracks().forEach(track => viewer[index].peerConnection.addTrack(track, viewer[index].localStream));
+        localView.srcObject = viewer[index].localStream;
+      } catch (e) {
+        console.error('[VIEWER] Could not find webcam');
+        try{
+          const constraints = {
+            audio: formValues.sendAudio,
+          };
+
           viewer[index].localStream = await navigator.mediaDevices.getUserMedia(constraints);
           viewer[index].localStream.getTracks().forEach(track => viewer[index].peerConnection.addTrack(track, viewer[index].localStream));
           localView.srcObject = viewer[index].localStream;
-      } catch (e) {
-        console.error('[VIEWER] Could not find webcam');
+        } catch(e) {
+          console.error('[VIEWER] Could not find audio device');
+        }
       }
     }
 
@@ -225,23 +236,6 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
     console.log('[VIEWER] Received remote track');
 
     if (!addEventListenerCount) {
-      // var container = document.getElementById("participants-video-container");
-      // var participantVideo = document.createElement("video");
-      // var divContainer = document.createElement("div");
-      // divContainer.appendChild(participantVideo);
-      // container.appendChild(divContainer);
-      
-      // participantVideo.className = "many2many-participant-video";
-      // participantVideo.autoplay = true;
-      // participantVideo.poster = PosterImg;
-      // participantVideo.style = "display: none";
-
-      // var participantVideos = document.getElementsByClassName("many2many-participant-video");
-      // if (participantVideos[participantVideos.length - 1].srcObject) {
-      //   return
-      // }
-      // participantVideos[participantVideos.length - 1].srcObject = event.streams[0]
-
       addEventListenerCount = true;
     } else {
       addEventListenerCount = false;
@@ -293,7 +287,6 @@ function stopViewerMany(index) {
 }
 
 async function startMasterMany(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
-  // navigator.mediaDevices.getUserMedia({audio: true});
   master.localView = localView
   master.remoteView = remoteView
 
@@ -372,27 +365,32 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
       iceTransportPolicy: formValues.forceTURN ? 'relay' : 'all',
   }
 
-  const resolution = formValues.widescreen ? { width: { ideal: 1280 }, height: { ideal: 720 } } : { width: { ideal: 640 }, height: { ideal: 480 } }
-  const constraints = {
-      video: formValues.sendVideo ? resolution : false,
-      audio: formValues.sendAudio,
-  }
-
   if (formValues.sendVideo || formValues.sendAudio) {
     try {
         // master.localStream[0] = await navigator.mediaDevices.getUserMedia(constraints)
         // master.localStream[1] = await navigator.mediaDevices.getDisplayMedia(constraints)
         // localView.srcObject = master.localStream[0]
         // if((navigator.mediaDevices && navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia) && !!window.AudioContext && !!window.Worker) {
-          master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
-          localView.srcObject = master.localStream
-        // } else {
-          // master.localStream = null;
-          // console.error('[MASTER] Could not find webcam');      
-        // }
+        const resolution = formValues.widescreen ? { width: { ideal: 1280 }, height: { ideal: 720 } } : { width: { ideal: 640 }, height: { ideal: 480 } }
+        const constraints = {
+            video: formValues.sendVideo ? resolution : false,
+            audio: formValues.sendAudio,
+        }
+        
+        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        localView.srcObject = master.localStream
     } catch (e) {
       master.localStream = null;
       console.error('[MASTER] Could not find webcam');
+      try {
+        const constraints = {
+            audio: formValues.sendAudio,
+        }  
+        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        localView.srcObject = master.localStream
+      } catch (e) {
+        console.error('[MASTER] Could not find audio device');
+      }
     }
   }
 
@@ -576,14 +574,6 @@ export default class Many2Many extends React.Component {
     this.newParticipant = this.newParticipant.bind(this);
     this.leftRoom = this.leftRoom.bind(this);
   }
-
-  componentWillMount() {}
-
-  // toggle() {
-  //   const { toggle } = this.props;
-  //   this.handleStop();
-  //   toggle();
-  // }
 
   handleEnd() {
     this.handleStop();
