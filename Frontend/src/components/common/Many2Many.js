@@ -10,7 +10,9 @@ import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
 import WhiteBoard from 'fabric-whiteboard'
 import MuteMicImg from '../../images/mute-microphone.svg'
+import MutedMicImg from '../../images/muted-microphone.svg'
 import MuteVideoImg from '../../images/mute-video.svg'
+import MutedVideoImg from '../../images/muted-video.svg'
 import ChatImg from '../../images/room-chat.svg'
 import ScreenshareImg from '../../images/room-screenshare.svg'
 import AddUserImg from '../../images/room-adduser.svg'
@@ -852,27 +854,19 @@ export default class Many2Many extends React.Component {
       var participantVideo = document.createElement("video");
       var masterVideo = document.createElement("video");
       var divContainer = document.createElement("div");
-      // var namespan = document.createElement("span");
       divContainer.appendChild(participantVideo);
       divContainer.appendChild(masterVideo);
-      // divContainer.appendChild(namespan);
       container.appendChild(divContainer);
-      
-      // namespan.textContent = participant.userName;
-      // namespan.id = "participant-name-" + participant.channelName;
-      // namespan.style = "position: absolute; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
       
       divContainer.id = "participant-container-" + participant.channelName
       participantVideo.id = participant.channelName;
       participantVideo.style = "display: none";
-      // participantVideo.className = "many2many-participant-video";
       participantVideo.autoplay = true;
       participantVideo.muted = true;
       participantVideo.poster = PosterImg;
 
       masterVideo.id = participant.channelName + "-master";
       masterVideo.style = "display: none";
-      // masterVideo.className = "many2many-participant-video";
       masterVideo.autoplay = true;
       masterVideo.muted = true;
       masterVideo.poster = PosterImg;
@@ -1055,11 +1049,11 @@ export default class Many2Many extends React.Component {
               </Button>
               
               <div className="">
-                <Button className="btn-rooom-control float-center">
-                  <img src={MuteMicImg} alt="Mute mic"/>
+                <Button className="btn-rooom-control float-center" onClick={() => this.muteAudio()}>
+                  <img src={isMuted ? MutedMicImg : MuteMicImg} alt="Mute mic"/>
                 </Button>
-                <Button className="btn-rooom-control float-center">
-                  <img src={MuteVideoImg} alt="Mute video"/>
+                <Button className="btn-rooom-control float-center" onClick={() => this.muteVideo()}>
+                  <img src={isVideoMuted ? MutedVideoImg : MuteVideoImg} alt="Mute video"/>
                 </Button>
                 <Button className="btn-rooom-control float-center" onClick={() => this.chat()}>
                   <img src={ChatImg} alt="Chat"/>
