@@ -65,8 +65,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    // var wsUri = 'wss://media.brainsshare.com/one2one';
-    var wsUri = 'wss://192.168.105.13:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -480,7 +480,7 @@ export default class App extends React.Component{
       userId: localStorage.getItem("user_id"), 
       userName: localStorage.getItem("user_name"), 
       channelName: localStorage.getItem("channel_name"), 
-      roomName: localStorage.getItem("room_id"),
+      roomName: sessionChannelName,
     }
 
     this.sendMessage(message);
