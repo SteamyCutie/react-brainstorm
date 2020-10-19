@@ -19,7 +19,9 @@ import DeclineImg from '../../images/call-decline.svg'
 import MiniEndCall from '../../images/many2many-mini-end.svg'
 import MiniFullScreen from '../../images/maximize.png'
 import MiniMuteMic from '../../images/many2many-mini-mute-mic.svg'
+import MiniMutedMic from '../../images/many2many-mini-muted-mic.svg'
 import MiniMuteVideo from '../../images/many2many-mini-mute-video.svg'
+import MiniMutedVideo from '../../images/many2many-mini-muted-video.svg'
 
 import { Chat, Channel, Thread, Window } from 'stream-chat-react';
 import { MessageList, MessageInput } from 'stream-chat-react';
@@ -559,6 +561,8 @@ export default class Many2Many extends React.Component {
       width: '600px',
       height: '600px',
       brushColor: '#f44336',
+      isMuted: false, 
+      isVideoMuted: false, 
     };
     this.onIceCandidate = this.onIceCandidate.bind(this);
     this.handleStop = this.handleStop.bind(this);
@@ -720,23 +724,51 @@ export default class Many2Many extends React.Component {
   }
 
   muteAudio() {
-    master.localStream.getAudioTracks()[0].enabled = !master.localStream.getAudioTracks()[0].enabled;
-    
-    viewer.forEach(participant => {
-      participant.localStream.getAudioTracks().forEach(track => {
-        track.enabled = !track.enabled;
-      });
+    this.setState({
+      isMuted: !this.state.isMuted, 
     });
-  }
 
-  muteVideo() {
     master.localStream.getTracks().forEach(track => {
-      track.enabled = !track.enabled;
+      if (track.kind === "audio") {
+        track.enabled = !track.enabled;
+        console.log(track);
+      }
     });
 
     viewer.forEach(participant => {
       participant.localStream.getTracks().forEach(track => {
+        if (track.kind === "audio") {
+          track.enabled = !track.enabled;
+          console.log(track);
+        }
+      })
+    });
+  }
+
+  muteVideo() {
+    this.setState({
+      isVideoMuted: !this.state.isVideoMuted, 
+    })
+
+    master.localStream.getTracks().forEach(track => {
+      if (track.kind === "video") {
         track.enabled = !track.enabled;
+      }
+
+      if (track.kind === "audio") {
+        track.enabled = true;
+      }
+    });
+
+    viewer.forEach(participant => {
+      participant.localStream.getTracks().forEach(track => {
+        if (track.kind === "video") {
+          track.enabled = !track.enabled;
+        }
+
+        if (track.kind === "audio") {
+          track.enabled = true;
+        }
       })
     });
   }
@@ -934,7 +966,7 @@ export default class Many2Many extends React.Component {
   }
 
   render() {
-    const { mode, width, height, brushColor } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
@@ -947,10 +979,10 @@ export default class Many2Many extends React.Component {
               
               <div className="">
                 <Button className="btn-rooom-control-mini float-center" onClick={() => this.muteAudio()}>
-                  <img src={MiniMuteMic} alt="Mute mic"/>
+                  <img src={isMuted ? MiniMutedMic : MiniMuteMic} alt="Mute mic"/>
                 </Button>
                 <Button className="btn-rooom-control-mini float-center" onClick={() => this.muteVideo()}>
-                  <img src={MiniMuteVideo} alt="Mute video"/>
+                  <img src={isVideoMuted ? MiniMutedVideo: MiniMuteVideo} alt="Mute video"/>
                 </Button>
               </div>
               
