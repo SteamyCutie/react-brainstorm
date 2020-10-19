@@ -29,6 +29,7 @@ export class Loginbygoogle extends Component {
         localStorage.setItem('avatar', result.data.user.avatar);
         localStorage.setItem('user_name', result.data.user.name);
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
+        localStorage.setItem('channel_name', result.data.user.channel_name);
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
         if (result.data.user.is_mentor === 1)
           window.location.href = "/mentorDashboard";
