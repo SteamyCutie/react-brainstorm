@@ -677,7 +677,7 @@
   margin-top: 5px;
   overflow: auto;
   position: absolute;
-  top: 30px;
+  top: 240px;
   right: 30px;
 }
 
@@ -744,14 +744,19 @@
 }
 
 .room-local-video-fullscreen {
-  border-radius: 0px !important;
+  /* border-radius: 0px !important;
   margin: 0px !important;
   width: 100vw !important;
   height: 100vh !important;
   object-fit: fill;
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: 0px; */
+  border-radius: 6px;
+    margin-top: 5px;
+    position: absolute;
+    top: 30px;
+    right: 30px;
 }
 
 .participants-video-container-fullscreen {
@@ -764,6 +769,17 @@
 .local-video-name {
   position: absolute;
   left: 3px;
+  top: 50px;
+  color: #04B5FA;
+  font-weight: bold;
+  background: #00000099;
+  padding: 0px 6px;
+  border-radius: 3px;
+}
+
+.local-video-name-fullscreen {
+  position: absolute;
+  right: 200px;
   top: 50px;
   color: #04B5FA;
   font-weight: bold;

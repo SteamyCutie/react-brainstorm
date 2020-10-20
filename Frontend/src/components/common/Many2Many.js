@@ -48,6 +48,7 @@ const master = {
 var viewerNamesByClientId = [];
 
 var viewer = [];
+var fullscreenMode = false;
 
 async function startViewerMany(index, localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
   var addEventListenerCount = false;
@@ -412,6 +413,7 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
       
       divContainer.id = "master-participant-container-" + remoteClientId
       divContainer.style = "position: relative";
+      divContainer.onclick = selectParticipantVideo;
 
       participantVideo.id = "participant-video-" + remoteClientId;
       participantVideo.className = "many2many-participant-video";
@@ -546,6 +548,19 @@ function stopMasterMany() {
   if (master.dataChannelByClientId) {
       master.dataChannelByClientId = {}
   }
+}
+
+
+function selectParticipantVideo(e) {
+  if (!fullscreenMode)
+    return;
+
+  var temp = e.target.id.split("-");
+  var participantId = temp[temp.length - 1];
+  var selectParticipantVideo = document.getElementById("participant-video-" + participantId);
+  var selectedVideoViewer = document.getElementById("selected-video-output");
+
+  selectedVideoViewer.srcObject = selectParticipantVideo.srcObject;
 }
 
 export default class Many2Many extends React.Component {
@@ -704,6 +719,8 @@ export default class Many2Many extends React.Component {
       showWhiteBoard: false,
     });
 
+    fullscreenMode = !fullscreenMode;
+
     if (document.getElementById("many2many-call-conatainer").classList.contains("one2one-fullscreen")) {
       document.getElementById("many2many-call-conatainer").classList.remove("one2one-fullscreen");
       document.getElementsByTagName("body")[0].classList.remove("scroll-none")
@@ -713,6 +730,8 @@ export default class Many2Many extends React.Component {
       document.getElementById("videoInput").classList.remove("room-local-video-fullscreen");
       document.getElementById("participants-video-container").classList.add("participants-video-container");
       document.getElementById("participants-video-container").classList.remove("participants-video-container-fullscreen");
+      document.getElementById("local-video-name").classList.add("local-video-name");
+      document.getElementById("local-video-name").classList.remove("local-video-name-fullscreen");
     } else {
       document.getElementsByClassName("react-draggable")[0].style.transform = "translate(69px, -120px)";
       document.getElementById("many2many-call-conatainer").classList.add("one2one-fullscreen");
@@ -722,6 +741,8 @@ export default class Many2Many extends React.Component {
       document.getElementById("videoInput").classList.add("room-local-video-fullscreen");
       document.getElementById("participants-video-container").classList.remove("participants-video-container");
       document.getElementById("participants-video-container").classList.add("participants-video-container-fullscreen");
+      document.getElementById("local-video-name").classList.remove("local-video-name");
+      document.getElementById("local-video-name").classList.add("local-video-name-fullscreen");
     }
   }
 
@@ -959,13 +980,21 @@ export default class Many2Many extends React.Component {
     }
   }
 
+  localVideoClick() {
+    console.log("%%%%%%%%%%%%%%%%%%%%%");
+    if (!this.state.isFullscreen)
+      return 
+    
+    document.getElementById("selected-video-output").srcObject = document.getElementById("videoInput").srcObject;
+  }
+
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
         <div className="video-call-element-min" id="video-call-element-min">
-          {!this.state.isFullscreen && 
+          {!isFullscreen && 
             <div className="room-control-container-mini">
               <Button className="btn-rooom-control-mini margin-right-auto" onClick={() => this.swithFullScreen()}>
                 <img src={MiniFullScreen} alt="Full Screen"/>
@@ -985,9 +1014,14 @@ export default class Many2Many extends React.Component {
               </Button>
             </div>
           }
+          {isFullscreen &&
+            <video id="selected-video-output" style={{  width: "100%", height: "100vh", objectFit: "fill"}}autoPlay poster={PosterImg} muted>
+
+            </video>
+          }
           <div id="room-local-video-container">
-            <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted></video>
-            <span className="local-video-name">{localStorage.getItem("user_name")} (You)</span>
+            <video id="videoInput" autoPlay width="320px" height="180px" style={{borderRadius: "6px", marginTop: "5px"}} poster={PosterImg} muted onClick={() => this.localVideoClick()}></video>
+            <span id="local-video-name" className="local-video-name">{localStorage.getItem("user_name")} (You)</span>
           </div>
           <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
           </div>
@@ -1042,7 +1076,7 @@ export default class Many2Many extends React.Component {
               />
             </div>
           }
-          {this.state.isFullscreen && 
+          {isFullscreen && 
             <div className="room-control-container">
               <Button className="btn-rooom-control margin-right-auto" onClick={() => this.swithFullScreen()}>
                 <img src={FullScreenImg} alt="Full Screen"/>
