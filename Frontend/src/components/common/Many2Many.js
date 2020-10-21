@@ -55,8 +55,6 @@ var screenStream = null;
 var switchStream = false; // true: Screensharing false : cameara
 
 async function startViewerMany(index, localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
-  var addEventListenerCount = false;
-
   viewer[index].localView = localView;
   viewer[index].remoteView = remoteView;
   viewer[index].channelName = formValues.channelName;
@@ -372,10 +370,6 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
 
   if (formValues.sendVideo || formValues.sendAudio) {
     try {
-        // master.localStream[0] = await navigator.mediaDevices.getUserMedia(constraints)
-        // master.localStream[1] = await navigator.mediaDevices.getDisplayMedia(constraints)
-        // localView.srcObject = master.localStream[0]
-        // if((navigator.mediaDevices && navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia) && !!window.AudioContext && !!window.Worker) {
         const resolution = formValues.widescreen ? { width: { ideal: 1280 }, height: { ideal: 720 } } : { width: { ideal: 640 }, height: { ideal: 480 } }
         const constraints = {
             video: formValues.sendVideo ? resolution : false,
@@ -463,9 +457,6 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
       })
 
       if (master.localStream) {
-        // master.localStream[0].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[0]))
-        // master.localStream[1].getTracks().forEach(track => peerConnection.addTrack(track, master.localStream[1]))
-
         master.localStream.getTracks().forEach(track => peerConnection.addTrack(track, master.localStream))
       }
       await peerConnection.setRemoteDescription(offer)
@@ -495,20 +486,12 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
 }
 
 async function master_switchToScreenshare() {
-  if (!master.isCamera) {
-    // document.getElementById("videoInput").srcObject = master.localStream[1];
-    // master.isCamera = !master.isCamera;
-  } else {
-    // document.getElementById("videoInput").srcObject = master.localStream[0];
-    // master.isCamera = !master.isCamera;
-  }
-
-  const constraints = {
-    video: true, 
-    audio: false, 
-  }
-
   if (!screenStreamSetted) {
+    const constraints = {
+      video: true, 
+      audio: false, 
+    }
+
     screenStream = await navigator.mediaDevices.getDisplayMedia(constraints)
     screenStreamSetted = true;
 
@@ -537,11 +520,6 @@ function stopMasterMany() {
   master.peerConnectionByClientId = []
 
   if (master.localStream) {
-      // master.localStream[0].getTracks().forEach(track => track.stop())
-      // master.localStream[0] = null
-      // master.localStream[1].getTracks().forEach(track => track.stop())
-      // master.localStream[1] = null
-
       master.localStream.getTracks().forEach(track => track.stop())
       master.localStream = null
   }
