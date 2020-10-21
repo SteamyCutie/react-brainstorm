@@ -46,9 +46,13 @@ const master = {
 }
 
 var viewerNamesByClientId = [];
-
+var senders = [];
 var viewer = [];
 var fullscreenMode = false;
+var screenStreamSetted = false;
+var cameraStream = null;
+var screenStream = null;
+var switchStream = false; // true: Screensharing false : cameara
 
 async function startViewerMany(index, localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
   var addEventListenerCount = false;
@@ -160,8 +164,10 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           audio: formValues.sendAudio,
         };
 
-        viewer[index].localStream = await navigator.mediaDevices.getUserMedia(constraints);
-        viewer[index].localStream.getTracks().forEach(track => viewer[index].peerConnection.addTrack(track, viewer[index].localStream));
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        viewer[index].localStream = cameraStream;
+        viewer[index].localStream.getTracks().forEach(track => senders.push(viewer[index].peerConnection.addTrack(track, viewer[index].localStream)));
+        console.log(senders, "#169");
         localView.srcObject = viewer[index].localStream;
       } catch (e) {
         console.error('[VIEWER] Could not find webcam');
@@ -170,8 +176,9 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
             audio: formValues.sendAudio,
           };
 
-          viewer[index].localStream = await navigator.mediaDevices.getUserMedia(constraints);
-          viewer[index].localStream.getTracks().forEach(track => viewer[index].peerConnection.addTrack(track, viewer[index].localStream));
+          cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+          viewer[index].localStream = cameraStream;
+          viewer[index].localStream.getTracks().forEach(track => senders.push(viewer[index].peerConnection.addTrack(track, viewer[index].localStream)));
           localView.srcObject = viewer[index].localStream;
         } catch(e) {
           console.error('[VIEWER] Could not find audio device');
@@ -190,7 +197,6 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
 
     if (formValues.useTrickleICE) {
         console.log('[VIEWER] Sending SDP offer');
-        console.log(viewer, "#227");
         viewer[index].signalingClient.sendSdpOffer(viewer[index].peerConnection.localDescription);
     }
   });
@@ -239,12 +245,6 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
   // As remote tracks are received, add them to the remote view
   viewer[index].peerConnection.addEventListener('track', event => {
     console.log('[VIEWER] Received remote track');
-
-    if (!addEventListenerCount) {
-      addEventListenerCount = true;
-    } else {
-      addEventListenerCount = false;
-    }
   });
 
   console.log('[VIEWER] Starting viewer connection');
@@ -402,7 +402,6 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
   master.signalingClient.on('open', async () => {})
 
   master.signalingClient.on('sdpOffer', async (offer, remoteClientId) => {
-      console.log("#399")
       var container = document.getElementById("participants-video-container");
       var participantVideo = document.createElement("video");
       var divContainer = document.createElement("div");
@@ -420,14 +419,11 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
       participantVideo.autoplay = true;
       participantVideo.poster = PosterImg;
 
-      
-      console.log(viewerNamesByClientId, remoteClientId, "#419");
       var index = 0
       while(viewerNamesByClientId[index].clientId !== remoteClientId && index < viewerNamesByClientId.length) {
         index ++;
       }
 
-      console.log(viewerNamesByClientId[index].name, "#426");
       namespan.textContent = viewerNamesByClientId[index].name;
       namespan.id = "participant-name-" + viewerNamesByClientId[index].clientId;
       namespan.style = "position: absolute; left: 0px; color: #04B5FA; font-weight: bold; padding: 0px 6px; background: #00000099; border-radius: 3px; margin-top: 3px; margin-left: 3px"
@@ -505,6 +501,27 @@ async function master_switchToScreenshare() {
   } else {
     // document.getElementById("videoInput").srcObject = master.localStream[0];
     // master.isCamera = !master.isCamera;
+  }
+
+  const constraints = {
+    video: true, 
+    audio: false, 
+  }
+
+  if (!screenStreamSetted) {
+    screenStream = await navigator.mediaDevices.getDisplayMedia(constraints)
+    screenStreamSetted = true;
+
+    senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
+    switchStream = true;
+  } else {
+    if(switchStream) {
+      senders.find(sender => sender.track.kind === 'video').replaceTrack(cameraStream.getTracks().find(track => track.kind === 'video'));
+      switchStream = !switchStream;
+    } else {
+      senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
+      switchStream = !switchStream;
+    }
   }
 }
 
@@ -773,15 +790,15 @@ export default class Many2Many extends React.Component {
       isVideoMuted: !this.state.isVideoMuted, 
     })
 
-    master.localStream.getTracks().forEach(track => {
-      if (track.kind === "video") {
-        track.enabled = !track.enabled;
-      }
+    // master.localStream.getTracks().forEach(track => {
+    //   if (track.kind === "video") {
+    //     track.enabled = !track.enabled;
+    //   }
 
-      if (track.kind === "audio") {
-        track.enabled = true;
-      }
-    });
+    //   if (track.kind === "audio") {
+    //     track.enabled = true;
+    //   }
+    // });
 
     viewer.forEach(participant => {
       participant.localStream.getTracks().forEach(track => {
@@ -865,8 +882,6 @@ export default class Many2Many extends React.Component {
   }
 
   existingParticipants(participants) {
-    console.log(participants);
-    
     participants.forEach((participant, index) => {
       viewer.push({});
       viewerNamesByClientId.push({name: participant.userName, clientId: participant.channelName});
@@ -965,7 +980,6 @@ export default class Many2Many extends React.Component {
   }
 
   leftRoom(channelName) {
-    console.log(channelName,"#885");
     var index = 0;
     
     // Stop Viewer
@@ -981,7 +995,6 @@ export default class Many2Many extends React.Component {
   }
 
   localVideoClick() {
-    console.log("%%%%%%%%%%%%%%%%%%%%%");
     if (!this.state.isFullscreen)
       return 
     
@@ -1103,7 +1116,7 @@ export default class Many2Many extends React.Component {
               </div>
               
               <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px"}} onClick={() => this.handleEnd()}>
-                <img src={DeclineImg} style={{height: "60px", width: "60px", color: "#"}} alt="Decline"/>
+                <img src={DeclineImg} style={{height: "60px", width: "60px"}} alt="Decline"/>
               </Button>
             </div>
           }
