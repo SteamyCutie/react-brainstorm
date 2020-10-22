@@ -162,17 +162,18 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           audio: formValues.sendAudio,
         };
 
+        console.log(switchStream, "#165");
         if (switchStream) {
           viewer[index].localStream = screenStream;
         } else {
           cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
           viewer[index].localStream = cameraStream;
         }
-        
+
         viewer[index].localStream.getTracks().forEach(track => senders.push(viewer[index].peerConnection.addTrack(track, viewer[index].localStream)));
         localView.srcObject = viewer[index].localStream;
       } catch (e) {
-        console.error('[VIEWER] Could not find webcam');
+        // console.error('[VIEWER] Could not find webcam');
         try{
           const constraints = {
             audio: formValues.sendAudio,
@@ -183,7 +184,7 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           viewer[index].localStream.getTracks().forEach(track => senders.push(viewer[index].peerConnection.addTrack(track, viewer[index].localStream)));
           localView.srcObject = viewer[index].localStream;
         } catch(e) {
-          console.error('[VIEWER] Could not find audio device');
+          // console.error('[VIEWER] Could not find audio device');
         }
       }
     }
@@ -291,23 +292,6 @@ function stopViewerMany(index) {
   if (viewer[index].dataChannel) {
       viewer[index].dataChannel = null;
   }
-
-  // if (cameraStream) {
-  //   cameraStream = null;
-  // }
-
-  // if (screenStream) {
-  //   screenStream.getTracks().forEach((track) => {
-  //     track.stop();
-  //   });
-
-  //   screenStream = null;
-  //   screenStreamSetted = false;
-  // }
-
-  // if (switchStream) {
-  //   switchStream = false;
-  // }
 }
 
 async function startMasterMany(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
@@ -517,23 +501,30 @@ async function master_switchToScreenshare() {
     screenStreamSetted = true;
 
     if (senders.length === 0) {
+      switchStream = true;
       return;
     }
 
     senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
     switchStream = true;
-    console.log("#513");
   } else {
+    console.log(senders, "#528");
+    if (senders.length === 0) {
+      switchStream = !switchStream;  
+      return;
+    }
+
     if(switchStream) {
-      senders.find(sender => sender.track.kind === 'video').replaceTrack(cameraStream.getTracks().find(track => track.kind === 'video'));
-      switchStream = !switchStream;
-      console.log("#518");
+      console.log(cameraStream.getTracks(), "#535");
+
+      senders.find(sender => sender.track.kind === 'video').replaceTrack(cameraStream.getTracks()[1]);
     } else {
       senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
-      switchStream = !switchStream;
-      console.log("#525");
+      console.log(senders, "#539");
     }
+    switchStream = !switchStream;
   }
+  console.log(switchStream, "#543");
 }
 
 function stopMasterMany() {
@@ -1074,8 +1065,10 @@ export default class Many2Many extends React.Component {
         stopViewerMany(index);
         document.getElementById("master-participant-container-" + channelName).remove();
         // document.getElementById("participant-name-" + channelName).remove();
-        viewer.slice(index, 1);
-        senders.slice(index, 1);
+        viewer.splice(index, 1);
+        senders.splice(2 * index, 2);
+        // senders.slice(2 * index, 1);
+        console.log(index, senders, "#1080");
         break;
       }
     }
