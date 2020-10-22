@@ -39,7 +39,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
   }
   
   render() {
-    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
+    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark } = this.props.mentorData;
 
     return (
       <div className="mentor-detail-card">
@@ -81,12 +81,15 @@ class MentorDetailCardStudentDashboard extends React.Component {
               $ {hourly_price} / 60 min
             </p>
           </Row>
-          <Row className="center">
-            {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive(id)}>
-              <img src={Lightening} alt="Lightening"/>
-              Available now
-            </Button> : <></> }
-          </Row>
+          {status ? 
+            <Row className="center">
+              {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive(id)}>
+                <img src={Lightening} alt="Lightening"/>
+                Available now
+              </Button> : <></> }
+            </Row>
+            : null
+          }
           <Row className="center">
             <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
               <img src={Clock} alt="Clock" />
