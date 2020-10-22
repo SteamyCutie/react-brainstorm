@@ -235,7 +235,18 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   startSession(id) {
-    this.props.startSession(localStorage.getItem("channel_name"));
+    const {forumInfos} = this.state;
+    var index = 0;
+    var room_id = null;
+
+    for (index = 0; index < forumInfos.length; index ++) {
+      if (forumInfos[index].id === id) {
+        room_id = forumInfos[index].room_id;
+        break;
+      }
+    }
+
+    this.props.startSession(room_id);
   }
 
   render() {

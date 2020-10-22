@@ -454,9 +454,8 @@ export default class App extends React.Component{
     return this.state.dragegableOnStart;
   }
 
-  startSession(sessionChannelName) {
+  startSession(room_id) {
     this.setState({
-      sessionChannelName: sessionChannelName.toString(), 
       roomCall: true, 
       isMaster: true, 
     });
@@ -466,15 +465,14 @@ export default class App extends React.Component{
       userId: localStorage.getItem("user_id"), 
       userName: localStorage.getItem("user_name"), 
       channelName: localStorage.getItem("channel_name"), 
-      roomName: localStorage.getItem("room_id"),
+      roomName: room_id,
     }
 
     this.sendMessage(message);
   }
 
-  joinSession(sessionChannelName) {
+  joinSession(room_id) {
     this.setState({
-      sessionChannelName: sessionChannelName.toString(), 
       roomCall: true, 
       isMaster: false, 
     })
@@ -484,7 +482,7 @@ export default class App extends React.Component{
       userId: localStorage.getItem("user_id"), 
       userName: localStorage.getItem("user_name"), 
       channelName: localStorage.getItem("channel_name"), 
-      roomName: sessionChannelName,
+      roomName: room_id,
     }
 
     this.sendMessage(message);
@@ -528,7 +526,7 @@ export default class App extends React.Component{
               );
             }
             else {
-              if (route.path === '/studentSession' || route.path === '/scheduleLiveForum') {
+              if (route.path === '/studentSession' || route.path === '/scheduleLiveForum' || route.path === '/mentorSession') {
                 return (
                   <Route
                     key={index}
