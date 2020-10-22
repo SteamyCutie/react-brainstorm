@@ -151,10 +151,10 @@ export default class Subscribe extends React.Component {
   }
 
   render() {
-    const { mentorData } = this.state;
+    const { mentorData, loading, subscriptionOpen, addnewcardModal } = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
+      {loading && <LoadingModal open={true} />}
       <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="specific-subsciption-card">
@@ -258,8 +258,8 @@ export default class Subscribe extends React.Component {
             </Row>
           </CardBody>
         </Card>
-        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
-        <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
+        <SubscribeModal item={mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
+        <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={addnewcardModal}></AddNewCard>
       </Container>
       </>
     );

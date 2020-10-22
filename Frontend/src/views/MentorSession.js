@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Button, FormSelect } from "shards-react";
+import { Container, Row, Button, FormSelect, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
@@ -561,7 +561,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
 
 
 const CustomMonthDateHeader = ({events}) => props => {
-
+  const [open, setOpen] = React.useState(false);
   const consoleFunction = () => {
     return true;
   }
@@ -574,10 +574,12 @@ const CustomMonthDateHeader = ({events}) => props => {
     return count;
   }
 
-  const consoleFunction2 = (date, view, e) => {
-    // const { onDrillDown, drilldownView } = props;
-    // onDrillDown(date, view, drilldownView);
-    // props.onView(view);
+  const startForum = () => {
+    console.log("start session");
+  }
+
+  const toggle = () => {
+    setOpen(!open);
   }
 
   return (
@@ -586,9 +588,16 @@ const CustomMonthDateHeader = ({events}) => props => {
         {consoleFunction() && props.date.getDate()}
       </div>
       <div className="month-date">
-        {calcRecordCound() > 0 && <a href="/#" className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
-          {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`}
-        </a>}
+      <Dropdown open={open} toggle={toggle}>
+        <DropdownToggle>
+          {calcRecordCound() > 0 && <a href="javascript:void(0)" className="month-date-content"> {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`} </a>}
+        </DropdownToggle>
+        <DropdownMenu>
+          <DropdownItem onClick={() => startForum()}>
+            Start Forum
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
       </div>
     </div>
   );
