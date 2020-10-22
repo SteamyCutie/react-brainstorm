@@ -251,6 +251,7 @@ export default class MentorSession extends React.Component {
               month: {
                 dateHeader: CustomMonthDateHeader({
                   events: this.state.events,
+                  startSession: this.props.startSession,
                 }),
                 header: CustomMonthHeader,
                 event: CustomMonthEvent,
@@ -566,7 +567,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
 }
 
 
-const CustomMonthDateHeader = ({events}) => props => {
+const CustomMonthDateHeader = ({events, startSession}) => props => {
   const [open, setOpen] = React.useState(false);
   const consoleFunction = () => {
     return true;
@@ -582,6 +583,7 @@ const CustomMonthDateHeader = ({events}) => props => {
 
   const startForum = () => {
     console.log("start session");
+    startSession();
   }
 
   const toggle = () => {
