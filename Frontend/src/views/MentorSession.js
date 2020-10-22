@@ -106,6 +106,7 @@ export default class MentorSession extends React.Component {
           isBooked: '',
           start: 0,
           end: false,
+          room_id: 0
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -117,6 +118,7 @@ export default class MentorSession extends React.Component {
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+          arr.room_id = result.data.data[i].room_id;
 
           data_arr.push(arr);
           arr = {};
@@ -349,6 +351,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           isBooked: '',
           start: 0,
           end: false,
+          room_id: 0
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -360,6 +363,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+          arr.room_id = result.data.data[i].room_id;
 
           data_arr.push(arr);
           arr = {};
@@ -467,6 +471,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           isBooked: '',
           start: 0,
           end: false,
+          room_id: 0
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -478,6 +483,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+          arr.room_id = result.data.data[i].room_id;
 
           data_arr.push(arr);
           arr = {};
