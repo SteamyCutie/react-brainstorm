@@ -38,6 +38,9 @@ Route::post('/removesource', 'PaymentController@removesource');
 Route::post('/testpayment', 'PaymentController@testpayment');
 Route::post('/createcustomer', 'PaymentController@createcustomer');
 Route::post('/createaccount', 'PaymentController@createaccount');
+Route::post('/deleteaccount', 'PaymentController@deleteaccount');
+Route::post('/createexternalaccount', 'PaymentController@createexternalaccount');
+Route::post('/transfermoney', 'PaymentController@transfermoney');
 Route::post('/createbank', 'PaymentController@createBank');
 Route::post('/getbank', 'PaymentController@getBank');
 

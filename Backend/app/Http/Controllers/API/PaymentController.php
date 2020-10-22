@@ -89,7 +89,7 @@ class PaymentController extends Controller
 //      ]);
 //    }
   }
-
+  
   public function createBank(Request $request) {
     $routing_number = $request['bank_number'];
     $account_number = $request['bank_ifsc'];
@@ -122,7 +122,7 @@ class PaymentController extends Controller
 //    );
 //    echo $result;
     //End verify bank account
-  
+
 // Set your secret key. Remember to switch to your live secret key in production!
 // See your keys here: https://dashboard.stripe.com/account/apikeys
     $stripe = new \Stripe\StripeClient(
@@ -184,14 +184,18 @@ class PaymentController extends Controller
 //    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
     \Stripe\Stripe::setApiKey(env("SK_LIVE"));
     $charge = \Stripe\Charge::create([
-      'amount' => 80000,
+      'amount' => 300000,
       'currency' => 'usd',
-      'customer' => "cus_IAkybOKYqnRNNR",
-      'source' => "card_1HaPUAGRfXBTO7BEm3pD8Esw",
-      'description' => 'My session Charge for Mentor'
+      'customer' => "cus_IEpOWIc0zt54G9",
+      'source' => "card_1HeLvQGRfXBTO7BEJLfLqfV3",
+      'description' => 'Paul Create Charge for Mentor'
 //          'description' => 'Charge for '.$session_name,
     ]);
-    echo $charge;
+//    echo $charge;
+    return response()->json([
+      'result'=> 'success',
+      'data' => 'created charge',
+    ]);
   }
   
   public function getPaymentSession(Request $request) {
@@ -261,6 +265,81 @@ class PaymentController extends Controller
   }
   
   public function createaccount(Request $request) {
+    //create connected account
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+    $res_account = $stripe->accounts->create([
+      'type' => 'custom',
+      "tos_acceptance" => [
+        "date" => time(),
+        "ip" => $_SERVER['REMOTE_ADDR'],
+      ],
+      'country' => 'AU',
+      'default_currency' => 'AUD',
+      'email' => 'Erick_dev@protonmail.com',
+      'capabilities' => [
+        'card_payments' => ['requested' => true],
+        'transfers' => ['requested' => true],
+//        'sepa_debit_payments' => ['requested' => true],
+//        'bancontact_payments' => ['requested' => true],
+//        'eps_payments' => ['requested' => true],
+//        'giropay_payments' => ['requested' => true],
+//        'ideal_payments' => ['requested' => true],
+//        'p24_payments' => ['requested' => true],
+//        'sofort_payments' => ['requested' => true],
+      ],
+      'business_type' => 'individual',
+      'individual' => [
+        'first_name' => "Erick",
+        'last_name'=> "Huang",
+        'address' => [
+          "city" => 'San Marcos',
+          "country" => "AU",
+          "line1" => '591 Grand Avenue',
+          "line2" => 'Suite G102',
+          "postal_code" => '2000',
+          "state" => 'New South Wales',
+        ],
+        "dob" => [
+          "day" => '31',
+          "month" => "08",
+          "year" => "1991"
+        ],
+        "email" => "erick_dev@protonmail.com",
+        "phone" => "+61 2 1234 5678",
+//        "ssn_last_4" => "0000",
+      ],
+      'settings' => [
+        'payouts' => [
+          "schedule" => [
+            "delay_days" => 7,
+            "interval" => "daily",
+          ],
+        ],
+      ],
+      'business_profile' => [
+        'url' => 'https://brinasshare.com',
+        "mcc" => '7399',
+//        'name' => 'Erick Huang',
+//        'product_description' => 'connected account for Erick',
+//        'support_address' => [
+//          'city' => 'San Marcos',
+//          'country' => 'US',
+//          'line1' => '591 Grand Avenue',
+//          'line2' => 'Suite G102',
+//          'postal_code' =>'92069',
+//          'state' => 'California',
+//        ],
+//        'support_email' => 'Erick_dev@protonmail.com',
+//        'support_phone' => '+19179835150',
+//        'support_url' => 'https://brainsshare.com',
+      ],
+    ]);
+    return response()->json([
+      'result'=> 'success',
+      'data' => $res_account,
+    ]);
     //=========Begin Create Bank account token
 //    $stripe = new \Stripe\StripeClient(
 //      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
@@ -288,16 +367,75 @@ class PaymentController extends Controller
 //    );
 //    echo $res;
     //=========End craete Bank
-  
+    
     //============Begin payout create
-    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
-    $res = \Stripe\Payout::create([
-      'amount' => 24784,
-      'currency' => 'usd',
+//    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+//    $res = \Stripe\Payout::create([
+//      'amount' => 24784,
+//      'currency' => 'usd',
 //      'source_type' => 'bank_account'
-      'source_type' => 'ba_1HZbgIGRfXBTO7BEeY8KIqPE'
-    ]);
-    echo $res;
+//      'source_type' => 'ba_1HZbgIGRfXBTO7BEeY8KIqPE'
+//    ]);
+//    echo $res;
     //============Begin payout create
+  }
+  
+  
+  public function createexternalaccount (Request $request) {
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+//    $res_external = $stripe->accounts->createExternalAccount(
+//      'acct_1HefqYJbQzLbpzB4',
+//      ['external_account' => 'tok_1HefrJGRfXBTO7BEbpb3Mylm']
+//    );
+    $res_external = $stripe->accounts->createExternalAccount(
+      'acct_1Hf0MfAjR5toktVQ',
+      [
+        'external_account' => [
+          'object' => 'bank_account',
+          'country' => 'AU',
+          'currency' => 'aud',
+          'account_holder_name' => 'lucal',
+          'account_holder_type' => 'individual',
+          'routing_number' => '110000',
+          'account_number' => '000123456',
+        ]
+      ]
+    );
+    return response()->json([
+      'result'=> 'success',
+      'data' => $res_external,
+    ]);
+  }
+  
+  public function transfermoney (Request $request) {
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+    $res_transfer = $stripe->transfers->create([
+      'amount' => 2800,
+      'currency' => 'usd',
+      'destination' => 'acct_1Hf0MfAjR5toktVQ',
+//      'transfer_group' => 'ORDER_95',
+    ]);
+    return response()->json([
+      'result'=> 'success',
+      'data' => $res_transfer,
+    ]);
+  }
+  
+  public function deleteaccount (Request $request) {
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+    $stripe->accounts->delete(
+      'acct_1Hea8RLNIluQpVfI',
+      []
+    );
+    return response()->json([
+      'result'=> 'success',
+      'data' => 'deleted account',
+    ]);
   }
 }

@@ -140,6 +140,7 @@ class UserController extends Controller
     $name = $request->name;
     $provider = $request->provider;
     $provider_id = $request->provider_id;
+    $channel_name = $request['channel_name'];
     Log::info([$email, $name, $provider, $provider_id]);
     $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
     if ($user) {
@@ -190,6 +191,7 @@ class UserController extends Controller
           'provider_id' => $provider_id,
           'email_verified_at' => Carbon::now(),
           'is_active' => 1,
+          'channel_name' => $channel_name,
         ]);
         $token = null;
         if (!$token = JWTAuth::fromUser($user)) {
