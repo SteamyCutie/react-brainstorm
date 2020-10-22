@@ -1,11 +1,16 @@
 import React from "react";
-import { Button, Row, } from "shards-react";
+import { Button, Row, Col, Container, Card, CardBody } from "shards-react";
 
+
+import MentorVideo from "../../components/common/MentorVideo";
+import SubscribeModal from "../../components/common/SubscribeModal";
+import AddNewCard from "../../components/common/AddNewCard";
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
+import SubscriperImg from "../../images/Users.svg";
 import Clock from "../../images/Clock.svg";
-import defaultavatar from "../../images/avatar.jpg"
+import defaultavatar from "../../images/avatar.jpg";
 
 class MentorDetailCardStudentDashboard extends React.Component {
   constructor(props) {
@@ -14,6 +19,8 @@ class MentorDetailCardStudentDashboard extends React.Component {
     this.state = {
       more: false,
       teaches: [],
+      subscriptionOpen: false,
+      addnewcardModal: false,
     }
   }
 
@@ -37,11 +44,35 @@ class MentorDetailCardStudentDashboard extends React.Component {
   readLess() {
     this.setState({more: false});
   }
+
+  toggle_unsubscribe() {
+    this.setState({
+      subscriptionOpen: !this.state.subscriptionOpen
+    });
+  }
+
+  toggle_modal() {
+    this.setState({
+      addnewcardModal: !this.state.addnewcardModal,
+      subscriptionOpen: !this.state.subscriptionOpen
+    });
+  }
+
+  toggle_addnewcardmodal() {
+    this.setState({
+      addnewcardModal: !this.state.addnewcardModal,
+    });
+  }
+
+  actionSuccess() {
+  }
   
   render() {
-    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark } = this.props.mentorData;
+    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee } = this.props.mentorData;
+    const { subscriptionOpen } = this.state;
 
     return (
+      <>
       <div className="mentor-detail-card">
         <div style={{position: "relative"}} className="mentor-detail-avatar">
           {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
@@ -98,6 +129,39 @@ class MentorDetailCardStudentDashboard extends React.Component {
           </Row>
         </div>
       </div>
+      <Container className="main-content-container pb-4 page-basic-margin" style={{paddingRight: 0, paddingLeft: 0}}>
+        <Card small className="share-page-card">
+          <CardBody style={{paddingLeft: 0}}>
+            <Row>
+              <Col xl="3" className="subscription-mentor-detail">
+                <div style={{textAlign: 'center'}}>
+                  <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>{name}</h3>
+                  <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>share page</h3>
+                  {avatar && <img className="mentor-detail-avatar-img" src={avatar} alt="avatar"/>}
+                  {!avatar && <img className="mentor-detail-avatar-img" src={defaultavatar} alt="avatar"/>}
+                  <div style={{display: "flex", padding: "20px 0px"}}>
+                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
+                    <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
+                    <h6 className="no-margin"style={{fontWeight: "bold"}}>{sub_count}</h6>
+                  </div>
+                  <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
+                  Subscription ${sub_plan_fee}/month
+                </Button>
+                </div>
+                
+              </Col>
+              <Col xl="9" lg="12" className="subscription-mentor-videos">
+                {share_info && share_info.map((item, idx) => 
+                  <MentorVideo key={idx} item={item} />
+                )}
+              </Col>
+            </Row>
+          </CardBody>
+        </Card>    
+      </Container>
+      <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
+      <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
+      </>
     );
   }
 }
