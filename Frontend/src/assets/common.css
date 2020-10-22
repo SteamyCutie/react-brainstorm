@@ -797,3 +797,37 @@
 .str-chat-channel {
   max-height: calc(100vh - 200px);
 }
+
+.participants-video-container-full-screenshare {
+  max-height: calc(100vh - 200px);
+  margin-top: 5px;
+  overflow: auto;
+  position: absolute;
+  top: 240px;
+  right: 630px;
+}
+
+.room-local-video-container-fullscreen-screenshare {
+  width: 320px;
+  height: 180px;
+  position: absolute;
+  top: 30px;
+  right: 630px;
+}
+
+.participants-video-container-full-chat {
+  max-height: calc(100vh - 200px);
+  margin-top: 5px;
+  overflow: auto;
+  position: absolute;
+  top: 240px;
+  right: 630px;
+}
+
+.room-local-video-container-fullscreen-chat {
+  width: 320px;
+  height: 180px;
+  position: absolute;
+  top: 30px;
+  right: 630px;
+}
