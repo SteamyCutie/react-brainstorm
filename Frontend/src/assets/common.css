@@ -677,7 +677,7 @@
   margin-top: 5px;
   overflow: auto;
   position: absolute;
-  top: 30px;
+  top: 240px;
   right: 30px;
 }
 
@@ -739,19 +739,30 @@
 }
 
 .room-local-video-container-fullscreen {
-  width: 100%;
-  height: 100vh;
+  /* width: 100%;
+  height: 100vh; */
+  width: 320px;
+  height: 180px;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+
 }
 
 .room-local-video-fullscreen {
-  border-radius: 0px !important;
+  /* border-radius: 0px !important;
   margin: 0px !important;
   width: 100vw !important;
   height: 100vh !important;
   object-fit: fill;
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: 0px; */
+  border-radius: 6px;
+  margin-top: 5px;
+  position: absolute;
+    /* top: 30px;
+    right: 30px; */
 }
 
 .participants-video-container-fullscreen {
@@ -764,7 +775,18 @@
 .local-video-name {
   position: absolute;
   left: 3px;
-  top: 50px;
+  top: 10px;
+  color: #04B5FA;
+  font-weight: bold;
+  background: #00000099;
+  padding: 0px 6px;
+  border-radius: 3px;
+}
+
+.local-video-name-fullscreen {
+  position: absolute;
+  left: 0px;
+  top: 10px;
   color: #04B5FA;
   font-weight: bold;
   background: #00000099;
@@ -774,4 +796,38 @@
 
 .str-chat-channel {
   max-height: calc(100vh - 200px);
+}
+
+.participants-video-container-full-screenshare {
+  max-height: calc(100vh - 200px);
+  margin-top: 5px;
+  overflow: auto;
+  position: absolute;
+  top: 240px;
+  right: 630px;
+}
+
+.room-local-video-container-fullscreen-screenshare {
+  width: 320px;
+  height: 180px;
+  position: absolute;
+  top: 30px;
+  right: 630px;
+}
+
+.participants-video-container-full-chat {
+  max-height: calc(100vh - 200px);
+  margin-top: 5px;
+  overflow: auto;
+  position: absolute;
+  top: 240px;
+  right: 630px;
+}
+
+.room-local-video-container-fullscreen-chat {
+  width: 320px;
+  height: 180px;
+  position: absolute;
+  top: 30px;
+  right: 630px;
 }
