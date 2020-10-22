@@ -5,7 +5,7 @@ import "../../assets/landingpage.css"
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
 import AWS from 'aws-sdk'
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
-import PosterImg from '../../images/logo.png'
+import PosterImg from '../../images/Brainshare_logo.svg'
 import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
 import WhiteBoard from 'fabric-whiteboard'
