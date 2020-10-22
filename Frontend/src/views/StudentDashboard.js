@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
-
+import AdSense from 'react-adsense';
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
 import BookSession from "./../components/common/BookSession";
 import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
@@ -268,12 +268,12 @@ export default class StudentDashboard extends React.Component {
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>
             </Col>
-            {/* <AdSense.Google
-              client='ca-pub-7292810486004926'
+            <AdSense.Google
+              client='ca-pub-8022559137099901'
               slot='7806394673'
-              style={{ width: 500, height: 300, float: 'left' }}
-              format=''
-            /> */}
+              style={{ width: 500, height: 300}}
+              format='auto'
+            />
           </Row>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
