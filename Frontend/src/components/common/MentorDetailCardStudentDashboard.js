@@ -129,14 +129,14 @@ class MentorDetailCardStudentDashboard extends React.Component {
           </Row>
         </div>
       </div>
-      <Container className="main-content-container pb-4 page-basic-margin" style={{paddingRight: 0, paddingLeft: 0}}>
+      <div style={{paddingRight: 0, paddingLeft: 0, marginBottom: "20px"}}>
         <Card small className="share-page-card">
           <CardBody style={{paddingLeft: 0}}>
             <Row>
               <Col xl="3" className="subscription-mentor-detail">
                 <div style={{textAlign: 'center'}}>
                   <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>{name}</h3>
-                  <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>share page</h3>
+                  <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>Share Page</h3>
                   {avatar && <img className="mentor-detail-avatar-img" src={avatar} alt="avatar"/>}
                   {!avatar && <img className="mentor-detail-avatar-img" src={defaultavatar} alt="avatar"/>}
                   <div style={{display: "flex", padding: "20px 0px"}}>
@@ -158,7 +158,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             </Row>
           </CardBody>
         </Card>    
-      </Container>
+      </div>
       <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
       <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
       </>
