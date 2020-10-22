@@ -219,6 +219,7 @@ export default class StudentSession extends React.Component {
   }
 
   joinSession(room_id) {
+    localStorage.setItem("room_id", room_id);
     this.props.joinSession(room_id);
   }
 

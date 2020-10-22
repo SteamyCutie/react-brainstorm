@@ -234,8 +234,8 @@ export default class ScheduleLiveForum extends React.Component {
 
   }
 
-  startSession(id) {
-    this.props.startSession(localStorage.getItem("channel_name"));
+  startSession() {
+    this.props.startSession();
   }
 
   render() {
@@ -263,7 +263,7 @@ export default class ScheduleLiveForum extends React.Component {
                       item={item} 
                       toggle_editliveforum={(id) => this.toggle_editliveforum(id)} 
                       toggle_confirm={(id) => this.toggle_confirm(id)} 
-                      startSession = {(id) => this.startSession(id)}
+                      startSession = {() => this.startSession()}
                     />
                   </Col>
                 )}

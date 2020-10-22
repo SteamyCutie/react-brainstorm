@@ -25,7 +25,7 @@ class SmallCard3 extends React.Component {
     
     localStorage.setItem("session_name", this.name);
     localStorage.setItem("session_mentor", this.mentorName);
-    localStorage.setItem("room_id", this.room_id);
+    // localStorage.setItem("room_id", this.room_id);
   }
 
   edit() {
