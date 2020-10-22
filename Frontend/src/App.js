@@ -111,6 +111,10 @@ export default class App extends React.Component{
           that.joinRoomResponse(parsedMessage);
           break;
 
+        case 'leaveRoomResponse': 
+          that.leaveRoomResponse(parsedMessage);
+          break;
+
         case 'existingParticipants':
           that.existingParticipants(parsedMessage);
           break;
@@ -487,6 +491,7 @@ export default class App extends React.Component{
   }
 
   joinRoomResponse(message) {}
+  leaveRoomResponse(message) {}
 
   existingParticipants(message) {
     this.many2manyRef.current.existingParticipants(message.data)
