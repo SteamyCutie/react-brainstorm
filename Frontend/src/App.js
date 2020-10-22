@@ -454,7 +454,7 @@ export default class App extends React.Component{
     return this.state.dragegableOnStart;
   }
 
-  startSession() {
+  startSession(room_id) {
     this.setState({
       roomCall: true, 
       isMaster: true, 
@@ -465,7 +465,7 @@ export default class App extends React.Component{
       userId: localStorage.getItem("user_id"), 
       userName: localStorage.getItem("user_name"), 
       channelName: localStorage.getItem("channel_name"), 
-      roomName: localStorage.getItem("room_id"),
+      roomName: room_id,
     }
 
     this.sendMessage(message);
