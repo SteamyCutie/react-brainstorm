@@ -35,7 +35,7 @@ export default class MentorDashboard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = localStorage.getItem('search-key');
+    let searchKey = JSON.parse(localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -44,12 +44,18 @@ export default class MentorDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, searchKey, 1);
+
+    if (searchKey != null) {
+      searchKey = searchKey[0].label;
+    } else {
+      searchKey = "";
+    }
+    this.getParticipants(searchParams, searchKey, 1);
   }
 
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = localStorage.getItem('search-key');
+    let searchKey = JSON.parse(localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -58,7 +64,13 @@ export default class MentorDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, searchKey, 1);
+
+    if (searchKey != null) {
+      searchKey = searchKey[0].label;
+    } else {
+      searchKey = "";
+    }
+    this.getParticipants(searchParams, searchKey, 1);
   }
 
   componentDidMount() {
@@ -127,7 +139,7 @@ export default class MentorDashboard extends React.Component {
     this.props.setUser(to, avatar, name);
   }
 
-  getMentors = async(category, searchKey, pageNo) => {
+  getParticipants = async(category, searchKey, pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
       tags_id: category,
@@ -170,7 +182,7 @@ export default class MentorDashboard extends React.Component {
 
   onChangePagination(e, value) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = localStorage.getItem('search-key');
+    let searchKey = JSON.parse(localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -179,7 +191,13 @@ export default class MentorDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, searchKey, value);
+
+    if (searchKey != null) {
+      searchKey = searchKey[0].label;
+    } else {
+      searchKey = "";
+    }
+    this.getParticipants(searchParams, searchKey, value);
   }
 
   signout = async() => {
