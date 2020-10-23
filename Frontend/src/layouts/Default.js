@@ -297,10 +297,7 @@ export default class DefaultLayout extends React.Component {
         <Container fluid>
           <Row>
             <MainSidebar filterType={filterType}/>
-            <Col
-              className="main-content p-0 main-content-class"
-              tag="main"
-            >
+            <Col className="main-content p-0 main-content-class" tag="main">
               {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications} toggle_search={(searchkey) => this.handleSearch(searchkey)}/>}
               {filterType && <SubMainNavbar/>}
               {children}

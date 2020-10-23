@@ -1279,7 +1279,7 @@ input.sign-has-err:focus {
 }
 
 .top-navbar-search {
-    width: 85%;
+    width: 35%;
     padding-top: 5px;
 }
 
@@ -1293,4 +1293,9 @@ input.sign-has-err:focus {
 
 .top-navbar-search svg {
     padding-top: 7px;
+}
+
+.react-dropdown-select {
+    height: 49px;
+    margin-top: 5px;
 }
