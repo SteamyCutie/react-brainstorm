@@ -64,56 +64,58 @@ export default class MentorDashboard extends React.Component {
   }
 
   handleScroll(event) {
-    if (event.deltaY < 0)
-    {
-      if (window.pageYOffset <= 200) {
-        if (!document.getElementById("video")) {
-          if (document.getElementById("small-video"))
-            document.getElementById("small-video").remove();
+    if (window.location.pathname === "/mentordashboard") {
+      if (event.deltaY < 0)
+      {
+        if (window.pageYOffset <= 200) {
+          if (!document.getElementById("video")) {
+            if (document.getElementById("small-video"))
+              document.getElementById("small-video").remove();
 
-          var header = document.getElementsByClassName("page-header");
-          var container = document.getElementsByClassName("main-content-container");
-          var participantVideo = document.createElement("video");
-          var source = document.createElement("source");
+            var header = document.getElementsByClassName("page-header");
+            var container = document.getElementsByClassName("main-content-container");
+            var participantVideo = document.createElement("video");
+            var source = document.createElement("source");
 
-          participantVideo.height = window.pageYOffset;
-          participantVideo.controls = true;
-          participantVideo.id = 'video';
-          participantVideo.style = 'width: 100%';
+            participantVideo.height = window.pageYOffset;
+            participantVideo.controls = true;
+            participantVideo.id = 'video';
+            participantVideo.style = 'width: 100%';
 
-          source.src = media_url;
-          source.type = "video/mp4";
-          participantVideo.appendChild(source);
+            source.src = media_url;
+            source.type = "video/mp4";
+            participantVideo.appendChild(source);
 
-          container[0].insertBefore(participantVideo, header[0]);
-        } else {
-          var video = document.getElementById("video");
-          video.height = 450;
+            container[0].insertBefore(participantVideo, header[0]);
+          } else {
+            var video = document.getElementById("video");
+            video.height = 450;
+          }
         }
-      }
-    } else if (event.deltaY > 0) {
-      let headerHeight = 94;
-      if (document.getElementById("video")) {
-        document.getElementById("video").height = document.getElementById("video").height - window.pageYOffset - headerHeight;
+      } else if (event.deltaY > 0) {
+        let headerHeight = 94;
+        if (document.getElementById("video")) {
+          document.getElementById("video").height = document.getElementById("video").height - window.pageYOffset - headerHeight;
 
-        if (document.getElementById("video").height <= 0) {
-          document.getElementById("video").remove();
+          if (document.getElementById("video").height <= 0) {
+            document.getElementById("video").remove();
 
-          var header = document.getElementsByClassName("page-header");
-          var container = document.getElementsByClassName("main-content-container");
-          var participantVideo = document.createElement("video");
-          var source = document.createElement("source");
-          participantVideo.width = 300;
-          participantVideo.height = 300;
-          participantVideo.style = "right: 24px; position: fixed; overflow-y: scroll; overflow-x: hidden; z-index: 100";
-          participantVideo.controls = true;
-          participantVideo.id = "small-video";
+            var header = document.getElementsByClassName("page-header");
+            var container = document.getElementsByClassName("main-content-container");
+            var participantVideo = document.createElement("video");
+            var source = document.createElement("source");
+            participantVideo.width = 300;
+            participantVideo.height = 300;
+            participantVideo.style = "right: 24px; position: fixed; overflow-y: scroll; overflow-x: hidden; z-index: 100";
+            participantVideo.controls = true;
+            participantVideo.id = "small-video";
 
-          source.src = media_url;
-          source.type = "video/mp4";
-          participantVideo.appendChild(source);
+            source.src = media_url;
+            source.type = "video/mp4";
+            participantVideo.appendChild(source);
 
-          container[0].insertBefore(participantVideo, header[0]);
+            container[0].insertBefore(participantVideo, header[0]);
+          }
         }
       }
     }
