@@ -119,8 +119,13 @@ export default class NavbarSearch extends React.Component{
 
   onChangeSearchText(e) {
     localStorage.removeItem('search-key');
-    localStorage.setItem('search-key', e[0].label);
-    this.setState({searchKey: e[0].label});
+    if (e.length > 0) {
+      localStorage.setItem('search-key', e[0].label);
+      this.setState({searchKey: e[0].label});
+    } else {
+      localStorage.setItem('search-key', []);
+      this.setState({searchKey: []});
+    }
   }
 
   signout = async() => {

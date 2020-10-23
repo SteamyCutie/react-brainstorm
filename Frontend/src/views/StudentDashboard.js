@@ -35,6 +35,7 @@ export default class StudentDashboard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = localStorage.getItem('search-key');
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -43,11 +44,12 @@ export default class StudentDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, 1);
+    this.getParticipants(searchParams, searchKey, 1);
   }
 
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = localStorage.getItem('search-key');
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -56,7 +58,7 @@ export default class StudentDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, 1);
+    this.getParticipants(searchParams, searchKey, 1);
   }
 
   componentDidMount() {
@@ -125,9 +127,10 @@ export default class StudentDashboard extends React.Component {
     this.props.setUser(to, avatar, name);
   }
 
-  getMentors = async(category, pageNo) => {
+  getParticipants = async(category, searchKey, pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
+      name: searchKey,
       tags_id: category,
       page: pageNo,
       rowsPerPage: 10
@@ -167,6 +170,7 @@ export default class StudentDashboard extends React.Component {
 
   onChangePagination(e, value) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = localStorage.getItem('search-key');
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -175,7 +179,7 @@ export default class StudentDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, value);
+    this.getParticipants(searchParams, searchKey, value);
   }
 
   signout = async() => {
