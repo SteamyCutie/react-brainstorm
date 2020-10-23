@@ -30,7 +30,6 @@ Route::post('/featuredmentors', 'UserController@featuredMentors');
 
 Route::post('/createpayment', 'PaymentController@createPayment');
 Route::post('/createbank', 'PaymentController@createBank');
-
 Route::post('/getpayment', 'PaymentController@getPayment');
 Route::post('/paysessionpayment', 'PaymentController@paySessionPayment');
 Route::post('/getsessionpayment', 'PaymentController@getPaymentSession');
@@ -38,9 +37,11 @@ Route::post('/removesource', 'PaymentController@removesource');
 Route::post('/testpayment', 'PaymentController@testpayment');
 Route::post('/createcustomer', 'PaymentController@createcustomer');
 Route::post('/createaccount', 'PaymentController@createaccount');
+Route::post('/deleteaccount', 'PaymentController@deleteaccount');
+Route::post('/createexternalaccount', 'PaymentController@createexternalaccount');
+Route::post('/transfermoney', 'PaymentController@transfermoney');
 Route::post('/createbank', 'PaymentController@createBank');
 Route::post('/getbank', 'PaymentController@getBank');
-
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
@@ -50,8 +51,10 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getallmentors', 'UserController@getAllMentors');
   Route::post('/getallstudents', 'UserController@getAllStudents');
   Route::post('/switchuser', 'UserController@switchUser');
+  Route::post('/getallparticipants', 'UserController@getAllParticipants');
+  Route::post('/findmentorsbytagsorname', 'UserController@findMentorsByTagsOrName');
   Route::post('/createshareinfo', 'MediaController@createShareInfo');
-  Route::post('/scheduleliveforum', 'SessionController@getAllForum');
+  Route::post('/scheduleliveforum', 'SessionController@getAllScheduleLiveForum');
   Route::post('/createforum', 'SessionController@createForum');
   Route::post('/gethistory', 'SessionController@getHistory');
   Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
@@ -72,9 +75,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   Route::post('/setreview', 'ReviewController@setReview');
-//  Route::post('/createpayment', 'PaymentController@createPayment');
-//  Route::post('/getpayment', 'PaymentController@getPayment');
-//  Route::post('/finishedsession', 'PaymentController@finishedsession');
   Route::post('/addlibrary', 'LibraryController@addLibrary');
   Route::post('/getlibrary', 'LibraryController@getLibrary');
   Route::post('/addreport', 'ReportController@addReport');

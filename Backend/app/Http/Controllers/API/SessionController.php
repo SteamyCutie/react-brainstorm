@@ -13,7 +13,7 @@ use Log;
 
 class SessionController extends Controller
 {
-  function getAllForum(Request $request)
+  function getAllScheduleLiveForum(Request $request)
   {
     try{
       $email = $request['email'];
@@ -25,7 +25,7 @@ class SessionController extends Controller
           'data'=> [],
         ]);
       }
-      $session_info = Session::where('user_id', $user_id['id'])->get();
+      $session_info = Session::where('user_id', $user_id['id'])->where('created_id', $user_id['id'])->get();
       
       foreach ($session_info as $key => $value) {
         $from_date = $value['from'];
@@ -180,6 +180,7 @@ class SessionController extends Controller
         'to' => $to_day_str,
         'status' => 0,
         'room_id' => mt_rand(100000,999999),
+        'created_id' => $user_id['id'],
       ]);
       
       $students = $request['students'];
@@ -374,7 +375,7 @@ class SessionController extends Controller
       $email = $request['email'];
       $tag_id = $request['tag_id'];
       $req_time = $request['time'];
-      $user = User::select('id', 'is_mentor')->where( 'email', $email)->first();
+      $user = User::select('id', 'is_mentor', 'avatar')->where( 'email', $email)->first();
       $current_time = date("y-m-d h:i:s");
       
       if ($req_time != null || $req_time != "") {
@@ -406,7 +407,7 @@ class SessionController extends Controller
             }
           }
         }
-        
+
         if ($from_time == "" || $to_time == "") {
           $temp2 = $temp1;
         }
@@ -512,14 +513,10 @@ class SessionController extends Controller
     try{
       $mentor_id = $request['mentor_id'];
       $student_id = $request['user_id'];
-      $title = $request['title'];
-      $description = $request['description'];
-      $tags = User::select('tags_id')->where('id', $mentor_id)->first();
+      $tags = User::select('tags_id', 'name')->where('id', $mentor_id)->first();
+      $title = $tags->name;
+      $description = $title.'\'s session';
 //      $tags = ','.implode(",", $request['tags']).',';
-      $rules = array(
-        'title' => 'required',
-        'description' => 'required',
-      );
       $from = date('H:i:s', strtotime($request['from']));
 //      $to = $request['to'];
       $day = $request['day'];
@@ -528,19 +525,7 @@ class SessionController extends Controller
       
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
 //      $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
-      $messages = array(
-        'required' => 'This field is required.',
-      );
-      $validator = Validator::make( $request->all(), $rules, $messages );
       
-      if ($validator->fails())
-      {
-        return [
-          'result' => 'failed',
-          'type' => 'require',
-          'message' => $validator->messages()
-        ];
-      }
       $same_session = Session::where('user_id', $mentor_id)->where('from', $from_day_str)->get();
       if (count($same_session) > 0) {
         return [
@@ -557,6 +542,7 @@ class SessionController extends Controller
 //        'to' => $to_day_str,
         'status' => 0,
         'room_id' => mt_rand(100000,999999),
+        'created_id' => $student_id,
       ]);
       
       Invited::create([
