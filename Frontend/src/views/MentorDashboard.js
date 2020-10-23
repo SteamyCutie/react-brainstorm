@@ -8,7 +8,7 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
-import { findmentorsbytags, signout } from '../api/api';
+import { findmentorsbytagsorname, signout } from '../api/api';
 
 import avatar from "../images/avatar.jpg";
 import SubscriperImg from "../images/Users.svg";
@@ -35,6 +35,7 @@ export default class MentorDashboard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = localStorage.getItem('search-key');
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -43,11 +44,12 @@ export default class MentorDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, 1);
+    this.getMentors(searchParams, searchKey, 1);
   }
 
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = localStorage.getItem('search-key');
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -56,7 +58,7 @@ export default class MentorDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, 1);
+    this.getMentors(searchParams, searchKey, 1);
   }
 
   componentDidMount() {
@@ -64,7 +66,7 @@ export default class MentorDashboard extends React.Component {
   }
 
   handleScroll(event) {
-    if (window.location.pathname === "/mentordashboard") {
+    if (window.location.pathname === "/mentorDashboard") {
       if (event.deltaY < 0)
       {
         if (window.pageYOffset <= 200) {
@@ -125,17 +127,18 @@ export default class MentorDashboard extends React.Component {
     this.props.setUser(to, avatar, name);
   }
 
-  getMentors = async(category, pageNo) => {
+  getMentors = async(category, searchKey, pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
       tags_id: category,
+      name: searchKey,
       page: pageNo,
       rowsPerPage: 10
     }
 
     try {
       this.setState({loading: true});
-      const result = await findmentorsbytags(param);
+      const result = await findmentorsbytagsorname(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
@@ -167,6 +170,7 @@ export default class MentorDashboard extends React.Component {
 
   onChangePagination(e, value) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = localStorage.getItem('search-key');
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -175,7 +179,7 @@ export default class MentorDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, value);
+    this.getMentors(searchParams, searchKey, value);
   }
 
   signout = async() => {

@@ -165,9 +165,7 @@ export default class BookSession extends React.Component {
       user_id: localStorage.getItem('user_id'),
       mentor_id: this.props.id,
       day: weekdata[idx].year + '-' + weekdata[idx].month + '-' + weekdata[idx].day + '',
-      from: time,
-      description: "desc",
-      title: "title"
+      from: time
     }
 
     try {

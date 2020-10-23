@@ -200,14 +200,29 @@ export const switchuser = (param) => {
     });
 }
 
-export const findmentorsbytags = (param) => {
+export const findmentorsbytagsorname = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
             const token = localStorage.getItem('token');
             const header = {
                 'Authorization': 'bearer ' + token
             }
-            const response = await axios.post(SERVER_URL+'/api/findmentorsbytags', param, {headers: header});
+            const response = await axios.post(SERVER_URL+'/api/findmentorsbytagsorname', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const getallparticipants = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getallparticipants', param, {headers: header});
             resolve(response);
         } catch(error) {
             reject(error);

@@ -12,7 +12,7 @@ import { store } from 'react-notifications-component';
 
 import media_url from "../video/video.mp4";
 
-import { findmentorsbytags, signout } from '../api/api';
+import { findmentorsbytagsorname, signout } from '../api/api';
 export default class StudentDashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -64,7 +64,7 @@ export default class StudentDashboard extends React.Component {
   }
 
   handleScroll(event) {
-    if (window.location.pathname === "/studentdashboard") {
+    if (window.location.pathname === "/studentDashboard") {
       if (event.deltaY < 0)
       {
         if (window.pageYOffset <= 200) {
@@ -135,7 +135,7 @@ export default class StudentDashboard extends React.Component {
 
     try {
       this.setState({loading: true});
-      const result = await findmentorsbytags(param);
+      const result = await findmentorsbytagsorname(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
