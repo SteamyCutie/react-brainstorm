@@ -20,7 +20,7 @@ export default class NavbarSearch extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      searchKey: '',
+      searchKey: (localStorage.getItem('search-key') === null ? [] : JSON.parse(localStorage.getItem('search-key'))),
       selectedTags: (localStorage.getItem('search-category') === null ? [] : JSON.parse(localStorage.getItem('search-category'))),
       tags: [],
       param: {
@@ -120,8 +120,8 @@ export default class NavbarSearch extends React.Component{
   onChangeSearchText(e) {
     localStorage.removeItem('search-key');
     if (e.length > 0) {
-      localStorage.setItem('search-key', e[0].label);
-      this.setState({searchKey: e[0].label});
+      localStorage.setItem('search-key', JSON.stringify(e));
+      this.setState({searchKey: e});
     } else {
       localStorage.setItem('search-key', []);
       this.setState({searchKey: []});
@@ -167,7 +167,7 @@ export default class NavbarSearch extends React.Component{
   }
 
   render() {
-    const { tags, selectedTags, users } = this.state;
+    const { tags, selectedTags, searchKey, users } = this.state;
     return (
       <>
       <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
@@ -186,7 +186,7 @@ export default class NavbarSearch extends React.Component{
               search: "Search",
             }}
           />
-          <Select placeholder="Enter the participant name" clearable={true} options={users} onChange={(values) => this.onChangeSearchText(values)} />
+          <Select placeholder="Enter the participant name" clearable={true} options={users} values={searchKey} onChange={(values) => this.onChangeSearchText(values)} />
           <InputGroupAddon type="append">
             <Button className={JSON.parse(localStorage.getItem('user-type')) ? "navbar-search btn-search-mentor" : "navbar-search btn-search" } onClick={() => this.onSearch()}>
               <InputGroupText>
