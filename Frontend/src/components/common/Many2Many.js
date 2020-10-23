@@ -161,7 +161,7 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           video: formValues.sendVideo ? resolution : false,
           audio: formValues.sendAudio,
         };
-
+        console.log(switchStream, "#164");
         if (switchStream) {
           viewer[index].localStream = screenStream;
         } else {
@@ -379,8 +379,8 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
             video: formValues.sendVideo ? resolution : false,
             audio: formValues.sendAudio,
         }
-        
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints)
+        master.localStream = cameraStream
         localView.srcObject = master.localStream
     } catch (e) {
       master.localStream = null;
@@ -389,7 +389,8 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
         const constraints = {
             audio: formValues.sendAudio,
         }  
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints)
+        master.localStream = cameraStream
         localView.srcObject = master.localStream
       } catch (e) {
         console.error('[MASTER] Could not find audio device');
@@ -507,23 +508,23 @@ async function master_switchToScreenshare() {
     senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
     switchStream = true;
   } else {
-    console.log(senders, "#528");
     if (senders.length === 0) {
       switchStream = !switchStream;  
       return;
     }
 
     if(switchStream) {
-      console.log(cameraStream.getTracks(), "#535");
+      console.log(cameraStream.getTracks(), "#517");
 
       senders.find(sender => sender.track.kind === 'video').replaceTrack(cameraStream.getTracks()[1]);
     } else {
+      console.log(screenStream.getTracks(), "#521");
+
       senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
-      console.log(senders, "#539");
     }
     switchStream = !switchStream;
   }
-  console.log(switchStream, "#543");
+  // console.log(switchStream, "#543");
 }
 
 function stopMasterMany() {
@@ -567,6 +568,10 @@ function stopMasterMany() {
   }
 
   if (screenStream) {
+    screenStream.getTracks().forEach((track) => {
+      track.stop();
+    });
+    
     screenStream = null;
     screenStreamSetted = false;
   }
@@ -910,6 +915,20 @@ export default class Many2Many extends React.Component {
     this.setState({
       showChat: !this.state.showChat, 
     })
+
+    if (this.state.showChat) {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-chat")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    } else {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-chat")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-chat");
+    }
   }
   
   whiteboardFullscreen() {
@@ -920,6 +939,20 @@ export default class Many2Many extends React.Component {
     this.setState({
       showWhiteBoard: !this.state.showWhiteBoard, 
     })
+
+    if (this.state.showWhiteBoard) {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    } else {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-screenshare")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-screenshare");
+    }
   }
 
   handleOnModeClick(mode) {
