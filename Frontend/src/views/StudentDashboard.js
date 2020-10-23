@@ -106,8 +106,6 @@ export default class StudentDashboard extends React.Component {
             var container = document.getElementsByClassName("main-content-container");
             var participantVideo = document.createElement("video");
             var source = document.createElement("source");
-            participantVideo.width = 300;
-            participantVideo.height = 300;
             participantVideo.style = "right: 24px; position: fixed; overflow-y: scroll; overflow-x: hidden; z-index: 100";
             participantVideo.controls = true;
             participantVideo.id = "small-video";
