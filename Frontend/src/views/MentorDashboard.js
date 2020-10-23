@@ -46,7 +46,7 @@ export default class MentorDashboard extends React.Component {
     }
 
     if (searchKey != null) {
-      searchKey = searchKey[0].value;
+      searchKey = searchKey[0].label;
     } else {
       searchKey = "";
     }
@@ -66,7 +66,7 @@ export default class MentorDashboard extends React.Component {
     }
 
     if (searchKey != null) {
-      searchKey = searchKey[0].value;
+      searchKey = searchKey[0].label;
     } else {
       searchKey = "";
     }
@@ -193,7 +193,7 @@ export default class MentorDashboard extends React.Component {
     }
 
     if (searchKey != null) {
-      searchKey = searchKey[0].value;
+      searchKey = searchKey[0].label;
     } else {
       searchKey = "";
     }
