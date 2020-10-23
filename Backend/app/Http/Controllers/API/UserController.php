@@ -140,6 +140,7 @@ class UserController extends Controller
     $name = $request->name;
     $provider = $request->provider;
     $provider_id = $request->provider_id;
+    $channel_name = $request['channel_name'];
     Log::info([$email, $name, $provider, $provider_id]);
     $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
     if ($user) {
@@ -190,6 +191,7 @@ class UserController extends Controller
           'provider_id' => $provider_id,
           'email_verified_at' => Carbon::now(),
           'is_active' => 1,
+          'channel_name' => $channel_name,
         ]);
         $token = null;
         if (!$token = JWTAuth::fromUser($user)) {
@@ -593,7 +595,9 @@ class UserController extends Controller
       $rowsPerPage = $request['rowsPerPage'];
       $is_mentor = User::select('is_mentor')->where('id', $user_id)->first();
       $temp_query = "";
-      $count_tag = count($tag_ids);
+      if ($tag_ids) {
+        $count_tag = count($tag_ids);
+      }
       for ($i = 0; $i < $count_tag; $i++) {
         $tag_id = ','.$tag_ids[$i].',';
         if ($i == $count_tag-1) {
@@ -602,6 +606,7 @@ class UserController extends Controller
           $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
         }
       }
+      
       if ($count_tag > 0) {
         if ($is_mentor->is_mentor == 1) {
           $mentors = DB::table('users')
@@ -624,6 +629,89 @@ class UserController extends Controller
         } else {
           $mentors = DB::table('users')
             ->where('is_mentor', 1)
+            ->paginate($rowsPerPage);
+        }
+      }
+      
+      $result_res = [];
+      if (count($mentors) > 0) {
+        for ($i = 0; $i < count($mentors); $i++) {
+          $temp_tag = [];
+          $tags_id = "";
+          if (trim($mentors[$i]->tags_id, ',') != "") {
+            $tags_id = trim($mentors[$i]->tags_id, ',');
+          }
+          if ($tags_id != "") {
+            $tag_rows = explode(',', $tags_id);
+            for ($j = 0; $j < count($tag_rows); $j++) {
+              $tags_name = Tag::where('id', $tag_rows[$j])->first();
+              $temp_tag[$j] = $tags_name->name;
+            }
+          }
+          if ($mentors[$i]->description == null) {
+            $mentors[$i]->description = "";
+          }
+          $mentors[$i]->tag_name = $temp_tag;
+          
+          $share_info = Media::where('user_id', $mentors[$i]->id)->get();
+          for ($j = 0; $j < count($share_info); $j++) {
+            $date = $share_info[$j]['created_at'];
+            $share_info[$j]['day'] = date('d/m/y', strtotime($date));
+            $share_info[$j]['time'] = date('h:i a', strtotime($date));
+          }
+          
+          $mentors[$i]->share_info = $share_info;
+          $result_res[] = $mentors[$i];
+        }
+      }
+      return response()->json([
+        'result' => 'success',
+        'data' => $result_res,
+        'totalRows' => $mentors->total(),
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th,
+      ]);
+    }
+  }
+  
+  public function findMentorsByTagsOrName(Request $request) {
+    try {
+      $user_id = $request['user_id'];
+      $tag_ids = $request['tags_id'];
+      $mentor_name = $request['name'];
+      $rowsPerPage = $request['rowsPerPage'];
+      $temp_query = "";
+      $count_tag = 0;
+      if ($tag_ids){
+        $count_tag = count($tag_ids);
+      }
+      for ($i = 0; $i < $count_tag; $i++) {
+        $tag_id = ','.$tag_ids[$i].',';
+        if ($i == $count_tag-1) {
+          $temp_query = $temp_query."tags_id like '%$tag_id%'";
+        } else {
+          $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
+        }
+      }
+      
+      if ($count_tag > 0) {
+        $mentors = DB::table('users')
+          ->where('name', 'LIKE', '%' . $mentor_name . '%')
+          ->where('id', '!=', $user_id)
+          ->whereRaw(DB::raw($temp_query))
+          ->paginate($rowsPerPage);
+      } else {
+        if ($mentor_name != "") {
+          $mentors = DB::table('users')
+            ->where('name', 'LIKE', '%' . $mentor_name . '%')
+            ->where('id', '!=', $user_id)
+            ->paginate($rowsPerPage);
+        } else {
+          $mentors = DB::table('users')
+            ->where('id', '!=', $user_id)
             ->paginate($rowsPerPage);
         }
       }
@@ -828,18 +916,26 @@ class UserController extends Controller
     }
   }
   
-  function test(Request $request)
-  {
-    echo Carbon::now() . "\n";
-    $input = '09/20';
-    $input = str_replace('/','/25/', $input);
-    $date = strtotime($input);
-    $newdate = date('Y-m-d', $date);
-    
-    Payment::create([
-      'card_expiration' => $newdate,
-      'card_number' => 123123,
-    ]);
+  public function getAllParticipants(Request $request) {
+    try {
+      $user_id = $request->user_id;
+      $allParticipants = User::select('name', 'id')->where('id', '!=', $user_id)->get();
+      if (count($allParticipants) > 0) {
+        return response()->json([
+          'result' => 'success',
+          'data' => $allParticipants,
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+        ]);
+      }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th,
+      ]);
+    }
   }
 }
 
