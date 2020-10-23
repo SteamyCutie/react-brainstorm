@@ -583,11 +583,12 @@ const CustomMonthDateHeader = ({events, startSession}) => props => {
 
   const startForum = () => {
     console.log("start session");
-    startSession();
+    // startSession();
   }
 
   const toggle = () => {
-    setOpen(!open);
+    // setOpen(!open);
+    setOpen(false);
   }
 
   return (

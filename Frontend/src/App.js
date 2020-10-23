@@ -518,7 +518,7 @@ export default class App extends React.Component{
                   component={withTracker(props => {
                     return (
                       <route.layout {...props}>
-                        <route.component {...props} ws={this.ws} setUser={this.setUser} stop={this.stop}/>
+                        <route.component {...props} ws={this.ws} setUser={this.setUser} stop={this.stop} />
                       </route.layout>
                     );
                   })}
@@ -535,7 +535,7 @@ export default class App extends React.Component{
                     component={withTracker(props => {
                       return (
                         <route.layout {...props}>
-                          <route.component {...props} startSession={this.startSession} joinSession={this.joinSession} stop={this.stop}/>
+                          <route.component {...props} startSession={this.startSession} joinSession={this.joinSession} stop={this.stop} />
                         </route.layout>
                       );
                     })}
@@ -562,10 +562,7 @@ export default class App extends React.Component{
           })}
           {call && 
             <div className="draggable-video-item">
-              <Draggable
-                bounds="parent"
-                onStart={() => this.dragegableOnStart()}
-              >
+              <Draggable bounds="parent" onStart={() => this.dragegableOnStart()}>
                 <div className="box" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <VideoCallMin 
                     accepted={isAccepted}
@@ -584,10 +581,7 @@ export default class App extends React.Component{
           }
           {this.state.roomCall && 
             <div className="draggable-room-item">
-              <Draggable
-                bounds="parent"
-                onStart={() => this.dragegableOnStart()}
-              >
+              <Draggable bounds="parent" onStart={() => this.dragegableOnStart()}>
                 <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <Many2Many 
                     ref = {this.many2manyRef}

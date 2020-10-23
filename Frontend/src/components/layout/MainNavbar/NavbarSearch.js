@@ -5,10 +5,12 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Button
+  Button,
+  FormInput
 } from "shards-react";
 import MultiSelect from "react-multi-select-component";
-import { gettags, signout } from '../../../api/api';
+import Select from "react-dropdown-select";
+import { gettags, signout, getallparticipants } from '../../../api/api';
 
 import SearchIcon from '../../../images/SearchIcon.svg'
 
@@ -18,21 +20,19 @@ export default class NavbarSearch extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      searchKey: (localStorage.getItem('searchKey') === null || localStorage.getItem('searchKey') === undefined) ? "" : localStorage.getItem('searchKey'),
+      searchKey: '',
       selectedTags: (localStorage.getItem('search-category') === null ? [] : JSON.parse(localStorage.getItem('search-category'))),
       tags: [],
       param: {
         tags: []
-      }
+      },
+      users: []
     }
   }
 
   componentWillMount() {
     this.getAllTags();
-  }
-
-  onChangeSearchText(e) {
-    this.setState({searchKey: e.target.value});
+    this.getAllParticipants();
   }
 
   getAllTags = async() => {
@@ -71,6 +71,43 @@ export default class NavbarSearch extends React.Component{
     };
   }
 
+  getAllParticipants = async() => {
+    let param = {
+      user_id: localStorage.getItem("user_id")
+    }
+    try {
+      const result = await getallparticipants(param);
+      if (result.data.result === "success") {
+        let param = {
+          label: '',
+          value: ''
+        };
+
+        let params = [];
+
+        for (var i = 0; i < result.data.data.length; i ++) {
+          param.label = result.data.data[i].name;
+          param.value = result.data.data[i].id;
+          params.push(param);
+          param = {};
+        }
+        this.setState({users: params});
+      } else if (result.data.result === "warning") {
+
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.signout();
+        }
+      }
+    } catch(err) {
+
+    }
+  }
+
   onChangeTags = (e) => {
     const {selectedTags} = this.state;
     let temp = selectedTags;
@@ -78,6 +115,12 @@ export default class NavbarSearch extends React.Component{
     localStorage.removeItem('search-category');
     localStorage.setItem('search-category', JSON.stringify(temp));
     this.setState({selectedTags: temp});
+  }
+
+  onChangeSearchText(e) {
+    localStorage.removeItem('search-key');
+    localStorage.setItem('search-key', e[0].label);
+    this.setState({searchKey: e[0].label});
   }
 
   signout = async() => {
@@ -119,7 +162,7 @@ export default class NavbarSearch extends React.Component{
   }
 
   render() {
-    const { tags, selectedTags } = this.state;
+    const { tags, selectedTags, users } = this.state;
     return (
       <>
       <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
@@ -129,15 +172,16 @@ export default class NavbarSearch extends React.Component{
             options={tags}
             value={selectedTags}
             onChange={(e) => this.onChangeTags(e)}
-            labelledBy={"Enter the category or participant name"}
+            labelledBy={"Enter the category"}
             className="top-navbar-search"
             overrideStrings={{
-              selectSomeItems: "Enter the category or participant name",
+              selectSomeItems: "Enter the category",
               allItemsAreSelected: "All Items are Selected",
               selectAll: "Select All",
               search: "Search",
             }}
           />
+          <Select placeholder="Enter the participant name" clearable={true} options={users} onChange={(values) => this.onChangeSearchText(values)} />
           <InputGroupAddon type="append">
             <Button className={JSON.parse(localStorage.getItem('user-type')) ? "navbar-search btn-search-mentor" : "navbar-search btn-search" } onClick={() => this.onSearch()}>
               <InputGroupText>
