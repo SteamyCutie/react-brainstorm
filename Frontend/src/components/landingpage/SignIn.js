@@ -27,6 +27,17 @@ export default class SignIn extends React.Component {
     // console.log(x);
   }
 
+  componentDidMount() {    
+    console.log(this.props.open, "SignIn #31");
+    if(this.props.open){
+      document.body.style.overflow = 'hidden';
+    }    
+  }
+  
+  componentWillUnmount() {
+      document.body.style.overflow = 'unset';
+  }
+
   clearValidationErrors() {
     this.setState({
       validationError: {

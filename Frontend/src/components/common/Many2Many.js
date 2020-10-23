@@ -5,7 +5,7 @@ import "../../assets/landingpage.css"
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
 import AWS from 'aws-sdk'
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
-import PosterImg from '../../images/logo.png'
+import PosterImg from '../../images/Brainshare_logo.svg'
 import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
 import WhiteBoard from 'fabric-whiteboard'
@@ -161,18 +161,18 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           video: formValues.sendVideo ? resolution : false,
           audio: formValues.sendAudio,
         };
-
+        console.log(switchStream, "#164");
         if (switchStream) {
           viewer[index].localStream = screenStream;
         } else {
           cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
           viewer[index].localStream = cameraStream;
         }
-        
+
         viewer[index].localStream.getTracks().forEach(track => senders.push(viewer[index].peerConnection.addTrack(track, viewer[index].localStream)));
         localView.srcObject = viewer[index].localStream;
       } catch (e) {
-        console.error('[VIEWER] Could not find webcam');
+        // console.error('[VIEWER] Could not find webcam');
         try{
           const constraints = {
             audio: formValues.sendAudio,
@@ -183,7 +183,7 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           viewer[index].localStream.getTracks().forEach(track => senders.push(viewer[index].peerConnection.addTrack(track, viewer[index].localStream)));
           localView.srcObject = viewer[index].localStream;
         } catch(e) {
-          console.error('[VIEWER] Could not find audio device');
+          // console.error('[VIEWER] Could not find audio device');
         }
       }
     }
@@ -291,23 +291,6 @@ function stopViewerMany(index) {
   if (viewer[index].dataChannel) {
       viewer[index].dataChannel = null;
   }
-
-  // if (cameraStream) {
-  //   cameraStream = null;
-  // }
-
-  // if (screenStream) {
-  //   screenStream.getTracks().forEach((track) => {
-  //     track.stop();
-  //   });
-
-  //   screenStream = null;
-  //   screenStreamSetted = false;
-  // }
-
-  // if (switchStream) {
-  //   switchStream = false;
-  // }
 }
 
 async function startMasterMany(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
@@ -396,8 +379,8 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
             video: formValues.sendVideo ? resolution : false,
             audio: formValues.sendAudio,
         }
-        
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints)
+        master.localStream = cameraStream
         localView.srcObject = master.localStream
     } catch (e) {
       master.localStream = null;
@@ -406,7 +389,8 @@ async function startMasterMany(localView, remoteView, formValues, onStatsReport,
         const constraints = {
             audio: formValues.sendAudio,
         }  
-        master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints)
+        master.localStream = cameraStream
         localView.srcObject = master.localStream
       } catch (e) {
         console.error('[MASTER] Could not find audio device');
@@ -517,23 +501,30 @@ async function master_switchToScreenshare() {
     screenStreamSetted = true;
 
     if (senders.length === 0) {
+      switchStream = true;
       return;
     }
 
     senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
     switchStream = true;
-    console.log("#513");
   } else {
-    if(switchStream) {
-      senders.find(sender => sender.track.kind === 'video').replaceTrack(cameraStream.getTracks().find(track => track.kind === 'video'));
-      switchStream = !switchStream;
-      console.log("#518");
-    } else {
-      senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
-      switchStream = !switchStream;
-      console.log("#525");
+    if (senders.length === 0) {
+      switchStream = !switchStream;  
+      return;
     }
+
+    if(switchStream) {
+      console.log(cameraStream.getTracks(), "#517");
+
+      senders.find(sender => sender.track.kind === 'video').replaceTrack(cameraStream.getTracks()[1]);
+    } else {
+      console.log(screenStream.getTracks(), "#521");
+
+      senders.find(sender => sender.track.kind === 'video').replaceTrack(screenStream.getTracks()[0]);
+    }
+    switchStream = !switchStream;
   }
+  // console.log(switchStream, "#543");
 }
 
 function stopMasterMany() {
@@ -577,6 +568,10 @@ function stopMasterMany() {
   }
 
   if (screenStream) {
+    screenStream.getTracks().forEach((track) => {
+      track.stop();
+    });
+    
     screenStream = null;
     screenStreamSetted = false;
   }
@@ -804,7 +799,6 @@ export default class Many2Many extends React.Component {
     master.localStream.getTracks().forEach(track => {
       if (track.kind === "audio") {
         track.enabled = !track.enabled;
-        console.log(track);
       }
     });
 
@@ -812,7 +806,6 @@ export default class Many2Many extends React.Component {
       participant.localStream.getTracks().forEach(track => {
         if (track.kind === "audio") {
           track.enabled = !track.enabled;
-          console.log(track);
         }
       })
     });
@@ -922,6 +915,20 @@ export default class Many2Many extends React.Component {
     this.setState({
       showChat: !this.state.showChat, 
     })
+
+    if (this.state.showChat) {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-chat")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    } else {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-chat")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-chat");
+    }
   }
   
   whiteboardFullscreen() {
@@ -932,6 +939,20 @@ export default class Many2Many extends React.Component {
     this.setState({
       showWhiteBoard: !this.state.showWhiteBoard, 
     })
+
+    if (this.state.showWhiteBoard) {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    } else {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-screenshare")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-screenshare");
+    }
   }
 
   handleOnModeClick(mode) {
@@ -1074,8 +1095,9 @@ export default class Many2Many extends React.Component {
         stopViewerMany(index);
         document.getElementById("master-participant-container-" + channelName).remove();
         // document.getElementById("participant-name-" + channelName).remove();
-        viewer.slice(index, 1);
-        senders.slice(index, 1);
+        viewer.splice(index, 1);
+        senders.splice(2 * index, 2);
+        // senders.slice(2 * index, 1);
         break;
       }
     }
