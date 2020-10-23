@@ -110,9 +110,9 @@ class SetAvailability extends React.Component {
     let timeId = 1;
     let timeStr = "";
     for(var i = 0; i < Timelinelist.length; i ++) {
-      if(parseInt(e.target.value) + 1 === Timelinelist[i]['id']) {
+      if(parseInt(e.target.value) === Timelinelist[i].id) {
         timeId = i;
-        timeStr = Timelinelist[i]['str'];
+        timeStr = Timelinelist[i].str;
       }
     }
 
@@ -129,9 +129,9 @@ class SetAvailability extends React.Component {
     let timeId = 1;
     let timeStr = "";
     for(var i = 0; i < Timelinelist.length; i ++) {
-      if(parseInt(e.target.value) + 1 === Timelinelist[i]['id']) {
+      if(parseInt(e.target.value) === Timelinelist[i].id) {
         timeId = i;
-        timeStr = Timelinelist[i]['str'];
+        timeStr = Timelinelist[i].str;
       }
     }
     

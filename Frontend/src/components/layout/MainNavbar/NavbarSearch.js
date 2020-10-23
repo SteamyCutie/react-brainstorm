@@ -129,10 +129,10 @@ export default class NavbarSearch extends React.Component{
             options={tags}
             value={selectedTags}
             onChange={(e) => this.onChangeTags(e)}
-            labelledBy={"Enter the category"}
+            labelledBy={"Enter the category or participant name"}
             className="top-navbar-search"
             overrideStrings={{
-              selectSomeItems: "Enter the category",
+              selectSomeItems: "Enter the category or participant name",
               allItemsAreSelected: "All Items are Selected",
               selectAll: "Select All",
               search: "Search",

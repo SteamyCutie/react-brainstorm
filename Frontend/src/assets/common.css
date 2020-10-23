@@ -102,6 +102,12 @@
   width: 65%;
 }
 
+.modal-content {
+  max-height: calc(100vh - 20px);
+  /* overflow-y: auto; */
+  overflow: auto;
+}
+
 .modal-class {
   height: 100%;
   margin: auto !important;
