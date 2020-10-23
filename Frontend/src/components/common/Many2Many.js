@@ -567,6 +567,10 @@ function stopMasterMany() {
   }
 
   if (screenStream) {
+    screenStream.getTracks().forEach((track) => {
+      track.stop();
+    });
+    
     screenStream = null;
     screenStreamSetted = false;
   }
@@ -910,6 +914,20 @@ export default class Many2Many extends React.Component {
     this.setState({
       showChat: !this.state.showChat, 
     })
+
+    if (this.state.showChat) {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-chat")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    } else {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-chat")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-chat");
+    }
   }
   
   whiteboardFullscreen() {
@@ -920,6 +938,20 @@ export default class Many2Many extends React.Component {
     this.setState({
       showWhiteBoard: !this.state.showWhiteBoard, 
     })
+
+    if (this.state.showWhiteBoard) {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    } else {
+      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-screenshare")
+
+      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-screenshare");
+    }
   }
 
   handleOnModeClick(mode) {
