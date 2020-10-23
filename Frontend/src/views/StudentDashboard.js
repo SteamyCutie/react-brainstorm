@@ -10,7 +10,9 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
-import { findmentorsbytags, signout } from '../api/api';
+import media_url from "../video/video.mp4";
+
+import { findmentorsbytagsorname, signout } from '../api/api';
 export default class StudentDashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -24,6 +26,8 @@ export default class StudentDashboard extends React.Component {
       loading: false,
       mentors: [],
       callDescription: '', 
+      width: '100%',
+      height: '450'
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -31,6 +35,7 @@ export default class StudentDashboard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = JSON.parse(localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -39,11 +44,18 @@ export default class StudentDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, 1);
+
+    if (searchKey != null) {
+      searchKey = searchKey[0].label;
+    } else {
+      searchKey = "";
+    }
+    this.getParticipants(searchParams, searchKey, 1);
   }
 
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = JSON.parse(localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -52,16 +64,85 @@ export default class StudentDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, 1);
+
+    if (searchKey != null) {
+      searchKey = searchKey[0].label;
+    } else {
+      searchKey = "";
+    }
+    this.getParticipants(searchParams, searchKey, 1);
+  }
+
+  componentDidMount() {
+    window.addEventListener('mousewheel', this.handleScroll);
+  }
+
+  handleScroll(event) {
+    if (window.location.pathname === "/studentDashboard") {
+      if (event.deltaY < 0)
+      {
+        if (window.pageYOffset <= 200) {
+          if (!document.getElementById("video")) {
+            if (document.getElementById("small-video"))
+              document.getElementById("small-video").remove();
+
+            var header = document.getElementsByClassName("page-header");
+            var container = document.getElementsByClassName("main-content-container");
+            var participantVideo = document.createElement("video");
+            var source = document.createElement("source");
+
+            participantVideo.height = window.pageYOffset;
+            participantVideo.controls = true;
+            participantVideo.id = 'video';
+            participantVideo.style = 'width: 100%';
+
+            source.src = media_url;
+            source.type = "video/mp4";
+            participantVideo.appendChild(source);
+
+            container[0].insertBefore(participantVideo, header[0]);
+          } else {
+            var video = document.getElementById("video");
+            video.height = 450;
+          }
+        }
+      } else if (event.deltaY > 0) {
+        let headerHeight = 94;
+        if (document.getElementById("video")) {
+          document.getElementById("video").height = document.getElementById("video").height - window.pageYOffset - headerHeight;
+
+          if (document.getElementById("video").height <= 0) {
+            document.getElementById("video").remove();
+
+            var header = document.getElementsByClassName("page-header");
+            var container = document.getElementsByClassName("main-content-container");
+            var participantVideo = document.createElement("video");
+            var source = document.createElement("source");
+            participantVideo.width = 300;
+            participantVideo.height = 300;
+            participantVideo.style = "right: 24px; position: fixed; overflow-y: scroll; overflow-x: hidden; z-index: 100";
+            participantVideo.controls = true;
+            participantVideo.id = "small-video";
+
+            source.src = media_url;
+            source.type = "video/mp4";
+            participantVideo.appendChild(source);
+
+            container[0].insertBefore(participantVideo, header[0]);
+          }
+        }
+      }
+    }
   }
 
   sendUser(to, avatar, name) {
     this.props.setUser(to, avatar, name);
   }
 
-  getMentors = async(category, pageNo) => {
+  getParticipants = async(category, searchKey, pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
+      name: searchKey,
       tags_id: category,
       page: pageNo,
       rowsPerPage: 10
@@ -69,7 +150,7 @@ export default class StudentDashboard extends React.Component {
 
     try {
       this.setState({loading: true});
-      const result = await findmentorsbytags(param);
+      const result = await findmentorsbytagsorname(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
@@ -101,6 +182,7 @@ export default class StudentDashboard extends React.Component {
 
   onChangePagination(e, value) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = JSON.parse(localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -109,7 +191,13 @@ export default class StudentDashboard extends React.Component {
         searchParams.push(categories[i].value);
       }
     }
-    this.getMentors(searchParams, value);
+
+    if (searchKey != null) {
+      searchKey = searchKey[0].label;
+    } else {
+      searchKey = "";
+    }
+    this.getParticipants(searchParams, searchKey, value);
   }
 
   signout = async() => {
@@ -248,7 +336,7 @@ export default class StudentDashboard extends React.Component {
   }
 
   render() {
-    const {loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id} = this.state;
+    const { loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id, width, height } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -264,6 +352,9 @@ export default class StudentDashboard extends React.Component {
           setDescription={(description) => this.setDescription(description)} 
         />
         <Container fluid className="main-content-container px-4 main-content-container-class">
+          <video width={width} height={height} controls id="video">
+            <source src={media_url} type="video/mp4"></source>
+          </video>
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3>Top Brainsshare mentors</h3>

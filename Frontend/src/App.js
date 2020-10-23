@@ -454,9 +454,8 @@ export default class App extends React.Component{
     return this.state.dragegableOnStart;
   }
 
-  startSession(sessionChannelName) {
+  startSession(room_id) {
     this.setState({
-      sessionChannelName: sessionChannelName.toString(), 
       roomCall: true, 
       isMaster: true, 
     });
@@ -466,15 +465,14 @@ export default class App extends React.Component{
       userId: localStorage.getItem("user_id"), 
       userName: localStorage.getItem("user_name"), 
       channelName: localStorage.getItem("channel_name"), 
-      roomName: localStorage.getItem("room_id"),
+      roomName: room_id,
     }
 
     this.sendMessage(message);
   }
 
-  joinSession(sessionChannelName) {
+  joinSession(room_id) {
     this.setState({
-      sessionChannelName: sessionChannelName.toString(), 
       roomCall: true, 
       isMaster: false, 
     })
@@ -484,7 +482,7 @@ export default class App extends React.Component{
       userId: localStorage.getItem("user_id"), 
       userName: localStorage.getItem("user_name"), 
       channelName: localStorage.getItem("channel_name"), 
-      roomName: sessionChannelName,
+      roomName: room_id,
     }
 
     this.sendMessage(message);
@@ -520,7 +518,7 @@ export default class App extends React.Component{
                   component={withTracker(props => {
                     return (
                       <route.layout {...props}>
-                        <route.component {...props} ws={this.ws} setUser={this.setUser} stop={this.stop}/>
+                        <route.component {...props} ws={this.ws} setUser={this.setUser} stop={this.stop} />
                       </route.layout>
                     );
                   })}
@@ -528,7 +526,7 @@ export default class App extends React.Component{
               );
             }
             else {
-              if (route.path === '/studentSession' || route.path === '/scheduleLiveForum') {
+              if (route.path === '/studentSession' || route.path === '/scheduleLiveForum' || route.path === '/mentorSession') {
                 return (
                   <Route
                     key={index}
@@ -537,7 +535,7 @@ export default class App extends React.Component{
                     component={withTracker(props => {
                       return (
                         <route.layout {...props}>
-                          <route.component {...props} startSession={this.startSession} joinSession={this.joinSession} stop={this.stop}/>
+                          <route.component {...props} startSession={this.startSession} joinSession={this.joinSession} stop={this.stop} />
                         </route.layout>
                       );
                     })}
@@ -564,10 +562,7 @@ export default class App extends React.Component{
           })}
           {call && 
             <div className="draggable-video-item">
-              <Draggable
-                bounds="parent"
-                onStart={() => this.dragegableOnStart()}
-              >
+              <Draggable bounds="parent" onStart={() => this.dragegableOnStart()}>
                 <div className="box" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <VideoCallMin 
                     accepted={isAccepted}
@@ -586,10 +581,7 @@ export default class App extends React.Component{
           }
           {this.state.roomCall && 
             <div className="draggable-room-item">
-              <Draggable
-                bounds="parent"
-                onStart={() => this.dragegableOnStart()}
-              >
+              <Draggable bounds="parent" onStart={() => this.dragegableOnStart()}>
                 <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <Many2Many 
                     ref = {this.many2manyRef}

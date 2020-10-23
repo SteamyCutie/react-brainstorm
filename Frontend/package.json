@@ -51,6 +51,7 @@
     "react-data-table-component": "^6.11.0",
     "react-dom": "^16.13.1",
     "react-draggable": "^4.4.3",
+    "react-dropdown-select": "^4.6.0",
     "react-dropzone": "^11.1.0",
     "react-facebook-login": "^4.1.1",
     "react-file-drop": "^3.0.7",

@@ -113,20 +113,20 @@ export default class BookSession extends React.Component {
     let totalName = `${firstmonthName} ${firstdateName} - ${lastmonthName} ${lastdateName} , ${yearName}`;
 
     var temp = [];
-    let obj6 = { date: sixdayName, day: sixday.getDate(), month: sixday.getMonth(), year: sixday.getFullYear()};
-    temp.push(obj6);
-    let obj7 = { date: lastdayName, day: lastday.getDate(), month: lastday.getMonth(), year: lastday.getFullYear()};
-    temp.push(obj7);
-    let obj1 = { date: firstdayName, day: firstday.getDate(), month: firstday.getMonth(), year: firstday.getFullYear()};
+    let obj1 = { date: firstdayName, day: firstday.getDate(), month: firstday.getMonth() + 1, year: firstday.getFullYear()};
     temp.push(obj1);
-    let obj2 = { date: twodayName, day: twoday.getDate(), month: twoday.getMonth(), year: twoday.getFullYear()};
+    let obj2 = { date: twodayName, day: twoday.getDate(), month: twoday.getMonth() + 1, year: twoday.getFullYear()};
     temp.push(obj2);
-    let obj3 = { date: threedayName, day: threeday.getDate(), month: threeday.getMonth(), year: threeday.getFullYear()};
+    let obj3 = { date: threedayName, day: threeday.getDate(), month: threeday.getMonth() + 1, year: threeday.getFullYear()};
     temp.push(obj3);
-    let obj4 = { date: fourdayName, day: fourday.getDate(), month: fourday.getMonth(), year: fourday.getFullYear()};
+    let obj4 = { date: fourdayName, day: fourday.getDate(), month: fourday.getMonth() + 1, year: fourday.getFullYear()};
     temp.push(obj4);
-    let obj5 = { date: fivedayName, day: fiveday.getDate(), month: fiveday.getMonth(), year: fiveday.getFullYear()};
+    let obj5 = { date: fivedayName, day: fiveday.getDate(), month: fiveday.getMonth() + 1, year: fiveday.getFullYear()};
     temp.push(obj5);
+    let obj6 = { date: sixdayName, day: sixday.getDate(), month: sixday.getMonth() + 1, year: sixday.getFullYear()};
+    temp.push(obj6);
+    let obj7 = { date: lastdayName, day: lastday.getDate(), month: lastday.getMonth() + 1, year: lastday.getFullYear()};
+    temp.push(obj7);
 
     this.setState({
       weekdata: temp,
@@ -158,25 +158,14 @@ export default class BookSession extends React.Component {
     this.checkLabel();
   }
 
-  bookSchedule(idx, idx1, time) {
-    const {schedule} = this.state;
-    var temp = schedule;
-    temp[idx][idx1].book = !this.state.schedule[idx][idx1].book;
-    this.setState({
-      schedule: temp,
-      from: time
-    });
-  }
+  bookSchedule = async(idx, idx1, time) => {
+    const { weekdata } = this.state;
 
-  actionBookSession = async() => {
-    const {day, from} = this.state;
     let param = {
       user_id: localStorage.getItem('user_id'),
       mentor_id: this.props.id,
-      day: day,
-      from: from,
-      description: "desc",
-      title: "title"
+      day: weekdata[idx].year + '-' + weekdata[idx].month + '-' + weekdata[idx].day + '',
+      from: time
     }
 
     try {
@@ -184,9 +173,9 @@ export default class BookSession extends React.Component {
       const result = await booksession(param);
 
       if (result.data.result === "success") {
-        this.setState({schedule: result.data.data});
+        this.showSuccess(result.data.result);
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        this.showWarning("You already booked session at this day!");
       } else {
         if (result.data.message === "Token is Expired") {
           this.showFail(result.data.message);
@@ -207,6 +196,10 @@ export default class BookSession extends React.Component {
       this.showFail("Something Went wrong");
     };
   }
+
+  actionBookSession = async() => {
+    this.props.toggle();
+  } 
 
   signout = async() => {
     const param = {
@@ -326,7 +319,7 @@ export default class BookSession extends React.Component {
             <Row style={{marginTop: 30}}>
               {weekdata.map((item, idx) => {
                 if (item.date === "Sat" || item.date === "Sun") {
-                  if (item.day === new Date().getDate() && item.month === new Date().getMonth() && item.year === new Date().getFullYear()) {
+                  if (item.day === new Date().getDate() && item.month === new Date().getMonth()+1 && item.year === new Date().getFullYear()) {
                     return <Col className="week-style-header-disable" key={idx}>
                       <p>{item.date}</p>
                       <button type="button" className="btn btn-primary today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
@@ -338,7 +331,7 @@ export default class BookSession extends React.Component {
                     </Col>;
                   }
                 } else {
-                  if (item.day === new Date().getDate() && item.month === new Date().getMonth() && item.year === new Date().getFullYear()) {
+                  if (item.day === new Date().getDate() && item.month === new Date().getMonth()+1 && item.year === new Date().getFullYear()) {
                     return <Col className="week-style-header-available" key={idx}>
                       <p>{item.date}</p>
                       <button type="button" className="btn btn-primary today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
