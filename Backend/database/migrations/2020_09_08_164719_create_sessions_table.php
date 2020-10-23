@@ -25,6 +25,7 @@ class CreateSessionsTable extends Migration
       $table->timestamp('to')->nullable();
       $table->integer('status')->default(0);
       $table->integer('room_id')->unique()->default(0);
+      $table->string('created_id')->nullable();
       $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
       $table->timestamps();
     });

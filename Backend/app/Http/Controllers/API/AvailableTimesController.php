@@ -17,7 +17,7 @@ class AvailableTimesController extends Controller
   public function getavailableTimesForStudent(Request $request) {
     try{
       $user_id = $request->user_id;
-      $week = ['Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday'];
+      $week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday'];
       $res_week = [];
       for ($i = 0; $i < 7; $i++) {
         $week_list = AvailableTimes::where('user_id', $user_id)->where('day_of_week', $week[$i])->get();
