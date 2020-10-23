@@ -162,7 +162,6 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           audio: formValues.sendAudio,
         };
 
-        console.log(switchStream, "#165");
         if (switchStream) {
           viewer[index].localStream = screenStream;
         } else {
@@ -795,7 +794,6 @@ export default class Many2Many extends React.Component {
     master.localStream.getTracks().forEach(track => {
       if (track.kind === "audio") {
         track.enabled = !track.enabled;
-        console.log(track);
       }
     });
 
@@ -803,7 +801,6 @@ export default class Many2Many extends React.Component {
       participant.localStream.getTracks().forEach(track => {
         if (track.kind === "audio") {
           track.enabled = !track.enabled;
-          console.log(track);
         }
       })
     });
@@ -1068,7 +1065,6 @@ export default class Many2Many extends React.Component {
         viewer.splice(index, 1);
         senders.splice(2 * index, 2);
         // senders.slice(2 * index, 1);
-        console.log(index, senders, "#1080");
         break;
       }
     }
