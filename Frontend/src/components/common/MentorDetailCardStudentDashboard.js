@@ -139,7 +139,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                   <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>Share Page</h3>
                   {avatar && <img className="mentor-detail-avatar-img" src={avatar} alt="avatar"/>}
                   {!avatar && <img className="mentor-detail-avatar-img" src={defaultavatar} alt="avatar"/>}
-                  <div style={{display: "flex", padding: "20px 0px"}}>
+                  <div style={{display: "flex", padding: "20px 15px"}}>
                     <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
                     <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
                     <h6 className="no-margin"style={{fontWeight: "bold"}}>{sub_count}</h6>
