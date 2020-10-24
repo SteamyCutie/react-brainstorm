@@ -118,8 +118,6 @@ export default class StudentDashboard extends React.Component {
             var container = document.getElementsByClassName("main-content-container");
             var participantVideo = document.createElement("video");
             var source = document.createElement("source");
-            participantVideo.width = 300;
-            participantVideo.height = 300;
             participantVideo.style = "right: 24px; position: fixed; overflow-y: scroll; overflow-x: hidden; z-index: 100";
             participantVideo.controls = true;
             participantVideo.id = "small-video";
@@ -157,6 +155,12 @@ export default class StudentDashboard extends React.Component {
           mentors: result.data.data,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
+
+        if (category.length) {
+          document.getElementById("search-result-label").textContent = JSON.parse(localStorage.getItem('search-category'))[0].label + " mentors (" + result.data.data.length + ")";
+        } else {
+          document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
+        }
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -357,7 +361,7 @@ export default class StudentDashboard extends React.Component {
           </video>
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
-              <h3>Top Brainsshare mentors</h3>
+              <h3 id="search-result-label">Top Brainsshare mentors</h3>
             </Col>
             <AdSense.Google
               client='ca-pub-8022559137099901'

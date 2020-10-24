@@ -7,6 +7,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
+import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
 
 import { findmentorsbytagsorname, signout } from '../api/api';
 
@@ -118,9 +119,7 @@ export default class MentorDashboard extends React.Component {
             var container = document.getElementsByClassName("main-content-container");
             var participantVideo = document.createElement("video");
             var source = document.createElement("source");
-            participantVideo.width = 300;
-            participantVideo.height = 300;
-            participantVideo.style = "right: 24px; position: fixed; overflow-y: scroll; overflow-x: hidden; z-index: 100";
+            participantVideo.className = "ads-small-video";
             participantVideo.controls = true;
             participantVideo.id = "small-video";
 
@@ -157,6 +156,12 @@ export default class MentorDashboard extends React.Component {
           mentors: result.data.data,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
+
+        if (category.length) {
+          document.getElementById("search-result-label").textContent = JSON.parse(localStorage.getItem('search-category'))[0].label + " mentors (" + result.data.data.length + ")";
+        } else {
+          document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
+        }
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -303,37 +308,12 @@ export default class MentorDashboard extends React.Component {
             </video>
             <Row noGutters className="page-header py-4">
               <Col className="page-title">
-                <h3>My share page</h3>
+                <h3 id="search-result-label">My Share Page</h3>
               </Col>
             </Row>
-            {mentors && mentors.map((mentor, idx) => 
-            <Card small className="share-page-card" style={{marginBottom: 30}}>
-              <CardBody>
-                <Row>
-                  <Col xl="3" className="subscription-mentor-detail">
-                    <div>
-                      {mentor.avatar && <img className="avatar" src={mentor.avatar} alt="avatar"/>}
-                      {!mentor.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
-                      <div style={{display: "flex", padding: "20px 0px"}}>
-                        <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
-                        <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                        <h6 className="no-margin"style={{fontWeight: "bold"}}>{mentor.sub_count}</h6>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col xl="9" lg="12" className="subscription-mentor-videos">
-                    <h6 className="profile-link-url">
-                      <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
-                      <a href="javascript:void(0)" style={{color: '#018ac0'}}>www.brainsshare.com/kiannapress</a>
-                    </h6>
-                    {mentor.share_info && mentor.share_info.map((item, idx) => 
-                      <MentorVideo key={idx} item={item} />
-                    )}
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>   
-            )} 
+            {mentors.map((data, idx) =>(
+              <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={(id) => this.toggle_callwithdesc(id)}/>
+            ))}
             {mentors.length > 0 && <Row className="pagination-center">
               <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
             </Row>}
