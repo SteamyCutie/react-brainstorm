@@ -68,7 +68,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
   }
   
   render() {
-    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee } = this.props.mentorData;
+    const {id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee } = this.props.mentorData;
     const { subscriptionOpen } = this.state;
 
     return (
@@ -84,81 +84,93 @@ class MentorDetailCardStudentDashboard extends React.Component {
         <div className="mentor-detail-desc">
           <Row className="metor-detail-name-score">
             <div className="mentor-detail-name">{name}</div>
-            <div><img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>{average_mark}</div>
+            {is_mentor ? <div><img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>{average_mark}</div> : null}
           </Row>
-          <Row className="mentor-detail-subject-tag">
-            <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
-            {tag_name && tag_name.map((teach, idx) => {
-              if (idx < 3)
-                return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
-              else if (idx === 3)
-                return <p key={idx}>{tag_name.length - 3} more</p>
-              else 
-                return <></>;
-            })}
-          </Row>
+          {is_mentor ? 
+            <Row className="mentor-detail-subject-tag">
+              <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
+              {tag_name && tag_name.map((teach, idx) => {
+                if (idx < 3)
+                  return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
+                else if (idx === 3)
+                  return <p key={idx}>{tag_name.length - 3} more</p>
+                else 
+                  return <></>;
+              })}
+            </Row>
+            : null 
+          }
           <div className="mentor-detail-myself">
             {!this.state.more && (description.length > 200 ? <p>{description.slice(0,200)}...</p> : <p>{description}</p>)}
             {this.state.more && <p>{description}</p>}
             {description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
           </div>
-          <div className="mentor-detail-video">
+          {is_mentor ?
+            <div className="mentor-detail-video">
               <a href={video_url} target="_blank" rel="noopener noreferrer" ><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
             </div>
-        </div>
-        <div className="mentor-deatail-rate-buttons">
-          <Row className="center">
-            <p>
-              $ {hourly_price} / 60 min
-            </p>
-          </Row>
-          {status ? 
-            <Row className="center">
-              {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive(id)}>
-                <img src={Lightening} alt="Lightening"/>
-                Available now
-              </Button> : <></> }
-            </Row>
             : null
           }
-          <Row className="center">
-            <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
-              <img src={Clock} alt="Clock" />
-              Book a session
-            </Button>
-          </Row>
         </div>
-      </div>
-      <div style={{paddingRight: 0, paddingLeft: 0, marginBottom: "20px"}}>
-        <Card small className="share-page-card">
-          <CardBody style={{paddingLeft: 0}}>
-            <Row>
-              <Col xl="3" className="subscription-mentor-detail">
-                <div style={{textAlign: 'center'}}>
-                  <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>{name}</h3>
-                  <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>Share Page</h3>
-                  {avatar && <img className="mentor-detail-avatar-img" src={avatar} alt="avatar"/>}
-                  {!avatar && <img className="mentor-detail-avatar-img" src={defaultavatar} alt="avatar"/>}
-                  <div style={{display: "flex", padding: "20px 15px"}}>
-                    <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
-                    <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                    <h6 className="no-margin"style={{fontWeight: "bold"}}>{sub_count}</h6>
-                  </div>
-                  <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
-                  Subscription ${sub_plan_fee}/month
-                </Button>
-                </div>
-                
-              </Col>
-              <Col xl="9" lg="12" className="subscription-mentor-videos">
-                {share_info && share_info.map((item, idx) => 
-                  <MentorVideo key={idx} item={item} />
-                )}
-              </Col>
+        {is_mentor ?
+          <div className="mentor-deatail-rate-buttons">
+            <Row className="center">
+              <p>
+                $ {hourly_price} / 60 min
+              </p>
             </Row>
-          </CardBody>
-        </Card>    
+            {status ? 
+              <Row className="center">
+                {instant_call ? <Button className="btn-mentor-detail-instant" onClick={() => this.handleInstantLive(id)}>
+                  <img src={Lightening} alt="Lightening"/>
+                  Available now
+                </Button> : <></> }
+              </Row>
+              : null
+            }
+            <Row className="center">
+              <Button style={{marginBottom: 10}} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
+                <img src={Clock} alt="Clock" />
+                Book a session
+              </Button>
+            </Row>
+          </div>
+          : null
+        }
       </div>
+      {is_mentor ?
+        <div style={{paddingRight: 0, paddingLeft: 0, marginBottom: "20px"}}>
+          <Card small className="share-page-card">
+            <CardBody style={{paddingLeft: 0}}>
+              <Row>
+                <Col xl="3" className="subscription-mentor-detail">
+                  <div style={{textAlign: 'center'}}>
+                    <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>{name}</h3>
+                    <h3 style={{fontSize: 30, fontWeight: 'bold', color: '#333333'}}>Share Page</h3>
+                    {avatar && <img className="mentor-detail-avatar-img" src={avatar} alt="avatar"/>}
+                    {!avatar && <img className="mentor-detail-avatar-img" src={defaultavatar} alt="avatar"/>}
+                    <div style={{display: "flex", padding: "20px 0px"}}>
+                      <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
+                      <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
+                      <h6 className="no-margin"style={{fontWeight: "bold"}}>{sub_count}</h6>
+                    </div>
+                    <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
+                    Subscription ${sub_plan_fee}/month
+                  </Button>
+                  </div>
+                  
+                </Col>
+                <Col xl="9" lg="12" className="subscription-mentor-videos">
+                  {share_info && share_info.map((item, idx) => 
+                    <MentorVideo key={idx} item={item} />
+                  )}
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>    
+        </div>
+        : null
+      }
       <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
       <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
       </>
