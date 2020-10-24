@@ -28,7 +28,6 @@ export default class SignIn extends React.Component {
   }
 
   componentDidMount() {    
-    console.log(this.props.open, "SignIn #31");
     if(this.props.open){
       document.body.style.overflow = 'hidden';
     }    
