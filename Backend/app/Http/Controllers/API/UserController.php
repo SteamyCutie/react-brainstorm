@@ -157,6 +157,7 @@ class UserController extends Controller
         'result' => 'success',
         'token' => $token,
         'user' => $user,
+        'logged_type' => 'signin',
       ]);
     } else {
       $user = User::where('email', $email)->first();
@@ -180,6 +181,7 @@ class UserController extends Controller
           'result' => 'success',
           'token' => $token,
           'user' => $user,
+          'logged_type' => 'signin',
         ]);
       } else {
         Log::info([$email, $name, $provider, $provider_id]);
@@ -207,6 +209,7 @@ class UserController extends Controller
           'result' => 'success',
           'token' => $token,
           'user' => $user,
+          'logged_type' => 'signup',
         ]);
       }
     }

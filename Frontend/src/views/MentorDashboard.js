@@ -156,6 +156,12 @@ export default class MentorDashboard extends React.Component {
           mentors: result.data.data,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
+
+        if (category.length) {
+          document.getElementById("search-result-label").textContent = JSON.parse(localStorage.getItem('search-category'))[0].label + " mentors (" + result.data.data.length + ")";
+        } else {
+          document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
+        }
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -302,7 +308,7 @@ export default class MentorDashboard extends React.Component {
             </video>
             <Row noGutters className="page-header py-4">
               <Col className="page-title">
-                <h3>My Share Page</h3>
+                <h3 id="search-result-label">My Share Page</h3>
               </Col>
             </Row>
             {mentors.map((data, idx) =>(

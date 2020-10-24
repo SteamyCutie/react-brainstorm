@@ -227,6 +227,26 @@ class UserSeeder extends Seeder
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
         'sub_plan_fee' => 0, 'description' => '','provider' => 'Google', 'provider_id' => '117367785969188675905',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
+      ],
+      [
+        'id' => 24, 'name' => "Lego Boba Fett", 'email' => 'saintwalker5676@gmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+        'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
+        'password' => '$2y$10$AfPIEUoskr96QrCfpQ2pIOp24TA21NE32T6YlBqTRIRQ9FtIcQPTu',
+        'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/full.jpg  ',
+        'dob' => null, 'two_factor_code' => '0', 'channel_name' => '333333',
+        'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
+        'sub_plan_fee' => 0, 'description' => '','provider' => 'Google', 'provider_id' => '111096621922135926633',
+        'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
+      ],
+      [
+        'id' => 25, 'name' => "Hb Hb", 'email' => 'id.email540@gmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+        'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
+        'password' => '$2y$10$BEFM26C.mICfTHqtaJ.e9OEfBrr3La0eCa2k0Cl5BOegMZoLlztpy',
+        'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/full.jpg  ',
+        'dob' => null, 'two_factor_code' => '0', 'channel_name' => 'YGxVAr',
+        'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
+        'sub_plan_fee' => 0, 'description' => '','provider' => 'Google', 'provider_id' => '104101111772014424846',
+        'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ]
     ];
 
