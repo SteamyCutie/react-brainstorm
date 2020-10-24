@@ -42,6 +42,7 @@ Route::post('/createexternalaccount', 'PaymentController@createexternalaccount')
 Route::post('/transfermoney', 'PaymentController@transfermoney');
 Route::post('/createbank', 'PaymentController@createBank');
 Route::post('/getbank', 'PaymentController@getBank');
+Route::post('/createaccountlink', 'PaymentController@createaccountlink');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
