@@ -375,7 +375,7 @@ class SessionController extends Controller
       $email = $request['email'];
       $tag_id = $request['tag_id'];
       $req_time = $request['time'];
-      $user = User::select('id', 'is_mentor', 'avatar')->where( 'email', $email)->first();
+      $user = User::select('id', 'is_mentor')->where( 'email', $email)->first();
       $current_time = date("y-m-d h:i:s");
       
       if ($req_time != null || $req_time != "") {
@@ -441,9 +441,9 @@ class SessionController extends Controller
             $tag_names[$tag_key] = $tags['name'];
           }
           $temp['tag_name'] = $tag_names;
-          $mentor_name = User::select('name')->where('id', $session_info['user_id'])->first();
+          $mentor_name = User::select('name', 'avatar')->where('id', $session_info['user_id'])->first();
           $temp['name'] = $mentor_name['name'];
-          $temp['avatar'] = $user['avatar'];
+          $temp['avatar'] = $mentor_name['avatar'];
           $result_res[] = $temp;
           // }
           // }
@@ -463,7 +463,7 @@ class SessionController extends Controller
           }
         }
         
-        $mentor = User::select('name')->where('id', $user->id)->first();
+        $mentor = User::select('name', 'avatar')->where('id', $user->id)->first();
         for ($i = 0; $i < count($result_res); $i ++) {
           $s_year = date("Y", strtotime($result_res[$i]['from']));
           $s_month = date("m", strtotime($result_res[$i]['from']));
@@ -492,7 +492,7 @@ class SessionController extends Controller
           $result_res[$i]['day'] = date('d/m/y', strtotime($result_res[$i]['from']));
           $result_res[$i]['from_time'] = date('h:i a', strtotime($result_res[$i]['from']));
           $result_res[$i]['to_time'] = date('h:i a', strtotime($result_res[$i]['to']));
-          $result_res[$i]['avatar'] = $user['avatar'];
+          $result_res[$i]['avatar'] = $mentor['avatar'];
           $result_res[$i]['mentor_name'] = $mentor->name;
         }
       }

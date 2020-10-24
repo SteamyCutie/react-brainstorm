@@ -837,3 +837,17 @@
   top: 30px;
   right: 630px;
 }
+
+.ads-small-video {
+  width: 320px;
+  height: 180px;
+  right: 24px;
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 100;
+}
+
+.ads-small-video:focus {
+  outline: none;
+}

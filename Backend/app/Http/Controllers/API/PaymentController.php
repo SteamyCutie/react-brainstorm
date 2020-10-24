@@ -409,6 +409,22 @@ class PaymentController extends Controller
     ]);
   }
   
+  public function createaccountlink (Request $request) {
+    $stripe = new \Stripe\StripeClient(
+      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+    );
+    $res_result = $stripe->accountLinks->create([
+      'account' => 'acct_1HfL1pK27gPVBptV',
+      'refresh_url' => 'https://example.com/reauth',
+      'return_url' => 'https://example.com/return',
+      'type' => 'account_update',
+    ]);
+    return response()->json([
+      'result'=> 'success',
+      'data' => $res_result,
+    ]);
+  }
+  
   public function transfermoney (Request $request) {
     $stripe = new \Stripe\StripeClient(
       'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
