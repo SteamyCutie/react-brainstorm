@@ -155,7 +155,7 @@ export default class StudentDashboard extends React.Component {
           mentors: result.data.data,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
-        console.log(category, "#160");
+
         if (category.length) {
           document.getElementById("search-result-label").textContent = JSON.parse(localStorage.getItem('search-category'))[0].label + " mentors (" + result.data.data.length + ")";
         } else {
