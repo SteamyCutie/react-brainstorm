@@ -109,22 +109,24 @@ export default class NavbarSearch extends React.Component{
   }
 
   onChangeTags = (e) => {
-    const {selectedTags} = this.state;
-    let temp = selectedTags;
-    temp = e;
-    localStorage.removeItem('search-category');
-    localStorage.setItem('search-category', JSON.stringify(temp));
-    this.setState({selectedTags: temp});
+    if (!e.length) {
+      return;
+    } else {
+      const {selectedTags} = this.state;
+      let temp = selectedTags;
+      temp = e;
+      localStorage.removeItem('search-category');
+      localStorage.setItem('search-category', JSON.stringify(temp));
+      this.setState({selectedTags: temp});
+    }
   }
 
   onChangeSearchText(e) {
-    localStorage.removeItem('search-key');
     if (e.length > 0) {
       localStorage.setItem('search-key', JSON.stringify(e));
       this.setState({searchKey: e});
     } else {
-      localStorage.setItem('search-key', []);
-      this.setState({searchKey: []});
+      localStorage.removeItem('search-key');
     }
   }
 
