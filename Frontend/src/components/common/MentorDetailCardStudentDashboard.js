@@ -112,7 +112,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             : null
           }
         </div>
-        {is_mentor ?
+        {/* {is_mentor ? */}
           <div className="mentor-deatail-rate-buttons">
             <Row className="center">
               <p>
@@ -135,10 +135,10 @@ class MentorDetailCardStudentDashboard extends React.Component {
               </Button>
             </Row>
           </div>
-          : null
-        }
+        {/* //   : null
+        // } */}
       </div>
-      {is_mentor ?
+      {/* {is_mentor ? */}
         <div style={{paddingRight: 0, paddingLeft: 0, marginBottom: "20px"}}>
           <Card small className="share-page-card">
             <CardBody style={{paddingLeft: 0}}>
@@ -169,8 +169,8 @@ class MentorDetailCardStudentDashboard extends React.Component {
             </CardBody>
           </Card>    
         </div>
-        : null
-      }
+        {/* : null
+      } */}
       <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
       <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
       </>
