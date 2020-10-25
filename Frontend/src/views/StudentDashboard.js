@@ -35,7 +35,7 @@ export default class StudentDashboard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = JSON.parse(localStorage.getItem('search-key'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -45,17 +45,12 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    if (searchKey != null) {
-      searchKey = searchKey[0].label;
-    } else {
-      searchKey = "";
-    }
     this.getParticipants(searchParams, searchKey, 1);
   }
 
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = JSON.parse(localStorage.getItem('search-key'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -65,11 +60,6 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    if (searchKey != null) {
-      searchKey = searchKey[0].label;
-    } else {
-      searchKey = "";
-    }
     this.getParticipants(searchParams, searchKey, 1);
   }
 
@@ -191,7 +181,7 @@ export default class StudentDashboard extends React.Component {
 
   onChangePagination(e, value) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = JSON.parse(localStorage.getItem('search-key'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -201,11 +191,6 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    if (searchKey != null) {
-      searchKey = searchKey[0].label;
-    } else {
-      searchKey = "";
-    }
     this.getParticipants(searchParams, searchKey, value);
   }
 

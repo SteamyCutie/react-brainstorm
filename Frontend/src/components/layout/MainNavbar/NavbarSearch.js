@@ -9,18 +9,16 @@ import {
   FormInput
 } from "shards-react";
 import MultiSelect from "react-multi-select-component";
-import Select from "react-dropdown-select";
 import { gettags, signout, getallparticipants } from '../../../api/api';
 
 import SearchIcon from '../../../images/SearchIcon.svg'
 
-// export default () => (
 export default class NavbarSearch extends React.Component{
 
   constructor(props) {
     super(props);
     this.state = {
-      searchKey: (localStorage.getItem('search-key') === null ? [] : JSON.parse(localStorage.getItem('search-key'))),
+      searchKey: (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key')),
       selectedTags: (localStorage.getItem('search-category') === null ? [] : JSON.parse(localStorage.getItem('search-category'))),
       tags: [],
       param: {
@@ -117,13 +115,18 @@ export default class NavbarSearch extends React.Component{
     this.setState({selectedTags: temp});
   }
 
-  onChangeSearchText(e) {
-    if (e.length > 0) {
-      localStorage.setItem('search-key', JSON.stringify(e));
-      this.setState({searchKey: e});
-    } else {
-      localStorage.removeItem('search-key');
+  handleKeyDown(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const { toggle_search } = this.props;
+      const { selectedTags } = this.state;
+      toggle_search(selectedTags);
     }
+  }
+
+  onChangeSearchText(e) {
+    localStorage.setItem('search-key', e.target.value);
+    this.setState({searchKey: e.target.value});
   }
 
   signout = async() => {
@@ -161,7 +164,7 @@ export default class NavbarSearch extends React.Component{
   onSearch() {
     const { toggle_search } = this.props;
     const { selectedTags } = this.state;
-    toggle_search(selectedTags)
+    toggle_search(selectedTags);
   }
 
   render() {
@@ -184,7 +187,13 @@ export default class NavbarSearch extends React.Component{
               search: "Search",
             }}
           />
-          <Select placeholder="Enter the participant name" clearable={true} options={users} values={searchKey} onChange={(values) => this.onChangeSearchText(values)} />
+          <FormInput
+            className="navbar-search"
+            placeholder="Enter the participant name"
+            onChange={(e) => this.onChangeSearchText(e)}
+            onKeyDown={(e) => this.handleKeyDown(e)}
+            value={searchKey}
+          />
           <InputGroupAddon type="append">
             <Button className={JSON.parse(localStorage.getItem('user-type')) ? "navbar-search btn-search-mentor" : "navbar-search btn-search" } onClick={() => this.onSearch()}>
               <InputGroupText>
