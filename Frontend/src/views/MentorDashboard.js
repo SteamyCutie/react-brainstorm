@@ -166,12 +166,6 @@ export default class MentorDashboard extends React.Component {
             document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
           }
         }
-
-        if (searchKey) {
-          document.getElementById("search-result-label").textContent = searchKey;
-        } else {
-          document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
-        }
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
