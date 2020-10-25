@@ -221,6 +221,12 @@ class UserController extends Controller
       $email = $request['email'];
       $temp_names = [];
       $user = User::where('email', $email)->first();
+      if (!$user) {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'not exist user',
+        ]);
+      }
       if ($user['dob'] == null || $user['dob'] == "") {
         $currentDate = date('Y-m-d');
         $user['dob'] = $currentDate;

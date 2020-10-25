@@ -160,13 +160,11 @@ export default class MentorDashboard extends React.Component {
         if (category.length) {
           document.getElementById("search-result-label").textContent = JSON.parse(localStorage.getItem('search-category'))[0].label + " mentors (" + result.data.data.length + ")";
         } else {
-          document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
-        }
-
-        if (searchKey) {
-          document.getElementById("search-result-label").textContent = searchKey;
-        } else {
-          document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
+          if (searchKey) {
+            document.getElementById("search-result-label").textContent = searchKey;
+          } else {
+            document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
+          }
         }
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
