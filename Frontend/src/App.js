@@ -509,7 +509,7 @@ export default class App extends React.Component{
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
           {routes.map((route, index) => {
-            if (route.path === '/trending' || route.path === '/studentdashboard') {
+            if (route.path === '/trending' || route.path === '/studentdashboard' || route.path === '/mentordashboard') {
               return (
                 <Route
                   key={index}
