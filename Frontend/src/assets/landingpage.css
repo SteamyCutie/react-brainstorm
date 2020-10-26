@@ -1285,6 +1285,9 @@ input.sign-has-err:focus {
 
 .top-navbar-search .dropdown-container {
     height: 49px;
+    border: 1px solid #e3e3ee !important;
+    font-size: large !important;
+    font-weight: 300 !important;
 }
 
 .top-navbar-search .dropdown-heading-value {

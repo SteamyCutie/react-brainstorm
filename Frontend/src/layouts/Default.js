@@ -68,7 +68,7 @@ export default class DefaultLayout extends React.Component {
     var channel = pusher.subscribe('session-channel');
     channel.bind('brainsshare-session-event', function(data) {
       for (var j = 0; j < data.message.length; j ++) {
-        this.showAlert(data.message[j].session_title + " session will start from " + data.message[j].from);
+        self.showAlert(data.message[j].session_title + " session will start from " + data.message[j].from);
       }
       var {notifications} = self.state;
       notifications = [];
