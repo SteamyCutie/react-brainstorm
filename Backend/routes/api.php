@@ -27,6 +27,7 @@ Route::post('/reset', 'UserController@reset');
 Route::post('/findmentors', 'UserController@findMentors');
 Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
+Route::post('/getintroduceinfo', 'UserController@getIntroduceInfo');
 
 Route::post('/createpayment', 'PaymentController@createPayment');
 Route::post('/createbank', 'PaymentController@createBank');
@@ -43,6 +44,9 @@ Route::post('/transfermoney', 'PaymentController@transfermoney');
 Route::post('/createbank', 'PaymentController@createBank');
 Route::post('/getbank', 'PaymentController@getBank');
 Route::post('/createaccountlink', 'PaymentController@createaccountlink');
+
+Route::post('/webhook', 'PaymentController@webhook');
+Route::post('/connect', 'PaymentController@connect');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
