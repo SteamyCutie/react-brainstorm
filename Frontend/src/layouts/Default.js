@@ -67,9 +67,9 @@ export default class DefaultLayout extends React.Component {
     var self = this;
     var channel = pusher.subscribe('session-channel');
     channel.bind('brainsshare-session-event', function(data) {
-      for (var j = 0; j < data.message.length; j ++) {
-        self.showAlert(data.message[j].session_title + " session will start from " + data.message[j].from);
-      }
+      // for (var j = 0; j < data.message.length; j ++) {
+      //   self.showAlert(data.message[j].session_title + " session will start from " + data.message[j].from);
+      // }
       var {notifications} = self.state;
       notifications = [];
       for (var i = 0; i < data.message.length; i ++) {
@@ -243,7 +243,7 @@ export default class DefaultLayout extends React.Component {
       insert: "top",
       container: "top-right",
       dismiss: {
-        duration: 5500,
+        duration: 500,
         onScreen: false,
         waitForAnimation: true,
         showIcon: true,

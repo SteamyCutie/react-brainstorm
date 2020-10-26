@@ -1,4 +1,4 @@
-import { DefaultLayout, LandingPageLayout, ExtraPageLayout, SearchLayout } from "./layouts";
+import { DefaultLayout, LandingPageLayout, ExtraPageLayout, SearchLayout, IntroduceLayout } from "./layouts";
 
 import StudentDashboard from "./views/StudentDashboard";
 import MentorDashboard from "./views/MentorDashboard";
@@ -7,6 +7,7 @@ import Profile from "./views/Profile";
 import SetAvailability from "./views/SetAvailability";
 import MentorWallet from "./views/MentorWallet";
 import MySharePage from "./views/MySharePage";
+import Introduce from "./views/IntroducePage";
 import ScheduleLiveForum from "./views/ScheduleLiveForum";
 import LandingPage from "./views/LandingPage";
 import StudentSession from "./views/StudentSession";
@@ -101,6 +102,11 @@ export default [
     path: "/subscribe-specific/:id", /* specific must be user id on this system */
     layout: DefaultLayout,
     component: Subscribe
+  },
+  {
+    path: "/person/:id",
+    layout: IntroduceLayout,
+    component: Introduce
   },
   {
     path: "/library",
