@@ -616,7 +616,7 @@ export default class Many2Many extends React.Component {
       isMuted: false, 
       isVideoMuted: false, 
     };
-    this.onIceCandidate = this.onIceCandidate.bind(this);
+    
     this.handleStop = this.handleStop.bind(this);
     this.handleEnd = this.handleEnd.bind(this);
 
@@ -629,6 +629,7 @@ export default class Many2Many extends React.Component {
     this.existingParticipants = this.existingParticipants.bind(this);
     this.newParticipant = this.newParticipant.bind(this);
     this.leftRoom = this.leftRoom.bind(this);
+    this.invitedToRoom = this.invitedToRoom.bind(this);
   }
 
   handleEnd() {
@@ -720,14 +721,6 @@ export default class Many2Many extends React.Component {
   sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
     this.ws.send(jsonMessage);
-  }
-
-  onIceCandidate(candidate) {
-    var message = {
-      id: 'onIceCandidate',
-      candidate: candidate
-    };
-    this.sendMessage(message);
   }
 
   handleStop = () => {
@@ -1113,11 +1106,29 @@ export default class Many2Many extends React.Component {
     }
   }
 
+  invitedToRoom(roomName) {
+    console.log("You have invitation in Room" + roomName);
+  }
+
   localVideoClick() {
     if (!this.state.isFullscreen)
       return 
     
     document.getElementById("selected-video-output").srcObject = document.getElementById("videoInput").srcObject;
+  }
+
+  inviteParticipantToRoom() {
+
+    // this.props.inviteParticipantToRoom();
+    console.log("inviteParticipantToRoom", "#1126");
+
+    var message = {
+      id: 'inviteParticipant',
+      roomName: localStorage.getItem("room_id"),
+      participantId: "222@gmail.com", 
+    };
+
+    this.sendMessage(message);
   }
 
   render() {
@@ -1231,7 +1242,7 @@ export default class Many2Many extends React.Component {
                 <Button className="btn-rooom-control float-center" onClick={() => this.screenShare()}>
                   <img src={ScreenshareImg} alt="Screenshare"/>
                 </Button>
-                <Button className="btn-rooom-control float-center" onClick={() => this.addUser()}>
+                <Button className="btn-rooom-control float-center" onClick={() => this.inviteParticipantToRoom()}>
                   <img src={AddUserImg} alt="Add user"/>
                 </Button>
               </div>
