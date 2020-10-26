@@ -755,8 +755,8 @@ export default class Many2Many extends React.Component {
     
     this.setState({
       isFullscreen: !this.state.isFullscreen, 
-      showChat: false, 
-      showWhiteBoard: false,
+      // showChat: false, 
+      // showWhiteBoard: false,
     });
 
     fullscreenMode = !fullscreenMode;
@@ -765,6 +765,16 @@ export default class Many2Many extends React.Component {
     document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
     document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare");
     document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
+
+    if (this.state.showChat && !this.state.isFullscreen) {
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-chat");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-chat");
+    }
+
+    if (this.state.showWhiteBoard && !this.state.isFullscreen) {
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-screenshare");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-screenshare");
+    }
 
     if (document.getElementById("many2many-call-conatainer").classList.contains("one2one-fullscreen")) {
       document.getElementById("many2many-call-conatainer").classList.remove("one2one-fullscreen");
@@ -1111,7 +1121,7 @@ export default class Many2Many extends React.Component {
   }
 
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
@@ -1149,7 +1159,7 @@ export default class Many2Many extends React.Component {
           </div>
           <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
           </div>
-          {this.state.showChat &&
+          {(showChat && isFullscreen) ?
             <div className="room-group-chat">
               <div className="room-chat-header">
                 <h2 style={{width: "100%", textAlign: "center", fontSize: "38px", fontWeight: "bold", margin: "0px", marginLeft: "50px"}}>Chat</h2>
@@ -1167,8 +1177,9 @@ export default class Many2Many extends React.Component {
                 </Channel>
               </Chat>
             </div>
+            : null
           }
-          {this.state.showWhiteBoard &&
+          {(showWhiteBoard && isFullscreen) ?
             <div className="room-whitboard">
               <div className="room-whitboard-header">
                 <Button className="btn-rooom-control2 float-center" style={{marginRight: "auto", padding: "0px"}} onClick={() => this.whiteboardFullscreen()}>
@@ -1199,6 +1210,7 @@ export default class Many2Many extends React.Component {
                 onBrushColorChange={this.handleOnBrushColorChange}
               />
             </div>
+            : null
           }
           {isFullscreen && 
             <div className="room-control-container">
