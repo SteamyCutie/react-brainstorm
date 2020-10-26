@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         'password' => '$2y$10$Mnnf31sXVtJUkT6.3/HAL.QzUTndK8.texplUag3HhDhNGo.sryCa',
         'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/3.png', 'dob' => null, 'two_factor_code' => '0',
         'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
-        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => '333333',
+        'sub_plan_fee' => 0, 'description' => '', 'channel_name' => 'asdzxc',
         'instant_call' => 1, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => ""
       ],
       [

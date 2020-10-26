@@ -120,6 +120,9 @@ class UserController extends Controller
 //        'email' => $email,
 //      ]);
       $user->customer_id = $stripe_customer->id;
+      $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+      $alias = substr(str_shuffle($permitted_chars), 0, 50);
+      $user->alias = $alias;
       $user->save();
       //End register customer ID for stripe
       return response()->json([
@@ -141,7 +144,6 @@ class UserController extends Controller
     $provider = $request->provider;
     $provider_id = $request->provider_id;
     $channel_name = $request['channel_name'];
-    Log::info([$email, $name, $provider, $provider_id]);
     $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
     if ($user) {
       $token = null;
@@ -184,7 +186,8 @@ class UserController extends Controller
           'logged_type' => 'signin',
         ]);
       } else {
-        Log::info([$email, $name, $provider, $provider_id]);
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $alias = substr(str_shuffle($permitted_chars), 0, 50);
         $user = User::create([
           'email' => $email,
           'password' => bcrypt($email),
@@ -194,6 +197,7 @@ class UserController extends Controller
           'email_verified_at' => Carbon::now(),
           'is_active' => 1,
           'channel_name' => $channel_name,
+          'alias' => $alias,
         ]);
         $token = null;
         if (!$token = JWTAuth::fromUser($user)) {
@@ -320,6 +324,22 @@ class UserController extends Controller
       return response()->json([
         'result' => 'failed',
         'data' => $th,
+      ]);
+    }
+  }
+  
+  public function getIntroduceInfo (Request $request) {
+    $alias = $request->alias;
+    $user = User::where('alias', $alias)->first();
+    if ($user) {
+      return response()->json([
+        'result' => 'success',
+        'data' => $user,
+      ]);
+    } else {
+      return response()->json([
+        'result' => 'failed',
+        'message' => 'does not exist user',
       ]);
     }
   }
@@ -710,6 +730,7 @@ class UserController extends Controller
         $mentors = DB::table('users')
           ->where('name', 'LIKE', '%' . $mentor_name . '%')
           ->where('id', '!=', $user_id)
+          ->orderBy('average_mark', 'DESC')
           ->whereRaw(DB::raw($temp_query))
           ->paginate($rowsPerPage);
       } else {
@@ -717,10 +738,12 @@ class UserController extends Controller
           $mentors = DB::table('users')
             ->where('name', 'LIKE', '%' . $mentor_name . '%')
             ->where('id', '!=', $user_id)
+            ->orderBy('average_mark', 'DESC')
             ->paginate($rowsPerPage);
         } else {
           $mentors = DB::table('users')
             ->where('id', '!=', $user_id)
+            ->orderBy('average_mark', 'DESC')
             ->paginate($rowsPerPage);
         }
       }

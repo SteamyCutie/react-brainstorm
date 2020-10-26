@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
       $table->string('password');
       $table->string('channel_name')->nullable()->unique();
       $table->string('tags_id')->default("");
+      $table->string('alias')->default("");
       $table->integer('two_factor_code')->default(0);
       $table->string('customer_id')->nullable();
       $table->integer('is_mentor')->default(0);

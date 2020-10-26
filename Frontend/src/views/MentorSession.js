@@ -106,7 +106,8 @@ export default class MentorSession extends React.Component {
           isBooked: '',
           start: 0,
           end: false,
-          room_id: 0
+          room_id: 0,
+          from: ''
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -119,6 +120,7 @@ export default class MentorSession extends React.Component {
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
           arr.room_id = result.data.data[i].room_id;
+          arr.from = result.data.data[i].from.split(" ")[1]
 
           data_arr.push(arr);
           arr = {};
@@ -352,7 +354,8 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           isBooked: '',
           start: 0,
           end: false,
-          room_id: 0
+          room_id: 0,
+          from: ''
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -365,6 +368,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
           arr.room_id = result.data.data[i].room_id;
+          arr.from = result.data.data[i].from.split(" ")[1]
 
           data_arr.push(arr);
           arr = {};
@@ -472,7 +476,8 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           isBooked: '',
           start: 0,
           end: false,
-          room_id: 0
+          room_id: 0,
+          from: ''
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -485,6 +490,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
           arr.room_id = result.data.data[i].room_id;
+          arr.from = result.data.data[i].from.split(" ")[1]
 
           data_arr.push(arr);
           arr = {};
@@ -569,6 +575,17 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
 
 const CustomMonthDateHeader = ({events, startSession}) => props => {
   const [open, setOpen] = React.useState(false);
+  const [roomIds, setRoomIds] = React.useState([]);
+
+  React.useEffect(() => {
+    let room_id = [];
+    events.forEach(event => {
+      
+      if(event.start.getFullYear() === props.date.getFullYear() && event.start.getMonth() === props.date.getMonth() && event.start.getDate() === props.date.getDate())
+        room_id.push({room_id: event.room_id, time: event.from})
+    });
+    setRoomIds(room_id);
+  }, []);
   const consoleFunction = () => {
     return true;
   }
@@ -581,8 +598,8 @@ const CustomMonthDateHeader = ({events, startSession}) => props => {
     return count;
   }
 
-  const startForum = () => {
-    startSession("123456");
+  const startForum = (room_id) => {
+    startSession(room_id);
   }
 
   const toggle = () => {
@@ -600,16 +617,17 @@ const CustomMonthDateHeader = ({events, startSession}) => props => {
           {calcRecordCound() > 0 && <a href="javascript:void(0)" className="month-date-content"> {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`} </a>}
         </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem onClick={() => startForum()}>
-            Start Forum
-          </DropdownItem>
+          {roomIds.map((room_id) => {
+            return <DropdownItem onClick={() => startForum(room_id.room_id)}>
+              Start Forum ({room_id.time})
+            </DropdownItem>
+          })}
         </DropdownMenu>
       </Dropdown>
       </div>
     </div>
   );
 }
-
 
 class CustomMonthHeader extends React.Component {
   render() {
@@ -625,7 +643,6 @@ class CustomMonthHeader extends React.Component {
 const CustomWeekHeader = props => {
 
   const checkLabel = () => {
-    console.log(props);
     let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let dayName = days[props.date.getDay()];
     let month = props.date.getMonth() + 1;
