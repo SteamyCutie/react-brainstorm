@@ -4,6 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import MentorVideo from "./../components/common/MentorVideo";
 import BookSession from "./../components/common/BookSession";
 import LoadingModal from "../components/common/LoadingModal";
+import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
@@ -28,7 +29,10 @@ export default class MentorDashboard extends React.Component {
       loading: false,
       mentors: [],
       width: '100%',
-      height: '450'
+      height: '450', 
+      ModalCallWithDescOpen: false, 
+      callDescription: '', 
+      
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -36,7 +40,7 @@ export default class MentorDashboard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = JSON.parse(localStorage.getItem('search-key'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -46,17 +50,12 @@ export default class MentorDashboard extends React.Component {
       }
     }
 
-    if (searchKey != null) {
-      searchKey = searchKey[0].label;
-    } else {
-      searchKey = "";
-    }
     this.getParticipants(searchParams, searchKey, 1);
   }
 
   componentWillMount() {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = JSON.parse(localStorage.getItem('search-key'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -66,11 +65,6 @@ export default class MentorDashboard extends React.Component {
       }
     }
 
-    if (searchKey != null) {
-      searchKey = searchKey[0].label;
-    } else {
-      searchKey = "";
-    }
     this.getParticipants(searchParams, searchKey, 1);
   }
 
@@ -160,7 +154,11 @@ export default class MentorDashboard extends React.Component {
         if (category.length) {
           document.getElementById("search-result-label").textContent = JSON.parse(localStorage.getItem('search-category'))[0].label + " mentors (" + result.data.data.length + ")";
         } else {
-          document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
+          if (searchKey) {
+            document.getElementById("search-result-label").textContent = searchKey;
+          } else {
+            document.getElementById("search-result-label").textContent = "Top BrainsShare Mentors"
+          }
         }
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
@@ -187,7 +185,7 @@ export default class MentorDashboard extends React.Component {
 
   onChangePagination(e, value) {
     let categories = JSON.parse(localStorage.getItem('search-category'));
-    let searchKey = JSON.parse(localStorage.getItem('search-key'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
     let searchParams = [];
     if (categories === null) {
       searchParams = [];
@@ -197,11 +195,6 @@ export default class MentorDashboard extends React.Component {
       }
     }
 
-    if (searchKey != null) {
-      searchKey = searchKey[0].label;
-    } else {
-      searchKey = "";
-    }
     this.getParticipants(searchParams, searchKey, value);
   }
 
@@ -295,29 +288,83 @@ export default class MentorDashboard extends React.Component {
     });
   }
 
+  toggle_callwithdesc(id) {
+    this.setState({
+      ModalCallWithDescOpen: !this.state.ModalCallWithDescOpen,
+      id: id
+    });
+  }
+
+  setDescription(description) {
+    this.setState({
+      callDescription: description, 
+    }, () => this.handleCall());
+  }
+
+  handleCall() {
+    var callerInfo = {};
+    var index;
+
+    for (index = 0; index < this.state.mentors.length; index ++) {
+      if(this.state.mentors[index].id === this.state.id) {
+        callerInfo = this.state.mentors[index];
+      }
+    }
+
+    console.log(callerInfo, this.state.callDescription);
+    this.toggle_callwithdesc();
+    
+    this.props.setUser(callerInfo.email, callerInfo.avatar, callerInfo.name, callerInfo.channel_name, this.state.callDescription);
+  }
+
+  handleCallEnd() {
+    this.toggle_callwithdesc();
+
+    this.setState({
+      callDescription: '', 
+    });
+  }
+
+  handleCancel(){
+    this.toggle_callwithdesc();
+
+    this.setState({
+      callDescription: '', 
+    });
+  }
+
   render() {
-    const { loading, mentors, totalCnt, ModalOpen, id, width, height } = this.state;
+    const { loading, mentors, totalCnt, ModalOpen, id, ModalCallWithDescOpen,  width, height } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
         <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
-          <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
-            <video width={width} height={height} controls id="video">
-              <source src={media_url} type="video/mp4"></source>
-            </video>
-            <Row noGutters className="page-header py-4">
-              <Col className="page-title">
-                <h3 id="search-result-label">My Share Page</h3>
-              </Col>
-            </Row>
-            {mentors.map((data, idx) =>(
-              <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={(id) => this.toggle_callwithdesc(id)}/>
-            ))}
-            {mentors.length > 0 && <Row className="pagination-center">
-              <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
-            </Row>}
-          </Container>
+        <OutcomingCallDesc 
+          id={id}
+          open={ModalCallWithDescOpen} 
+          // onCall={() => this.handleCall()}
+          onCancel={() => this.handleCancel()}
+          onCallEnd={() => this.handleCallEnd()}
+          // callwithdescription={() => this.toggle_callwithdesc()} 
+          setDescription={(description) => this.setDescription(description)} 
+        />
+        <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
+          <video width={width} height={height} controls id="video">
+            <source src={media_url} type="video/mp4"></source>
+          </video>
+          <Row noGutters className="page-header py-4">
+            <Col className="page-title">
+              <h3 id="search-result-label">My Share Page</h3>
+            </Col>
+          </Row>
+          {mentors.map((data, idx) =>(
+            <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={(id) => this.toggle_callwithdesc(id)}/>
+          ))}
+          {mentors.length > 0 && <Row className="pagination-center">
+            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+          </Row>}
+        </Container>
       </>
     )
   };

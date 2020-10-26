@@ -616,7 +616,7 @@ export default class Many2Many extends React.Component {
       isMuted: false, 
       isVideoMuted: false, 
     };
-    this.onIceCandidate = this.onIceCandidate.bind(this);
+    
     this.handleStop = this.handleStop.bind(this);
     this.handleEnd = this.handleEnd.bind(this);
 
@@ -629,6 +629,7 @@ export default class Many2Many extends React.Component {
     this.existingParticipants = this.existingParticipants.bind(this);
     this.newParticipant = this.newParticipant.bind(this);
     this.leftRoom = this.leftRoom.bind(this);
+    this.invitedToRoom = this.invitedToRoom.bind(this);
   }
 
   handleEnd() {
@@ -722,14 +723,6 @@ export default class Many2Many extends React.Component {
     this.ws.send(jsonMessage);
   }
 
-  onIceCandidate(candidate) {
-    var message = {
-      id: 'onIceCandidate',
-      candidate: candidate
-    };
-    this.sendMessage(message);
-  }
-
   handleStop = () => {
     stopMasterMany();
     viewer.forEach((participant, index) => {
@@ -755,8 +748,8 @@ export default class Many2Many extends React.Component {
     
     this.setState({
       isFullscreen: !this.state.isFullscreen, 
-      showChat: false, 
-      showWhiteBoard: false,
+      // showChat: false, 
+      // showWhiteBoard: false,
     });
 
     fullscreenMode = !fullscreenMode;
@@ -765,6 +758,16 @@ export default class Many2Many extends React.Component {
     document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
     document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare");
     document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
+
+    if (this.state.showChat && !this.state.isFullscreen) {
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-chat");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-chat");
+    }
+
+    if (this.state.showWhiteBoard && !this.state.isFullscreen) {
+      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-screenshare");
+      document.getElementById("participants-video-container").classList.add("participants-video-container-full-screenshare");
+    }
 
     if (document.getElementById("many2many-call-conatainer").classList.contains("one2one-fullscreen")) {
       document.getElementById("many2many-call-conatainer").classList.remove("one2one-fullscreen");
@@ -1103,6 +1106,10 @@ export default class Many2Many extends React.Component {
     }
   }
 
+  invitedToRoom(roomName) {
+    console.log("You have invitation in Room" + roomName);
+  }
+
   localVideoClick() {
     if (!this.state.isFullscreen)
       return 
@@ -1110,8 +1117,22 @@ export default class Many2Many extends React.Component {
     document.getElementById("selected-video-output").srcObject = document.getElementById("videoInput").srcObject;
   }
 
+  inviteParticipantToRoom() {
+
+    // this.props.inviteParticipantToRoom();
+    console.log("inviteParticipantToRoom", "#1126");
+
+    var message = {
+      id: 'inviteParticipant',
+      roomName: localStorage.getItem("room_id"),
+      participantId: "222@gmail.com", 
+    };
+
+    this.sendMessage(message);
+  }
+
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
@@ -1149,7 +1170,7 @@ export default class Many2Many extends React.Component {
           </div>
           <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
           </div>
-          {this.state.showChat &&
+          {(showChat && isFullscreen) ?
             <div className="room-group-chat">
               <div className="room-chat-header">
                 <h2 style={{width: "100%", textAlign: "center", fontSize: "38px", fontWeight: "bold", margin: "0px", marginLeft: "50px"}}>Chat</h2>
@@ -1167,8 +1188,9 @@ export default class Many2Many extends React.Component {
                 </Channel>
               </Chat>
             </div>
+            : null
           }
-          {this.state.showWhiteBoard &&
+          {(showWhiteBoard && isFullscreen) ?
             <div className="room-whitboard">
               <div className="room-whitboard-header">
                 <Button className="btn-rooom-control2 float-center" style={{marginRight: "auto", padding: "0px"}} onClick={() => this.whiteboardFullscreen()}>
@@ -1199,6 +1221,7 @@ export default class Many2Many extends React.Component {
                 onBrushColorChange={this.handleOnBrushColorChange}
               />
             </div>
+            : null
           }
           {isFullscreen && 
             <div className="room-control-container">
@@ -1219,7 +1242,7 @@ export default class Many2Many extends React.Component {
                 <Button className="btn-rooom-control float-center" onClick={() => this.screenShare()}>
                   <img src={ScreenshareImg} alt="Screenshare"/>
                 </Button>
-                <Button className="btn-rooom-control float-center" onClick={() => this.addUser()}>
+                <Button className="btn-rooom-control float-center" onClick={() => this.inviteParticipantToRoom()}>
                   <img src={AddUserImg} alt="Add user"/>
                 </Button>
               </div>
