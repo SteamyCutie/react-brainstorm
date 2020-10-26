@@ -85,6 +85,17 @@ export const getuserinfobyid = (param) => {
     });
 };
 
+export const getintroduceinfo = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getintroduceinfo', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+
 export const editprofile = (param) => {
     return new Promise(async(resolve, reject) => {
         try {

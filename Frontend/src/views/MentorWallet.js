@@ -10,12 +10,13 @@ import AddNewBank from "../components/common/AddNewBank";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 import { getwallets, signout } from '../api/api';
+import { REACT_APP_STRIPE_CLIENT_ID } from '../common/config'
 
 export default class MentorWallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ModalOpen: false,
+      // ModalOpen: false,
       loading: false,
       totalCnt: 0,
       smallCards: [
@@ -96,9 +97,13 @@ export default class MentorWallet extends React.Component {
   }
 
   toggle_add() {
-    this.setState({
-      ModalOpen: !this.state.ModalOpen
-    });
+    window.open(
+      'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=' + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write',
+      '_blank'
+    );
+    // this.setState({
+    //   ModalOpen: !this.state.ModalOpen
+    // });
   }
 
   getHistory = async(pageNo) => {
@@ -228,13 +233,13 @@ export default class MentorWallet extends React.Component {
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
-        <AddNewBank 
+        {/* <AddNewBank 
           open={ModalOpen} 
           toggle={() => this.toggle_add()} 
           toggle_success={(text) => this.showSuccess(text)}
           toggle_fail={(text) => this.showFail(text)}
           toggle_warning={(text) => this.showWarning(text)}>
-        </AddNewBank>
+        </AddNewBank> */}
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             {/* <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true} click_add={() => this.toggle_add()}/> */}

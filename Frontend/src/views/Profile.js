@@ -218,6 +218,8 @@ export default class MySharePage extends React.Component {
       const result = await editprofile(param);
       if (result.data.result === "success") {
         this.setState({loading: false});
+        localStorage.setItem('avatar', param.avatar);
+        localStorage.setItem('user_name', param.name);
         this.showSuccess("Edit Profile Success");
         localStorage.setItem('user-type', param.is_mentor);
       } else if (result.data.result === "warning") {

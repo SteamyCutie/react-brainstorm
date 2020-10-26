@@ -15,6 +15,7 @@ import VideoCallMin from "./components/common/One2OneMin";
 import Many2Many from "./components/common/Many2Many"
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
+import HaveInvitation from "../src/components/common/HaveInvitation"
 import incomingSound from '../src/audio/incoming.mp3'
 
 const NO_CALL = 0;
@@ -34,6 +35,8 @@ export default class App extends React.Component{
       to: '',
       incomingCallStatus: false,
       outcomingCallStatus: false,
+      invitationStatus: false, 
+      invitedRoomName: '', 
       errorModalStatus: 0,
       videoCallStatus: false,
       message: '',
@@ -65,8 +68,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    var wsUri = 'wss://media.brainsshare.com/one2one';
-    // var wsUri = 'wss://192.168.105.13:8443/one2one';
+    // var wsUri = 'wss://media.brainsshare.com/one2one';
+    var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -126,6 +129,9 @@ export default class App extends React.Component{
         case 'leftRoom': 
           that.leftRoom(parsedMessage);
           break;
+
+        case 'invitedToRoom':
+          that.invitedToRoom(parsedMessage);
 
         default:
           console.error('Unrecognized message', parsedMessage);
@@ -337,6 +343,14 @@ export default class App extends React.Component{
     })
   }
 
+  toggle_invitation_modal(message) {
+    // this.setState({
+    //   message: message,
+    //   errorMsg: '',
+    //   invitationStatus: !this.state.invitationStatus,
+    // })
+  }
+
   toggle_outcomingCall_modal(message) {
     this.setState({
       message: message,
@@ -503,13 +517,46 @@ export default class App extends React.Component{
     this.many2manyRef.current.leftRoom(message.channelName);
   }
 
+  invitedToRoom(message) {
+    this.setState({
+      invitationStatus: true, 
+      invitedRoomName: message.roomName, 
+    })
+
+    localStorage.setItem("room_id", message.roomName);
+  }
+
+  handleInviteAccept() {
+    this.setState({
+      roomCall: true, 
+      isMaster: false, 
+      invitationStatus: false, 
+    })
+
+    var message = {
+      id: "joinRoom", 
+      userId: localStorage.getItem("user_id"), 
+      userName: localStorage.getItem("user_name"), 
+      channelName: localStorage.getItem("channel_name"), 
+      roomName: this.state.invitedRoomName,
+    }
+
+    this.sendMessage(message);
+  }
+
+  handleInviteDecline() {
+    this.setState({
+      invitationStatus: false, 
+    })
+  }
+
   render() {
-    const { incomingCallStatus, outcomingCallStatus, callState, from, call, isAccepted, channel_name } = this.state;
+    const { incomingCallStatus, outcomingCallStatus, invitationStatus, callState, from, call, isAccepted, channel_name } = this.state;
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
           {routes.map((route, index) => {
-            if (route.path === '/trending' || route.path === '/studentdashboard') {
+            if (route.path === '/trending' || route.path === '/studentdashboard' || route.path === '/mentordashboard') {
               return (
                 <Route
                   key={index}
@@ -586,6 +633,7 @@ export default class App extends React.Component{
                   <Many2Many 
                     ref = {this.many2manyRef}
                     stop={this.stop}
+                    ws={this.ws}
                   />
                 </div>
               </Draggable>
@@ -596,6 +644,7 @@ export default class App extends React.Component{
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL} description={this.state.toDescription}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar}  errMsg={this.state.errorMsg} />
+          <HaveInvitation open={invitationStatus} onAccept={() => this.handleInviteAccept()} onDecline={() => this.handleInviteDecline()} />
           
           <audio id="incoming-ring">
             <source src={incomingSound} type="audio/mpeg" />
