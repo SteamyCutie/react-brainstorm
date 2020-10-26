@@ -581,7 +581,6 @@ const CustomMonthDateHeader = ({events, startSession}) => props => {
     let room_id = [];
     events.forEach(event => {
       
-    console.log(event);
       if(event.start.getFullYear() === props.date.getFullYear() && event.start.getMonth() === props.date.getMonth() && event.start.getDate() === props.date.getDate())
         room_id.push({room_id: event.room_id, time: event.from})
     });
@@ -598,7 +597,7 @@ const CustomMonthDateHeader = ({events, startSession}) => props => {
     });
     return count;
   }
-  
+
   const startForum = (room_id) => {
     startSession(room_id);
   }
@@ -644,7 +643,6 @@ class CustomMonthHeader extends React.Component {
 const CustomWeekHeader = props => {
 
   const checkLabel = () => {
-    console.log(props);
     let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let dayName = days[props.date.getDay()];
     let month = props.date.getMonth() + 1;
