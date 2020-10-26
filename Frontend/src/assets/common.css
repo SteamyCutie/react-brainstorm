@@ -233,6 +233,14 @@
   box-shadow: none !important;
 }
 
+.modal-invitation-room .modal-content {
+  /* min-height: 500px; */
+  min-width: 500px;
+  margin: auto;
+  align-items: center;
+  box-shadow: none !important;
+}
+
 .btn-video-call-accept {
   margin: 5px 20px;
   width: 146px;

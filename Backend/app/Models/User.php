@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
     'name', 'email', 'password', 'dob', 'avatar', 'two_factor_code', 'email_verified_at', 'average_mark',
     'hourly_price', 'video_url', 'sub_page_name', 'sub_plan_fee', 'pay_verified',
     'description', 'instant_call', 'status', 'is_active','timezone', 'expertise', 'origin_password',
-    'provider', 'provider_id', 'sub_count', 'tags_id', 'channel_name'
+    'provider', 'provider_id', 'sub_count', 'tags_id', 'channel_name', 'alias'
   ];
   
   /**
