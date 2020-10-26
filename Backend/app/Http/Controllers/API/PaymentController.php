@@ -9,9 +9,13 @@ use App\Models\User;
 use Carbon\Carbon;
 use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Validator;
+use Log;
+
+
 
 class PaymentController extends Controller
 {
@@ -410,19 +414,61 @@ class PaymentController extends Controller
   }
   
   public function createaccountlink (Request $request) {
-    $stripe = new \Stripe\StripeClient(
-      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
-    );
-    $res_result = $stripe->accountLinks->create([
-      'account' => 'acct_1HfL1pK27gPVBptV',
-      'refresh_url' => 'https://example.com/reauth',
-      'return_url' => 'https://example.com/return',
-      'type' => 'account_update',
+    // Set your secret key. Remember to switch to your live secret key in production!
+// See your keys here: https://dashboard.stripe.com/account/apikeys
+    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+    
+    $res_result = $response = \Stripe\OAuth::token([
+      'grant_type' => 'authorization_code',
+      'code' => 'ac_IH4umRytsmbHk91W75BSzxQOQ7oNn5MJ',
     ]);
+
+// Access the connected account id in the response
+    $connected_account_id = $response->stripe_user_id;
+    
+    
+    
     return response()->json([
       'result'=> 'success',
       'data' => $res_result,
     ]);
+  }
+  
+  public function webhook (Request $request, Response $response) {
+    Log::info("webhook +++++");
+    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+    // Uncomment and replace with a real secret. You can find your endpoint's
+    // secret in your webhook settings.
+    $webhook_secret = 'whsec_GAiXSYTXdz4fU2hwQyiOFxzNmAW5gDwJ';
+    
+    $payload = $request->getBody();
+    $sig_header = $request->getHeaderLine('stripe-signature');
+    $event = null;
+    // Verify webhook signature and extract the event.
+    // See https://stripe.com/docs/webhooks/signatures for more information.
+    
+    try {
+      $event = \Stripe\Webhook::constructEvent(
+        $payload, $sig_header, $webhook_secret
+      );
+    } catch(\UnexpectedValueException $e) {
+      // Invalid payload.
+      return $response->withStatus(400);
+    } catch(\Stripe\Exception\SignatureVerificationException $e) {
+      // Invalid Signature.
+      return $response->withStatus(400);
+    }
+  
+    if ($event->type == 'account.updated') {
+      $account = $event->data->object;
+      Log::info(['webhook++++  event = ', $event, ' account = ', $account]);
+    }
+    
+    return $response->withStatus(200);
+  }
+  
+  public function connect (Request $request) {
+    \Log::info("connect +++++");
   }
   
   public function transfermoney (Request $request) {
@@ -430,9 +476,9 @@ class PaymentController extends Controller
       'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
     );
     $res_transfer = $stripe->transfers->create([
-      'amount' => 2800,
+      'amount' => 4880,
       'currency' => 'usd',
-      'destination' => 'acct_1Hf0MfAjR5toktVQ',
+      'destination' => 'acct_1HgWg3GGo6mXIVLI',
 //      'transfer_group' => 'ORDER_95',
     ]);
     return response()->json([
