@@ -951,7 +951,7 @@ class UserController extends Controller
   public function getAllParticipants(Request $request) {
     try {
       $user_id = $request->user_id;
-      $allParticipants = User::select('name', 'id')->where('id', '!=', $user_id)->get();
+      $allParticipants = User::select('name', 'id', 'email', 'avatar')->where('id', '!=', $user_id)->get();
       if (count($allParticipants) > 0) {
         return response()->json([
           'result' => 'success',
