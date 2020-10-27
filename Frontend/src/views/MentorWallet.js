@@ -97,13 +97,7 @@ export default class MentorWallet extends React.Component {
   }
 
   toggle_add() {
-    window.open(
-      'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=' + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write',
-      '_blank'
-    );
-    // this.setState({
-    //   ModalOpen: !this.state.ModalOpen
-    // });
+    window.location.href = 'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=' + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write';
   }
 
   getHistory = async(pageNo) => {
