@@ -68,8 +68,8 @@ export default class App extends React.Component{
   }
 
   componentWillMount() {
-    // var wsUri = 'wss://media.brainsshare.com/one2one';
-    var wsUri = 'wss://192.168.105.13:8443/one2one';
+    var wsUri = 'wss://media.brainsshare.com/one2one';
+    // var wsUri = 'wss://192.168.105.13:8443/one2one';
     this.setWebsocket(wsUri);
   }
 
@@ -132,6 +132,11 @@ export default class App extends React.Component{
 
         case 'invitedToRoom':
           that.invitedToRoom(parsedMessage);
+          break;
+
+        case 'inviteParticipantResponse': 
+          that.inviteParticipantResponse(parsedMessage);
+          break;
 
         default:
           console.error('Unrecognized message', parsedMessage);
@@ -510,7 +515,7 @@ export default class App extends React.Component{
   }
 
   newParticipant(message) {
-    this.many2manyRef.current.newParticipant(message.channelName, message.userName);
+    this.many2manyRef.current.newParticipant(message.channelName, message.userName, message.userId);
   }
 
   leftRoom(message) {
@@ -525,6 +530,8 @@ export default class App extends React.Component{
 
     localStorage.setItem("room_id", message.roomName);
   }
+
+  inviteParticipantResponse(message) {}
 
   handleInviteAccept() {
     this.setState({

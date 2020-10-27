@@ -17,6 +17,7 @@ export default class InviteParticipant extends React.Component {
       email: '',
       users: [], 
       suggestedUsers: [], 
+      roomMembers: [], 
     };
     
     this.onAccept = this.props.onAccept
@@ -67,7 +68,12 @@ export default class InviteParticipant extends React.Component {
     }
   }
 
+  updateRoomMember(userId) {
+    this.getAllParticipants();
+  }
+
   getAllParticipants = async() => {
+    const {roomMembers} = this.props;
     let param = {
       user_id: localStorage.getItem("user_id")
     }
@@ -92,14 +98,14 @@ export default class InviteParticipant extends React.Component {
           param.email = result.data.data[i].email;
           param.avatar = result.data.data[i].avatar;
 
-          if (randNum % 2 && params_suggested.length < 4) {
+          if (randNum % 2 && params_suggested.length < 4 && !roomMembers.includes(param.value)) {
             params_suggested.push(param);
           } 
 
           params.push(param);
           param = {};
         }
-        console.log(params, "#95");
+
         this.setState({
           users: params, 
           suggestedUsers: params_suggested, 
@@ -134,6 +140,21 @@ export default class InviteParticipant extends React.Component {
     })
   }
 
+  handleClickParticipant(e) {
+    var index = 0;
+    var email = '';
+    const {suggestedUsers} = this.state;
+
+    for (index = 0; index < 4; index ++) {
+      if (suggestedUsers[index].value == e.target.id) {
+        email = suggestedUsers[index].email;
+        break;
+      }
+    }
+
+    this.props.onInvite(email);
+  }
+
   render() {
     const { open } = this.props;
     const {suggestedUsers} = this.state;
@@ -158,13 +179,13 @@ export default class InviteParticipant extends React.Component {
                 <label className="room-invite-participants-label">Suggested participants</label>
                 {suggestedUsers.map((user, key) => {
                   return (
-                    <Row className="room-invite-suggested" id={key}>
+                    <Row className="room-invite-suggested">
                       <img src={user.avatar} alt={user.label}/>
                       <div style={{width: "305px"}}>
                         <div className="room-invite-participants-name">{user.label}</div>
                         <div className="room-invite-participant-email">{user.email}</div>
                       </div>
-                      <Button className="btn-room-invite-suggested" onClick={() => this.handleClick()}>
+                      <Button id={user.value} className="btn-room-invite-suggested" onClick={(e) => this.handleClickParticipant(e)}>
                         Invite
                       </Button>
                     </Row>

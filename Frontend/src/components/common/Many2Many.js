@@ -604,7 +604,7 @@ export default class Many2Many extends React.Component {
   constructor(props) {
     super(props);
 
-    this.emailInput = React.createRef();
+    this.inviteParticipantRef = React.createRef();
     this.state = {
       callState: 0,
       isCallingNow: 0,
@@ -618,6 +618,7 @@ export default class Many2Many extends React.Component {
       isMuted: false, 
       isVideoMuted: false, 
       inviteModal: false, 
+      roomMembers: [], 
     };
     
     this.handleStop = this.handleStop.bind(this);
@@ -995,9 +996,11 @@ export default class Many2Many extends React.Component {
   }
 
   existingParticipants(participants) {
+    var room_members = [];
     participants.forEach((participant, index) => {
       viewer.push({});
       viewerNamesByClientId.push({name: participant.userName, clientId: participant.channelName});
+      room_members.push(participant.userId);
 
       var container = document.getElementById("participants-video-container");
       var participantVideo = document.createElement("video");
@@ -1042,11 +1045,20 @@ export default class Many2Many extends React.Component {
       startViewerMany(index, masterVideo, participantVideo, formValues, this.onStatsReport, event => {
       });
     })
+
+    this.setState({
+      roomMembers: room_members, 
+    })
   }
 
-  newParticipant(channelName, userName) {
+  newParticipant(channelName, userName, userId) {
     viewer.push({});
     viewerNamesByClientId.push({name: userName, clientId: channelName});
+
+    const {roomMembers} = this.state;
+    var temp = roomMembers;
+    temp.push(userId);
+    console.log(temp, userId, "#  1061")
 
     var index = viewer.length - 1;
     var container = document.getElementById("participants-video-container");
@@ -1090,6 +1102,12 @@ export default class Many2Many extends React.Component {
 
     startViewerMany(index, masterVideo, participantVideo, formValues, this.onStatsReport, event => {
     });
+
+    this.setState({
+      roomMembers: temp, 
+    })
+
+    this.inviteParticipantRef.current.updateRoomMember(userId);
   }
 
   leftRoom(channelName) {
@@ -1155,7 +1173,7 @@ export default class Many2Many extends React.Component {
   }
 
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat, inviteModal } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat, inviteModal, roomMembers } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
@@ -1276,7 +1294,13 @@ export default class Many2Many extends React.Component {
             </div>
           }
         </div>
-        <InviteParticipant open={inviteModal} onInvite={(email) => this.handleInvite(email)} onInviteClose={() => this.handleInviteClose()} />
+        <InviteParticipant 
+          open={inviteModal} 
+          ref={this.inviteParticipantRef}
+          roomMembers={roomMembers}
+          onInvite={(email) => this.handleInvite(email)} 
+          onInviteClose={() => this.handleInviteClose()} 
+        />
       </div>
     );
   }
