@@ -4,6 +4,9 @@ import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../comm
 import "../../assets/landingpage.css"
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
 import AWS from 'aws-sdk'
+
+import InviteParticipant from './InviteParticipant'
+
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/Brainshare_logo.svg'
 import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
@@ -17,7 +20,6 @@ import ChatImg from '../../images/room-chat.svg'
 import ScreenshareImg from '../../images/room-screenshare.svg'
 import AddUserImg from '../../images/room-adduser.svg'
 import DeclineImg from '../../images/call-decline.svg'
-
 import MiniEndCall from '../../images/many2many-mini-end.svg'
 import MiniFullScreen from '../../images/maximize.png'
 import MiniMuteMic from '../../images/many2many-mini-mute-mic.svg'
@@ -615,6 +617,7 @@ export default class Many2Many extends React.Component {
       brushColor: '#f44336',
       isMuted: false, 
       isVideoMuted: false, 
+      inviteModal: false, 
     };
     
     this.handleStop = this.handleStop.bind(this);
@@ -1119,20 +1122,40 @@ export default class Many2Many extends React.Component {
 
   inviteParticipantToRoom() {
 
-    // this.props.inviteParticipantToRoom();
-    console.log("inviteParticipantToRoom", "#1126");
+    this.setState({
+      inviteModal: true, 
+    })
 
+    // this.props.inviteParticipantToRoom();
+    // console.log("inviteParticipantToRoom", "#1126");
+
+    // var message = {
+    //   id: 'inviteParticipant',
+    //   roomName: localStorage.getItem("room_id"),
+    //   participantId: "222@gmail.com", 
+    // };
+
+    // this.sendMessage(message);
+  }
+
+  handleInvite(email) {
     var message = {
       id: 'inviteParticipant',
       roomName: localStorage.getItem("room_id"),
-      participantId: "222@gmail.com", 
+      participantId: email, 
     };
 
     this.sendMessage(message);
   }
 
+  handleInviteClose() {
+    this.setState({
+      inviteModal: false, 
+    })
+  }
+
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat, inviteModal } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
@@ -1253,6 +1276,7 @@ export default class Many2Many extends React.Component {
             </div>
           }
         </div>
+        <InviteParticipant open={inviteModal} onInvite={(email) => this.handleInvite(email)} onInviteClose={() => this.handleInviteClose()} />
       </div>
     );
   }
