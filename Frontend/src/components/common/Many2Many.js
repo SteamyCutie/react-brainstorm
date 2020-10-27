@@ -4,6 +4,9 @@ import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../comm
 import "../../assets/landingpage.css"
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
 import AWS from 'aws-sdk'
+
+import InviteParticipant from './InviteParticipant'
+
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/Brainshare_logo.svg'
 import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
@@ -17,7 +20,6 @@ import ChatImg from '../../images/room-chat.svg'
 import ScreenshareImg from '../../images/room-screenshare.svg'
 import AddUserImg from '../../images/room-adduser.svg'
 import DeclineImg from '../../images/call-decline.svg'
-
 import MiniEndCall from '../../images/many2many-mini-end.svg'
 import MiniFullScreen from '../../images/maximize.png'
 import MiniMuteMic from '../../images/many2many-mini-mute-mic.svg'
@@ -602,7 +604,7 @@ export default class Many2Many extends React.Component {
   constructor(props) {
     super(props);
 
-    this.emailInput = React.createRef();
+    this.inviteParticipantRef = React.createRef();
     this.state = {
       callState: 0,
       isCallingNow: 0,
@@ -615,6 +617,8 @@ export default class Many2Many extends React.Component {
       brushColor: '#f44336',
       isMuted: false, 
       isVideoMuted: false, 
+      inviteModal: false, 
+      roomMembers: [], 
     };
     
     this.handleStop = this.handleStop.bind(this);
@@ -992,9 +996,11 @@ export default class Many2Many extends React.Component {
   }
 
   existingParticipants(participants) {
+    var room_members = [];
     participants.forEach((participant, index) => {
       viewer.push({});
       viewerNamesByClientId.push({name: participant.userName, clientId: participant.channelName});
+      room_members.push(participant.userId);
 
       var container = document.getElementById("participants-video-container");
       var participantVideo = document.createElement("video");
@@ -1039,11 +1045,20 @@ export default class Many2Many extends React.Component {
       startViewerMany(index, masterVideo, participantVideo, formValues, this.onStatsReport, event => {
       });
     })
+
+    this.setState({
+      roomMembers: room_members, 
+    })
   }
 
-  newParticipant(channelName, userName) {
+  newParticipant(channelName, userName, userId) {
     viewer.push({});
     viewerNamesByClientId.push({name: userName, clientId: channelName});
+
+    const {roomMembers} = this.state;
+    var temp = roomMembers;
+    temp.push(userId);
+    console.log(temp, userId, "#  1061")
 
     var index = viewer.length - 1;
     var container = document.getElementById("participants-video-container");
@@ -1087,6 +1102,12 @@ export default class Many2Many extends React.Component {
 
     startViewerMany(index, masterVideo, participantVideo, formValues, this.onStatsReport, event => {
     });
+
+    this.setState({
+      roomMembers: temp, 
+    })
+
+    this.inviteParticipantRef.current.updateRoomMember(userId);
   }
 
   leftRoom(channelName) {
@@ -1119,20 +1140,40 @@ export default class Many2Many extends React.Component {
 
   inviteParticipantToRoom() {
 
-    // this.props.inviteParticipantToRoom();
-    console.log("inviteParticipantToRoom", "#1126");
+    this.setState({
+      inviteModal: true, 
+    })
 
+    // this.props.inviteParticipantToRoom();
+    // console.log("inviteParticipantToRoom", "#1126");
+
+    // var message = {
+    //   id: 'inviteParticipant',
+    //   roomName: localStorage.getItem("room_id"),
+    //   participantId: "222@gmail.com", 
+    // };
+
+    // this.sendMessage(message);
+  }
+
+  handleInvite(email) {
     var message = {
       id: 'inviteParticipant',
       roomName: localStorage.getItem("room_id"),
-      participantId: "222@gmail.com", 
+      participantId: email, 
     };
 
     this.sendMessage(message);
   }
 
+  handleInviteClose() {
+    this.setState({
+      inviteModal: false, 
+    })
+  }
+
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, showChat, inviteModal, roomMembers } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
@@ -1253,6 +1294,13 @@ export default class Many2Many extends React.Component {
             </div>
           }
         </div>
+        <InviteParticipant 
+          open={inviteModal} 
+          ref={this.inviteParticipantRef}
+          roomMembers={roomMembers}
+          onInvite={(email) => this.handleInvite(email)} 
+          onInviteClose={() => this.handleInviteClose()} 
+        />
       </div>
     );
   }
