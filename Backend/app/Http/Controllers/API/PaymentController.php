@@ -19,6 +19,80 @@ use Log;
 
 class PaymentController extends Controller
 {
+  public function registerCardByStudent(Request $request) {
+    $user_id = $request['user_id'];
+    $card_name = $request['card_name'];
+    $card_number = $request['card_number'];
+    $cvc_code = $request['cvc_code'];
+    $token = $request['token'];
+    $is_primary = $request['is_primary'];
+  
+    $input_date = str_replace('/','/25/', $request['card_expiration']);
+    $temp_date = strtotime($input_date);
+    $card_expiration = date('Y-m-d', $temp_date);
+    $card_type = substr($card_number, 0, 1);
+//    try {
+    $rules = array(
+      'user_id' => 'required',
+      'card_name' => 'required',
+      'card_number' => 'required',
+      'card_expiration' => 'required',
+      'cvc_code' => 'required',
+    );
+    $messages = array(
+      'required' => 'This field is required.',
+    );
+    $validator = Validator::make( $request->all(), $rules, $messages);
+    if ($validator->fails())
+    {
+      return [
+        'result' => 'failed',
+        'type' => 'require',
+        'message' => $validator->messages()
+      ];
+    }
+    $user_info = User::select('customer_id', 'email')->where('id', $user_id)->first();
+    $same_exist = Payment::where('card_number', $card_number)->first();
+    if ($same_exist) {
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> 'already same card number',
+      ]);
+    }
+  
+    //Begin create source
+    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+    $card = $stripe->customers->createSource(
+      $user_info->customer_id,
+      ['source' => $token]
+    );
+    //End create source
+  
+    Payment::create([
+      'user_id' => $user_id,
+      'email' => $user_info->email,
+      'customer_id' => $user_info->customer_id,
+      'card_name' => $card_name,
+      'card_number' => $card_number,
+      'card_src' => $card->id,
+      'card_expiration' => $card_expiration,
+      'cvc_code' => $cvc_code,
+      'card_type' => $card_type,
+      'card_token' => $token,
+      'payment_type' => 'Card',
+      'is_primary' => true,
+    ]);
+    return response()->json([
+      'result'=> 'success',
+      'message'=> 'card registered successfully',
+    ]);
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result'=> 'failed',
+//        'message'=> 'failed card register',
+//      ]);
+//    }
+  }
   public function createPayment(Request $request) {
     $user_id = $request['user_id'];
     $card_name = $request['card_name'];
@@ -177,7 +251,13 @@ class PaymentController extends Controller
   }
   
   public function getBank(Request $request) {
-  
+    //Begin create source
+    $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+    $card = $stripe->customers->createSource(
+      $request->customer_id,
+      ['source' => $request->token]
+    );
+    //End create source
   }
   public function paySessionPayment(Request $request) {
 //    $session_name = $request['session_name'];
@@ -420,7 +500,7 @@ class PaymentController extends Controller
     
     $res_result = $response = \Stripe\OAuth::token([
       'grant_type' => 'authorization_code',
-      'code' => 'ac_IH4umRytsmbHk91W75BSzxQOQ7oNn5MJ',
+      'code' => 'ac_IHAL39BEiwnl6wzR9LV5cSqoDvbtUaLE',
     ]);
 
 // Access the connected account id in the response
@@ -471,15 +551,31 @@ class PaymentController extends Controller
     \Log::info("connect +++++");
   }
   
+  public function getauthorizcode(Request $request) {
+    \Log::info(["getauthorizcode +++++", $request]);
+    echo $request->input("code");
+    return redirect('http://localhost:3000/mentorWallet');
+//    return view('http:\\localhost:3000\mentorWallet');
+  }
+
+  
   public function transfermoney (Request $request) {
     $stripe = new \Stripe\StripeClient(
       'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
     );
     $res_transfer = $stripe->transfers->create([
-      'amount' => 4880,
+      'amount' => 3880,
       'currency' => 'usd',
-      'destination' => 'acct_1HgWg3GGo6mXIVLI',
+      'destination' => 'acct_1HgbzoDWLmLttTTV',
 //      'transfer_group' => 'ORDER_95',
+      'settings' => [
+        'payouts' => [
+          "schedule" => [
+            "delay_days" => 7,
+            "interval" => "daily",
+          ],
+        ],
+      ],
     ]);
     return response()->json([
       'result'=> 'success',

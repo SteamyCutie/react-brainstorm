@@ -241,6 +241,14 @@
   box-shadow: none !important;
 }
 
+.modal-invitation-room-participant .modal-content {
+  min-height: 490px;
+  min-width: 500px;
+  margin: auto;
+  align-items: center;
+  box-shadow: none !important;
+}
+
 .btn-video-call-accept {
   margin: 5px 20px;
   width: 146px;
@@ -858,4 +866,162 @@
 
 .ads-small-video:focus {
   outline: none;
+}
+
+.btn-rooom-control3 {
+  margin-top: 2px;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 0px !important;
+  height: 45px !important;
+  width: 45x !important;
+  position: absolute;
+  right: 20px;
+  background-color: #FFFFFF !important;
+  border: none;
+}
+
+.btn-rooom-control3:hover {
+  background-color: #FFFFFF !important;
+  box-shadow: none;
+}
+
+.btn-rooom-control3:active {
+  background-color: #FFFFFF  !important;
+  box-shadow: none;
+}
+
+.btn-rooom-control3:focus {
+  background-color: #FFFFFF  !important;
+  box-shadow: none;
+}
+
+.room-invite-input {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 70px;
+  border-top: 1px #E3E3E3 solid;
+  border-bottom: 1px #E3E3E3 solid;
+  align-items: center;
+}
+
+.room-invite-email {
+  height: 50px;
+  width: 360px;
+  margin-left: 10px;
+  margin-right: 15px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.room-invite-email:focus {
+  border-color: #04B5FA !important;
+  box-shadow: none !important;
+}
+
+.modal-room-invite {
+  align-items: center;
+  justify-content: center;
+  display: block;
+  padding: 0px !important;
+  width: 100%;
+}
+
+.room-invite-element {
+  padding: 0px;
+  width: 100%;
+}
+
+.room-invite-label {
+  margin: 20px;
+}
+
+.room-invite-participants {
+  margin: 0px;
+  height: 300px;
+}
+
+.btn-room-invite {
+  height: 50px;
+  width: 100px;
+  background-color: #04B5FA !important;
+  color: white;
+  font-size: 16px;
+  border: none;
+}
+
+.btn-room-invite:hover {
+  background-color: #04B5FA !important;
+}
+
+.btn-room-invite:active {
+  background-color: #04B5FA !important;
+}
+
+.btn-room-invite:focus {
+  background-color: #04B5FA !important;
+}
+
+.btn-room-invite-suggested {
+  height: 50px;
+  width: 100px;
+  background-color: #FFFFFF !important;
+  border: 1px #04B5FA solid !important;
+  color: #04B5FA  !important;
+  font-size: 16px;
+  border: none;
+}
+
+.btn-room-invite-suggested:hover {
+  background-color: #FFFFFF !important;
+  border: 1px #04B5FA solid !important;
+  color: #04B5FA  !important;
+}
+
+.btn-room-invite-suggested:active {
+  background-color: #FFFFFF !important;
+  border: 1px #04B5FA solid !important;
+  color: #04B5FA  !important;
+}
+
+.btn-room-invite-suggested:focus {
+  background-color: #FFFFFF !important;
+  border: 1px #04B5FA solid !important;
+  color: #04B5FA  !important;
+}
+
+.room-invite-suggested {
+  width: 100%;
+  height: 70px;
+  margin: 0px;
+  padding: 10px;
+}
+
+.room-invite-suggested img {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  margin: 0px 10px;
+}
+
+.room-invite-participants-label {
+  padding-top: 10px;
+  padding-left: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.room-invite-participants-name {
+  padding-left: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.room-invite-participant-email {
+  padding-left: 20px;
+  font-size: 16px;
+  font-weight: 400;
 }
