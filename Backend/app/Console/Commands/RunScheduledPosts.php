@@ -49,7 +49,7 @@ class RunScheduledPosts extends Command
   {
     $notifications = PostedNotification::where('notification_posted', 0)->get();
     if (count($notifications)) {
-      Log::info(['notifications: ' , count($notifications)]);
+//      Log::info(['notifications: ' , count($notifications)]);
       event(new StatusLiked($notifications));
     }
     //Begin not register email_verify delete
@@ -81,7 +81,7 @@ class RunScheduledPosts extends Command
         $posted_session['to'] = $sn_value->to;
         
         $mentor_res = $send_mail->send_email($toEmail, $name, $subject, $body);
-        Log::info(['send_email mentor result: ' , $mentor_res, $title, $mentor->id]);
+//        Log::info(['send_email mentor result: ' , $mentor_res, $title, $mentor->id]);
         PostedNotification::create([
           'user_id' => $mentor->id,
           'session_id' => $sn_value->id,
@@ -98,7 +98,7 @@ class RunScheduledPosts extends Command
             $toEmail = $student->email;
             $name = $student->name;
             $student_res = $send_mail->send_email($toEmail, $name, $subject, $body);
-            Log::info(['send_email student result: ' , $student_res, $title, $student->id]);
+//            Log::info(['send_email student result: ' , $student_res, $title, $student->id]);
             $posted_session['user_id'] = $student->id;
             PostedNotification::create([
               'user_id' => $student->id,
