@@ -44,6 +44,8 @@ Route::post('/transfermoney', 'PaymentController@transfermoney');
 Route::post('/createbank', 'PaymentController@createBank');
 Route::post('/getbank', 'PaymentController@getBank');
 Route::post('/createaccountlink', 'PaymentController@createaccountlink');
+Route::get('/getauthorizcode', 'PaymentController@getauthorizcode');
+
 
 Route::post('/webhook', 'PaymentController@webhook');
 Route::post('/connect', 'PaymentController@connect');
