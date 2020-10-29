@@ -947,6 +947,8 @@ export default class Many2Many extends React.Component {
       showWhiteBoard: !this.state.showWhiteBoard, 
     })
 
+    master_switchToScreenshare();
+
     if (this.state.showWhiteBoard) {
       document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
       document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
@@ -1058,7 +1060,6 @@ export default class Many2Many extends React.Component {
     const {roomMembers} = this.state;
     var temp = roomMembers;
     temp.push(userId);
-    console.log(temp, userId, "#  1061")
 
     var index = viewer.length - 1;
     var container = document.getElementById("participants-video-container");
