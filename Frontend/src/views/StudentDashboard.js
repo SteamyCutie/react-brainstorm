@@ -86,61 +86,22 @@ export default class StudentDashboard extends React.Component {
   }
 
   handleScroll(event) {
-    if (window.location.pathname === "/studentDashboard") {
+    if (window.location.pathname === "/studentdashboard") {
       if (event.deltaY < 0)
       {
         if (window.pageYOffset <= 200) {
-          if (!document.getElementById("video")) {
-            if (document.getElementById("small-video"))
-              document.getElementById("small-video").remove();
-
-            var header = document.getElementsByClassName("page-header");
-            var container = document.getElementsByClassName("main-content-container");
-            var mainDiv = document.createElement("div");
-            mainDiv.id = "dashboard-video-ads-container";
-            mainDiv.className = "dashboard-video-ads-container";
-
-            var participantVideo = document.createElement("video");
-            var source = document.createElement("source");
-
-            participantVideo.height = window.pageYOffset;
-            participantVideo.controls = true;
-            participantVideo.id = 'video';
-            participantVideo.style = 'width: 100%';
-
-            source.src = media_url;
-            source.type = "video/mp4";
-            participantVideo.appendChild(source);
-
-            mainDiv.appendChild(participantVideo);
-
-            container[0].insertBefore(mainDiv, header[0]);
-          } else {
-            var video = document.getElementById("video");
-            video.height = 450;
-          }
+          document.getElementById("dashboard-video-ads-container").style = "display: block";
+          document.getElementById("dashboard-video-ads-container-small").style = "display: none";
         }
       } else if (event.deltaY > 0) {
         let headerHeight = 94;
-        if (document.getElementById("video")) {
-          document.getElementById("video").height = document.getElementById("video").height - window.pageYOffset - headerHeight;
-
-          if (document.getElementById("video").height <= 0) {
-            document.getElementById("video").remove();
-
-            var header = document.getElementsByClassName("page-header");
-            var container = document.getElementsByClassName("main-content-container");
-            var participantVideo = document.createElement("video");
-            var source = document.createElement("source");
-            participantVideo.style = "right: 24px; position: fixed; overflow-y: scroll; overflow-x: hidden; z-index: 100";
-            participantVideo.controls = true;
-            participantVideo.id = "small-video";
-
-            source.src = media_url;
-            source.type = "video/mp4";
-            participantVideo.appendChild(source);
-
-            container[0].insertBefore(participantVideo, header[0]);
+        if (document.getElementById("dashboard-video-ads-container")) {
+          var height = document.getElementById("dashboard-video-ads-container").clientHeight - window.pageYOffset - headerHeight;
+          document.getElementById("dashboard-video-ads-container").style.height = height + 'px';
+          console.log(document.getElementById("dashboard-video-ads-container").clientHeight, window.pageYOffset, headerHeight);
+          if (document.getElementById("dashboard-video-ads-container").clientHeight <= 288) {
+            document.getElementById("dashboard-video-ads-container").style = "display: none";
+            document.getElementById("dashboard-video-ads-container-small").style = "display: block";
           }
         }
       }

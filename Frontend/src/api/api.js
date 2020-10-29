@@ -309,22 +309,22 @@ export const createshareinfo = (param) => {
 //----------MediaController-----------
 
 
-//WalletController
-// export const getwallets = (param) => {
-//     return new Promise(async(resolve, reject) => {
-//         try {
-//             const token = localStorage.getItem('token');
-//             const header = {
-//                 'Authorization': 'bearer ' + token
-//             }
-//             const response = await axios.post(SERVER_URL+'/api/getwallets', param, {headers: header});
-//             resolve(response);
-//         } catch(error) {
-//             reject(error);
-//         }
-//     });
-// };
-//------------WalletController-----------------
+// WalletController
+export const gettransactionhistorybystudent = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/gettransactionhistorybystudent', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+};
+// ------------WalletController-----------------
 
 
 //SessionController

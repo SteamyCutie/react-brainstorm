@@ -9,7 +9,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getusercards, payforsession, signout, setprimarycard } from '../api/api';
+import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent } from '../api/api';
 import { Badge } from "shards-react";
 
 export default class StudentWallet extends React.Component {
@@ -207,7 +207,7 @@ export default class StudentWallet extends React.Component {
       this.setState({loading: true});
       const result = await payforsession(param);
       if (result.data.result === "success") {
-        this.showSuccess(result.data.message);
+        this.showSuccess(result.data.result);
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -232,41 +232,41 @@ export default class StudentWallet extends React.Component {
   }
 
   getHistory = async(pageNo) => {
-    // let param = {
-    //   email: localStorage.getItem('email'),
-    //   page: pageNo,
-    //   rowsPerPage: 10
-    // }
-    // try {
-    //   this.setState({loading: true});
-    //   const result = await getwallets(param);
-    //   if (result.data.result === "success") {
-    //     this.setState({
-    //       loading: false,
-    //       tHistory: result.data.data,
-    //       totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
-    //     });
-    //   } else if (result.data.result === "warning") {
-    //     this.showWarning(result.data.message);
-    //   } else {
-    //     if (result.data.message === "Token is Expired") {
-    //       this.showFail(result.data.message);
-    //       this.signout();
-    //     } else if (result.data.message === "Token is Invalid") {
-    //       this.showFail(result.data.message);
-    //       this.signout();
-    //     } else if (result.data.message === "Authorization Token not found") {
-    //       this.showFail(result.data.message);
-    //       this.signout();
-    //     } else {
-    //       this.showFail(result.data.message);
-    //     }
-    //   }
-    //   this.setState({loading: false});
-    // } catch(err) {
-    //   this.setState({loading: false});
-    //   this.showFail("Something Went wrong");
-    // };
+    let param = {
+      user_id: localStorage.getItem('user_id'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
+    try {
+      this.setState({loading: true});
+      const result = await gettransactionhistorybystudent(param);
+      if (result.data.result === "success") {
+        this.setState({
+          loading: false,
+          tHistory: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
   }
 
   getUserCards = async() => {
