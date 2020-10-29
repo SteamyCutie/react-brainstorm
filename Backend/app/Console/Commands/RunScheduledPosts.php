@@ -57,7 +57,7 @@ class RunScheduledPosts extends Command
     //End not register email_verify delete
     $send_mail = new Controller;
     $subject = "Welcome to BrainsShare!";
-    $fronturl = env("FRONT_URL");
+    $fronturl = env("APP_URL");
     
     $sessions = Session::where('posted',0)->where('from', '<=', Carbon::now()->addMinutes(15))->get();
     if (count($sessions) > 0) {
