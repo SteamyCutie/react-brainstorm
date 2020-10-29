@@ -7,7 +7,7 @@ import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
 import { store } from 'react-notifications-component';
 
-import { subscribe, signout } from '../../api/api';
+import { subscribe, signout, getusercards } from '../../api/api';
 import Close from '../../images/Close.svg'
 
 export default class SubscribeModal extends React.Component {
@@ -15,47 +15,51 @@ export default class SubscribeModal extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      paymentCard: [
-        {
-          type: "master",
-          title: "Mastercard ending in 2715",
-          image: require("../../images/Mastercard-logo.png"),
-          expireDate: "8/23",
-        },
-        {
-          type: "visa",
-          title: "Visa ending in 9372",
-          image: require("../../images/VisaCard-logo.png"),
-          expireDate: "02/21",
-        }
-      ]
+      paymentCard: [],
+      id: ''
     }
   }
 
-  toggle() {
-    const { toggle } = this.props;
-    toggle();    
+  componentWillMount() {
+    this.getUserCards();
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();    
-  }
-
-  handleSubscribe = async(mentor_id, sub_plan_fee) => {
+  getUserCards = async() => {
     let param = {
-      email: localStorage.getItem('email'),
-      mentor_id: mentor_id,
-      sub_plan_fee: sub_plan_fee,
-      card_type: 'visa'
+      user_id: localStorage.getItem('user_id')
     }
     try {
       this.setState({loading: true});
-      const result = await subscribe(param);
+      const result = await getusercards(param);
       if (result.data.result === "success") {
-        this.showSuccess("Subscribe Success");
-        this.props.actionSuccess();
-        this.toggle();
+        let param = {
+          card_type: 1,
+          is_primary: 1,
+          card_name: '',
+          expired_date: '',
+          image: '',
+          id: ''
+        }
+
+        let params = [];
+        for (var i = 0; i < result.data.data.length; i ++) {
+          param.card_type = result.data.data[i].card_type;
+          param.card_name = result.data.data[i].card_name;
+          param.is_primary = result.data.data[i].is_primary;
+          param.expired_date = result.data.data[i].expired_date;
+          param.id = result.data.data[i].id;
+          if (param.card_type === 4) {
+            param.image = require("../../images/VisaCard-logo.png");
+          } else if (param.card_type === 3) {
+            param.image = require("../../images/Mastercard-logo.png");
+          }
+          params.push(param);
+          param = {};
+        }
+        this.setState({
+          loading: false,
+          paymentCard: params
+        });
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -74,13 +78,68 @@ export default class SubscribeModal extends React.Component {
       }
       this.setState({loading: false});
     } catch(err) {
-      console.log(err, "-----");
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     };
   }
 
-  changeCard(type) {
+  toggle() {
+    const { toggle } = this.props;
+    toggle();    
+  }
+
+  toggle_modal() {
+    const { toggle_modal } = this.props;
+    toggle_modal();    
+  }
+
+  handleSubscribe = async(mentor_id, sub_plan_fee) => {
+    let param = {
+      email: localStorage.getItem('email'),
+      mentor_id: mentor_id,
+      sub_plan_fee: sub_plan_fee,
+      card_type: 'visa',
+      payment_id: this.state.id
+    }
+    if (param.payment_id === null || param.payment_id === undefined || param.payment_id === "") {
+      this.showWarning("Please add or select card");
+      return;
+    } else {
+      try {
+        this.setState({loading: true});
+        const result = await subscribe(param);
+        if (result.data.result === "success") {
+          this.showSuccess("Subscribe Success");
+          this.props.actionSuccess();
+          this.toggle();
+        } else if (result.data.result === "warning") {
+          this.showWarning(result.data.message);
+        } else {
+          if (result.data.message === "Token is Expired") {
+            this.showFail(result.data.message);
+            this.signout();
+          } else if (result.data.message === "Token is Invalid") {
+            this.showFail(result.data.message);
+            this.signout();
+          } else if (result.data.message === "Authorization Token not found") {
+            this.showFail(result.data.message);
+            this.signout();
+          } else {
+            this.showFail(result.data.message);
+          }
+        }
+        this.setState({loading: false});
+      } catch(err) {
+        this.setState({loading: false});
+        this.showFail("Something Went wrong");
+      };
+    }
+  }
+
+  changeCard(payment_id) {
+    this.setState({
+      id: payment_id
+    });
   }
 
   signout = async() => {
@@ -169,6 +228,7 @@ export default class SubscribeModal extends React.Component {
   render() {
     const { open, item } = this.props;
     const { loading, paymentCard } = this.state;
+    console.log(paymentCard);
     return (
       <div>
         <ReactNotification />
@@ -185,11 +245,12 @@ export default class SubscribeModal extends React.Component {
               {paymentCard.map((card, idx) => (
                 <SmallCardPaymentSubscribe
                   key={idx}
-                  type={card.type}
-                  title={card.title}
-                  expireDate={card.expireDate}
+                  type={card.card_type}
+                  title={card.card_name}
+                  expireDate={card.expired_date}
                   image={card.image}
-                  changeCard={this.changeCard}
+                  payment_id={card.id}
+                  changeCard={(payment_id) => this.changeCard(payment_id)}
                 />
               ))}
               <a href="javascript:void(0)" onClick={() => this.toggle_modal()}><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Add new card</h5></a>
