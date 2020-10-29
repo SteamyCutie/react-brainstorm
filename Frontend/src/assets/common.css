@@ -1025,3 +1025,125 @@
   font-size: 16px;
   font-weight: 400;
 }
+
+.dashboard-video-ads-container {
+  background-color: #757575;
+  border-radius: 7px;
+  width: 100%;
+  height: 500px;
+  margin-top: 15px;
+  position: relative;
+  display: block;
+}
+
+.dashboard-video-ads-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.dashboard-video-ads-container video:focus{
+  outline: none;
+}
+
+.dashboard-video-ads-container-small {
+  width: 455px;
+  height: 265px;
+  top: 105px;
+  right: 24px;
+  position: fixed;
+  z-index: 100;
+  display: none;
+}
+
+.dashboard-video-ads-container-small video{
+  min-width: 100%; 
+  min-height: 100%;
+  /* width: auto;  */
+  height: auto; 
+  object-fit: fill;
+}
+
+.dashboard-video-ads-container-small video:focus{
+  outline: none;
+}
+
+.dashboard-video-ads-container-controls {
+  width: 100%;
+  height: 100px;
+  position: absolute;
+  bottom: 0px;
+  background: #000000AA;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-video-ads-avatar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.dashboard-video-ads-mini-avatar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.dashboard-video-ads-container-small-controls {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 40px;
+  background: #000000AA;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-dashboard-control-mini {
+  height: 34px !important;
+  width: 34px !important;
+  padding: 0px;
+  background: transparent !important;
+  border: none;
+  margin: 0px 5px;
+}
+
+.btn-dashboard-control-mini:hover {
+  background-color: #646464 !important;
+  box-shadow: none;
+}
+
+.btn-dashboard-control-mini:active {
+  box-shadow: none;
+}
+
+.btn-dashboard-control-mini:focus {
+  box-shadow: none;
+}
+
+.btn-dashboard-control {
+  height: 84px !important;
+  width: 84px !important;
+  padding: 0px;
+  background: transparent !important;
+  border: none;
+  margin: 0px 5px;
+}
+
+.btn-dashboard-control:hover {
+  background-color: #646464 !important;
+  box-shadow: none;
+}
+
+.btn-dashboard-control:active {
+  box-shadow: none;
+}
+
+.btn-dashboard-control:focus {
+  box-shadow: none;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col } from "shards-react";
+import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 import AdSense from 'react-adsense';
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
@@ -11,6 +11,24 @@ import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
 import media_url from "../video/video.mp4";
+import DashboardVideoAvatar from "../images/dashboard-video-avatar.svg"
+import DashboardVideoAvatarMini from "../images/dashboard-video-avatar-mini.svg"
+import MiniEndCall from '../images/many2many-mini-end.svg'
+import MiniFullScreen from '../images/maximize.png'
+import MiniMuteMic from '../images/many2many-mini-mute-mic.svg'
+import MiniMutedMic from '../images/many2many-mini-muted-mic.svg'
+import MiniMuteVideo from '../images/many2many-mini-mute-video.svg'
+import MiniMutedVideo from '../images/many2many-mini-muted-video.svg'
+import MiniChat from "../images/many2many-mini-chat.svg"
+import MiniScreenshare from "../images/many2many-mini-screenshare.svg"
+import MiniAddUser from "../images/many2many-mini-adduser.svg"
+import FullScreen from "../images/dashboard-fullscreen.svg"
+import MuteMic from "../images/dashboard-mute-mic.svg"
+import MuteVideo from "../images/dashboard-mute-video.svg"
+import Chat from "../images/dashboard-mute-video.svg"
+import ScreenShare from "../images/dashboard-mute-screenshare.svg"
+import AddUser from "../images/dashboard-mute-add-user.svg"
+import EndCall from "../images/dashboard-mute-end.svg"
 
 import { findmentorsbytagsorname, signout } from '../api/api';
 export default class StudentDashboard extends React.Component {
@@ -78,6 +96,10 @@ export default class StudentDashboard extends React.Component {
 
             var header = document.getElementsByClassName("page-header");
             var container = document.getElementsByClassName("main-content-container");
+            var mainDiv = document.createElement("div");
+            mainDiv.id = "dashboard-video-ads-container";
+            mainDiv.className = "dashboard-video-ads-container";
+
             var participantVideo = document.createElement("video");
             var source = document.createElement("source");
 
@@ -90,7 +112,9 @@ export default class StudentDashboard extends React.Component {
             source.type = "video/mp4";
             participantVideo.appendChild(source);
 
-            container[0].insertBefore(participantVideo, header[0]);
+            mainDiv.appendChild(participantVideo);
+
+            container[0].insertBefore(mainDiv, header[0]);
           } else {
             var video = document.getElementById("video");
             video.height = 450;
@@ -346,9 +370,73 @@ export default class StudentDashboard extends React.Component {
           setDescription={(description) => this.setDescription(description)} 
         />
         <Container fluid className="main-content-container px-4 main-content-container-class">
-          <video width={width} height={height} controls id="video">
-            <source src={media_url} type="video/mp4"></source>
-          </video>
+          
+          <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
+            <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
+            <video id="video" autoPlay>
+              <source src={media_url} type="video/mp4"></source>
+            </video>  
+            <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
+              <Button className="btn-dashboard-control margin-right-auto">
+                <img src={FullScreen} alt="Full Screen"/>
+              </Button>
+              
+              <div className="">
+                <Button className="btn-dashboard-control float-center">
+                  <img src={MuteMic} alt="Mute mic"/>
+                </Button>
+                <Button className="btn-dashboard-control float-center">
+                  <img src={MuteVideo} alt="Mute video"/>
+                </Button>
+                <Button className="btn-dashboard-control float-center">
+                  <img src={Chat} alt="Chat"/>
+                </Button>
+                <Button className="btn-dashboard-control float-center">
+                  <img src={ScreenShare} alt="Screen Share"/>
+                </Button>
+                <Button className="btn-dashboard-control float-center">
+                  <img src={AddUser} alt="Add User"/>
+                </Button>
+              </div>
+              
+              <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
+                <img src={EndCall} alt="End"/>
+              </Button>
+            </div>
+          </div>
+          <div id="dashboard-video-ads-container-small" className="dashboard-video-ads-container-small">
+            <img src={DashboardVideoAvatarMini} alt="Brains Share" className="dashboard-video-ads-mini-avatar"/>
+            <video width={width} id="video-small" autoPlay>
+              <source src={media_url} type="video/mp4"></source>
+            </video>
+            <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
+              <Button className="btn-dashboard-control-mini margin-right-auto">
+                <img src={MiniFullScreen} alt="Full Screen"/>
+              </Button>
+              
+              <div className="">
+                <Button className="btn-dashboard-control-mini float-center">
+                  <img src={MiniMuteMic} alt="Mute mic"/>
+                </Button>
+                <Button className="btn-dashboard-control-mini float-center">
+                  <img src={MiniMuteVideo} alt="Mute video"/>
+                </Button>
+                <Button className="btn-dashboard-control-mini float-center">
+                  <img src={MiniChat} alt="Chat"/>
+                </Button>
+                <Button className="btn-dashboard-control-mini float-center">
+                  <img src={MiniScreenshare} alt="Screen Share"/>
+                </Button>
+                <Button className="btn-dashboard-control-mini float-center">
+                  <img src={MiniAddUser} alt="Add User"/>
+                </Button>
+              </div>
+              
+              <Button className="btn-room-call-decline-mini margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
+                <img src={MiniEndCall} alt="End"/>
+              </Button>
+            </div>
+          </div>
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3 id="search-result-label">Top Brainsshare mentors</h3>
