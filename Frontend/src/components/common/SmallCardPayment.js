@@ -24,8 +24,14 @@ class SmallCardPayment extends React.Component {
     });
   }
 
+  setAsDefault(id) {
+    const { setAsDefault } = this.props;
+    setAsDefault(id);
+    console.log(id);
+  }
+
   render() {
-    const { title, type, expireDate, isPrimary } = this.props;
+    const { title, type, expireDate, isPrimary, id } = this.props;
     const { open } = this.state;
     return (
       <Card small className="small-card-payment" >
@@ -62,6 +68,9 @@ class SmallCardPayment extends React.Component {
                   </div>
                 </DropdownToggle>
                 <DropdownMenu>
+                  <DropdownItem onClick={() => this.setAsDefault(id)}>
+                    Set As Default
+                  </DropdownItem>
                   <DropdownItem>
                     Edit
                   </DropdownItem>

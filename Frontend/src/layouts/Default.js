@@ -23,7 +23,7 @@ export default class DefaultLayout extends React.Component {
     if (JSON.parse(localStorage.getItem('user-type')) !== null || JSON.parse(localStorage.getItem('user-type')) !== undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentorDashboard") {
+      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentordashboard") {
         filterType = true;
       } else if (props.location.pathname === "/studentWallet" || props.location.pathname === "/studentDashboard") {
         filterType = false;
@@ -115,7 +115,7 @@ export default class DefaultLayout extends React.Component {
     if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) !== undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentorDashboard") {
+      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentordashboard") {
         filterType = true;
       } else if (this.props.location.pathname === "/studentWallet" || this.props.location.pathname === "/studentDashboard") {
         filterType = false;
@@ -179,9 +179,9 @@ export default class DefaultLayout extends React.Component {
   handleSearch(searchKey) {
     const { history } = this.props;
     if (JSON.parse(localStorage.getItem('user-type')))
-      history.push("/mentorDashboard");
+      history.push("/mentordashboard");
     else 
-      history.push("/studentDashboard");
+      history.push("/studentdashboard");
   } 
 
   showSuccess(text) {
@@ -287,7 +287,7 @@ export default class DefaultLayout extends React.Component {
   render() {
     const { children } = this.props;
     const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
-    if (children.props.location.pathname === "/mentorDashboard" || children.props.location.pathname === "/studentDashboard") {
+    if (children.props.location.pathname === "/mentordashboard" || children.props.location.pathname === "/studentdashboard") {
       children.props.location.search = "search";
     }
     return (
