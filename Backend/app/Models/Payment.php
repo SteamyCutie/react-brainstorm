@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
   protected $fillable = [
-    'user_id', 'email', 'customer_id', 'card_token','card_name', 'card_number',
-    'card_expiration', 'card_type','cvc_code', 'is_primary', 'card_src',
-    'bank_token', 'bank_src', 'payment_type'
+    'user_id', 'email', 'customer_id', 'card_name', 'card_number',
+    'card_expiration', 'cvc_code', 'card_src', 'connected_account',
+    'oauth_code', 'payment_type', 'is_primary'
   ];
 }

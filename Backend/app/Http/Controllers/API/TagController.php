@@ -13,7 +13,7 @@ class TagController extends Controller
   function index(Request $request)
   {
     try{
-      $all_tags = Tag::all();
+      $all_tags = Tag::select('id', 'name')->get();
       return response()->json([
         'result'=> 'success',
         'data'=> $all_tags,

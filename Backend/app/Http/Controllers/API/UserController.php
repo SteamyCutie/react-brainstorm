@@ -71,7 +71,7 @@ class UserController extends Controller
     $password = $request['password'];
     $channel_name = $request['channel_name'];
     $subject = "Welcome to BransShare!";
-    $fronturl = env("FRONT_URL");
+    $fronturl = env("APP_URL");
     $toEmail = $email;
     if (count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())) {
       return response()->json([
@@ -111,20 +111,16 @@ class UserController extends Controller
       $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
       $stripe_customer = $stripe->customers->create([
         'email' => $email,
-        'description' => 'registered <'.$name.'>   customer',
+        'description' => 'customer is '.$name,
         'name' => $name,
       ]);
-//      Payment::create([
-//        'user_id' => $user->id,
-//        'customer_id' => $stripe_customer->id,
-//        'email' => $email,
-//      ]);
+      //End register customer ID for stripe
       $user->customer_id = $stripe_customer->id;
       $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
       $alias = substr(str_shuffle($permitted_chars), 0, 50);
       $user->alias = $alias;
       $user->save();
-      //End register customer ID for stripe
+      
       return response()->json([
         'result' => 'success',
       ]);
@@ -188,6 +184,14 @@ class UserController extends Controller
       } else {
         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
         $alias = substr(str_shuffle($permitted_chars), 0, 50);
+        //Begin register customer ID for stripe
+        $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+        $stripe_customer = $stripe->customers->create([
+          'email' => $email,
+          'description' => 'customer is '.$name,
+          'name' => $name,
+        ]);
+        //End register customer ID for stripe
         $user = User::create([
           'email' => $email,
           'password' => bcrypt($email),
@@ -198,6 +202,7 @@ class UserController extends Controller
           'is_active' => 1,
           'channel_name' => $channel_name,
           'alias' => $alias,
+          'customer_id' => $stripe_customer->id,
         ]);
         $token = null;
         if (!$token = JWTAuth::fromUser($user)) {
@@ -346,7 +351,7 @@ class UserController extends Controller
   
   public function editProfile(Request $request)
   {
-    try {
+//    try {
       $name = $request['name'];
       $birthday = $request['birthday'];
       $email = $request['email'];
@@ -383,42 +388,69 @@ class UserController extends Controller
         ];
       }
       
-      $user = User::where('email', $email)->get();
-      
-      if ($user == null || count($user) == 0) {
-        return response()->json([
-          'result' => 'failed',
-          'message' => 'Current User Does Not Exist',
+      //Begin set product(prod_) and plan(price_) for stripe
+      $user_info = User::select('sub_plan_fee', 'sub_product_id', 'sub_plan_id')->where('email', $email)->first();
+      $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
+      if ($user_info->sub_product_id == "") {
+        $product_info = $stripe->products->create([
+          'name' => $name,
+          'description' => $name.'\'s production is Session',
+        ]);
+        $plan_info = $stripe->plans->create([
+          'amount' => $subplanfee * 100,
+          'currency' => 'usd',
+          'interval' => 'month',
+          'product' => $product_info->id,
+          'nickname' => $name,
+        ]);
+        User::where('email', $email)->update([
+          'sub_product_id' => $product_info->id,
+          'sub_plan_id' => $plan_info->id,
         ]);
       } else {
-        User::where('email', $email)->update(array(
-          'name' => $name,
-          'dob' => $birthday,
-          'email' => $email,
-          'description' => $description,
-          'avatar' => $avatar,
-          'expertise' => $expertise,
-          'hourly_price' => $hourlyprice,
-          'sub_page_name' => $subpagename,
-          'sub_plan_fee' => $subplanfee,
-          'video_url' => $videourl,
-          'instant_call' => $instantcall,
-          'status' => 1,
-          'is_mentor' => $is_mentor,
-          'tags_id' => $tags
-        ));
-        
-        return response()->json([
-          'result' => 'success',
-          'data' => $user,
+        $stripe->plans->delete(
+          $user_info->sub_plan_id,
+          []
+        );
+        $plan_info = $stripe->plans->create([
+          'amount' => $subplanfee * 100,
+          'currency' => 'usd',
+          'interval' => 'month',
+          'product' => $user_info->sub_product_id,
+          'nickname' => $name,
+        ]);
+        User::where('email', $email)->update([
+          'sub_plan_id' => $plan_info->id,
         ]);
       }
-    } catch (Exception $th) {
+      //End set plan_id for stripe
+      User::where('email', $email)->update(array(
+        'name' => $name,
+        'dob' => $birthday,
+        'email' => $email,
+        'description' => $description,
+        'avatar' => $avatar,
+        'expertise' => $expertise,
+        'hourly_price' => $hourlyprice,
+        'sub_page_name' => $subpagename,
+        'sub_plan_fee' => $subplanfee,
+        'video_url' => $videourl,
+        'instant_call' => $instantcall,
+        'status' => 1,
+        'is_mentor' => $is_mentor,
+        'tags_id' => $tags
+      ));
+      $res_user_info = User::where('email', $email)->first();
       return response()->json([
-        'result' => 'failed',
-        'data' => $th,
+        'result' => 'success',
+        'data' => $res_user_info,
       ]);
-    }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
   
   public function verifyCode(Request $request)
@@ -477,7 +509,7 @@ class UserController extends Controller
       }
       $toEmail = $user->email;
       $name = $user->name;
-      $fronturl = env("FRONT_URL");
+      $fronturl = env("APP_URL");
       $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
       $vCode = substr(str_shuffle($permitted_chars), 0, 50);
       User::where('email', $email)->update(['remember_token' => $vCode]);
@@ -774,7 +806,7 @@ class UserController extends Controller
             $share_info[$j]['day'] = date('d/m/y', strtotime($date));
             $share_info[$j]['time'] = date('h:i a', strtotime($date));
           }
-  
+          
           $mentors[$i]->share_info = $share_info;
           $result_res[] = $mentors[$i];
         }
