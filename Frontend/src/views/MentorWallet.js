@@ -9,7 +9,7 @@ import SmallCard from "../components/common/SmallCard";
 import AddNewBank from "../components/common/AddNewBank";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
-import { getwallets, signout } from '../api/api';
+import { signout, getuseridformentor } from '../api/api';
 import { REACT_APP_STRIPE_CLIENT_ID } from '../common/config'
 
 export default class MentorWallet extends React.Component {
@@ -96,46 +96,60 @@ export default class MentorWallet extends React.Component {
   componentDidMount() {
   }
 
-  toggle_add() {
-    window.location.href = 'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=' + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write';
+  toggle_add = async() => {
+    let param = {
+      user_id: localStorage.getItem('user_id')
+    }
+    
+    try {
+      const result = await getuseridformentor(param);
+      if (result.data.result === "success") {
+        window.open(
+          'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=' + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write',
+          '_blank'
+        );
+      } else if (result.data.result === "warning") {
+      } else {}
+    } catch(err) {
+    };
   }
 
   getHistory = async(pageNo) => {
-    let param = {
-      email: localStorage.getItem('email'),
-      page: pageNo,
-      rowsPerPage: 10
-    }
-    try {
-      this.setState({loading: true});
-      const result = await getwallets(param);
-      if (result.data.result === "success") {
-        this.setState({
-          loading: false,
-          tHistory: result.data.data,
-          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
-        });
-      } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
-      } else {
-        if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else {
-          this.showFail(result.data.message);
-        }
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
-    };
+    // let param = {
+    //   email: localStorage.getItem('email'),
+    //   page: pageNo,
+    //   rowsPerPage: 10
+    // }
+    // try {
+    //   this.setState({loading: true});
+    //   const result = await getwallets(param);
+    //   if (result.data.result === "success") {
+    //     this.setState({
+    //       loading: false,
+    //       tHistory: result.data.data,
+    //       totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+    //     });
+    //   } else if (result.data.result === "warning") {
+    //     this.showWarning(result.data.message);
+    //   } else {
+    //     if (result.data.message === "Token is Expired") {
+    //       this.showFail(result.data.message);
+    //       this.signout();
+    //     } else if (result.data.message === "Token is Invalid") {
+    //       this.showFail(result.data.message);
+    //       this.signout();
+    //     } else if (result.data.message === "Authorization Token not found") {
+    //       this.showFail(result.data.message);
+    //       this.signout();
+    //     } else {
+    //       this.showFail(result.data.message);
+    //     }
+    //   }
+    //   this.setState({loading: false});
+    // } catch(err) {
+    //   this.setState({loading: false});
+    //   this.showFail("Something Went wrong");
+    // };
   }
 
   showSuccess(text) {
