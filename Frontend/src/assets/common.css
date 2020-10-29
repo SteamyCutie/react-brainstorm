@@ -653,7 +653,7 @@ ul#fabric-whiteboard-toolbar-ul li{
   display: inline;
 }
 
-.room-whiteboard-body .fabric-whiteboard-toolbar{
+/* .room-whiteboard-body .fabric-whiteboard-toolbar{
   top: auto;
   bottom: 20px;
   left: auto;
@@ -667,7 +667,7 @@ ul#fabric-whiteboard-toolbar-ul li{
   background-image: url("../images/whiteboard-control-select.png") !important;
   height: 45px !important;
   width: 40px !important;
-}
+} */
 
 /* .fabric-whiteboard-toolbar .fabric-whiteboard-toolbar-ul i {
   background-image: url("");
