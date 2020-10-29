@@ -92,7 +92,7 @@ export default class MentorDashboard extends React.Component {
   }
 
   handleScroll(event) {
-    if (window.location.pathname === "/mentorDashboard") {
+    if (window.location.pathname === "/mentordashboard") {
       if (event.deltaY < 0)
       {
         if (window.pageYOffset <= 200) {

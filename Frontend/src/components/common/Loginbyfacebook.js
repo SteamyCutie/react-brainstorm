@@ -47,9 +47,9 @@ export class Loginbyfacebook extends Component {
           localStorage.setItem('channel_name', result.data.user.channel_name);
           localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
           if (result.data.user.is_mentor === 1)
-            window.location.href = "/mentorDashboard";
+            window.location.href = "/mentordashboard";
           else
-            window.location.href = "/studentDashboard";
+            window.location.href = "/studentdashboard";
         }
       } else {
         errorOccur(result.data.message);
@@ -82,9 +82,9 @@ export class Loginbyfacebook extends Component {
         localStorage.setItem('channel_name', user.channel_name);
         localStorage.setItem('user-type', (user.is_mentor === 1 ? true : false));
         if (user.is_mentor === 1)
-          window.location.href = "/mentorDashboard";
+          window.location.href = "/mentordashboard";
         else
-          window.location.href = "/studentDashboard";
+          window.location.href = "/studentdashboard";
       } 
     });
   }

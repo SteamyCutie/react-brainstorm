@@ -138,9 +138,9 @@ export default class SignIn extends React.Component {
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
 
         if(result.data.user.is_mentor) {
-          window.location.href = '/mentorDashboard';
+          window.location.href = '/mentordashboard';
         } else {
-          window.location.href = '/studentDashboard';
+          window.location.href = '/studentdashboard';
         }
       } else {
         this.setState({
