@@ -619,6 +619,7 @@ export default class Many2Many extends React.Component {
       isVideoMuted: false, 
       inviteModal: false, 
       roomMembers: [], 
+      whiteBoardFullScreen: false,
     };
     
     this.handleStop = this.handleStop.bind(this);
@@ -939,7 +940,29 @@ export default class Many2Many extends React.Component {
   }
   
   whiteboardFullscreen() {
+    const { whiteBoardFullScreen } = this.state;
+    if (whiteBoardFullScreen) {
+      document.getElementById("room-whiteboard").classList.remove("room-whiteboard-fullscreen")
+      document.getElementById("room-whiteboard").classList.add("room-whiteboard");
 
+      document.getElementsByClassName("canvas-container")[0].style.width = "600px";
+      document.getElementsByClassName("upper-canvas")[0].style.width = "600px";
+      document.getElementsByClassName("upper-canvas")[0].width = 600;
+    } else {
+      document.getElementById("room-whiteboard").classList.remove("room-whiteboard");
+      document.getElementById("room-whiteboard").classList.add("room-whiteboard-fullscreen")
+
+      document.getElementsByClassName("canvas-container")[0].style.width = document.getElementById("room-whiteboard").offsetWidth - 5 + "px";
+      document.getElementsByClassName("upper-canvas")[0].style.width = document.getElementById("room-whiteboard").offsetWidth - 5 + "px";
+      document.getElementsByClassName("upper-canvas")[0].width = document.getElementById("room-whiteboard").offsetWidth - 5;
+    }
+
+    this.setState({
+      whiteBoardFullScreen: !whiteBoardFullScreen, 
+      width: document.getElementById("room-whiteboard").offsetWidth - 5, 
+    });
+
+    console.log(document.getElementById("room-whiteboard").offsetWidth, "#956");
   }
 
   whiteboardClose() {
@@ -1233,18 +1256,19 @@ export default class Many2Many extends React.Component {
             : null
           }
           {(showWhiteBoard && isFullscreen) ?
-            <div className="room-whitboard">
+            <div id="room-whiteboard-body" className="room-whiteboard">
               <div className="room-whitboard-header">
-                <Button className="btn-rooom-control2 float-center" style={{marginRight: "auto", padding: "0px"}} onClick={() => this.whiteboardFullscreen()}>
+                {/* <Button className="btn-rooom-control2 float-center" style={{marginRight: "auto", padding: "0px"}} onClick={() => this.whiteboardFullscreen()}>
                   <img src={WhiteboardFullscreenImg} alt="Add user"/>
-                </Button>
+                </Button> */}
                 
-                <h2 style={{fontSize: "38px", fontWeight: "bold", margin: "0px"}}>Whiteboard</h2>
+                <h2 style={{fontSize: "38px", fontWeight: "bold", margin: "0px", width: "100%", textAlign: "center"}}>Whiteboard</h2>
                 <Button className="btn-rooom-control2 float-center" style={{marginLeft: "auto", padding: "0px"}} onClick={() => this.whiteboardClose()}>
                   <img src={WhiteboardCloseImg} alt="Add user"/>
                 </Button>
               </div>
               <WhiteBoard
+                className="room-whiteboard-body"
                 width={width}
                 height={height}
                 showToolbar={true}

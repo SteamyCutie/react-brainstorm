@@ -134,7 +134,13 @@ class SessionController extends Controller
   {
     try{
       $email = $request['email'];
-      $user_id = User::select('id')->where('email', $email)->first();
+      $user_id = User::select('id', 'hourly_price' , 'sub_plan_fee')->where('email', $email)->first();
+      if ($user_id->hourly_price == 0 || $user_id->sub_plan_fee == 0) {
+        return [
+          'result' => 'warning',
+          'message' => 'You should input hourly price or subscription plan fee',
+        ];
+      }
       $title = $request['title'];
       $description = $request['description'];
       $tags = ','.implode(",", $request['tags']).',';
@@ -513,7 +519,20 @@ class SessionController extends Controller
     try{
       $mentor_id = $request['mentor_id'];
       $student_id = $request['user_id'];
-      $tags = User::select('tags_id', 'name')->where('id', $mentor_id)->first();
+      $tags = User::select('tags_id', 'name', 'hourly_price', 'sub_plan_fee')->where('id', $mentor_id)->first();
+      $st_info = User::select('hourly_price', 'sub_plan_fee')->where('id', $student_id)->first();
+      if ($st_info->hourly_price || $st_info->sub_plan_fee) {
+        return [
+          'result' => 'warning',
+          'message' => 'Mentor\'s hourly or subscription does not exist.',
+        ];
+      }
+      if ($tags->hourly_price || $tags->sub_plan_fee) {
+        return [
+          'result' => 'warning',
+          'message' => 'You must input hourly or subscription plan fee',
+        ];
+      }
       $title = $tags->name;
       $description = $title.'\'s session';
 //      $tags = ','.implode(",", $request['tags']).',';
