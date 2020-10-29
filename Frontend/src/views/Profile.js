@@ -221,7 +221,7 @@ export default class MySharePage extends React.Component {
         localStorage.setItem('avatar', param.avatar);
         localStorage.setItem('user_name', param.name);
         this.showSuccess("Edit Profile Success");
-        localStorage.setItem('user-type', param.is_mentor);
+        localStorage.setItem('user-type', (param.is_mentor === 1 ? true : false));
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {

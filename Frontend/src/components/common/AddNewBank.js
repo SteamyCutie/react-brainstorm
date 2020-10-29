@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, ModalBody, Button, FormSelect } from "shards-react";
 import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
-import { createpayment, signout } from '../../api/api';
+import { registerbankbymentor, signout } from '../../api/api';
 import Close from '../../images/Close.svg'
 
 export default class AddNewBank extends React.Component {
@@ -87,7 +87,7 @@ export default class AddNewBank extends React.Component {
     }
     try {
       this.setState({loading: true});
-      const result = await createpayment(param);
+      const result = await registerbankbymentor(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
