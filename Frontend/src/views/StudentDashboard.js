@@ -371,9 +371,9 @@ export default class StudentDashboard extends React.Component {
         />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           
-          <div id="dashboard-video-ads-container" className="dashboard-video-ads-container" width={width} height={height}>
+          <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
             <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
-            <video width={width} height={height} id="video" autoPlay>
+            <video id="video" autoPlay>
               <source src={media_url} type="video/mp4"></source>
             </video>  
             <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
@@ -405,7 +405,7 @@ export default class StudentDashboard extends React.Component {
             </div>
           </div>
           <div id="dashboard-video-ads-container-small" className="dashboard-video-ads-container-small">
-          <img src={DashboardVideoAvatarMini} alt="Brains Share" className="dashboard-video-ads-mini-avatar"/>
+            <img src={DashboardVideoAvatarMini} alt="Brains Share" className="dashboard-video-ads-mini-avatar"/>
             <video width={width} id="video-small" autoPlay>
               <source src={media_url} type="video/mp4"></source>
             </video>
