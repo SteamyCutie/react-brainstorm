@@ -89,13 +89,19 @@ class TransactionHistoryController extends Controller
 //    try{
       $user_id = $request->user_id;
       $rowsPerPage = $request->rowsPerPage;
+      $result = [];
       //transaction
       $student_transactions = TransactionHistory::select('session_id', 'session_date', 'mentor_name', 'conference_time', 'amount', 'status')
         ->where('student_id', $user_id)
         ->orderBy('created_at', 'DESC')
         ->paginate($rowsPerPage);
       foreach ($student_transactions as $key => $value) {
-      
+        $result[$key]['lID'] = $value->session_id;
+        $result[$key]['lDate'] = date('d/m/y', $value->session_date);
+        $result[$key]['sName'] = $value->mentor_name;
+        $result[$key]['conferenceTime'] = $value->conference_time;
+        $result[$key]['amount'] = $value->amount;
+        $result[$key]['status'] = $value->status;
       }
       return response()->json([
         'result' => 'success',
