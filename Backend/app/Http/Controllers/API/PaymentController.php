@@ -140,7 +140,7 @@ class PaymentController extends Controller
       $connected_account_id,
       [
         'business_profile' => [
-          'name' => $user_info->email,
+          'name' => $user_info->name,
         ],
         'settings' => [
           'payouts' => [
@@ -225,7 +225,7 @@ class PaymentController extends Controller
   
   public function webhook (Request $request, Response $response) {
     Log::info("webhook +++++");
-    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+    \Stripe\Stripe::setApiKey('SK_LIVE');
     // Uncomment and replace with a real secret. You can find your endpoint's
     // secret in your webhook settings.
     $webhook_secret = 'whsec_GAiXSYTXdz4fU2hwQyiOFxzNmAW5gDwJ';
@@ -257,10 +257,17 @@ class PaymentController extends Controller
   }
   
   public function testpayment(Request $request) {
-    $session_info = Session::select('user_id', 'title', 'from')->where('id', 1)->first();
-    $session_date = date('d/m/y', strtotime($session_info->from));
-    return response()->json([
-      'result' => $session_date
-    ]);
+    // Begin available, pending
+//    $connected_account = $request->connected_account;
+//    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+//
+//    $balance = \Stripe\Balance::retrieve(
+//      ['stripe_account' => $connected_account]
+//    );
+//    return response()->json([
+//      'result' => $balance,
+//    ]);
+    // End available, pending
+    echo '2020-10-29 08:00:00' < now();
   }
 }
