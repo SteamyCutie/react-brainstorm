@@ -56,6 +56,7 @@ class TransactionHistoryController extends Controller
     $transfer = $stripe->transfers->create([
       'amount' => round($st_amount * 0.8, 2) * 100,
       'currency' => 'usd',
+      'source_transaction' => $charge->id, //transfer available
       'destination' => $mentor_info->connected_account,
       'description' => 'Brainsshare paid '.$st_amount * 0.8.'$ to <'.$mentor_info->name.'> for <'.$session_info->title.'>',
     ]);
@@ -95,17 +96,25 @@ class TransactionHistoryController extends Controller
         ->where('student_id', $user_id)
         ->orderBy('created_at', 'DESC')
         ->paginate($rowsPerPage);
+      
       foreach ($student_transactions as $key => $value) {
-        $result[$key]['lID'] = $value->session_id;
-        $result[$key]['lDate'] = date('d/m/y', $value->session_date);
+        if($value->status == 'Failed') {
+          $status = 2;
+        } else if ($value->status == "Pending") {
+          $status = 0;
+        } else if ($value->status == "Confirmed") {
+          $status = 1;
+        }
+        $result[$key]['lId'] = $value->session_id;
+        $result[$key]['lDate'] = date('y/m/d', strtotime($value->session_date));
         $result[$key]['sName'] = $value->mentor_name;
         $result[$key]['conferenceTime'] = $value->conference_time;
         $result[$key]['amount'] = $value->amount;
-        $result[$key]['status'] = $value->status;
+        $result[$key]['status'] = $status;
       }
       return response()->json([
         'result' => 'success',
-        'data' => $student_transactions,
+        'data' => $result,
         'totalRows' => $student_transactions->total(),
       ]);
 //    } catch (Exception $th){
@@ -120,17 +129,43 @@ class TransactionHistoryController extends Controller
 //    try{
       $user_id = $request->user_id;
       $rowsPerPage = $request->rowsPerPage;
-      $mentor_transaction =  TransactionHistory::select('session_id', 'session_date','student_name', 'conference_time', 'amount', 'status')
+      $result = [];
+      $mentor_transactions =  TransactionHistory::select('session_id', 'session_date','student_name', 'conference_time', 'amount', 'status')
           ->where('mentor_id', $user_id)
           ->orderBy('created_at', 'DESC')
           ->paginate($rowsPerPage);
-      $mentor_info = User::select('available_balance', 'pending_balance', 'life_time_earnings')->first();
-      $result['balance'] = $mentor_info;
-      $result['transaction'] = $mentor_transaction;
+      foreach ($mentor_transactions as $key => $value) {
+        if($value->status == 'Failed') {
+          $status = 2;
+        } else if ($value->status == "Pending") {
+          $status = 0;
+        } else if ($value->status == "Confirmed") {
+          $status = 1;
+        }
+        $result[$key]['lId'] = $value->session_id;
+        $result[$key]['lDate'] = date('y/m/d', strtotime($value->session_date));
+        $result[$key]['sName'] = $value->student_name;
+        $result[$key]['conferenceTime'] = $value->conference_time;
+        $result[$key]['amount'] = $value->amount;
+        $result[$key]['status'] = $status;
+      }
+      $mentor_info = User::select('available_balance', 'pending_balance', 'life_time_earnings', 'connected_account')->where('id', $user_id)->first();
+      if ($mentor_info->connected_account != "") {
+        $connected_account = $request->connected_account;
+        \Stripe\Stripe::setApiKey(env('SK_LIVE'));
+        $balance = \Stripe\Balance::retrieve(
+          ['stripe_account' => $mentor_info->connected_account]
+        );
+        $available_balance = $balance->available[0]->amount / 100;
+        $pending_balance = $balance->pending[0]->amount / 100;
+      }
+      $result[]['available_balance'] = $available_balance;
+      $result[]['pending_balance'] = $pending_balance;
+      $result[]['life_time_earnings'] = $mentor_info->life_time_earnings;
       return response()->json([
         'result' => 'success',
         'data' => $result,
-        'totalRows' => $mentor_transaction->total(),
+        'totalRows' => $mentor_transactions->total(),
       ]);
 //    } catch (Exception $th){
 //      return response()->json([
