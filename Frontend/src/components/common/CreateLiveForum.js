@@ -347,7 +347,7 @@ export default class CreateLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
             <label htmlFor="feEmail">Students</label> 
             <MultiSelect
-              hasSelectAll={false}
+              hasSelectAll={true}
               options={students}
               value={selectedUsers}
               onChange={(e) => this.setSelectedUsers(e)}
