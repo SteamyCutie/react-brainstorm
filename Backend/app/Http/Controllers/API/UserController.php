@@ -485,8 +485,8 @@ class UserController extends Controller
         ]);
       }
       $user->update(['two_factor_code' => "0"]);
-      $request->password = $user->origin_password;
-      $request->email = $user->email;
+      $request['password'] = $user->origin_password;
+      $request['email'] = $user->email;
       return $this->login($request);
       
     } catch (\Throwable $th) {
