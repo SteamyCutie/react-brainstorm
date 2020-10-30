@@ -25,11 +25,6 @@ use Log;
 
 class UserController extends Controller
 {
-  public function __construct()
-  {
-  
-  }
-  
   public function login(Request $request)
   {
     try {
@@ -357,7 +352,7 @@ class UserController extends Controller
   
   public function editProfile(Request $request)
   {
-//    try {
+    try {
       $name = $request->name;
       $birthday = $request->birthday;
       $email = $request->email;
@@ -451,12 +446,12 @@ class UserController extends Controller
         'result' => 'success',
         'data' => $res_user_info,
       ]);
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result' => 'failed',
-//        'data' => $th,
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th,
+      ]);
+    }
   }
   
   public function verifyCode(Request $request)
@@ -485,10 +480,9 @@ class UserController extends Controller
         ]);
       }
       $user->update(['two_factor_code' => "0"]);
-      $request->password = $user->origin_password;
-      $request->email = $user->email;
+      $request['password'] = $user->origin_password;
+      $request['email'] = $user->email;
       return $this->login($request);
-      
     } catch (\Throwable $th) {
       return response()->json([
         'result' => 'failed',

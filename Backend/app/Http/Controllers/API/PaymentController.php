@@ -61,6 +61,7 @@ class PaymentController extends Controller
           'message' => 'could not register card'
         ];
       }
+      User::where('id', $user_id)->update(['customer_id' => $stripe_customer]);
     }
     //End register customer ID for stripe
     //Begin create source(link card to customer)
@@ -258,16 +259,15 @@ class PaymentController extends Controller
   
   public function testpayment(Request $request) {
     // Begin available, pending
-//    $connected_account = $request->connected_account;
-//    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
-//
-//    $balance = \Stripe\Balance::retrieve(
-//      ['stripe_account' => $connected_account]
-//    );
-//    return response()->json([
-//      'result' => $balance,
-//    ]);
+    $connected_account = $request->connected_account;
+    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
+
+    $balance = \Stripe\Balance::retrieve(
+      ['stripe_account' => $connected_account]
+    );
+    return response()->json([
+      'result' => $balance,
+    ]);
     // End available, pending
-    echo '2020-10-29 08:00:00' < now();
   }
 }
