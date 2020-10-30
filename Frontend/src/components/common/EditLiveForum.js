@@ -326,8 +326,6 @@ export default class EditLiveForum extends React.Component {
           selectedUsers: params1,
           selectedTags: params
         });
-        
-        console.log(foruminfo, "---");
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -346,6 +344,7 @@ export default class EditLiveForum extends React.Component {
       }
       this.setState({loading: false});
     } catch(err) {
+      console.log(err, "++++++++++++");
       this.setState({loading: false});
       this.showFail("Something Went wrong");
     }
@@ -461,7 +460,7 @@ export default class EditLiveForum extends React.Component {
           <div className="content-center block-content-class modal-input-group-class" style={{marginBottom: 20}}>
             <label htmlFor="feEmail">Students</label> 
             <MultiSelect
-              hasSelectAll={false}            
+              hasSelectAll={true}            
               options={students}
               value={selectedUsers}
               onChange={(e) => this.setSelectedUsers(e)}

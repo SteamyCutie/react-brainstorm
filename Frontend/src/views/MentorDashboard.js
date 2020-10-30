@@ -336,11 +336,13 @@ export default class MentorDashboard extends React.Component {
           setDescription={(description) => this.setDescription(description)} 
         />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
-          <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
-            <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
-            <video id="video" autoPlay>
-              <source src={media_url} type="video/mp4"></source>
-            </video>  
+          <div>
+            <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
+              <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
+              <video id="video" autoPlay>
+                <source src={media_url} type="video/mp4"></source>
+              </video>  
+            </div>
             <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
               <Button className="btn-dashboard-control margin-right-auto">
                 <img src={FullScreen} alt="Full Screen"/>

@@ -331,39 +331,40 @@ export default class StudentDashboard extends React.Component {
           setDescription={(description) => this.setDescription(description)} 
         />
         <Container fluid className="main-content-container px-4 main-content-container-class">
-          
-          <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
-            <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
-            <video id="video" autoPlay>
-              <source src={media_url} type="video/mp4"></source>
-            </video>  
+          <div>
+            <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
+              <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
+              <video id="video" autoPlay>
+                <source src={media_url} type="video/mp4"></source>
+              </video>  
+            </div>
             <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
-              <Button className="btn-dashboard-control margin-right-auto">
-                <img src={FullScreen} alt="Full Screen"/>
-              </Button>
-              
-              <div className="">
-                <Button className="btn-dashboard-control float-center">
-                  <img src={MuteMic} alt="Mute mic"/>
+                <Button className="btn-dashboard-control margin-right-auto">
+                  <img src={FullScreen} alt="Full Screen"/>
                 </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={MuteVideo} alt="Mute video"/>
-                </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={Chat} alt="Chat"/>
-                </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={ScreenShare} alt="Screen Share"/>
-                </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={AddUser} alt="Add User"/>
+                
+                <div className="">
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={MuteMic} alt="Mute mic"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={MuteVideo} alt="Mute video"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={Chat} alt="Chat"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={ScreenShare} alt="Screen Share"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={AddUser} alt="Add User"/>
+                  </Button>
+                </div>
+                
+                <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
+                  <img src={EndCall} alt="End"/>
                 </Button>
               </div>
-              
-              <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
-                <img src={EndCall} alt="End"/>
-              </Button>
-            </div>
           </div>
           <div id="dashboard-video-ads-container-small" className="dashboard-video-ads-container-small">
             <img src={DashboardVideoAvatarMini} alt="Brains Share" className="dashboard-video-ads-mini-avatar"/>
@@ -398,6 +399,7 @@ export default class StudentDashboard extends React.Component {
               </Button>
             </div>
           </div>
+          
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3 id="search-result-label">Top Brainsshare mentors</h3>

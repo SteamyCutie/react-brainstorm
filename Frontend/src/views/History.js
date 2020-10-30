@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect } from "shards-react";
-import Pagination from '@material-ui/lab/Pagination';
-import SmallCard3 from "../components/common/SmallCard3"
+import HistoryCard from "../components/common/HistoryCard"
 import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -13,36 +12,36 @@ export default class History extends React.Component {
     super(props);
     
     this.state = {
-      totalCnt: 0,
       loading: false,
       historyData: [],
       weekList: [],
       tags: [],
-      mentors: []
+      // mentors: [],
+      param: {
+        time: '',
+        tag_id: '',
+        // mentor_id: '',
+        email: localStorage.getItem('email')
+      }
     }
   }
 
   componentWillMount() {
-    this.getHistoryList(1);
+    this.getHistoryList();
     this.getWeekData();
     this.getTags();
-    this.getMentors();
+    // this.getMentors();
   }
 
-  getHistoryList = async(pageNo) => {
-    let param = {
-      email: localStorage.getItem('email'),
-      page: pageNo,
-      rowsPerPage: 10
-    }
+  getHistoryList = async() => {
+    let { param } = this.state;
     try {
       this.setState({loading: true});
       const result = await getHistory(param);
       if(result.data.result === "success") {
         var historyTemp = result.data.data;
         this.setState({
-          historyData: historyTemp,
-          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+          historyData: historyTemp
         });
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
@@ -119,45 +118,67 @@ export default class History extends React.Component {
     };
   }
 
-  getMentors = async(pageNo) => {
-    let param = {
-      email: localStorage.getItem('email'),
-      page: pageNo,
-      rowsPerPage: 10
-    }
-    try {
-      this.setState({loading: true});
-      const result = await getallmentors(param);
-      if (result.data.result === "success") {
-        this.setState({
-          loading: false,
-          mentors: result.data.data,
-        });
-      } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
-      } else {
-        if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else {
-          this.showFail(result.data.message);
-        }
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
-    };
+  // getMentors = async() => {
+  //   let param = {
+  //     email: localStorage.getItem('email')
+  //   }
+  //   try {
+  //     this.setState({loading: true});
+  //     const result = await getallmentors(param);
+  //     if (result.data.result === "success") {
+  //       this.setState({
+  //         loading: false,
+  //         mentors: result.data.data,
+  //       });
+  //     } else if (result.data.result === "warning") {
+  //       this.showWarning(result.data.message);
+  //     } else {
+  //       if (result.data.message === "Token is Expired") {
+  //         this.showFail(result.data.message);
+  //         this.signout();
+  //       } else if (result.data.message === "Token is Invalid") {
+  //         this.showFail(result.data.message);
+  //         this.signout();
+  //       } else if (result.data.message === "Authorization Token not found") {
+  //         this.showFail(result.data.message);
+  //         this.signout();
+  //       } else {
+  //         this.showFail(result.data.message);
+  //       }
+  //     }
+  //     this.setState({loading: false});
+  //   } catch(err) {
+  //     this.setState({loading: false});
+  //     this.showFail("Something Went wrong");
+  //   };
+  // }
+
+  // getHistoryList(e, value) {
+  //   this.getMentors(value);
+  // }
+
+  onChangeMentor(e) {
+    const { param } = this.state;
+    let temp = param;
+    temp.mentor_id = e.target.value;
+    this.setState({param: temp});
+    this.getHistoryList();
   }
 
-  getHistoryList(e, value) {
-    this.getMentors(value);
+  onChangeCategory(e) {
+    const { param } = this.state;
+    let temp = param;
+    temp.tag_id = e.target.value;
+    this.setState({param: temp});
+    this.getHistoryList();
+  }
+
+  onChangeDate(e) {
+    const { param } = this.state;
+    let temp = param;
+    temp.time = e.target.value;
+    this.setState({param: temp});
+    this.getHistoryList();
   }
 
   signout = async() => {
@@ -244,7 +265,7 @@ export default class History extends React.Component {
   }
 
   render() {
-    const {loading, historyData, weekList, tags, totalCnt, mentors} = this.state;
+    const {loading, historyData, weekList, tags, mentors} = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -262,37 +283,37 @@ export default class History extends React.Component {
                 <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                   Date:
                 </label>
-                <FormSelect style={{height: "30px", width: "180px", marginRight: "10px"}}>
+                <FormSelect style={{height: "30px", width: "180px", marginRight: "10px"}} onChange={(e) => this.onChangeDate(e)}>
                   <option>Select Date</option>
                   {weekList.map((item, idx) =>
                     <option key={idx}>{item}</option>
                   )}
                 </FormSelect>
-                <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+                {/* <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                   Sessions:
                 </label>
                 <FormSelect style={{height: "30px", width: "80px", marginRight: "10px"}}>
                   <option>All</option>
                   <option>...</option>
-                </FormSelect>
+                </FormSelect> */}
                 <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                   Category:
                 </label>
-                <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}}>
+                <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}} onChange={(e) => this.onChangeCategory(e)}>
                   <option>Select category</option>
                   {tags && tags.map((item, idx) =>
                     <option key={idx}>{item.name}</option>
                   )}
                 </FormSelect>
-                <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+                {/* <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
                   Mentor:
                 </label>
-                <FormSelect style={{height: "30px", width: "120px", marginRight: "10px"}}>
+                <FormSelect style={{height: "30px", width: "120px", marginRight: "10px"}} onChange={(e) => this.onChangeMentor(e)}>
                   <option>Select mentor</option>
                   {mentors && mentors.map((item, idx) =>
-                    <option key={idx} value={item.name}>{item.name}</option>
+                    <option key={idx} value={item.id}>{item.name}</option>
                   )}
-                </FormSelect>
+                </FormSelect> */}
               </div>
             </CardHeader>
             <CardBody>
@@ -300,16 +321,13 @@ export default class History extends React.Component {
                 {historyData.map((history, idx) => {
                   return (
                     <Col xl="4" lg="4" sm="6">
-                      <SmallCard3 id={idx} data={history} />
+                      <HistoryCard id={idx} data={history} />
                     </Col>
                   )
                 })}
               </Row>
             </CardBody>
           </Card>    
-          {historyData.length > 0 && <Row className="pagination-center">
-            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
-          </Row>}
         </Container>
       </>
     )
