@@ -26,7 +26,7 @@ class CreateTransactionHistoriesTable extends Migration
       $table->float('conference_time')->nullable();
       $table->float('amount')->nullable();
       $table->boolean('check_confirmed_sum')->nullable();//webhook, added user->life_time_earning
-      $table->enum('status', ['Confirmed', 'Pending', 'Failed'])->nullable();//webhook, set
+      $table->enum('status', ['Confirmed', 'Pending', 'Failed'])->default("Pending");//webhook, set
       $table->timestamps();
     });
   }

@@ -66,10 +66,10 @@ class UserController extends Controller
   
   public function signup(Request $request)
   {
-    $email = $request['email'];
-    $name = $request['name'];
-    $password = $request['password'];
-    $channel_name = $request['channel_name'];
+    $email = $request->email;
+    $name = $request->name;
+    $password = $request->password;
+    $channel_name = $request->channel_name;
     $subject = "Welcome to BransShare!";
     $fronturl = env("APP_URL");
     $toEmail = $email;
@@ -85,8 +85,8 @@ class UserController extends Controller
       $user->name = $name;
       $user->email = $email;
       $user->channel_name = $channel_name;
-      if ($request['is_mentor']) {
-        $user->is_mentor = $request['is_mentor'];
+      if ($request->is_mentor) {
+        $user->is_mentor = $request->is_mentor;
       } else {
         $user->is_mentor = 0;
       }
@@ -139,7 +139,7 @@ class UserController extends Controller
     $name = $request->name;
     $provider = $request->provider;
     $provider_id = $request->provider_id;
-    $channel_name = $request['channel_name'];
+    $channel_name = $request->channel_name;
     $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
     if ($user) {
       $token = null;
@@ -227,27 +227,30 @@ class UserController extends Controller
   public function getUserInfo(Request $request)
   {
     try {
-      $email = $request['email'];
+      $email = $request->email;
       $temp_names = [];
-      $user = User::where('email', $email)->first();
+      $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+                  'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+                  'status', 'timezone', 'alias', 'average_mark')
+                ->where('email', $email)->first();
       if (!$user) {
         return response()->json([
           'result' => 'failed',
           'message' => 'not exist user',
         ]);
       }
-      if ($user['dob'] == null || $user['dob'] == "") {
+      if ($user->dob == null || $user->dob == "") {
         $currentDate = date('Y-m-d');
-        $user['dob'] = $currentDate;
+        $user->dob = $currentDate;
       } else {
-        $newDate = date("Y-m-d", strtotime($user['dob']));
-        $user['dob'] = $newDate;
+        $newDate = date("Y-m-d", strtotime($user->dob));
+        $user->dob = $newDate;
       }
-      if (trim($user['tags_id'], ',') == null || trim($user['tags_id'], ',') == '')
+      if (trim($user->tags_id, ',') == null || trim($user->tags_id, ',') == '')
         $tags_id = [];
       else
-        $tags_id = explode(',', trim($user['tags_id'], ','));
-      $user['tags'] = $tags_id;
+        $tags_id = explode(',', trim($user->tags_id, ','));
+      $user->tags = $tags_id;
       if ($user->description == null)
         $user->description = "";
       foreach ($tags_id as $tag_key => $tag_id) {
@@ -255,7 +258,7 @@ class UserController extends Controller
           $temp_names[] = $tag_names->name;
         }
       }
-      $user['tags_name'] = $temp_names;
+      $user->tags_name = $temp_names;
       return response()->json([
         'result' => 'success',
         'data' => $user,
@@ -271,13 +274,16 @@ class UserController extends Controller
   public function getUserInfoById(Request $request)
   {
     try {
-      $id = $request['id'];
+      $id = $request->id;
 //      $average_review = 0;
 //      $count_review = 0;
       $tag_names = [];
       
       $res_students = Review::where('mentor_id', $id)->get();
-      $user = User::where('id', $id)->first();
+      $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+                        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+                        'status', 'timezone', 'alias', 'average_mark')
+                      ->where('id', $id)->first();
       $temp = [];
       foreach ($res_students as $review_key => $review_value) {
         $res_student = User::where('id', $review_value->student_id)->first();
@@ -293,31 +299,31 @@ class UserController extends Controller
 //        $count_review++;
 //        $average_review += $review_value->mark;
       }
-      $newDate = date("Y-m-d", strtotime($user['dob']));
-      $user['dob'] = $newDate;
+      $newDate = date("Y-m-d", strtotime($user->dob));
+      $user->dob = $newDate;
       $tags_id = [];
-      if (trim($user['tags_id'], ',') != "") {
-        $tags_id = explode(',', trim($user['tags_id'], ','));
+      if (trim($user->tags_id, ',') != "") {
+        $tags_id = explode(',', trim($user->tags_id, ','));
       }
       foreach ($tags_id as $tag_key => $tag_value) {
         $tags = Tag::where('id', $tag_value)->first();
-        $tag_names[$tag_key] = $tags['name'];
+        $tag_names[$tag_key] = $tags->name;
       }
-      $share_info = Media::where('user_id', $user['id'])->get();
+      $share_info = Media::where('user_id', $user->id)->get();
       for ($i = 0; $i < count($share_info); $i++) {
         $date = $share_info[$i]['created_at'];
         $share_info[$i]['day'] = date('d/m/y', strtotime($date));
         $share_info[$i]['time'] = date('h:i a', strtotime($date));
       }
-      $user['tags'] = $tag_names;
-      $user['student'] = $res_students;
-//      $user['count_review'] = $count_review;
-      $user['count_review'] = $user->sub_count;
-      $user['share_info'] = $share_info;
+      $user->tags = $tag_names;
+      $user->student = $res_students;
+//      $user->count_review = $count_review;
+      $user->count_review = $user->sub_count;
+      $user->share_info = $share_info;
 //      if ($count_review > 0) {
-//        $user['average_review'] = round($average_review/$count_review, 1);
+//        $user->average_review = round($average_review/$count_review, 1);
 //      } else {
-//        $user['average_review'] = 0;
+//        $user->average_review = 0;
 //      }
       if ($user->description == null)
         $user->description = "";
@@ -352,20 +358,20 @@ class UserController extends Controller
   public function editProfile(Request $request)
   {
 //    try {
-      $name = $request['name'];
-      $birthday = $request['birthday'];
-      $email = $request['email'];
-      $description = $request['description'];
-      $expertise = $request['expertise'];
-      $hourlyprice = $request['hourlyprice'];
-      $subpagename = $request['subpagename'];
-      $subplanfee = $request['subplanfee'];
-      $videourl = $request['videourl'];
-      $instantcall = $request['instantcall'];
-      $avatar = $request['avatar'];
-      $is_mentor = $request['is_mentor'];
+      $name = $request->name;
+      $birthday = $request->birthday;
+      $email = $request->email;
+      $description = $request->description;
+      $expertise = $request->expertise;
+      $hourlyprice = $request->hourlyprice;
+      $subpagename = $request->subpagename;
+      $subplanfee = $request->subplanfee;
+      $videourl = $request->videourl;
+      $instantcall = $request->instantcall;
+      $avatar = $request->avatar;
+      $is_mentor = $request->is_mentor;
       
-      $tags = ',' . implode(",", $request['tags']) . ',';
+      $tags = ',' . implode(",", $request->tags) . ',';
       $rules = array(
         'name' => 'required',
         'email' => 'required|email',
@@ -479,8 +485,8 @@ class UserController extends Controller
         ]);
       }
       $user->update(['two_factor_code' => "0"]);
-      $request['password'] = $user->origin_password;
-      $request['email'] = $user->email;
+      $request->password = $user->origin_password;
+      $request->email = $user->email;
       return $this->login($request);
       
     } catch (\Throwable $th) {
@@ -495,7 +501,7 @@ class UserController extends Controller
   public function forgot(Request $request)
   {
     $subject = "Welcome to BrainsShare!";
-    $email = $request['email'];
+    $email = $request->email;
     $token = null;
     
     try {
@@ -578,7 +584,7 @@ class UserController extends Controller
   
   public function logout(Request $request)
   {
-    $email = $request['email'];
+    $email = $request->email;
     User::where('email', $email)->update(['status' => 0]);
     return response()->json([
       'result' => 'success',
@@ -590,14 +596,14 @@ class UserController extends Controller
   public function findMentors(Request $request)
   {
     try {
-      $tag_id = $request['tag_id'];
+      $tag_id = $request->tag_id;
       if ($tag_id) {
         $tag_id = ',' . $tag_id . ',';
       }
-      $mentor_name = $request['name'];
-      $rowsPerPage = $request['rowsPerPage'];
-      $filter_level = $request['filterbylevel'];
-      $filter_hourly = $request['filterbyhourly'];
+      $mentor_name = $request->name;
+      $rowsPerPage = $request->rowsPerPage;
+      $filter_level = $request->filterbylevel;
+      $filter_hourly = $request->filterbyhourly;
       if ($filter_level == true) {
         $level_direction = 'DESC';
       } else {
@@ -651,9 +657,9 @@ class UserController extends Controller
   
   public function findMentorsByTags(Request $request) {
     try {
-      $user_id = $request['user_id'];
-      $tag_ids = $request['tags_id'];
-      $rowsPerPage = $request['rowsPerPage'];
+      $user_id = $request->user_id;
+      $tag_ids = $request->tags_id;
+      $rowsPerPage = $request->rowsPerPage;
       $is_mentor = User::select('is_mentor')->where('id', $user_id)->first();
       $temp_query = "";
       if ($tag_ids) {
@@ -740,10 +746,10 @@ class UserController extends Controller
   
   public function findMentorsByTagsOrName(Request $request) {
     try {
-      $user_id = $request['user_id'];
-      $tag_ids = $request['tags_id'];
-      $mentor_name = $request['name'];
-      $rowsPerPage = $request['rowsPerPage'];
+      $user_id = $request->user_id;
+      $tag_ids = $request->tags_id;
+      $mentor_name = $request->name;
+      $rowsPerPage = $request->rowsPerPage;
       $temp_query = "";
       $count_tag = 0;
       if ($tag_ids){
@@ -859,7 +865,7 @@ class UserController extends Controller
             $temp_tag[$tag_key] = $tag_name->name;
           }
         }
-        $top_value['tags_name'] = $temp_tag;
+        $top_value->tags_name = $temp_tag;
       }
       
       return response()->json([
@@ -877,10 +883,13 @@ class UserController extends Controller
   public function getAllMentors(Request $request)
   {
     try {
-      $email = $request['email'];
-      $rowsPerPage = $request['rowsPerPage'];
-      $page = $request['page'];
-      $users = User::where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
+      $email = $request->email;
+      $rowsPerPage = $request->rowsPerPage;
+      $page = $request->page;
+      $users = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+                        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+                        'status', 'timezone', 'alias', 'average_mark')
+                    ->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
       
       for ($i = 0; $i < count($users); $i++) {
@@ -897,7 +906,7 @@ class UserController extends Controller
 //        $all_marks = 0;
         foreach ($tags_id as $tag_key => $tag_value) {
           $tags = Tag::where('id', $tag_value)->first();
-          $tag_names[$tag_key] = $tags['name'];
+          $tag_names[$tag_key] = $tags->name;
         }
         $mentors[$i]['tag_name'] = $tag_names;
 //        $res_mark = Review::select('mark')->where('mentor_id', $mentors[$i]['id'])->get();

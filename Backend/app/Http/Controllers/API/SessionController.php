@@ -77,15 +77,19 @@ class SessionController extends Controller
       $id = $request['id'];
       $temp_names = [];
       $forum = Session::where('id', $id)->first();
-      if ($forum['tags_id'] == null || $forum['tags_id'] == '')
+      if ($forum['tags_id'] == ",,"){
         $tags_id = [];
-      else
+        $forum['tags_id'] = "";
+      }
+      else {
         $tags_id = explode(',', trim($forum['tags_id'], ','));
-      
+      }
       $forum['tags'] = $tags_id;
       foreach ($tags_id as $tag_key=> $tag_id) {
         $tag_names = Tag::select('name')->where('id', $tag_id)->first();
-        $temp_names[] = $tag_names->name;
+        if ($tag_names) {
+          $temp_names[] = $tag_names->name;
+        }
       }
       $forum['tags_name'] = $temp_names;
       if ($forum['from'] == "" || $forum['from'] == null) {
@@ -330,35 +334,75 @@ class SessionController extends Controller
     try{
       $result_res = [];
       $email = $request['email'];
-      $user_id = User::select('id','name', 'avatar')->where('email', $email)->first();
-      $session_infos = Session::select('id', 'user_id', 'invited_id', 'from','tags_id')->where('status', '3')->get();
+      $tag_id = $request['tag_id'];
+      $req_time = $request['time'];
+      $user = User::select('id', 'is_mentor')->where( 'email', $email)->first();
+      $current_time = date("y-m-d h:i:s");
+    
+      if ($req_time != null || $req_time != "") {
+        $from_time = trim(explode('~', $req_time)[0]);
+        $to_time = trim(explode('~', $req_time)[1]);
+      } else {
+        $from_time = "";
+        $to_time = "";
+      }
+      if ($user['is_mentor'] == 0) {
+        $temp1 = [];
+        $temp2 = [];
       
-      foreach ($session_infos as $session_key => $session_info)
-      {
-        $result_from = $session_info['from'];
-        $result_tag = $session_info['tags_id'];
-        $tags_id = explode(',', trim($result_tag, ','));
-        
-        $result_invited = $session_info['invited_id'];
-        $invited_id = explode(',', trim($result_invited, ','));
-        
-        foreach ($invited_id as $invited_key => $invited_value) {
-          if (trim($invited_value) == $user_id['id'])
-          {
-            $result_res[$session_key] = $session_info;
-            
-            $result_res[$session_key]['day'] = date('d/m/y', strtotime($result_from));
-            $result_res[$session_key]['time'] = date('h:i a', strtotime($result_from));
-            
-            foreach ($tags_id as $tag_key => $tag_value) {
-              $tags = Tag::select('name')->where('id', $tag_value)->first();
-              $tag_names[$tag_key] = $tags['name'];
+        $invited_session_id = Invited::select('session_id')->where('student_id', $user->id)->get();
+        $result_infos = Session::where('user_id', '!=', $user->id)
+          ->where('from','<',date('y-m-d h:i:s', strtotime($current_time)))
+          ->whereIn('id',$invited_session_id)
+          ->get();
+      
+        if ($tag_id == "" || $tag_id == null) {
+          $temp1 = $result_infos;
+        } else {
+          foreach ($result_infos as $tags_key => $result_info) {
+            $tag_array = explode(',', trim($result_info['tags_id'], ','));
+            for ($j = 0; $j < count($tag_array); $j++) {
+              if ($tag_id == trim($tag_array[$j])){
+                $temp1[] = $result_info;
+              }
             }
-            $result_res[$session_key]['tag_name'] = $tag_names;
-            $menter_name = User::select('name')->where('id', $session_info['user_id'])->first();
-            $result_res[$session_key]['name'] = $menter_name['name'];
-            $result_res[$session_key]['avatar'] = $user_id['avatar'];
           }
+        }
+      
+        if ($from_time == "" || $to_time == "") {
+          $temp2 = $temp1;
+        }
+        else {
+          foreach ($temp1 as $key => $result) {
+            if ((date('y-m-d', strtotime($result->from)) >= date('y-m-d', strtotime($from_time)))
+              && (date('y-m-d', strtotime($result->to)) <= date('y-m-d', strtotime($to_time)))) {
+              $temp2[] = $result;
+            }
+          }
+        }
+        foreach ($temp2 as $session_key => $session_info)
+        {
+          $result_from = $session_info['from'];
+          $result_to = $session_info['to'];
+          $result_tag = $session_info['tags_id'];
+          $tags_id = explode(',', trim($result_tag, ','));
+          $result_invited = $session_info['invited_id'];
+          $invited_id = explode(',', trim($result_invited, ','));
+          $temp = [];
+          $temp = $session_info;
+          $temp['day'] = date('d/m/y', strtotime($result_from));
+          $temp['from_time'] = date('h:i a', strtotime($result_from));
+          $temp['to_time'] = date('h:i a', strtotime($result_to));
+          $tag_names = [];
+          foreach ($tags_id as $tag_key => $tag_value) {
+            $tags = Tag::select('name')->where('id', $tag_value)->first();
+            $tag_names[$tag_key] = $tags['name'];
+          }
+          $temp['tag_name'] = $tag_names;
+          $mentor_name = User::select('name', 'avatar')->where('id', $session_info['user_id'])->first();
+          $temp['name'] = $mentor_name['name'];
+          $temp['avatar'] = $mentor_name['avatar'];
+          $result_res[] = $temp;
         }
       }
       return response()->json([
@@ -370,7 +414,6 @@ class SessionController extends Controller
         'result'=> 'failed',
         'data'=> $th,
       ]);
-      
     }
   }
   

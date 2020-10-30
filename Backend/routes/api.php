@@ -67,7 +67,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
   Route::post('/getavailabletimesforstudent', 'AvailableTimesController@getavailableTimesForStudent');
   
-  Route::post('/gettags', 'TagController@index');
+  Route::post('/gettags', 'TagController@gettaglists');
   Route::post('/uploadimage', 'FileController@uploadImage');
   Route::post('/uploadvideo', 'FileController@uploadVideo');
   

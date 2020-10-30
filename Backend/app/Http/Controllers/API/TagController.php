@@ -10,7 +10,7 @@ use App\Models\User;
 
 class TagController extends Controller
 {
-  function index(Request $request)
+  function gettaglists(Request $request)
   {
     try{
       $all_tags = Tag::select('id', 'name')->get();
