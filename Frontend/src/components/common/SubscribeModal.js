@@ -21,7 +21,7 @@ export default class SubscribeModal extends React.Component {
   }
 
   componentWillMount() {
-    this.getUserCards();
+    // this.getUserCards();
   }
 
   getUserCards = async() => {
