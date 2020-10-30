@@ -5,7 +5,7 @@ import Calendar from "../../images/calendar-blue.svg"
 import Clock from "../../images/clock-blue.svg"
 import default_avatar from "../../images/avatar.jpg"
 
-class SmallCard3 extends React.Component {
+class HistoryCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {open: false,};
@@ -65,22 +65,6 @@ class SmallCard3 extends React.Component {
               </div>
             </div>
           </div>
-          <Dropdown open={this.state.open} toggle={this.toggle} className="more-drop-down">
-            <DropdownToggle>
-              <div className="nav-link-icon__wrapper">
-                <img
-                  className="user-avatar mr-2"
-                  src={MoreButtonImage}
-                  alt="User Avatar"
-                />{" "}
-              </div>
-            </DropdownToggle>
-            <DropdownMenu >
-              <DropdownItem onClick={() => joinSession(room_id)}>
-                Join Forum
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
         </div>
         <div className="small-card3-date-time">
           <div style={{display: "flex", marginBottom: "5px"}}>
@@ -101,4 +85,4 @@ class SmallCard3 extends React.Component {
   }
 }
 
-export default SmallCard3;
+export default HistoryCard;
