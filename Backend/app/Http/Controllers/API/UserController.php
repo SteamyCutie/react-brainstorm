@@ -226,7 +226,7 @@ class UserController extends Controller
       $temp_names = [];
       $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
                   'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-                  'status', 'timezone', 'alias', 'average_mark')
+                  'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
                 ->where('email', $email)->first();
       if (!$user) {
         return response()->json([
@@ -277,7 +277,7 @@ class UserController extends Controller
       $res_students = Review::where('mentor_id', $id)->get();
       $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
                         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-                        'status', 'timezone', 'alias', 'average_mark')
+                        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
                       ->where('id', $id)->first();
       $temp = [];
       foreach ($res_students as $review_key => $review_value) {
@@ -882,7 +882,7 @@ class UserController extends Controller
       $page = $request->page;
       $users = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
                         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-                        'status', 'timezone', 'alias', 'average_mark')
+                        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
                     ->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
       
