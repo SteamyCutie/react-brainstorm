@@ -280,7 +280,7 @@
   
   .main-content-container-class {
     background-color: #F9F9F9;
-    min-height: calc(100vh - 9.9rem) !important;
+    /* min-height: calc(100vh - 9.9rem) !important; */
   }
   
   .modal.show {
@@ -582,7 +582,7 @@
   }
   
   .main-content>.main-content-container.container-fluid {
-    min-height: calc(100vh - 9.9rem);
+    min-height: auto;
   }
   
   .main-sidebar .nav .nav-item .nav-link {
