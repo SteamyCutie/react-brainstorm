@@ -1234,6 +1234,7 @@ export default class Many2Many extends React.Component {
             </div>
           </div>
           <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
+            <video id="videoOutput" style={{display: "none"}}></video>
           </div>
           {(showChat && isFullscreen) ?
             <div className="room-group-chat">
