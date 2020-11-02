@@ -104,7 +104,6 @@ export default class MentorDashboard extends React.Component {
         if (document.getElementById("dashboard-video-ads-container")) {
           var height = document.getElementById("dashboard-video-ads-container").clientHeight - window.pageYOffset - headerHeight;
           document.getElementById("dashboard-video-ads-container").style.height = height + 'px';
-          console.log(document.getElementById("dashboard-video-ads-container").clientHeight, window.pageYOffset, headerHeight);
           if (document.getElementById("dashboard-video-ads-container").clientHeight <= 288) {
             document.getElementById("dashboard-video-ads-container").style = "display: none";
             document.getElementById("dashboard-video-ads-container-small").style = "display: block";
@@ -297,7 +296,6 @@ export default class MentorDashboard extends React.Component {
       }
     }
 
-    console.log(callerInfo, this.state.callDescription);
     this.toggle_callwithdesc();
     
     this.props.setUser(callerInfo.email, callerInfo.avatar, callerInfo.name, callerInfo.channel_name, this.state.callDescription);
