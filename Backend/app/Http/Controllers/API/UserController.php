@@ -1,12 +1,7 @@
 <?php
-
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
-use App\Models\Invited;
-use App\Models\PostedNotification;
-use App\Models\Session;
 use App\Models\Subscription;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -14,14 +9,12 @@ use App\Models\User;
 use App\Models\Tag;
 use App\Models\Review;
 use App\Models\Media;
-use App\Models\Payment;
 use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Exception;
 use Carbon\Carbon;
-use App\Http\Controllers\API\PaymentController;
-use phpDocumentor\Reflection\DocBlock\Tags\See;
-use DateTime;
 use Log;
+require 'vendor/autoload.php';
 
 class UserController extends Controller
 {
@@ -130,36 +123,14 @@ class UserController extends Controller
   
   public function signBySocial(Request $request)
   {
-    $email = $request->email;
-    $name = $request->name;
-    $provider = $request->provider;
-    $provider_id = $request->provider_id;
-    $channel_name = $request->channel_name;
-    $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
-    if ($user) {
-      $token = null;
-      if (!$token = JWTAuth::fromUser($user)) {
-        return response()->json([
-          'result' => 'failed',
-          'message' => 'Email or Password is incorrect.',
-          // ], 401);
-        ]);
-      }
-      User::where('email', $email)->update(['status' => 1]);
-      return response()->json([
-        'result' => 'success',
-        'token' => $token,
-        'user' => $user,
-        'logged_type' => 'signin',
-      ]);
-    } else {
-      $user = User::where('email', $email)->first();
+    try {
+      $email = $request->email;
+      $name = $request->name;
+      $provider = $request->provider;
+      $provider_id = $request->provider_id;
+      $channel_name = $request->channel_name;
+      $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
       if ($user) {
-        User::where('email', $email)->update([
-          'name' => $name,
-          'provider' => $provider,
-          'provider_id' => $provider_id,
-        ]);
         $token = null;
         if (!$token = JWTAuth::fromUser($user)) {
           return response()->json([
@@ -168,7 +139,6 @@ class UserController extends Controller
             // ], 401);
           ]);
         }
-        $user = User::where('email', $email)->first();
         User::where('email', $email)->update(['status' => 1]);
         return response()->json([
           'result' => 'success',
@@ -177,45 +147,75 @@ class UserController extends Controller
           'logged_type' => 'signin',
         ]);
       } else {
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $alias = substr(str_shuffle($permitted_chars), 0, 50);
-        //Begin register customer ID for stripe
-        $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
-        $stripe_customer = $stripe->customers->create([
-          'email' => $email,
-          'description' => 'customer is '.$name,
-          'name' => $name,
-        ]);
-        //End register customer ID for stripe
-        $user = User::create([
-          'email' => $email,
-          'password' => bcrypt($email),
-          'name' => $name,
-          'provider' => $provider,
-          'provider_id' => $provider_id,
-          'email_verified_at' => Carbon::now(),
-          'is_active' => 1,
-          'channel_name' => $channel_name,
-          'alias' => $alias,
-          'customer_id' => $stripe_customer->id,
-        ]);
-        $token = null;
-        if (!$token = JWTAuth::fromUser($user)) {
+        $user = User::where('email', $email)->first();
+        if ($user) {
+          User::where('email', $email)->update([
+            'name' => $name,
+            'provider' => $provider,
+            'provider_id' => $provider_id,
+          ]);
+          $token = null;
+          if (!$token = JWTAuth::fromUser($user)) {
+            return response()->json([
+              'result' => 'failed',
+              'message' => 'Email or Password is incorrect.',
+              // ], 401);
+            ]);
+          }
+          $user = User::where('email', $email)->first();
+          User::where('email', $email)->update(['status' => 1]);
           return response()->json([
-            'result' => 'failed',
-            'message' => 'Email or Password is incorrect.',
-            // ], 401);
+            'result' => 'success',
+            'token' => $token,
+            'user' => $user,
+            'logged_type' => 'signin',
+          ]);
+        } else {
+          $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+          $alias = substr(str_shuffle($permitted_chars), 0, 50);
+          //Begin register customer ID for stripe
+          $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+          $stripe_customer = $stripe->customers->create([
+            'email' => $email,
+            'description' => 'customer is '.$name,
+            'name' => $name,
+          ]);
+          //End register customer ID for stripe
+          $user = User::create([
+            'email' => $email,
+            'password' => bcrypt($email),
+            'name' => $name,
+            'provider' => $provider,
+            'provider_id' => $provider_id,
+            'email_verified_at' => Carbon::now(),
+            'is_active' => 1,
+            'channel_name' => $channel_name,
+            'alias' => $alias,
+            'customer_id' => $stripe_customer->id,
+          ]);
+          $token = null;
+          if (!$token = JWTAuth::fromUser($user)) {
+            return response()->json([
+              'result' => 'failed',
+              'message' => 'Email or Password is incorrect.',
+              // ], 401);
+            ]);
+          }
+          $user = User::where('id', $user->id)->first();
+          User::where('email', $email)->update(['status' => 1]);
+          return response()->json([
+            'result' => 'success',
+            'token' => $token,
+            'user' => $user,
+            'logged_type' => 'signup',
           ]);
         }
-        $user = User::where('id', $user->id)->first();
-        User::where('email', $email)->update(['status' => 1]);
-        return response()->json([
-          'result' => 'success',
-          'token' => $token,
-          'user' => $user,
-          'logged_type' => 'signup',
-        ]);
       }
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
+      ]);
     }
   }
   
@@ -335,17 +335,24 @@ class UserController extends Controller
   }
   
   public function getIntroduceInfo (Request $request) {
-    $alias = $request->alias;
-    $user = User::where('alias', $alias)->first();
-    if ($user) {
-      return response()->json([
-        'result' => 'success',
-        'data' => $user,
-      ]);
-    } else {
+    try {
+      $alias = $request->alias;
+      $user = User::where('alias', $alias)->first();
+      if ($user) {
+        return response()->json([
+          'result' => 'success',
+          'data' => $user,
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'does not exist user',
+        ]);
+      }
+    } catch(Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'message' => 'does not exist user',
+        'data' => $th
       ]);
     }
   }
@@ -578,13 +585,20 @@ class UserController extends Controller
   
   public function logout(Request $request)
   {
-    $email = $request->email;
-    User::where('email', $email)->update(['status' => 0]);
-    return response()->json([
-      'result' => 'success',
-      'message' => 'logout successfully'
-      // ], 200);
-    ]);
+    try {
+      $email = $request->email;
+      User::where('email', $email)->update(['status' => 0]);
+      return response()->json([
+        'result' => 'success',
+        'message' => 'logout successfully'
+        // ], 200);
+      ]);
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
+      ]);
+    }
   }
   
   public function findMentors(Request $request)

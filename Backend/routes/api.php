@@ -34,12 +34,13 @@ Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
 Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
 Route::post('/getusercards', 'PaymentController@getusercards');
 Route::post('/setprimarycard', 'PaymentController@setprimarycard');
-Route::post('/webhook', 'PaymentController@webhook');
 Route::post('/testpayment', 'PaymentController@testpayment');
 
 Route::post('/payforsession', 'TransactionHistoryController@payforsession');
 Route::post('/gettransactionhistorybystudent', 'TransactionHistoryController@gettransactionhistorybystudent');
 Route::post('/gettransactionhistorybymentor', 'TransactionHistoryController@gettransactionhistorybymentor');
+Route::post('/webhook', 'TransactionHistoryController@webhook');
+Route::post('/connect', 'TransactionHistoryController@webhook');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
