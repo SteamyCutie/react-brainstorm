@@ -66,6 +66,11 @@ class MentorDetailCardStudentDashboard extends React.Component {
 
   actionSuccess() {
   }
+
+  onDetailCardClick() {
+    const {onMentorDetailCardClick} = this.props;
+    onMentorDetailCardClick(this.props.mentorData);
+  }
   
   render() {
     const {id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee } = this.props.mentorData;
@@ -73,7 +78,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
 
     return (
       <>
-      <div className="mentor-detail-card">
+      <div className="mentor-detail-card" onClick={() => this.onDetailCardClick()}>
         <div style={{position: "relative"}} className="mentor-detail-avatar">
           {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
           {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}

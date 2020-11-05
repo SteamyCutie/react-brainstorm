@@ -1198,3 +1198,31 @@ ul#fabric-whiteboard-toolbar-ul li{
   top: 15px;
   right: 15px;
 }
+
+.dashboard-participant-infor {
+  background: gray;
+  position: relative;
+  height: 500px;
+}
+
+.dashboard-participant-infor img {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 275px;
+  border-radius: 12px;
+}
+
+.dashboard-participant-infor-small {
+  background: gray;
+  height: 260px;
+  position: relative;
+}
+
+.dashboard-participant-infor-small img {
+  width: 125px;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  border-radius: 7px;
+}

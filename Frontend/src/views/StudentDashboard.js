@@ -45,7 +45,9 @@ export default class StudentDashboard extends React.Component {
       mentors: [],
       callDescription: '', 
       width: '100%',
-      height: '450'
+      height: '450', 
+      participantSelected: false, 
+      participantData: {}, 
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -312,8 +314,15 @@ export default class StudentDashboard extends React.Component {
     });
   }
 
+  handleMentorDetailCardClick(mentorData) {
+    this.setState({
+      participantSelected: true, 
+      participantData: mentorData, 
+    })
+  }
+
   render() {
-    const { loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id, width, height } = this.state;
+    const { loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id, width, participantSelected, participantData, height } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -332,9 +341,17 @@ export default class StudentDashboard extends React.Component {
           <div>
             <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
               <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
-              <video id="video" autoPlay>
-                <source src={media_url} type="video/mp4"></source>
-              </video>  
+              {participantSelected ? 
+                <div className="dashboard-participant-infor">
+                  <img src={participantData.avatar} alt={participantData.name}/>
+                  <label style={{ position: "absolute", top: "35px", left: "20px", fontSize: "80px", fontWeight: "bold", width: "650px", textAlign: "center"}}>{participantData.name}</label>
+                  <label style={{position: "absolute", left: "50px", top: "260px", fontSize: "40px"}}>{participantData.description}</label>
+                </div>
+                :
+                <video id="video" autoPlay>
+                  <source src={media_url} type="video/mp4"></source>
+                </video> 
+              }
             </div>
             <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
                 <Button className="btn-dashboard-control margin-right-auto">
@@ -366,9 +383,19 @@ export default class StudentDashboard extends React.Component {
           </div>
           <div id="dashboard-video-ads-container-small" className="dashboard-video-ads-container-small">
             <img src={DashboardVideoAvatarMini} alt="Brains Share" className="dashboard-video-ads-mini-avatar"/>
-            <video width={width} id="video-small" autoPlay>
-              <source src={media_url} type="video/mp4"></source>
-            </video>
+            {participantSelected ? 
+              <div className="dashboard-participant-infor-small">
+                <div>
+                  <img src={participantData.avatar} alt={participantData.name}/>
+                  <label style={{ fontSize: "38px", fontWeight: "bold", position: "absolute", top: "45px", left: "15px", width: "290px", textAlign: "center"}}>{participantData.name}</label>
+                </div>
+                <label style={{fontSize: "20px", position: "absolute", top: "130px", fontWeight: "normal", left: "15px", width: "420px"}}>{participantData.description}</label>
+              </div>
+              :
+              <video width={width} id="video-small" autoPlay>
+                <source src={media_url} type="video/mp4"></source>
+              </video>
+            }
             <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
               <Button className="btn-dashboard-control-mini margin-right-auto">
                 <img src={MiniFullScreen} alt="Full Screen"/>
@@ -412,7 +439,15 @@ export default class StudentDashboard extends React.Component {
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
               {mentors.map((data, idx) =>(
-                <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={(id) => this.toggle_callwithdesc(id)}/>
+                <MentorDetailCardStudentDashboard 
+                  key = {idx} 
+                  ref = {this.mentorRef} 
+                  mentorData = {data} 
+                  sendUser = {this.sendUser} 
+                  toggle = {(id) => this.toggle(id)} 
+                  callwithdescription = {(id) => this.toggle_callwithdesc(id)}
+                  onMentorDetailCardClick = {(mentorData) => this.handleMentorDetailCardClick(mentorData)} 
+                />
               ))}
             </Col>
           </Row>
