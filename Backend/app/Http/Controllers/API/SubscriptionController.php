@@ -11,7 +11,7 @@ use App\Models\Payment;
 class SubscriptionController extends Controller
 {
   function setSubscription(Request $request) {
-//    try{
+    try{
       $mentor_id = $request->mentor_id;
       $sub_plan_fee = $request->sub_plan_fee;
       $payment_id = $request->payment_id;
@@ -91,12 +91,12 @@ class SubscriptionController extends Controller
           'message' => 'Subscription register failed',
         ]);
       }
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result'=> 'failed',
-//        'data'=> $th,
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'data'=> $th,
+      ]);
+    }
   }
   
   function unSubscription(Request $request) {
@@ -124,7 +124,6 @@ class SubscriptionController extends Controller
           'data' => [],
         ]);
       }
-      
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',

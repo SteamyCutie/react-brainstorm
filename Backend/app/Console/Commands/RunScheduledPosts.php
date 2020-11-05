@@ -88,6 +88,7 @@ class RunScheduledPosts extends Command
           'session_title' => $sn_value->title,
           'from' => $sn_value->from,
           'to' => $sn_value->to,
+          'is_mentor' => true,
         ]);
         $posted_data[] = $posted_session;
 //        event(new StatusLiked($posted_data));
@@ -106,6 +107,7 @@ class RunScheduledPosts extends Command
               'session_title' => $sn_value->title,
               'from' => $sn_value->from,
               'to' => $sn_value->to,
+              'is_mentor' => false,
             ]);
             $posted_data[] = $posted_session;
 //            event(new StatusLiked($posted_data));
