@@ -42,16 +42,22 @@ export default class SubscribeModal extends React.Component {
         }
 
         let params = [];
-        for (var i = 0; i < result.data.data.length; i ++) {
+        for (var i = 0; i < result.data.data.length; i ++) {                    
           param.card_type = result.data.data[i].card_type;
           param.card_name = result.data.data[i].card_name;
           param.is_primary = result.data.data[i].is_primary;
           param.expired_date = result.data.data[i].expired_date;
-          param.id = result.data.data[i].id;
+          param.id = result.data.data[i].id;          
           if (param.card_type === 4) {
             param.image = require("../../images/VisaCard-logo.png");
-          } else if (param.card_type === 3) {
+          } else if (param.card_type === 5) {
             param.image = require("../../images/Mastercard-logo.png");
+          } else if (param.card_type === 3) {
+            param.image = require("../../images/Travelcard-logo.jpg");
+          } else if (param.card_type === 6) {
+            param.image = require("../../images/Discovercard-logo.jpg");
+          } else {
+            param.image = require("../../images/Wrongcard-logo.jpg");
           }
           params.push(param);
           param = {};
