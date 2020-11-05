@@ -62,8 +62,8 @@ export default class Subscribe extends React.Component {
     };
   }
 
-  toggle_unsubscribe() {
-    this.setState({
+  toggle_unsubscribe() {    
+    this.setState({      
       subscriptionOpen: !this.state.subscriptionOpen
     });
   }
@@ -82,6 +82,7 @@ export default class Subscribe extends React.Component {
   }
 
   actionSuccess() {
+    console.log("+++++++ subscribe.js actionSuccess +++++++");
   }
 
   signout = async() => {
@@ -151,10 +152,10 @@ export default class Subscribe extends React.Component {
   }
 
   render() {
-    const { mentorData } = this.state;
+    const { mentorData, loading, subscriptionOpen, addnewcardModal } = this.state;
     return (
       <>
-      {this.state.loading && <LoadingModal open={true} />}
+      {loading && <LoadingModal open={true} />}
       <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Card small className="specific-subsciption-card">
@@ -199,7 +200,7 @@ export default class Subscribe extends React.Component {
                           if (idx < 3)
                             return <p key={idx} className="brainsshare-tag" title={tag}>{tag}</p>
                           else if (idx === 3)
-                            return <p key={idx} href="javascript:void(0)">{mentorData.tags.length - 3} more</p>
+                            return <p key={idx}>{mentorData.tags.length - 3} more</p>
                           else 
                             return <></>;
                       })}
@@ -215,7 +216,7 @@ export default class Subscribe extends React.Component {
                       
                     </Row>
                     <div className="mentor-detail-myself" style={{marginTop: 30}}>
-                      {mentorData.description != "" && <p>{mentorData.description}...</p>}
+                      {mentorData.description !== "" && <p>{mentorData.description}...</p>}
                       <p>{mentorData.description}</p>
                     </div>
                     <div className="mentor-detail-video">
@@ -258,8 +259,11 @@ export default class Subscribe extends React.Component {
             </Row>
           </CardBody>
         </Card>
-        <SubscribeModal item={mentorData} open={this.state.subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
-        <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
+        {/* <SubscribeModal item={mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} /> */}
+        {subscriptionOpen &&
+          <SubscribeModal item={mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
+        }
+        <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={addnewcardModal}></AddNewCard>
       </Container>
       </>
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Button, FormSelect } from "shards-react";
+import { Container, Row, Button, FormSelect, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
@@ -106,6 +106,8 @@ export default class MentorSession extends React.Component {
           isBooked: '',
           start: 0,
           end: false,
+          room_id: 0,
+          from: ''
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -117,6 +119,8 @@ export default class MentorSession extends React.Component {
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+          arr.room_id = result.data.data[i].room_id;
+          arr.from = result.data.data[i].from.split(" ")[1]
 
           data_arr.push(arr);
           arr = {};
@@ -249,6 +253,7 @@ export default class MentorSession extends React.Component {
               month: {
                 dateHeader: CustomMonthDateHeader({
                   events: this.state.events,
+                  startSession: this.props.startSession,
                 }),
                 header: CustomMonthHeader,
                 event: CustomMonthEvent,
@@ -278,6 +283,7 @@ class CustomMonthEvent extends React.Component {
 
 const ToolBar = ({changeMonth, showLoading}) => props => {
   const [alignment, setAlignment] = React.useState("right");
+  const [selectedTag] = React.useState("");
   const [tags] = React.useState([
     {id: 1, name: 'Algebra'}, 
     {id: 2, name: 'Mathematics'},
@@ -348,6 +354,8 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           isBooked: '',
           start: 0,
           end: false,
+          room_id: 0,
+          from: ''
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -359,6 +367,8 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+          arr.room_id = result.data.data[i].room_id;
+          arr.from = result.data.data[i].from.split(" ")[1]
 
           data_arr.push(arr);
           arr = {};
@@ -451,7 +461,7 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
     return `${dayName}, ${monthName} ${date}`;
   }
 
-  const onChangeTag = async(e) => {
+  const onChangeTag = async (e) => {
     try {
       showLoading(true);
       const result = await getUpcomingSession({email: localStorage.getItem('email'), tag_id: e.target.value});
@@ -466,6 +476,8 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           isBooked: '',
           start: 0,
           end: false,
+          room_id: 0,
+          from: ''
         };
 
         for (var i = 0; i < result.data.data.length; i ++) {
@@ -477,6 +489,8 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
           arr.isBooked = true;
           arr.start = new Date(result.data.data[i].s_year, result.data.data[i].s_month-1, result.data.data[i].s_day, i, i, 0);
           arr.end = new Date(result.data.data[i].e_year, result.data.data[i].e_month-1, result.data.data[i].e_day, i, i + 20, 0);
+          arr.room_id = result.data.data[i].room_id;
+          arr.from = result.data.data[i].from.split(" ")[1]
 
           data_arr.push(arr);
           arr = {};
@@ -489,13 +503,6 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
     } catch(err) {
       showLoading(false);
     }
-  }
-
-  const removeSession = () => {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    localStorage.removeItem('ws');
   }
 
   return (
@@ -544,11 +551,12 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
             </FormSelect>
           </div> */}
           <div className="toolbar-select-label">
-            <label className="">Tag: </label>
+            <label className="">Tag: {selectedTag}</label>
             <FormSelect id="feInputState" onChange={(e) => onChangeTag(e)}>
               <option value="">select tag</option>
               {tags.map((item, idx) =>                 
-                <option key={idx} value={item.id}>{item.name}</option>
+                selectedTag === item.id ? <option key={idx} value={item.id} selected>{item.name}</option>
+                  : <option key={idx} value={item.id}>{item.name}</option>
               )}
             </FormSelect>
           </div>
@@ -565,8 +573,19 @@ const ToolBar = ({changeMonth, showLoading}) => props => {
 }
 
 
-const CustomMonthDateHeader = ({events}) => props => {
+const CustomMonthDateHeader = ({events, startSession}) => props => {
+  const [open, setOpen] = React.useState(false);
+  const [roomIds, setRoomIds] = React.useState([]);
 
+  React.useEffect(() => {
+    let room_id = [];
+    events.forEach(event => {
+      
+      if(event.start.getFullYear() === props.date.getFullYear() && event.start.getMonth() === props.date.getMonth() && event.start.getDate() === props.date.getDate())
+        room_id.push({room_id: event.room_id, time: event.from})
+    });
+    setRoomIds(room_id);
+  }, []);
   const consoleFunction = () => {
     return true;
   }
@@ -579,10 +598,12 @@ const CustomMonthDateHeader = ({events}) => props => {
     return count;
   }
 
-  const consoleFunction2 = (date, view, e) => {
-    // const { onDrillDown, drilldownView } = props;
-    // onDrillDown(date, view, drilldownView);
-    // props.onView(view);
+  const startForum = (room_id) => {
+    startSession(room_id);
+  }
+
+  const toggle = () => {
+    setOpen(!open);
   }
 
   return (
@@ -591,14 +612,22 @@ const CustomMonthDateHeader = ({events}) => props => {
         {consoleFunction() && props.date.getDate()}
       </div>
       <div className="month-date">
-        {calcRecordCound() > 0 && <a href="/#" className="month-date-content" onClick={(e) => consoleFunction2(props.date, "day", e)}>
-          {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`}
-        </a>}
+      <Dropdown open={open} toggle={toggle}>
+        <DropdownToggle>
+          {calcRecordCound() > 0 && <a href="javascript:void(0)" className="month-date-content"> {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`} </a>}
+        </DropdownToggle>
+        <DropdownMenu>
+          {roomIds.map((room_id) => {
+            return <DropdownItem onClick={() => startForum(room_id.room_id)}>
+              Start Forum ({room_id.time})
+            </DropdownItem>
+          })}
+        </DropdownMenu>
+      </Dropdown>
       </div>
     </div>
   );
 }
-
 
 class CustomMonthHeader extends React.Component {
   render() {
@@ -614,7 +643,6 @@ class CustomMonthHeader extends React.Component {
 const CustomWeekHeader = props => {
 
   const checkLabel = () => {
-    console.log(props);
     let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let dayName = days[props.date.getDay()];
     let month = props.date.getMonth() + 1;

@@ -245,7 +245,7 @@
     }
   }
   
-  @media (min-width: 768px) {
+  @media (max-width: 650px) {
     .sidebar-main-navbar-class {
         display: none !important;
     }
@@ -280,7 +280,7 @@
   
   .main-content-container-class {
     background-color: #F9F9F9;
-    min-height: calc(100vh - 9.9rem) !important;
+    /* min-height: calc(100vh - 9.9rem) !important; */
   }
   
   .modal.show {
@@ -582,7 +582,7 @@
   }
   
   .main-content>.main-content-container.container-fluid {
-    min-height: calc(100vh - 9.9rem);
+    min-height: auto;
   }
   
   .main-sidebar .nav .nav-item .nav-link {
@@ -716,9 +716,19 @@
     font-weight: 500;
     color: #333333;
     padding: 30px;
-    /* width: 300px; */
     justify-content: center;
     display: inline-flex;
+  }
+  
+  @media (max-width: 715px) {
+    .toolbar-month-class {
+      font-size: 20px;
+      font-weight: 500;
+      color: #333333;
+      padding: 0px;
+      justify-content: center;
+      display: inline-flex;
+    }
   }
   
   .toolbar-class {

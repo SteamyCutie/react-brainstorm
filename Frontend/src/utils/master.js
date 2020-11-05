@@ -11,6 +11,7 @@ const master = {
 }
 
 export async function startMaster(localView, remoteView, formValues, onStatsReport, onRemoteDataMessage) {
+    navigator.mediaDevices.getUserMedia({audio: true})
     master.localView = localView
     master.remoteView = remoteView
 
@@ -111,6 +112,7 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
         try {
             master.localStream = await navigator.mediaDevices.getUserMedia(constraints)
             localView.srcObject = master.localStream
+            console.log(master.localStream, "[MASTER]Get Audio Stream +++++++++++++++++++");
         } catch (e) {
             console.error('[MASTER] Could not find webcam')
         }
@@ -170,6 +172,7 @@ export async function startMaster(localView, remoteView, formValues, onStatsRepo
 
         // If there's no video/audio, master.localStream will be null. So, we should skip adding the tracks from it.
         if (master.localStream) {
+            console.log(master.localStream, "[MASTER]Audio Streaming--------------------------------");
             master.localStream.getTracks().forEach(track => peerConnection.addTrack(track, master.localStream))
         }
         await peerConnection.setRemoteDescription(offer)

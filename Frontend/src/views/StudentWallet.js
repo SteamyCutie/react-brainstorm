@@ -9,7 +9,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getwallets, getpayment, paybysession, signout } from '../api/api';
+import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent } from '../api/api';
 import { Badge } from "shards-react";
 
 export default class StudentWallet extends React.Component {
@@ -38,7 +38,7 @@ export default class StudentWallet extends React.Component {
           },
         },
         {
-          name: 'Student name',
+          name: 'Mentor name',
           selector: 'sName',
           sortable: true,
           style: {
@@ -71,122 +71,13 @@ export default class StudentWallet extends React.Component {
           cell: row => <Badge className={row.status === 0 ? "badge-pending-class" : row.status === 1 ? "badge-confirmed-class" : "badge-failed-class"}>{row.status === 0 ? "Pending" : row.status === 1 ? "Confirmed" : "Failed"}</Badge>,
         }
       ],
-      tHistory: [
-        {
-          id: 1,
-          lId: "3526AGTD364",
-          lDate: "08/09/20",
-          sName: "Leo Septimus",
-          conferenceTime: 85,
-          amount: 75,
-          status: 0,
-        },
-        {
-          id: 2,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Dulce Dorwart",
-          conferenceTime: 122,
-          amount: 114,
-          status: 1,
-        },
-        {
-          id: 3,
-          lId: "0493RSYSR748",
-          lDate: "08/07/20",
-          sName: "Zain Rosser",
-          conferenceTime: 64,
-          amount: 71,
-          status: 2,
-        },
-        {
-          id: 4,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Tiana Westervelt",
-          conferenceTime: 122,
-          amount: 114,
-          status: 1,
-        },
-        {
-          id: 5,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Charlie Baptista",
-          conferenceTime: 122,
-          amount: 103,
-          status: 1,
-        },
-        {
-          id: 6,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Rayna Carder",
-          conferenceTime: 41,
-          amount: 31,
-          status: 1,
-        },
-        {
-          id: 7,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Rayna Carder",
-          conferenceTime: 41,
-          amount: 31,
-          status: 1,
-        },
-        {
-          id: 8,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Rayna Carder",
-          conferenceTime: 41,
-          amount: 31,
-          status: 1,
-        },
-        {
-          id: 9,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Rayna Carder",
-          conferenceTime: 41,
-          amount: 31,
-          status: 1,
-        },
-        {
-          id: 10,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Rayna Carder",
-          conferenceTime: 41,
-          amount: 31,
-          status: 1,
-        },
-        {
-          id: 11,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Rayna Carder",
-          conferenceTime: 41,
-          amount: 31,
-          status: 1,
-        },
-        {
-          id: 12,
-          lId: "843EAGSR392",
-          lDate: "08/08/20",
-          sName: "Rayna Carder",
-          conferenceTime: 41,
-          amount: 31,
-          status: 1,
-        }
-      ]
+      tHistory: []
     }
   }
 
   componentWillMount() {
     this.getHistory(1);
-    this.getPayment();
+    this.getUserCards();
   }
 
   toggle_add() {
@@ -197,18 +88,17 @@ export default class StudentWallet extends React.Component {
 
   pay = async() => {
     let param = {
-      card_number: '4242 4242 4242 4242',
-      amount: 100
+      mentor_id: 4,
+      student_id: '2',
+      conference_time: '34',
+      session_id: '1'
     }
+
     try {
       this.setState({loading: true});
-      const result = await paybysession(param);
+      const result = await payforsession(param);
       if (result.data.result === "success") {
-        this.setState({
-          loading: false,
-          tHistory: result.data.data,
-          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
-        });
+        this.showSuccess(result.data.result);
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -234,13 +124,13 @@ export default class StudentWallet extends React.Component {
 
   getHistory = async(pageNo) => {
     let param = {
-      email: localStorage.getItem('email'),
+      user_id: localStorage.getItem('user_id'),
       page: pageNo,
       rowsPerPage: 10
     }
     try {
       this.setState({loading: true});
-      const result = await getwallets(param);
+      const result = await gettransactionhistorybystudent(param);
       if (result.data.result === "success") {
         this.setState({
           loading: false,
@@ -270,20 +160,21 @@ export default class StudentWallet extends React.Component {
     };
   }
 
-  getPayment = async() => {
+  getUserCards = async() => {
     let param = {
       user_id: localStorage.getItem('user_id')
     }
     try {
       this.setState({loading: true});
-      const result = await getpayment(param);
+      const result = await getusercards(param);
       if (result.data.result === "success") {
         let param = {
           card_type: 1,
           is_primary: 1,
           card_name: '',
           expired_date: '',
-          image: ''
+          image: '',
+          id: ''
         }
 
         let params = [];
@@ -292,6 +183,7 @@ export default class StudentWallet extends React.Component {
           param.card_name = result.data.data[i].card_name;
           param.is_primary = result.data.data[i].is_primary;
           param.expired_date = result.data.data[i].expired_date;
+          param.id = result.data.data[i].id;
           if (param.card_type === 4) {
             param.image = require("../images/VisaCard-logo.png");
           } else if (param.card_type === 3) {
@@ -300,11 +192,44 @@ export default class StudentWallet extends React.Component {
           params.push(param);
           param = {};
         }
-
         this.setState({
           loading: false,
           paymentCard: params
         });
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({loading: false});
+    } catch(err) {
+      this.setState({loading: false});
+      this.showFail("Something Went wrong");
+    };
+  }
+
+  setAsDefault = async(id) => {
+    let param = {
+      user_id: localStorage.getItem("user_id"),
+      payment_id: id
+    }
+
+    try {
+      this.setState({loading: true});
+      const result = await setprimarycard(param);
+      if (result.data.result === "success") {
+        this.getUserCards();
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {
@@ -434,7 +359,7 @@ export default class StudentWallet extends React.Component {
               <h3>Wallet</h3>
             </Col>
             <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>
-            <Button className="btn-add-payment" onClick={() => this.pay()}>Just test Pay</Button>
+            <Button className="btn-add-payment" onClick={() => this.pay()}>Test Pay</Button>
           </Row>
 
           <Row>
@@ -446,6 +371,8 @@ export default class StudentWallet extends React.Component {
                   expireDate={card.expired_date}
                   type={card.card_type}
                   isPrimary={card.is_primary}
+                  id={card.id}
+                  setAsDefault={(id)=>this.setAsDefault(id)}
                 />
             ))}
             </div>

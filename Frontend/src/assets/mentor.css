@@ -18,6 +18,19 @@
     width: 100%;
 }
 
+@media (max-width: 1199px) {
+    .profile-link-url {
+        font-size: 16px;
+        color: #04B5FA;
+        font-weight: 500;
+        text-decoration: underline;
+        padding-right: 20px;
+        padding-bottom: 20px;
+        text-align: center;
+        width: 100%;
+    }
+}
+
 .profile-link-image {
     padding-right: 10px;
 }
@@ -265,7 +278,13 @@
 }
 
 .available-time-group {
-    /* padding-right: 40px !important;     */
+    margin-right: 70px;
+}
+
+@media (max-width: 1500px) {
+    .available-time-group {
+        margin-right: 0px !important;
+    }
 }
 
 .btn-available-time-add-delete {
@@ -456,6 +475,10 @@
     margin-right: 20px;
 }
 
+.search-hourly svg{
+    margin-right: 5px;
+}
+
 .search-hourly img{
     padding-right: 10px;
     stroke: #04B5FA;
@@ -516,4 +539,8 @@ button:focus {
 
 .more-drop-down {
     float: right;
+}
+
+.video-react-controls-enabled {
+    padding-top: 50% !important;
 }

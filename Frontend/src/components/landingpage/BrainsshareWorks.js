@@ -21,7 +21,7 @@ const BrainsshareWorks = () => (
         duration={4}
         initiallyVisible={false}
         animateOnce={true}>
-        <div className="center">
+        <div className="brains-works-container">
           <Row className="brains-works-part">
             <Col>
               <div className="center blue-background-one-class animation-one-class dis-none">
@@ -39,7 +39,7 @@ const BrainsshareWorks = () => (
               </div>
               <div className="center animation-one-class dis-none">
                 <h5 className="brains-works-content">
-                  Lorem ipsum dolor sit amet, sapien ac tempor
+                Search by Name or Category for an Experienced Professional, Expert, Teacher, Professor to mentor and depart their wealth of experience and knowledge for your aid.
                 </h5>
               </div>
               <div className="blue-dotline-class animation-two-class dis-none"> 
@@ -63,7 +63,7 @@ const BrainsshareWorks = () => (
               </div>
               <div className="center animation-three-class dis-none">
                 <h5 className="brains-works-content">
-                  Lorem ipsum dolor sit amet, sapien ac tempor
+                With a quick search, participants can review mentor candidates, and with one click, select a mentor, schedule a tutorial session for a future date,  or call immediately for help solving an urgent issue 
                 </h5>
               </div>
               <div className="blue-dotline-class animation-four-class dis-none"> 
@@ -87,7 +87,7 @@ const BrainsshareWorks = () => (
               </div>
               <div className="center animation-five-class dis-none">
                 <h5 className="brains-works-content">
-                  Lorem ipsum dolor sit amet, sapien ac tempor
+                With virtual live chat tutorial, you can arrange one on one session or group lessons with an experienced, knowledgeable mentor... If you are in need of a knowledgeable guide, for homework, self help Or DIY, an experienced mentor will be effective in maximizing your productivity and can be an effective aid in successful task completion.
                 </h5>
               </div>
             </Col>

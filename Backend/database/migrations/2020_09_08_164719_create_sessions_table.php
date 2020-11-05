@@ -16,15 +16,16 @@ class CreateSessionsTable extends Migration
     Schema::create('sessions', function (Blueprint $table) {
       $table->id();
       $table->bigInteger("user_id")->unsigned();
+      $table->string('invited_id')->nullable();
+      $table->string('tags_id')->nullable();
+      $table->integer('posted')->default(0);
       $table->string('title');
       $table->string('description')->nullable();
       $table->timestamp('from')->nullable();
       $table->timestamp('to')->nullable();
-      $table->string('invited_id')->nullable();
-      $table->string('tags_id')->nullable();
       $table->integer('status')->default(0);
-      $table->integer('posted')->default(0);
       $table->integer('room_id')->unique()->default(0);
+      $table->string('created_id')->nullable();
       $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
       $table->timestamps();
     });

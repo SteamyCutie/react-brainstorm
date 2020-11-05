@@ -22,7 +22,6 @@ class Controller extends BaseController
   public function send_email($toEmail, $toName, $subject, $body){
     // Instantiation and passing `true` enables exceptions
     $mail = new PHPMailer(true);
-    
     try {
       //Server settings
       // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                       // Enable verbose debug output

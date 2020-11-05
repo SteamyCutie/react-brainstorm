@@ -8,10 +8,6 @@ import ReivewImage from "../../images/Review.jpg"
 import background from "../../images/background.jpeg"
 
 class LibrarySavedContent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
   }
 

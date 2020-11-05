@@ -25,7 +25,7 @@ class SmallCard3 extends React.Component {
     
     localStorage.setItem("session_name", this.name);
     localStorage.setItem("session_mentor", this.mentorName);
-    localStorage.setItem("room_id", this.room_id);
+    // localStorage.setItem("room_id", this.room_id);
   }
 
   edit() {
@@ -39,11 +39,13 @@ class SmallCard3 extends React.Component {
   }
 
   toggle_startSession() {
-    window.open("/room-call");
+    // window.open("/room-call");
+
   }
 
   render() {
-    const {name, day, from_time, to_time, tag_name, avatar} = this.props.data
+    const {name, day, from_time, to_time, tag_name, avatar, room_id} = this.props.data;
+    const { joinSession } = this.props;
     return (
       <div className="small-card3">
         <div className="small-card3-desc">
@@ -56,7 +58,7 @@ class SmallCard3 extends React.Component {
                   if (idx < 2)
                     return <p className="brainsshare-tag" key={idx} title={tag}>{tag}</p>;
                   else if (idx === 2)
-                    return <p key={idx} href="javascript:void(0)">{tag_name.length - 2} more</p>
+                    return <p key={idx}>{tag_name.length - 2} more</p>
                   else
                     return <></>;
                 })}
@@ -74,8 +76,8 @@ class SmallCard3 extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu >
-              <DropdownItem onClick={this.toggle_startSession}>
-                Start Forum
+              <DropdownItem onClick={() => joinSession(room_id)}>
+                Join Forum
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

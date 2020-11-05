@@ -31,7 +31,7 @@ export default class FeaturedMentors extends React.Component {
   getMentors = async() => {
     try {
       const result = await featuredmentors();
-      if (result.data.result == "success") {
+      if (result.data.result === "success") {
         this.setState({
           carouselDatas: result.data.data
         });
@@ -75,7 +75,7 @@ export default class FeaturedMentors extends React.Component {
                     if (idx < 3)
                       return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
                     else if (idx === 3)
-                      return <p key={idx} href="javascript:void(0)">{data.tag_name.length - 3} more</p>
+                      return <p key={idx} >{data.tag_name.length - 3} more</p>
                     else 
                       return <></>;
                   })}

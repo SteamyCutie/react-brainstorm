@@ -118,11 +118,11 @@ export async function startViewer(localView, remoteView, formValues, onStatsRepo
         if (formValues.sendVideo || formValues.sendAudio) {
             try {
                 viewer.localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                console.log(viewer.localStream, "[VIEWER]Get Audio Stream +++++++++++++++++++");
                 viewer.localStream.getTracks().forEach(track => viewer.peerConnection.addTrack(track, viewer.localStream));
                 localView.srcObject = viewer.localStream;
             } catch (e) {
                 console.error('[VIEWER] Could not find webcam');
-                return;
             }
         }
 

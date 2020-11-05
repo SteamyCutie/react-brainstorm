@@ -27,6 +27,16 @@ export default class SignIn extends React.Component {
     // console.log(x);
   }
 
+  componentDidMount() {    
+    if(this.props.open){
+      document.body.style.overflow = 'hidden';
+    }    
+  }
+  
+  componentWillUnmount() {
+      document.body.style.overflow = 'unset';
+  }
+
   clearValidationErrors() {
     this.setState({
       validationError: {
@@ -119,7 +129,7 @@ export default class SignIn extends React.Component {
     try {
       const result = await signin(this.state);
       if (result.data.result === "success") {
-        localStorage.setItem('email', this.state.email);
+        localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('user_id', result.data.user.id);
         localStorage.setItem('avatar', result.data.user.avatar);
         localStorage.setItem('user_name', result.data.user.name);
@@ -128,9 +138,9 @@ export default class SignIn extends React.Component {
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
 
         if(result.data.user.is_mentor) {
-          window.location.href = '/mentorDashboard';
+          window.location.href = '/mentordashboard';
         } else {
-          window.location.href = '/studentDashboard';
+          window.location.href = '/studentdashboard';
         }
       } else {
         this.setState({

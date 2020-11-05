@@ -20,10 +20,10 @@ export default class DefaultLayout extends React.Component {
 
     this.outcomingRef = React.createRef();
     let filterType = false;
-    if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
+    if (JSON.parse(localStorage.getItem('user-type')) !== null || JSON.parse(localStorage.getItem('user-type')) !== undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentorDashboard") {
+      if (props.location.pathname === "/mentorWallet" || props.location.pathname === "/mentordashboard") {
         filterType = true;
       } else if (props.location.pathname === "/studentWallet" || props.location.pathname === "/studentDashboard") {
         filterType = false;
@@ -67,13 +67,13 @@ export default class DefaultLayout extends React.Component {
     var self = this;
     var channel = pusher.subscribe('session-channel');
     channel.bind('brainsshare-session-event', function(data) {
-      for (var j = 0; j < data.message.length; j ++) {
-        this.showAlert(data.message[j].session_title + " session will start from " + data.message[j].from);
-      }
+      // for (var j = 0; j < data.message.length; j ++) {
+      //   self.showAlert(data.message[j].session_title + " session will start from " + data.message[j].from);
+      // }
       var {notifications} = self.state;
       notifications = [];
       for (var i = 0; i < data.message.length; i ++) {
-        if (localStorage.getItem('user_id') == data.message[i].user_id){
+        if (localStorage.getItem('user_id') === data.message[i].user_id){
           var temp = notifications;
           temp.push(data.message[i]);
         }
@@ -112,10 +112,10 @@ export default class DefaultLayout extends React.Component {
 
   onChange() {
     let filterType = false;
-    if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) != undefined) {
+    if (JSON.parse(localStorage.getItem('user-type')) != null || JSON.parse(localStorage.getItem('user-type')) !== undefined) {
       filterType = JSON.parse(localStorage.getItem('user-type'));
     } else {
-      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentorDashboard") {
+      if (this.props.location.pathname === "/mentorWallet" || this.props.location.pathname === "/mentordashboard") {
         filterType = true;
       } else if (this.props.location.pathname === "/studentWallet" || this.props.location.pathname === "/studentDashboard") {
         filterType = false;
@@ -179,9 +179,9 @@ export default class DefaultLayout extends React.Component {
   handleSearch(searchKey) {
     const { history } = this.props;
     if (JSON.parse(localStorage.getItem('user-type')))
-      history.push("/mentorDashboard");
+      history.push("/mentordashboard");
     else 
-      history.push("/studentDashboard");
+      history.push("/studentdashboard");
   } 
 
   showSuccess(text) {
@@ -243,7 +243,7 @@ export default class DefaultLayout extends React.Component {
       insert: "top",
       container: "top-right",
       dismiss: {
-        duration: 5500,
+        duration: 500,
         onScreen: false,
         waitForAnimation: true,
         showIcon: true,
@@ -287,7 +287,7 @@ export default class DefaultLayout extends React.Component {
   render() {
     const { children } = this.props;
     const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
-    if (children.props.location.pathname === "/mentorDashboard" || children.props.location.pathname === "/studentDashboard") {
+    if (children.props.location.pathname === "/mentordashboard" || children.props.location.pathname === "/studentdashboard") {
       children.props.location.search = "search";
     }
     return (
@@ -297,10 +297,7 @@ export default class DefaultLayout extends React.Component {
         <Container fluid>
           <Row>
             <MainSidebar filterType={filterType}/>
-            <Col
-              className="main-content p-0 main-content-class"
-              tag="main"
-            >
+            <Col className="main-content p-0 main-content-class" tag="main">
               {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications} toggle_search={(searchkey) => this.handleSearch(searchkey)}/>}
               {filterType && <SubMainNavbar/>}
               {children}

@@ -1,4 +1,3 @@
-import { notification } from "antd";
 import React from "react";
 import { NavItem, NavLink, Badge, Collapse, DropdownItem } from "shards-react";
 import NotificationsNone from '@material-ui/icons/NotificationsNone';
@@ -54,6 +53,12 @@ export default class Notifications extends React.Component {
         if (temp > 0)
           temp = temp - 1;
         this.setState({notification_count: temp});
+        localStorage.setItem('user-type', (result.data.data === 1 ? true : false));
+        if (result.data.data === 1) {
+          window.location.href = '/scheduleLiveForum';
+        } else {
+          window.location.href = '/studentSession';
+        }
       } else if (result.data.result === "warning") {
         this.showWarning(result.data.message);
       } else {

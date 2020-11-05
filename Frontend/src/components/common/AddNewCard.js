@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, ModalBody, Button, FormInput, Col, Row } from "shards-react";
 import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
-import { createpayment, signout } from '../../api/api';
+import { registercardbystudent, signout } from '../../api/api';
 import { REACT_APP_STRIPE_KEY } from '../../common/config';
 import Close from '../../images/Close.svg'
 
@@ -114,7 +114,7 @@ export default class AddNewCard extends React.Component {
         } else if (res.id) {
           param = { ...param, token: res.id };
 
-          const result = await createpayment(param);
+          const result = await registercardbystudent(param);
           if (result.data.result === "success") {
             this.setState({
               loading: false,

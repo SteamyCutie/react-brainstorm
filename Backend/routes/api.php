@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-  return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//  return $request->user();
+//});
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
@@ -27,17 +27,20 @@ Route::post('/reset', 'UserController@reset');
 Route::post('/findmentors', 'UserController@findMentors');
 Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
+Route::post('/getintroduceinfo', 'UserController@getIntroduceInfo');
 
-Route::post('/createpayment', 'PaymentController@createPayment');
-Route::post('/getpayment', 'PaymentController@getPayment');
-Route::post('/paybysession', 'PaymentController@payBySession');
-Route::post('/removesource', 'PaymentController@removesource');
+Route::post('/registercardbystudent', 'PaymentController@registercardbystudent');
+Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
+Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
+Route::post('/getusercards', 'PaymentController@getusercards');
+Route::post('/setprimarycard', 'PaymentController@setprimarycard');
 Route::post('/testpayment', 'PaymentController@testpayment');
-Route::post('/createcustomer', 'PaymentController@createcustomer');
-Route::post('/createaccount', 'PaymentController@createaccount');
-Route::post('/createbank', 'PaymentController@createBank');
-Route::post('/getbank', 'PaymentController@getBank');
 
+Route::post('/payforsession', 'TransactionHistoryController@payforsession');
+Route::post('/gettransactionhistorybystudent', 'TransactionHistoryController@gettransactionhistorybystudent');
+Route::post('/gettransactionhistorybymentor', 'TransactionHistoryController@gettransactionhistorybymentor');
+Route::post('/webhook', 'TransactionHistoryController@webhook');
+Route::post('/connect', 'TransactionHistoryController@webhook');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');
@@ -47,8 +50,10 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getallmentors', 'UserController@getAllMentors');
   Route::post('/getallstudents', 'UserController@getAllStudents');
   Route::post('/switchuser', 'UserController@switchUser');
+  Route::post('/getallparticipants', 'UserController@getAllParticipants');
+  Route::post('/findmentorsbytagsorname', 'UserController@findMentorsByTagsOrName');
   Route::post('/createshareinfo', 'MediaController@createShareInfo');
-  Route::post('/scheduleliveforum', 'SessionController@getAllForum');
+  Route::post('/scheduleliveforum', 'SessionController@getAllScheduleLiveForum');
   Route::post('/createforum', 'SessionController@createForum');
   Route::post('/gethistory', 'SessionController@getHistory');
   Route::post('/getupcomingsessions', 'SessionController@getUpcomingSession');
@@ -62,16 +67,15 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setavailabletimes', 'AvailableTimesController@setAvailableTimes');
   Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
   Route::post('/getavailabletimesforstudent', 'AvailableTimesController@getavailableTimesForStudent');
-  Route::post('/getwallets', 'WalletController@index');
-  Route::post('/gettags', 'TagController@index');
+  
+  Route::post('/gettags', 'TagController@gettaglists');
   Route::post('/uploadimage', 'FileController@uploadImage');
   Route::post('/uploadvideo', 'FileController@uploadVideo');
+  
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
+  
   Route::post('/setreview', 'ReviewController@setReview');
-//  Route::post('/createpayment', 'PaymentController@createPayment');
-//  Route::post('/getpayment', 'PaymentController@getPayment');
-//  Route::post('/finishedsession', 'PaymentController@finishedsession');
   Route::post('/addlibrary', 'LibraryController@addLibrary');
   Route::post('/getlibrary', 'LibraryController@getLibrary');
   Route::post('/addreport', 'ReportController@addReport');

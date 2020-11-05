@@ -1,12 +1,7 @@
 <?php
-
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
-use App\Models\Invited;
-use App\Models\PostedNotification;
-use App\Models\Session;
 use App\Models\Subscription;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -14,22 +9,14 @@ use App\Models\User;
 use App\Models\Tag;
 use App\Models\Review;
 use App\Models\Media;
-use App\Models\Payment;
 use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Exception;
 use Carbon\Carbon;
-use App\Http\Controllers\API\PaymentController;
-use phpDocumentor\Reflection\DocBlock\Tags\See;
-use DateTime;
 use Log;
 
 class UserController extends Controller
 {
-  public function __construct()
-  {
-  
-  }
-  
   public function login(Request $request)
   {
     try {
@@ -66,12 +53,12 @@ class UserController extends Controller
   
   public function signup(Request $request)
   {
-    $email = $request['email'];
-    $name = $request['name'];
-    $password = $request['password'];
-    $channel_name = $request['channel_name'];
+    $email = $request->email;
+    $name = $request->name;
+    $password = $request->password;
+    $channel_name = $request->channel_name;
     $subject = "Welcome to BransShare!";
-    $fronturl = env("FRONT_URL");
+    $fronturl = env("APP_URL");
     $toEmail = $email;
     if (count(User::where(['email' => $email, 'is_active' => config('global.users.active')])->get())) {
       return response()->json([
@@ -85,8 +72,8 @@ class UserController extends Controller
       $user->name = $name;
       $user->email = $email;
       $user->channel_name = $channel_name;
-      if ($request['is_mentor']) {
-        $user->is_mentor = $request['is_mentor'];
+      if ($request->is_mentor) {
+        $user->is_mentor = $request->is_mentor;
       } else {
         $user->is_mentor = 0;
       }
@@ -111,17 +98,16 @@ class UserController extends Controller
       $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
       $stripe_customer = $stripe->customers->create([
         'email' => $email,
-        'description' => 'registered <'.$name.'>   customer',
+        'description' => 'customer is '.$name,
         'name' => $name,
       ]);
-//      Payment::create([
-//        'user_id' => $user->id,
-//        'customer_id' => $stripe_customer->id,
-//        'email' => $email,
-//      ]);
-      $user->customer_id = $stripe_customer->id;
-      $user->save();
       //End register customer ID for stripe
+      $user->customer_id = $stripe_customer->id;
+      $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+      $alias = substr(str_shuffle($permitted_chars), 0, 50);
+      $user->alias = $alias;
+      $user->save();
+      
       return response()->json([
         'result' => 'success',
       ]);
@@ -136,35 +122,14 @@ class UserController extends Controller
   
   public function signBySocial(Request $request)
   {
-    $email = $request->email;
-    $name = $request->name;
-    $provider = $request->provider;
-    $provider_id = $request->provider_id;
-    Log::info([$email, $name, $provider, $provider_id]);
-    $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
-    if ($user) {
-      $token = null;
-      if (!$token = JWTAuth::fromUser($user)) {
-        return response()->json([
-          'result' => 'failed',
-          'message' => 'Email or Password is incorrect.',
-          // ], 401);
-        ]);
-      }
-      User::where('email', $email)->update(['status' => 1]);
-      return response()->json([
-        'result' => 'success',
-        'token' => $token,
-        'user' => $user,
-      ]);
-    } else {
-      $user = User::where('email', $email)->first();
+    try {
+      $email = $request->email;
+      $name = $request->name;
+      $provider = $request->provider;
+      $provider_id = $request->provider_id;
+      $channel_name = $request->channel_name;
+      $user = User::where(['email' => $email, 'provider' => $provider, 'provider_id' => $provider_id])->first();
       if ($user) {
-        User::where('email', $email)->update([
-          'name' => $name,
-          'provider' => $provider,
-          'provider_id' => $provider_id,
-        ]);
         $token = null;
         if (!$token = JWTAuth::fromUser($user)) {
           return response()->json([
@@ -173,91 +138,146 @@ class UserController extends Controller
             // ], 401);
           ]);
         }
-        $user = User::where('email', $email)->first();
         User::where('email', $email)->update(['status' => 1]);
         return response()->json([
           'result' => 'success',
           'token' => $token,
           'user' => $user,
+          'logged_type' => 'signin',
         ]);
       } else {
-        Log::info([$email, $name, $provider, $provider_id]);
-        $user = User::create([
-          'email' => $email,
-          'password' => bcrypt($email),
-          'name' => $name,
-          'provider' => $provider,
-          'provider_id' => $provider_id,
-          'email_verified_at' => Carbon::now(),
-          'is_active' => 1,
-        ]);
-        $token = null;
-        if (!$token = JWTAuth::fromUser($user)) {
+        $user = User::where('email', $email)->first();
+        if ($user) {
+          User::where('email', $email)->update([
+            'name' => $name,
+            'provider' => $provider,
+            'provider_id' => $provider_id,
+          ]);
+          $token = null;
+          if (!$token = JWTAuth::fromUser($user)) {
+            return response()->json([
+              'result' => 'failed',
+              'message' => 'Email or Password is incorrect.',
+              // ], 401);
+            ]);
+          }
+          $user = User::where('email', $email)->first();
+          User::where('email', $email)->update(['status' => 1]);
           return response()->json([
-            'result' => 'failed',
-            'message' => 'Email or Password is incorrect.',
-            // ], 401);
+            'result' => 'success',
+            'token' => $token,
+            'user' => $user,
+            'logged_type' => 'signin',
+          ]);
+        } else {
+          $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+          $alias = substr(str_shuffle($permitted_chars), 0, 50);
+          //Begin register customer ID for stripe
+          $stripe = new \Stripe\StripeClient(env("SK_LIVE"));
+          $stripe_customer = $stripe->customers->create([
+            'email' => $email,
+            'description' => 'customer is '.$name,
+            'name' => $name,
+          ]);
+          //End register customer ID for stripe
+          $user = User::create([
+            'email' => $email,
+            'password' => bcrypt($email),
+            'name' => $name,
+            'provider' => $provider,
+            'provider_id' => $provider_id,
+            'email_verified_at' => Carbon::now(),
+            'is_active' => 1,
+            'channel_name' => $channel_name,
+            'alias' => $alias,
+            'customer_id' => $stripe_customer->id,
+          ]);
+          $token = null;
+          if (!$token = JWTAuth::fromUser($user)) {
+            return response()->json([
+              'result' => 'failed',
+              'message' => 'Email or Password is incorrect.',
+              // ], 401);
+            ]);
+          }
+          $user = User::where('id', $user->id)->first();
+          User::where('email', $email)->update(['status' => 1]);
+          return response()->json([
+            'result' => 'success',
+            'token' => $token,
+            'user' => $user,
+            'logged_type' => 'signup',
           ]);
         }
-        $user = User::where('id', $user->id)->first();
-        User::where('email', $email)->update(['status' => 1]);
-        return response()->json([
-          'result' => 'success',
-          'token' => $token,
-          'user' => $user,
-        ]);
       }
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
+      ]);
     }
   }
   
   public function getUserInfo(Request $request)
   {
-    try {
-      $email = $request['email'];
-      $temp_names = [];
-      $user = User::where('email', $email)->first();
-      if ($user['dob'] == null || $user['dob'] == "") {
-        $currentDate = date('Y-m-d');
-        $user['dob'] = $currentDate;
-      } else {
-        $newDate = date("Y-m-d", strtotime($user['dob']));
-        $user['dob'] = $newDate;
-      }
-      if (trim($user['tags_id'], ',') == null || trim($user['tags_id'], ',') == '')
-        $tags_id = [];
-      else
-        $tags_id = explode(',', trim($user['tags_id'], ','));
-      $user['tags'] = $tags_id;
-      if ($user->description == null)
-        $user->description = "";
-      foreach ($tags_id as $tag_key => $tag_id) {
-        if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()) {
-          $temp_names[] = $tag_names->name;
-        }
-      }
-      $user['tags_name'] = $temp_names;
-      return response()->json([
-        'result' => 'success',
-        'data' => $user,
-      ]);
-    } catch (Exception $th) {
+//    try {
+    $email = $request->email;
+    $temp_names = [];
+    $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+      'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+      ->where('email', $email)->first();
+    if (!$user) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => 'not exist user',
       ]);
     }
+    if ($user->dob == null || $user->dob == "") {
+      $currentDate = date('Y-m-d');
+      $user->dob = $currentDate;
+    } else {
+      $newDate = date("Y-m-d", strtotime($user->dob));
+      $user->dob = $newDate;
+    }
+    if (trim($user->tags_id, ',') == null || trim($user->tags_id, ',') == '')
+      $tags_id = [];
+    else
+      $tags_id = explode(',', trim($user->tags_id, ','));
+    $user->tags = $tags_id;
+    if ($user->description == null)
+      $user->description = "";
+    foreach ($tags_id as $tag_key => $tag_id) {
+      if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()) {
+        $temp_names[] = $tag_names->name;
+      }
+    }
+    $user->tags_name = $temp_names;
+    return response()->json([
+      'result' => 'success',
+      'data' => $user,
+    ]);
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
   
   public function getUserInfoById(Request $request)
   {
     try {
-      $id = $request['id'];
+      $id = $request->id;
 //      $average_review = 0;
 //      $count_review = 0;
       $tag_names = [];
       
       $res_students = Review::where('mentor_id', $id)->get();
-      $user = User::where('id', $id)->first();
+      $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        ->where('id', $id)->first();
       $temp = [];
       foreach ($res_students as $review_key => $review_value) {
         $res_student = User::where('id', $review_value->student_id)->first();
@@ -273,31 +293,31 @@ class UserController extends Controller
 //        $count_review++;
 //        $average_review += $review_value->mark;
       }
-      $newDate = date("Y-m-d", strtotime($user['dob']));
-      $user['dob'] = $newDate;
+      $newDate = date("Y-m-d", strtotime($user->dob));
+      $user->dob = $newDate;
       $tags_id = [];
-      if (trim($user['tags_id'], ',') != "") {
-        $tags_id = explode(',', trim($user['tags_id'], ','));
+      if (trim($user->tags_id, ',') != "") {
+        $tags_id = explode(',', trim($user->tags_id, ','));
       }
       foreach ($tags_id as $tag_key => $tag_value) {
         $tags = Tag::where('id', $tag_value)->first();
-        $tag_names[$tag_key] = $tags['name'];
+        $tag_names[$tag_key] = $tags->name;
       }
-      $share_info = Media::where('user_id', $user['id'])->get();
+      $share_info = Media::where('user_id', $user->id)->get();
       for ($i = 0; $i < count($share_info); $i++) {
         $date = $share_info[$i]['created_at'];
         $share_info[$i]['day'] = date('d/m/y', strtotime($date));
         $share_info[$i]['time'] = date('h:i a', strtotime($date));
       }
-      $user['tags'] = $tag_names;
-      $user['student'] = $res_students;
-//      $user['count_review'] = $count_review;
-      $user['count_review'] = $user->sub_count;
-      $user['share_info'] = $share_info;
+      $user->tags = $tag_names;
+      $user->student = $res_students;
+//      $user->count_review = $count_review;
+      $user->count_review = $user->sub_count;
+      $user->share_info = $share_info;
 //      if ($count_review > 0) {
-//        $user['average_review'] = round($average_review/$count_review, 1);
+//        $user->average_review = round($average_review/$count_review, 1);
 //      } else {
-//        $user['average_review'] = 0;
+//        $user->average_review = 0;
 //      }
       if ($user->description == null)
         $user->description = "";
@@ -313,23 +333,46 @@ class UserController extends Controller
     }
   }
   
+  public function getIntroduceInfo (Request $request) {
+    try {
+      $alias = $request->alias;
+      $user = User::where('alias', $alias)->first();
+      if ($user) {
+        return response()->json([
+          'result' => 'success',
+          'data' => $user,
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'does not exist user',
+        ]);
+      }
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
+      ]);
+    }
+  }
+  
   public function editProfile(Request $request)
   {
     try {
-      $name = $request['name'];
-      $birthday = $request['birthday'];
-      $email = $request['email'];
-      $description = $request['description'];
-      $expertise = $request['expertise'];
-      $hourlyprice = $request['hourlyprice'];
-      $subpagename = $request['subpagename'];
-      $subplanfee = $request['subplanfee'];
-      $videourl = $request['videourl'];
-      $instantcall = $request['instantcall'];
-      $avatar = $request['avatar'];
-      $is_mentor = $request['is_mentor'];
+      $name = $request->name;
+      $birthday = $request->birthday;
+      $email = $request->email;
+      $description = $request->description;
+      $expertise = $request->expertise;
+      $hourlyprice = $request->hourlyprice;
+      $subpagename = $request->subpagename;
+      $subplanfee = $request->subplanfee;
+      $videourl = $request->videourl;
+      $instantcall = $request->instantcall;
+      $avatar = $request->avatar;
+      $is_mentor = $request->is_mentor;
       
-      $tags = ',' . implode(",", $request['tags']) . ',';
+      $tags = ',' . implode(",", $request->tags) . ',';
       $rules = array(
         'name' => 'required',
         'email' => 'required|email',
@@ -352,36 +395,63 @@ class UserController extends Controller
         ];
       }
       
-      $user = User::where('email', $email)->get();
-      
-      if ($user == null || count($user) == 0) {
-        return response()->json([
-          'result' => 'failed',
-          'message' => 'Current User Does Not Exist',
+      //Begin set product(prod_) and plan(price_) for stripe
+      $user_info = User::select('sub_plan_fee', 'sub_product_id', 'sub_plan_id')->where('email', $email)->first();
+      $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
+      if ($user_info->sub_product_id == "") {
+        $product_info = $stripe->products->create([
+          'name' => $name,
+          'description' => $name.'\'s production is Session',
+        ]);
+        $plan_info = $stripe->plans->create([
+          'amount' => $subplanfee * 100,
+          'currency' => 'usd',
+          'interval' => 'month',
+          'product' => $product_info->id,
+          'nickname' => $name,
+        ]);
+        User::where('email', $email)->update([
+          'sub_product_id' => $product_info->id,
+          'sub_plan_id' => $plan_info->id,
         ]);
       } else {
-        User::where('email', $email)->update(array(
-          'name' => $name,
-          'dob' => $birthday,
-          'email' => $email,
-          'description' => $description,
-          'avatar' => $avatar,
-          'expertise' => $expertise,
-          'hourly_price' => $hourlyprice,
-          'sub_page_name' => $subpagename,
-          'sub_plan_fee' => $subplanfee,
-          'video_url' => $videourl,
-          'instant_call' => $instantcall,
-          'status' => 1,
-          'is_mentor' => $is_mentor,
-          'tags_id' => $tags
-        ));
-        
-        return response()->json([
-          'result' => 'success',
-          'data' => $user,
+        $stripe->plans->delete(
+          $user_info->sub_plan_id,
+          []
+        );
+        $plan_info = $stripe->plans->create([
+          'amount' => $subplanfee * 100,
+          'currency' => 'usd',
+          'interval' => 'month',
+          'product' => $user_info->sub_product_id,
+          'nickname' => $name,
+        ]);
+        User::where('email', $email)->update([
+          'sub_plan_id' => $plan_info->id,
         ]);
       }
+      //End set plan_id for stripe
+      User::where('email', $email)->update(array(
+        'name' => $name,
+        'dob' => $birthday,
+        'email' => $email,
+        'description' => $description,
+        'avatar' => $avatar,
+        'expertise' => $expertise,
+        'hourly_price' => $hourlyprice,
+        'sub_page_name' => $subpagename,
+        'sub_plan_fee' => $subplanfee,
+        'video_url' => $videourl,
+        'instant_call' => $instantcall,
+        'status' => 1,
+        'is_mentor' => $is_mentor,
+        'tags_id' => $tags
+      ));
+      $res_user_info = User::where('email', $email)->first();
+      return response()->json([
+        'result' => 'success',
+        'data' => $res_user_info,
+      ]);
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
@@ -419,7 +489,6 @@ class UserController extends Controller
       $request['password'] = $user->origin_password;
       $request['email'] = $user->email;
       return $this->login($request);
-      
     } catch (\Throwable $th) {
       return response()->json([
         'result' => 'failed',
@@ -432,7 +501,7 @@ class UserController extends Controller
   public function forgot(Request $request)
   {
     $subject = "Welcome to BrainsShare!";
-    $email = $request['email'];
+    $email = $request->email;
     $token = null;
     
     try {
@@ -446,7 +515,7 @@ class UserController extends Controller
       }
       $toEmail = $user->email;
       $name = $user->name;
-      $fronturl = env("FRONT_URL");
+      $fronturl = env("APP_URL");
       $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
       $vCode = substr(str_shuffle($permitted_chars), 0, 50);
       User::where('email', $email)->update(['remember_token' => $vCode]);
@@ -515,26 +584,34 @@ class UserController extends Controller
   
   public function logout(Request $request)
   {
-    $email = $request['email'];
-    User::where('email', $email)->update(['status' => 0]);
-    return response()->json([
-      'result' => 'success',
-      'message' => 'logout successfully'
-      // ], 200);
-    ]);
+    try {
+      $email = $request->email;
+      User::where('email', $email)->update(['status' => 0]);
+      auth()->logout();
+      return response()->json([
+        'result' => 'success',
+        'message' => 'logout successfully'
+        // ], 200);
+      ]);
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
+      ]);
+    }
   }
   
   public function findMentors(Request $request)
   {
     try {
-      $tag_id = $request['tag_id'];
+      $tag_id = $request->tag_id;
       if ($tag_id) {
         $tag_id = ',' . $tag_id . ',';
       }
-      $mentor_name = $request['name'];
-      $rowsPerPage = $request['rowsPerPage'];
-      $filter_level = $request['filterbylevel'];
-      $filter_hourly = $request['filterbyhourly'];
+      $mentor_name = $request->name;
+      $rowsPerPage = $request->rowsPerPage;
+      $filter_level = $request->filterbylevel;
+      $filter_hourly = $request->filterbyhourly;
       if ($filter_level == true) {
         $level_direction = 'DESC';
       } else {
@@ -588,12 +665,14 @@ class UserController extends Controller
   
   public function findMentorsByTags(Request $request) {
     try {
-      $user_id = $request['user_id'];
-      $tag_ids = $request['tags_id'];
-      $rowsPerPage = $request['rowsPerPage'];
+      $user_id = $request->user_id;
+      $tag_ids = $request->tags_id;
+      $rowsPerPage = $request->rowsPerPage;
       $is_mentor = User::select('is_mentor')->where('id', $user_id)->first();
       $temp_query = "";
-      $count_tag = count($tag_ids);
+      if ($tag_ids) {
+        $count_tag = count($tag_ids);
+      }
       for ($i = 0; $i < $count_tag; $i++) {
         $tag_id = ','.$tag_ids[$i].',';
         if ($i == $count_tag-1) {
@@ -602,6 +681,7 @@ class UserController extends Controller
           $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
         }
       }
+      
       if ($count_tag > 0) {
         if ($is_mentor->is_mentor == 1) {
           $mentors = DB::table('users')
@@ -654,7 +734,7 @@ class UserController extends Controller
             $share_info[$j]['day'] = date('d/m/y', strtotime($date));
             $share_info[$j]['time'] = date('h:i a', strtotime($date));
           }
-  
+          
           $mentors[$i]->share_info = $share_info;
           $result_res[] = $mentors[$i];
         }
@@ -670,6 +750,101 @@ class UserController extends Controller
         'data' => $th,
       ]);
     }
+  }
+  
+  public function findMentorsByTagsOrName(Request $request) {
+//    try {
+    $user_id = $request->user_id;
+    $tag_ids = $request->tags_id;
+    $mentor_name = $request->name;
+    $rowsPerPage = $request->rowsPerPage;
+    $temp_query = "";
+    $count_tag = 0;
+    if ($tag_ids){
+      $count_tag = count($tag_ids);
+    }
+    for ($i = 0; $i < $count_tag; $i++) {
+      $tag_id = ','.$tag_ids[$i].',';
+      if ($i == $count_tag-1) {
+        $temp_query = $temp_query."tags_id like '%$tag_id%'";
+      } else {
+        $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
+      }
+    }
+    
+    if ($count_tag > 0) {
+//        $mentors = DB::table('users')
+      $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        ->where('name', 'LIKE', '%' . $mentor_name . '%')
+        ->where('id', '!=', $user_id)
+        ->orderBy('average_mark', 'DESC')
+        ->whereRaw(DB::raw($temp_query))
+        ->paginate($rowsPerPage);
+    } else {
+      if ($mentor_name != "") {
+//        $mentors = DB::table('users')
+        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          ->where('name', 'LIKE', '%' . $mentor_name . '%')
+          ->where('id', '!=', $user_id)
+          ->orderBy('average_mark', 'DESC')
+          ->paginate($rowsPerPage);
+      } else {
+//        $mentors = DB::table('users')
+        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          ->where('id', '!=', $user_id)
+          ->orderBy('average_mark', 'DESC')
+          ->paginate($rowsPerPage);
+      }
+    }
+    
+    $result_res = [];
+    if (count($mentors) > 0) {
+      for ($i = 0; $i < count($mentors); $i++) {
+        $temp_tag = [];
+        $tags_id = "";
+        if (trim($mentors[$i]->tags_id, ',') != "") {
+          $tags_id = trim($mentors[$i]->tags_id, ',');
+        }
+        if ($tags_id != "") {
+          $tag_rows = explode(',', $tags_id);
+          for ($j = 0; $j < count($tag_rows); $j++) {
+            $tags_name = Tag::where('id', $tag_rows[$j])->first();
+            $temp_tag[$j] = $tags_name->name;
+          }
+        }
+        if ($mentors[$i]->description == null) {
+          $mentors[$i]->description = "";
+        }
+        $mentors[$i]->tag_name = $temp_tag;
+        
+        $share_info = Media::where('user_id', $mentors[$i]->id)->get();
+        for ($j = 0; $j < count($share_info); $j++) {
+          $date = $share_info[$j]['created_at'];
+          $share_info[$j]['day'] = date('d/m/y', strtotime($date));
+          $share_info[$j]['time'] = date('h:i a', strtotime($date));
+        }
+        
+        $mentors[$i]->share_info = $share_info;
+        $result_res[] = $mentors[$i];
+      }
+    }
+    return response()->json([
+      'result' => 'success',
+      'data' => $result_res,
+      'totalRows' => $mentors->total(),
+    ]);
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
   
   public function featuredMentors(Request $request)
@@ -690,7 +865,6 @@ class UserController extends Controller
 //
 //      User::where('id', $user_value->id)->update(['average_mark' => $average_marks]);
 //    }
-      
       $top_mentors = User::where('is_mentor', 1)->orderBy('average_mark', 'DESC')->take(5)->get();
       foreach ($top_mentors as $top_key => $top_value) {
         if ($top_value->description == null) {
@@ -707,7 +881,7 @@ class UserController extends Controller
             $temp_tag[$tag_key] = $tag_name->name;
           }
         }
-        $top_value['tags_name'] = $temp_tag;
+        $top_value->tags_name = $temp_tag;
       }
       
       return response()->json([
@@ -725,10 +899,13 @@ class UserController extends Controller
   public function getAllMentors(Request $request)
   {
     try {
-      $email = $request['email'];
-      $rowsPerPage = $request['rowsPerPage'];
-      $page = $request['page'];
-      $users = User::where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
+      $email = $request->email;
+      $rowsPerPage = $request->rowsPerPage;
+      $page = $request->page;
+      $users = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        ->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
       
       for ($i = 0; $i < count($users); $i++) {
@@ -745,7 +922,7 @@ class UserController extends Controller
 //        $all_marks = 0;
         foreach ($tags_id as $tag_key => $tag_value) {
           $tags = Tag::where('id', $tag_value)->first();
-          $tag_names[$tag_key] = $tags['name'];
+          $tag_names[$tag_key] = $tags->name;
         }
         $mentors[$i]['tag_name'] = $tag_names;
 //        $res_mark = Review::select('mark')->where('mentor_id', $mentors[$i]['id'])->get();
@@ -784,26 +961,26 @@ class UserController extends Controller
   
   function getAllStudents(Request $request)
   {
-    try {
-      $email = $request->email;
-      $students = User::select('id', 'email', 'avatar')->where('email', '!=', $email)->get();
-      if (count($students) > 0) {
-        return response()->json([
-          'result' => 'success',
-          'data' => $students,
-        ]);
-      } else {
-        return response()->json([
-          'result' => 'failed',
-          'data' => [],
-        ]);
-      }
-    } catch (Exception $th) {
+//    try {
+    $email = $request->email;
+    $students = User::select('id', 'email', 'avatar')->where('email', '!=', $email)->get();
+    if (count($students) > 0) {
+      return response()->json([
+        'result' => 'success',
+        'data' => $students,
+      ]);
+    } else {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'data' => [],
       ]);
     }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
   
   public function switchUser(Request $request) {
@@ -828,18 +1005,26 @@ class UserController extends Controller
     }
   }
   
-  function test(Request $request)
-  {
-    echo Carbon::now() . "\n";
-    $input = '09/20';
-    $input = str_replace('/','/25/', $input);
-    $date = strtotime($input);
-    $newdate = date('Y-m-d', $date);
-    
-    Payment::create([
-      'card_expiration' => $newdate,
-      'card_number' => 123123,
-    ]);
+  public function getAllParticipants(Request $request) {
+//    try {
+    $user_id = $request->user_id;
+    $allParticipants = User::select('name', 'id', 'email', 'avatar')->where('id', '!=', $user_id)->get();
+    if (count($allParticipants) > 0) {
+      return response()->json([
+        'result' => 'success',
+        'data' => $allParticipants,
+      ]);
+    } else {
+      return response()->json([
+        'result' => 'failed',
+      ]);
+    }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
 }
 

@@ -18,6 +18,13 @@ body {
     margin-left: 30px;
 }
 
+@media (max-width: 415px) {
+    .logo-image {
+        margin-right: 0px;
+        margin-left: 30px;
+    }
+}
+
 .navbar-search {
     border: solid #E3E3E3 !important;
     border-radius: 5px !important;
@@ -31,7 +38,7 @@ body {
 .search-bar {
     width: 85% !important;
     min-width: 300px !important;
-    max-width: 500px;
+    max-width: 585px;
 }
 
 .input-group-text {
@@ -128,7 +135,7 @@ body {
 }
 
 .brains-share {
-    height: 500px;
+    height: 580px;
     width: 100%;
     background-color: white;
     align-items: center;
@@ -340,7 +347,7 @@ body {
 }
 
 .share-knowledge-desc {
-    padding-top: 10%;
+    padding-top: 5%;
     padding-left: 20%;
     align-items: center;
     opacity: 0;
@@ -525,7 +532,7 @@ body {
 .brains-works-content {
     font-size: 16px;
     color: #333333;
-    width: 200px;
+    width: 80%;
     text-align: center;
 }
 
@@ -839,7 +846,7 @@ body {
 }
 
 .facebook-login-center button {
-    align-items: unset !important;
+    align-items: center !important;
     display: flex !important;
     width: 100%;
 
@@ -847,7 +854,7 @@ body {
     border-color: #4285F4 !important;
     margin-bottom: 40px;
     border-radius: 5px !important;
-    font-size: 16px !important;
+    font-size: 14px !important;
     font-weight: 500 !important;
     padding: 8px !important;
     position: relative;
@@ -856,6 +863,7 @@ body {
 
 .facebook-login-center i {
     font-size: 40px !important;
+    margin-left: 13px !important;
 }
 
 .full-width-class {
@@ -1271,12 +1279,15 @@ input.sign-has-err:focus {
 }
 
 .top-navbar-search {
-    width: 85%;
+    width: 35%;
     padding-top: 5px;
 }
 
 .top-navbar-search .dropdown-container {
     height: 49px;
+    border: 1px solid #e3e3ee !important;
+    font-size: large !important;
+    font-weight: 300 !important;
 }
 
 .top-navbar-search .dropdown-heading-value {
@@ -1285,4 +1296,14 @@ input.sign-has-err:focus {
 
 .top-navbar-search svg {
     padding-top: 7px;
+}
+
+.react-dropdown-select {
+    height: 49px;
+    margin-top: 5px;
+}
+
+.brains-works-container {
+    display: flex;
+    justify-content: center;
 }

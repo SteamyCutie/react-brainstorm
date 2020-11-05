@@ -33,11 +33,6 @@ export default class IncomingCall extends React.Component {
     toggle();
   }
 
-  toggle_modal() {
-    const { toggle_modal } = this.props;
-    toggle_modal();
-  }
-
   render() {
     const { open, avatar, name, description } = this.props;
     return (
