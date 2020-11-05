@@ -59,7 +59,7 @@
             border-radius: 25px;
             width: 150px;
             height: 40px;
-            font-size: 1.1rem;
+            font-size: 1.rem;
         }
         .customer-name {
             font-size: 25px;

@@ -9,6 +9,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
+  use Notifiable;
   /**
    * The attributes that are mass assignable.
    *
@@ -47,7 +48,8 @@ class User extends Authenticatable implements JWTSubject
    *
    * @return array
    */
-  public function getJWTCustomClaims()
+  
+  public function getJWTCustomClaims() : array
   {
     return [];
   }

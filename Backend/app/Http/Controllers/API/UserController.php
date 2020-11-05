@@ -14,7 +14,6 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Exception;
 use Carbon\Carbon;
 use Log;
-require 'vendor/autoload.php';
 
 class UserController extends Controller
 {
@@ -221,49 +220,49 @@ class UserController extends Controller
   
   public function getUserInfo(Request $request)
   {
-    try {
-      $email = $request->email;
-      $temp_names = [];
-      $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
-                  'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-                  'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
-                ->where('email', $email)->first();
-      if (!$user) {
-        return response()->json([
-          'result' => 'failed',
-          'message' => 'not exist user',
-        ]);
-      }
-      if ($user->dob == null || $user->dob == "") {
-        $currentDate = date('Y-m-d');
-        $user->dob = $currentDate;
-      } else {
-        $newDate = date("Y-m-d", strtotime($user->dob));
-        $user->dob = $newDate;
-      }
-      if (trim($user->tags_id, ',') == null || trim($user->tags_id, ',') == '')
-        $tags_id = [];
-      else
-        $tags_id = explode(',', trim($user->tags_id, ','));
-      $user->tags = $tags_id;
-      if ($user->description == null)
-        $user->description = "";
-      foreach ($tags_id as $tag_key => $tag_id) {
-        if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()) {
-          $temp_names[] = $tag_names->name;
-        }
-      }
-      $user->tags_name = $temp_names;
-      return response()->json([
-        'result' => 'success',
-        'data' => $user,
-      ]);
-    } catch (Exception $th) {
+//    try {
+    $email = $request->email;
+    $temp_names = [];
+    $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+      'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+      ->where('email', $email)->first();
+    if (!$user) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => 'not exist user',
       ]);
     }
+    if ($user->dob == null || $user->dob == "") {
+      $currentDate = date('Y-m-d');
+      $user->dob = $currentDate;
+    } else {
+      $newDate = date("Y-m-d", strtotime($user->dob));
+      $user->dob = $newDate;
+    }
+    if (trim($user->tags_id, ',') == null || trim($user->tags_id, ',') == '')
+      $tags_id = [];
+    else
+      $tags_id = explode(',', trim($user->tags_id, ','));
+    $user->tags = $tags_id;
+    if ($user->description == null)
+      $user->description = "";
+    foreach ($tags_id as $tag_key => $tag_id) {
+      if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()) {
+        $temp_names[] = $tag_names->name;
+      }
+    }
+    $user->tags_name = $temp_names;
+    return response()->json([
+      'result' => 'success',
+      'data' => $user,
+    ]);
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
   
   public function getUserInfoById(Request $request)
@@ -276,9 +275,9 @@ class UserController extends Controller
       
       $res_students = Review::where('mentor_id', $id)->get();
       $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
-                        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-                        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
-                      ->where('id', $id)->first();
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        ->where('id', $id)->first();
       $temp = [];
       foreach ($res_students as $review_key => $review_value) {
         $res_student = User::where('id', $review_value->student_id)->first();
@@ -588,6 +587,7 @@ class UserController extends Controller
     try {
       $email = $request->email;
       User::where('email', $email)->update(['status' => 0]);
+      auth()->logout();
       return response()->json([
         'result' => 'success',
         'message' => 'logout successfully'
@@ -753,89 +753,98 @@ class UserController extends Controller
   }
   
   public function findMentorsByTagsOrName(Request $request) {
-    try {
-      $user_id = $request->user_id;
-      $tag_ids = $request->tags_id;
-      $mentor_name = $request->name;
-      $rowsPerPage = $request->rowsPerPage;
-      $temp_query = "";
-      $count_tag = 0;
-      if ($tag_ids){
-        $count_tag = count($tag_ids);
+//    try {
+    $user_id = $request->user_id;
+    $tag_ids = $request->tags_id;
+    $mentor_name = $request->name;
+    $rowsPerPage = $request->rowsPerPage;
+    $temp_query = "";
+    $count_tag = 0;
+    if ($tag_ids){
+      $count_tag = count($tag_ids);
+    }
+    for ($i = 0; $i < $count_tag; $i++) {
+      $tag_id = ','.$tag_ids[$i].',';
+      if ($i == $count_tag-1) {
+        $temp_query = $temp_query."tags_id like '%$tag_id%'";
+      } else {
+        $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
       }
-      for ($i = 0; $i < $count_tag; $i++) {
-        $tag_id = ','.$tag_ids[$i].',';
-        if ($i == $count_tag-1) {
-          $temp_query = $temp_query."tags_id like '%$tag_id%'";
-        } else {
-          $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
-        }
-      }
-      
-      if ($count_tag > 0) {
-        $mentors = DB::table('users')
+    }
+    
+    if ($count_tag > 0) {
+//        $mentors = DB::table('users')
+      $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        ->where('name', 'LIKE', '%' . $mentor_name . '%')
+        ->where('id', '!=', $user_id)
+        ->orderBy('average_mark', 'DESC')
+        ->whereRaw(DB::raw($temp_query))
+        ->paginate($rowsPerPage);
+    } else {
+      if ($mentor_name != "") {
+//        $mentors = DB::table('users')
+        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
           ->where('name', 'LIKE', '%' . $mentor_name . '%')
           ->where('id', '!=', $user_id)
           ->orderBy('average_mark', 'DESC')
-          ->whereRaw(DB::raw($temp_query))
           ->paginate($rowsPerPage);
       } else {
-        if ($mentor_name != "") {
-          $mentors = DB::table('users')
-            ->where('name', 'LIKE', '%' . $mentor_name . '%')
-            ->where('id', '!=', $user_id)
-            ->orderBy('average_mark', 'DESC')
-            ->paginate($rowsPerPage);
-        } else {
-          $mentors = DB::table('users')
-            ->where('id', '!=', $user_id)
-            ->orderBy('average_mark', 'DESC')
-            ->paginate($rowsPerPage);
-        }
+//        $mentors = DB::table('users')
+        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          ->where('id', '!=', $user_id)
+          ->orderBy('average_mark', 'DESC')
+          ->paginate($rowsPerPage);
       }
-      
-      $result_res = [];
-      if (count($mentors) > 0) {
-        for ($i = 0; $i < count($mentors); $i++) {
-          $temp_tag = [];
-          $tags_id = "";
-          if (trim($mentors[$i]->tags_id, ',') != "") {
-            $tags_id = trim($mentors[$i]->tags_id, ',');
-          }
-          if ($tags_id != "") {
-            $tag_rows = explode(',', $tags_id);
-            for ($j = 0; $j < count($tag_rows); $j++) {
-              $tags_name = Tag::where('id', $tag_rows[$j])->first();
-              $temp_tag[$j] = $tags_name->name;
-            }
-          }
-          if ($mentors[$i]->description == null) {
-            $mentors[$i]->description = "";
-          }
-          $mentors[$i]->tag_name = $temp_tag;
-          
-          $share_info = Media::where('user_id', $mentors[$i]->id)->get();
-          for ($j = 0; $j < count($share_info); $j++) {
-            $date = $share_info[$j]['created_at'];
-            $share_info[$j]['day'] = date('d/m/y', strtotime($date));
-            $share_info[$j]['time'] = date('h:i a', strtotime($date));
-          }
-          
-          $mentors[$i]->share_info = $share_info;
-          $result_res[] = $mentors[$i];
-        }
-      }
-      return response()->json([
-        'result' => 'success',
-        'data' => $result_res,
-        'totalRows' => $mentors->total(),
-      ]);
-    } catch (Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'data' => $th,
-      ]);
     }
+    
+    $result_res = [];
+    if (count($mentors) > 0) {
+      for ($i = 0; $i < count($mentors); $i++) {
+        $temp_tag = [];
+        $tags_id = "";
+        if (trim($mentors[$i]->tags_id, ',') != "") {
+          $tags_id = trim($mentors[$i]->tags_id, ',');
+        }
+        if ($tags_id != "") {
+          $tag_rows = explode(',', $tags_id);
+          for ($j = 0; $j < count($tag_rows); $j++) {
+            $tags_name = Tag::where('id', $tag_rows[$j])->first();
+            $temp_tag[$j] = $tags_name->name;
+          }
+        }
+        if ($mentors[$i]->description == null) {
+          $mentors[$i]->description = "";
+        }
+        $mentors[$i]->tag_name = $temp_tag;
+        
+        $share_info = Media::where('user_id', $mentors[$i]->id)->get();
+        for ($j = 0; $j < count($share_info); $j++) {
+          $date = $share_info[$j]['created_at'];
+          $share_info[$j]['day'] = date('d/m/y', strtotime($date));
+          $share_info[$j]['time'] = date('h:i a', strtotime($date));
+        }
+        
+        $mentors[$i]->share_info = $share_info;
+        $result_res[] = $mentors[$i];
+      }
+    }
+    return response()->json([
+      'result' => 'success',
+      'data' => $result_res,
+      'totalRows' => $mentors->total(),
+    ]);
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
   
   public function featuredMentors(Request $request)
@@ -856,7 +865,6 @@ class UserController extends Controller
 //
 //      User::where('id', $user_value->id)->update(['average_mark' => $average_marks]);
 //    }
-      
       $top_mentors = User::where('is_mentor', 1)->orderBy('average_mark', 'DESC')->take(5)->get();
       foreach ($top_mentors as $top_key => $top_value) {
         if ($top_value->description == null) {
@@ -895,9 +903,9 @@ class UserController extends Controller
       $rowsPerPage = $request->rowsPerPage;
       $page = $request->page;
       $users = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
-                        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-                        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
-                    ->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        ->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
       
       for ($i = 0; $i < count($users); $i++) {
@@ -953,26 +961,26 @@ class UserController extends Controller
   
   function getAllStudents(Request $request)
   {
-    try {
-      $email = $request->email;
-      $students = User::select('id', 'email', 'avatar')->where('email', '!=', $email)->get();
-      if (count($students) > 0) {
-        return response()->json([
-          'result' => 'success',
-          'data' => $students,
-        ]);
-      } else {
-        return response()->json([
-          'result' => 'failed',
-          'data' => [],
-        ]);
-      }
-    } catch (Exception $th) {
+//    try {
+    $email = $request->email;
+    $students = User::select('id', 'email', 'avatar')->where('email', '!=', $email)->get();
+    if (count($students) > 0) {
+      return response()->json([
+        'result' => 'success',
+        'data' => $students,
+      ]);
+    } else {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'data' => [],
       ]);
     }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
   
   public function switchUser(Request $request) {
@@ -998,25 +1006,25 @@ class UserController extends Controller
   }
   
   public function getAllParticipants(Request $request) {
-    try {
-      $user_id = $request->user_id;
-      $allParticipants = User::select('name', 'id', 'email', 'avatar')->where('id', '!=', $user_id)->get();
-      if (count($allParticipants) > 0) {
-        return response()->json([
-          'result' => 'success',
-          'data' => $allParticipants,
-        ]);
-      } else {
-        return response()->json([
-          'result' => 'failed',
-        ]);
-      }
-    } catch (Exception $th) {
+//    try {
+    $user_id = $request->user_id;
+    $allParticipants = User::select('name', 'id', 'email', 'avatar')->where('id', '!=', $user_id)->get();
+    if (count($allParticipants) > 0) {
+      return response()->json([
+        'result' => 'success',
+        'data' => $allParticipants,
+      ]);
+    } else {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
       ]);
     }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th,
+//      ]);
+//    }
   }
 }
 

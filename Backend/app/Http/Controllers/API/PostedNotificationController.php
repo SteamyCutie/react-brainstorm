@@ -4,23 +4,26 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\PostedNotification;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Mockery\Exception;
 
 class PostedNotificationController extends Controller
 {
   public function checkedNotification(Request $request) {
-    try {
+//    try {
       $user_id = $request->user_id;
       $session_id = $request->session_id;
       $res_notific = PostedNotification::where(['user_id' => $user_id, 'session_id' => $session_id])->update(['notification_posted' => 1]);
+      $case_info =  PostedNotification::select('is_mentor')->where('user_id', $user_id)->where('session_id', $session_id)->first();
+      User::where('id', $user_id)->update(['is_mentor' => $case_info->is_mentor]);
       if ($session_id == 0) {
         $res_notific = PostedNotification::where('user_id', $user_id)->update(['notification_posted' => 1]);
       }
-      if ($res_notific) {
+      if ($res_notific && $case_info) {
         return response()->json([
           'result'=> 'success',
-          'message' => 'checked notification.',
+          'data' => $case_info->is_mentor,
         ]);
       } else {
         return response()->json([
@@ -28,12 +31,12 @@ class PostedNotificationController extends Controller
           'message' => 'did not check notification.',
         ]);
       }
-    } catch (Exception $th) {
-      return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
-      ]);
-    }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result'=> 'failed',
+//        'data'=> $th,
+//      ]);
+//    }
   }
   
   public function getNotification(Request $request) {
@@ -47,8 +50,9 @@ class PostedNotificationController extends Controller
         ]);
       } else {
         return response()->json([
-          'result'=> 'warning',
-          'message' => 'did not get notification.',
+          'result'=> 'success',
+          'data' => []
+//          'message' => 'did not get notification.',
         ]);
       }
     } catch (Exception $th) {

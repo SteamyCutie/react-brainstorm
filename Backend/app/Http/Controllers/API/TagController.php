@@ -12,17 +12,24 @@ class TagController extends Controller
 {
   function gettaglists(Request $request)
   {
-    try{
+//    try{
       $all_tags = Tag::select('id', 'name')->get();
-      return response()->json([
-        'result'=> 'success',
-        'data'=> $all_tags,
-      ]);
-    } catch (Exception $th) {
-      return response()->json([
-        'result'=> 'failed',
-        'data'=> $th,
-      ]);
-    }
+      if (count($all_tags) > 0) {
+        return response()->json([
+          'result'=> 'success',
+          'data'=> $all_tags,
+        ]);
+      } else {
+        return response()->json([
+          'result'=> 'success',
+          'data'=> [],
+        ]);
+      }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result'=> 'failed',
+//        'data'=> $th,
+//      ]);
+//    }
   }
 }
