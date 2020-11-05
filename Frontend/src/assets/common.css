@@ -430,6 +430,7 @@
   width: 80px !important;
   background: transparent !important;
   border: none;
+  position: relative;
 }
 
 .btn-rooom-control:hover {
@@ -529,6 +530,10 @@
   border-left: #33333333 1px solid;
   background-color: white;
   overflow: auto;
+}
+
+.room-group-chat-hidden {
+  display: none;
 }
 
 .room-whiteboard {
@@ -1185,4 +1190,11 @@ ul#fabric-whiteboard-toolbar-ul li{
 
 .btn-dashboard-control:focus {
   box-shadow: none;
+}
+
+.img-room-caht-bell {
+  position: absolute;
+  width: 20px;
+  top: 15px;
+  right: 15px;
 }
