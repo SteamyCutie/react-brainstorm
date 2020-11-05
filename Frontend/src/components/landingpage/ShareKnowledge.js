@@ -27,16 +27,17 @@ export default class ShareKnowledge extends React.Component{
         initiallyVisible={false}
         animateOnce={true}>
         <Row>
-          <Col xl="5">
+          <Col xl="6">
             <div className="share-knowledge-desc share-animation-ltor">
               <h1 className="desc-title">Share your knowledge</h1>
-              <h5>Language learning and Private Lessons online</h5>
+              <h5>Find an infinite wealth of konwledge, through mentoring and sharing.</h5>
+              <h5 style={{fontStyle: "italic"}}>The more we share, the more you gain.</h5>
               <Button theme="primary" className="mb-2 mr-3 btn-find-mentor" onClick={() => this.findMentor()}>
                 Find a mentor
               </Button>
             </div>
           </Col>
-          <Col xl="7" className="img-share-knowledge share-animation-rtol">
+          <Col xl="6" className="img-share-knowledge share-animation-rtol">
             <img
               className="img-mentor-active"
               src={MentorActiveImage}
