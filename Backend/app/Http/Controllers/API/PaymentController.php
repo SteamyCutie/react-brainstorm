@@ -26,7 +26,7 @@ class PaymentController extends Controller
     $input_date = str_replace('/','/25/', $request['card_expiration']);
     $temp_date = strtotime($input_date);
     $card_expiration = date('Y-m-d', $temp_date);
-//    try {
+    try {
     $rules = array(
       'user_id' => 'required',
       'card_name' => 'required',
@@ -89,185 +89,231 @@ class PaymentController extends Controller
       'result'=> 'success',
       'message'=> 'card registered successfully',
     ]);
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result'=> 'failed',
-//        'message'=> 'failed card register',
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> 'failed card register',
+      ]);
+    }
   }
   
   public function getuseridformentor(Request $request) {
-    SessionUser::truncate();
-    if ($request->user_id) {
-      SessionUser::create([
-        'key' => 'mentor',
-        'value' => $request->user_id,
+    try{
+      SessionUser::truncate();
+      if ($request->user_id) {
+        SessionUser::create([
+          'key' => 'mentor',
+          'value' => $request->user_id,
+        ]);
+      }
+      return response()->json([
+        'result' => 'success',
+        'data' => []
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
       ]);
     }
-    return response()->json([
-      'result' => 'success',
-      'data' => []
-    ]);
   }
   
   public function registerbankbymentor(Request $request) {
-    $user_temp = SessionUser::where('key', 'mentor')->first();
-    $user_id = $user_temp->value;
-    $oauth_code = $request->input("code");
-    $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
+    try {
+      $user_temp = SessionUser::where('key', 'mentor')->first();
+      $user_id = $user_temp->value;
+      $oauth_code = $request->input("code");
+      $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
   
-    //Begin Original user connected account delete.
-    $user_info = User::select('connected_account', 'email', 'name')->where('id', $user_id)->first();
-    if ($user_info->connected_account != "") {
-      $stripe->accounts->delete(
-        $user_info->connected_account,
-        []
-      );
-    }
-    //End Original user connected account delete.
-    
-    //Begin create connected account with oauth token
-    \Stripe\Stripe::setApiKey(env('SK_LIVE'));
-    $response = \Stripe\OAuth::token([
-      'grant_type' => 'authorization_code',
-      'code' => $oauth_code,
-    ]);
-    $connected_account_id = $response->stripe_user_id;
-    //End create connected account with oauth token
-    
-    //Begin set delay day 7 to connected_account
-    \Stripe\Account::update(
-      $connected_account_id,
-      [
-        'business_profile' => [
-          'name' => $user_info->name,
-        ],
-        'settings' => [
-          'payouts' => [
-            'schedule' => [
-              "delay_days" => 7,
-              "interval" => "daily",
+      //Begin Original user connected account delete.
+      $user_info = User::select('connected_account', 'email', 'name')->where('id', $user_id)->first();
+      if ($user_info->connected_account != "") {
+        $stripe->accounts->delete(
+          $user_info->connected_account,
+          []
+        );
+      }
+      //End Original user connected account delete.
+  
+      //Begin create connected account with oauth token
+      \Stripe\Stripe::setApiKey(env('SK_LIVE'));
+      $response = \Stripe\OAuth::token([
+        'grant_type' => 'authorization_code',
+        'code' => $oauth_code,
+      ]);
+      $connected_account_id = $response->stripe_user_id;
+      //End create connected account with oauth token
+  
+      //Begin set delay day 7 to connected_account
+      \Stripe\Account::update(
+        $connected_account_id,
+        [
+          'business_profile' => [
+            'name' => $user_info->name,
+          ],
+          'settings' => [
+            'payouts' => [
+              'schedule' => [
+                "delay_days" => 7,
+                "interval" => "daily",
+              ],
             ],
           ],
-        ],
-      ]
-    );
-    //End set delay day 7 to connected_account
-    User::where('id', $user_id)->update(['connected_account' => $connected_account_id, 'pay_verified' => true]);
-    
-    if (!Payment::where('user_id', $user_id)->where('payment_type', 'Bank')->first()){
-      Payment::create([
-        'user_id' => $user_id,
-        'email' => $user_info->email,
-        'oauth_code' => $oauth_code,
-        'connected_account' => $connected_account_id,
-        'payment_type' => 'Bank',
-      ]);
-    } else {
-      Payment::where('user_id', $user_id)->where('payment_type', 'Bank')->update([
-        'oauth_code' => $oauth_code,
-        'connected_account' => $connected_account_id,
+        ]
+      );
+      //End set delay day 7 to connected_account
+  
+      if (!Payment::where('user_id', $user_id)->where('payment_type', 'Bank')->first()){
+        Payment::create([
+          'user_id' => $user_id,
+          'email' => $user_info->email,
+          'oauth_code' => $oauth_code,
+          'connected_account' => $connected_account_id,
+          'payment_type' => 'Bank',
+        ]);
+      } else {
+        Payment::where('user_id', $user_id)->where('payment_type', 'Bank')->update([
+          'oauth_code' => $oauth_code,
+          'connected_account' => $connected_account_id,
+        ]);
+      }
+      SessionUser::truncate();
+      return redirect(env('FRONT_URL').'/mentorWallet');
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
       ]);
     }
-    SessionUser::truncate();
-    return redirect(env('FRONT_URL').'/mentorWallet');
   }
   
   public function getusercards(Request $request) {
-    $user_id = $request->user_id;
-    //card, primary
-    $user_cards = Payment::select('id', 'card_name', 'card_number', 'card_expiration', 'cvc_code', 'is_primary')
-      ->where('payment_type', 'Card')
-      ->where('user_id', $user_id)
-      ->get();
-    $temp_result = [];
-    if (count($user_cards)>0) {
-      foreach ($user_cards as $key => $user_card) {
-        $user_card['expired_date'] = date('m/d', strtotime($user_card->card_expiration));
-        $temp_result[] = $user_card;
+    try {
+      $user_id = $request->user_id;
+      //card, primary
+      $user_cards = Payment::select('id', 'card_name', 'card_number', 'card_expiration', 'cvc_code', 'is_primary')
+        ->where('payment_type', 'Card')
+        ->where('user_id', $user_id)
+        ->get();
+      $temp_result = [];
+      if (count($user_cards)>0) {
+        foreach ($user_cards as $key => $user_card) {
+          $user_card['expired_date'] = date('m/d', strtotime($user_card->card_expiration));
+          $temp_result[] = $user_card;
+        }
       }
+      return response()->json([
+        'result'=> 'success',
+        'data' => $temp_result,
+      ]);
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
+      ]);
     }
-    return response()->json([
-      'result'=> 'success',
-      'data' => $temp_result,
-    ]);
   }
   
   public function setprimarycard(Request $request) {
-    $user_id = $request->user_id;
-    $payment_id = $request->payment_id;
-    
-    //Begin set primary card on payment table for stripe
-    $pay_info = Payment::where('id', $payment_id)->first();
-    \Stripe\Stripe::setApiKey(env('SK_LIVE'));
-    $res_default_card = \Stripe\Customer::update(
-      $pay_info->customer_id,
-      [
-        'default_source' => $pay_info->card_src,
-      ]
-    );
-    //End set primary card on payment table for stripe
-    Payment::where('user_id', $user_id)->update(['is_primary' => false]);
-    Payment::where('user_id', $user_id)->where('id', $payment_id)->update(['is_primary' => true]);
-    $res_set_primary = User::where('id', $user_id)->update(['primary_card' => $payment_id]);
-    if ($res_default_card && $res_set_primary) {
+    try {
+      $user_id = $request->user_id;
+      $payment_id = $request->payment_id;
+  
+      //Begin set primary card on payment table for stripe
+      $pay_info = Payment::where('id', $payment_id)->first();
+      \Stripe\Stripe::setApiKey(env('SK_LIVE'));
+      $res_default_card = \Stripe\Customer::update(
+        $pay_info->customer_id,
+        [
+          'default_source' => $pay_info->card_src,
+        ]
+      );
+      //End set primary card on payment table for stripe
+      Payment::where('user_id', $user_id)->update(['is_primary' => false]);
+      Payment::where('user_id', $user_id)->where('id', $payment_id)->update(['is_primary' => true]);
+      $res_set_primary = User::where('id', $user_id)->update(['primary_card' => $payment_id]);
+      if ($res_default_card && $res_set_primary) {
+        return response()->json([
+          'result'=> 'success',
+          'data' => [],
+        ]);
+      } else {
+        return response()->json([
+          'result'=> 'success',
+          'message'  => 'failed to set primary card',
+        ]);
+      }
+    } catch (Exception $th) {
       return response()->json([
-        'result'=> 'success',
-        'data' => [],
-      ]);
-    } else {
-      return response()->json([
-        'result'=> 'success',
-        'message'  => 'failed to set primary card',
+        'result' => 'failed',
+        'data' => $th
       ]);
     }
   }
   
-  public function webhook (Request $request, Response $response) {
-    Log::info("webhook +++++");
-    \Stripe\Stripe::setApiKey('SK_LIVE');
-    // Uncomment and replace with a real secret. You can find your endpoint's
-    // secret in your webhook settings.
-    $webhook_secret = 'whsec_GAiXSYTXdz4fU2hwQyiOFxzNmAW5gDwJ';
-    
-    $payload = $request->getBody();
-    $sig_header = $request->getHeaderLine('stripe-signature');
-    $event = null;
-    // Verify webhook signature and extract the event.
-    // See https://stripe.com/docs/webhooks/signatures for more information.
-    
-    try {
-      $event = \Stripe\Webhook::constructEvent(
-        $payload, $sig_header, $webhook_secret
-      );
-    } catch(\UnexpectedValueException $e) {
-      // Invalid payload.
-      return $response->withStatus(400);
-    } catch(\Stripe\Exception\SignatureVerificationException $e) {
-      // Invalid Signature.
-      return $response->withStatus(400);
-    }
-    
-    if ($event->type == 'account.updated') {
-      $account = $event->data->object;
-      Log::info(['webhook++++  event = ', $event, ' account = ', $account]);
-    }
-    
-    return $response->withStatus(200);
-  }
   
   public function testpayment(Request $request) {
-    // Begin available, pending
-    $connected_account = $request->connected_account;
-    \Stripe\Stripe::setApiKey('sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO');
-
-    $balance = \Stripe\Balance::retrieve(
-      ['stripe_account' => $connected_account]
-    );
-    return response()->json([
-      'result' => $balance,
+  //tset charge
+    \Stripe\Stripe::setApiKey(env("SK_LIVE"));
+//    $charge = \Stripe\Charge::create([
+//      'amount' => 11110,
+//      'currency' => 'usd',
+//      'customer' => 'cus_IIaXxU5RsCon1q',
+//      'source' => 'card_1Hi0miGRfXBTO7BE1jjllzSD',
+//      'description' => 'test charge',
+//    ]);
+    $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
+    $transfer = $stripe->transfers->create([
+      'amount' => round(110 * 0.8, 2),
+      'currency' => 'usd',
+      'source_transaction' => 'ch_1Hj98nGRfXBTO7BE9nj7z1Jq', //transfer available
+      'destination' => 'acct_1Hi01UGCSs28tFWr',
+      'description' => 'test transfer',
     ]);
+  
+//        $payout = \Stripe\Payout::create([
+//      'amount' => 8800,
+//      'currency' => 'usd',
+//    ], [
+//      'stripe_account' => 'acct_1Hi01UGCSs28tFWr',
+//    ]);
+  
+    return response()->json([
+      'result' => $transfer
+    ]);
+    //    echo "env SK_LIVE = ".env('SK_LIVE');
+    // Begin available, pending
+//    $connected_account = $request->connected_account;
+    \Stripe\Stripe::setApiKey(env('SK_LIVE'));
+//
+//    $balance = \Stripe\Balance::retrieve(
+//      ['stripe_account' => 'acct_1HgHD3FwTXTDZg0D']
+//    );
+//    return response()->json([
+//      'result' => $balance,
+//    ]);
     // End available, pending
+    
+//    $balance = \Stripe\Balance::retrieve(
+//      ['stripe_account' => 'acct_1Hi01UGCSs28tFWr']
+//    );
+//    $payout = \Stripe\Payout::create([
+//      'amount' => 20000,
+//      'currency' => 'usd',
+//    ], [
+//      'stripe_account' => 'acct_1HhVnXEy9A4DJWeL',
+//    ]);
+//    return response()->json([
+//      'result' => $payout,
+//    ]);
+  //balanceTransactions->retrieve
+//    $stripe = new \Stripe\StripeClient(
+//      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
+//    );
+//    $response = $stripe->balanceTransactions->retrieve(
+//      'txn_1HYhImGRfXBTO7BEIC8ZCiMR',
+//      []
+//    );
+  
   }
 }

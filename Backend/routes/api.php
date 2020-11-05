@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-  return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//  return $request->user();
+//});
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
@@ -34,12 +34,13 @@ Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
 Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
 Route::post('/getusercards', 'PaymentController@getusercards');
 Route::post('/setprimarycard', 'PaymentController@setprimarycard');
-Route::post('/webhook', 'PaymentController@webhook');
 Route::post('/testpayment', 'PaymentController@testpayment');
 
 Route::post('/payforsession', 'TransactionHistoryController@payforsession');
 Route::post('/gettransactionhistorybystudent', 'TransactionHistoryController@gettransactionhistorybystudent');
 Route::post('/gettransactionhistorybymentor', 'TransactionHistoryController@gettransactionhistorybymentor');
+Route::post('/webhook', 'TransactionHistoryController@webhook');
+Route::post('/connect', 'TransactionHistoryController@webhook');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/signout', 'UserController@logout');

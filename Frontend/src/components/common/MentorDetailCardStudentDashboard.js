@@ -45,8 +45,8 @@ class MentorDetailCardStudentDashboard extends React.Component {
     this.setState({more: false});
   }
 
-  toggle_unsubscribe() {
-    this.setState({
+  toggle_unsubscribe() {    
+    this.setState({      
       subscriptionOpen: !this.state.subscriptionOpen
     });
   }
@@ -171,7 +171,10 @@ class MentorDetailCardStudentDashboard extends React.Component {
         </div>
         {/* : null
       } */}
-      <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
+      {/* <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} /> */}
+      {subscriptionOpen && 
+         <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} /> 
+      }
       <AddNewCard toggle={() => this.toggle_addnewcardmodal()} open={this.state.addnewcardModal}></AddNewCard>
       </>
     );
