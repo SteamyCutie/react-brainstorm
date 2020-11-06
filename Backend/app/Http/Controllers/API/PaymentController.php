@@ -231,7 +231,7 @@ class PaymentController extends Controller
         ]
       );
       //End set primary card on payment table for stripe
-      Payment::where('user_id', $user_id)->update(['is_primary' => false]);
+      Payment::where('user_id', $user_id)->where('payment_type', 'Card')->update(['is_primary' => false]);
       Payment::where('user_id', $user_id)->where('id', $payment_id)->update(['is_primary' => true]);
       $res_set_primary = User::where('id', $user_id)->update(['primary_card' => $payment_id]);
       if ($res_default_card && $res_set_primary) {
