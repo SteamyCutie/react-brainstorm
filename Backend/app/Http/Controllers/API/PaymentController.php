@@ -21,6 +21,7 @@ class PaymentController extends Controller
     $user_id = $request['user_id'];
     $card_name = $request['card_name'];
     $card_number = $request['card_number'];
+    $card_type = substr($card_number, 0, 1);
     $cvc_code = $request['cvc_code'];
     $card_token = $request['token'];
     $input_date = str_replace('/','/25/', $request['card_expiration']);
@@ -75,6 +76,7 @@ class PaymentController extends Controller
       'email' => $user_info->email,
       'customer_id' => $user_info->customer_id,
       'card_name' => $card_name,
+      'card_type' => $card_type,
       'card_number' => $card_number,
       'card_src' => $card_src->id,
       'card_expiration' => $card_expiration,
@@ -188,10 +190,10 @@ class PaymentController extends Controller
   }
   
   public function getusercards(Request $request) {
-    try {
+//    try {
       $user_id = $request->user_id;
       //card, primary
-      $user_cards = Payment::select('id', 'card_name', 'card_number', 'card_expiration', 'cvc_code', 'is_primary')
+      $user_cards = Payment::select('id', 'card_name', 'card_type','card_expiration', 'cvc_code', 'is_primary')
         ->where('payment_type', 'Card')
         ->where('user_id', $user_id)
         ->get();
@@ -206,12 +208,12 @@ class PaymentController extends Controller
         'result'=> 'success',
         'data' => $temp_result,
       ]);
-    } catch(Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'data' => $th
-      ]);
-    }
+//    } catch(Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'data' => $th
+//      ]);
+//    }
   }
   
   public function setprimarycard(Request $request) {

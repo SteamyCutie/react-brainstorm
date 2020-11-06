@@ -42,16 +42,22 @@ export default class SubscribeModal extends React.Component {
         }
 
         let params = [];
-        for (var i = 0; i < result.data.data.length; i ++) {
+        for (var i = 0; i < result.data.data.length; i ++) {                    
           param.card_type = result.data.data[i].card_type;
           param.card_name = result.data.data[i].card_name;
           param.is_primary = result.data.data[i].is_primary;
           param.expired_date = result.data.data[i].expired_date;
-          param.id = result.data.data[i].id;
+          param.id = result.data.data[i].id;          
           if (param.card_type === 4) {
             param.image = require("../../images/VisaCard-logo.png");
-          } else if (param.card_type === 3) {
+          } else if (param.card_type === 5) {
             param.image = require("../../images/Mastercard-logo.png");
+          } else if (param.card_type === 3) {
+            param.image = require("../../images/Travelcard-logo.jpg");
+          } else if (param.card_type === 6) {
+            param.image = require("../../images/Discovercard-logo.jpg");
+          } else {
+            param.image = require("../../images/Wrongcard-logo.jpg");
           }
           params.push(param);
           param = {};
@@ -98,7 +104,7 @@ export default class SubscribeModal extends React.Component {
       email: localStorage.getItem('email'),
       mentor_id: mentor_id,
       sub_plan_fee: sub_plan_fee,
-      card_type: 'visa',
+      // card_type: 'visa',
       payment_id: this.state.id
     }
     if (param.payment_id === null || param.payment_id === undefined || param.payment_id === "") {
@@ -228,7 +234,7 @@ export default class SubscribeModal extends React.Component {
   render() {
     const { open, item } = this.props;
     const { loading, paymentCard } = this.state;
-    console.log(paymentCard);
+    // console.log(paymentCard);
     return (
       <div>
         <ReactNotification />
@@ -251,6 +257,7 @@ export default class SubscribeModal extends React.Component {
                   image={card.image}
                   payment_id={card.id}
                   changeCard={(payment_id) => this.changeCard(payment_id)}
+                  is_primary = {card.is_primary}
                 />
               ))}
               <a href="javascript:void(0)" onClick={() => this.toggle_modal()}><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Add new card</h5></a>
