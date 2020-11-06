@@ -29,6 +29,7 @@ import Chat from "../images/dashboard-mute-video.svg"
 import ScreenShare from "../images/dashboard-mute-screenshare.svg"
 import AddUser from "../images/dashboard-mute-add-user.svg"
 import EndCall from "../images/dashboard-mute-end.svg"
+import defaultavatar from "../images/avatar.jpg";
 
 import { findmentorsbytagsorname, signout } from '../api/api';
 export default class StudentDashboard extends React.Component {
@@ -351,7 +352,7 @@ export default class StudentDashboard extends React.Component {
               <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
               {participantSelected ? 
                 <div className="dashboard-participant-infor">
-                  <img src={participantData.avatar} alt={participantData.name}/>
+                  <img src={participantData.avatar ? participantData.avatar : defaultavatar} alt={participantData.name}/>
                   <label style={{ position: "absolute", top: "35px", left: "20px", fontSize: "80px", fontWeight: "bold", width: "650px", textAlign: "center"}}>{participantData.name}</label>
                   <label style={{position: "absolute", left: "50px", top: "260px", fontSize: "40px"}}>{participantData.description}</label>
                 </div>
@@ -408,7 +409,7 @@ export default class StudentDashboard extends React.Component {
             {participantSelected ? 
               <div className="dashboard-participant-infor-small">
                 <div>
-                  <img src={participantData.avatar} alt={participantData.name}/>
+                  <img src={participantData.avatar ? participantData.avatar : defaultavatar} alt={participantData.name}/>
                   <label style={{ fontSize: "38px", fontWeight: "bold", position: "absolute", top: "45px", left: "15px", width: "290px", textAlign: "center"}}>{participantData.name}</label>
                 </div>
                 <label style={{fontSize: "20px", position: "absolute", top: "130px", fontWeight: "normal", left: "15px", width: "420px"}}>{participantData.description}</label>
