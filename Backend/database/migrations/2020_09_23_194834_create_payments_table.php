@@ -22,6 +22,7 @@ class CreatePaymentsTable extends Migration
       $table->string('connected_account')->default("");
       $table->string('oauth_code')->default("");
       $table->string('card_name')->default("");
+      $table->tinyInteger('card_type')->default(0);
       $table->string('card_number')->default("");
       $table->timestamp('card_expiration')->nullable();
       $table->boolean('is_primary')->default(false);

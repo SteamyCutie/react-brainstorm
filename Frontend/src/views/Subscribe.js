@@ -82,7 +82,7 @@ export default class Subscribe extends React.Component {
   }
 
   actionSuccess() {
-    console.log("+++++++ subscribe.js actionSuccess +++++++");
+    
   }
 
   signout = async() => {

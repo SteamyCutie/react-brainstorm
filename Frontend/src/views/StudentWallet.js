@@ -86,7 +86,7 @@ export default class StudentWallet extends React.Component {
     });
   }
 
-  pay = async() => {
+  pay = async () => {
     let param = {
       mentor_id: 4,
       student_id: '2',
@@ -95,7 +95,7 @@ export default class StudentWallet extends React.Component {
     }
 
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await payforsession(param);
       if (result.data.result === "success") {
         this.showSuccess(result.data.result);
@@ -115,21 +115,21 @@ export default class StudentWallet extends React.Component {
           this.showFail(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
       this.showFail("Something Went wrong");
     };
   }
 
-  getHistory = async(pageNo) => {
+  getHistory = async (pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
       page: pageNo,
       rowsPerPage: 10
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await gettransactionhistorybystudent(param);
       if (result.data.result === "success") {
         this.setState({
@@ -153,19 +153,19 @@ export default class StudentWallet extends React.Component {
           this.showFail(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
       this.showFail("Something Went wrong");
     };
   }
 
-  getUserCards = async() => {
+  getUserCards = async () => {
     let param = {
       user_id: localStorage.getItem('user_id')
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getusercards(param);
       if (result.data.result === "success") {
         let param = {
@@ -178,16 +178,20 @@ export default class StudentWallet extends React.Component {
         }
 
         let params = [];
-        for (var i = 0; i < result.data.data.length; i ++) {
+        for (var i = 0; i < result.data.data.length; i++) {
           param.card_type = result.data.data[i].card_type;
           param.card_name = result.data.data[i].card_name;
           param.is_primary = result.data.data[i].is_primary;
           param.expired_date = result.data.data[i].expired_date;
-          param.id = result.data.data[i].id;
+          param.id = result.data.data[i].id;          
           if (param.card_type === 4) {
             param.image = require("../images/VisaCard-logo.png");
-          } else if (param.card_type === 3) {
+          } else if (param.card_type === 5) {
             param.image = require("../images/Mastercard-logo.png");
+          } else if (param.card_type === 3) {
+            param.image = require("../images/Travelcard-logo.jpg");
+          } else if (param.card_type === 6) {
+            param.image = require("../images/Discovercard-logo.jpg");
           }
           params.push(param);
           param = {};
@@ -212,21 +216,21 @@ export default class StudentWallet extends React.Component {
           this.showFail(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
       this.showFail("Something Went wrong");
     };
   }
 
-  setAsDefault = async(id) => {
+  setAsDefault = async (id) => {
     let param = {
       user_id: localStorage.getItem("user_id"),
       payment_id: id
     }
 
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await setprimarycard(param);
       if (result.data.result === "success") {
         this.getUserCards();
@@ -246,9 +250,9 @@ export default class StudentWallet extends React.Component {
           this.showFail(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
       this.showFail("Something Went wrong");
     };
   }
@@ -257,7 +261,7 @@ export default class StudentWallet extends React.Component {
     this.getHistory(value);
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -279,7 +283,7 @@ export default class StudentWallet extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
@@ -341,14 +345,14 @@ export default class StudentWallet extends React.Component {
   }
 
   render() {
-    const {paymentCard, tHistory, columns, ModalOpen, loading, totalCnt} = this.state;
+    const { paymentCard, tHistory, columns, ModalOpen, loading, totalCnt } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
         <ReactNotification />
-        <AddNewCard 
-          open={ModalOpen} 
-          toggle={() => this.toggle_add()} 
+        <AddNewCard
+          open={ModalOpen}
+          toggle={() => this.toggle_add()}
           toggle_success={(text) => this.showSuccess(text)}
           toggle_fail={(text) => this.showFail(text)}
           toggle_warning={(text) => this.showWarning(text)}>
@@ -361,10 +365,9 @@ export default class StudentWallet extends React.Component {
             <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>
             <Button className="btn-add-payment" onClick={() => this.pay()}>Test Pay</Button>
           </Row>
-
           <Row>
             <div className="card-container">
-            {paymentCard.map((card, idx) => (
+              {paymentCard.map((card, idx) => (
                 <SmallCardPayment
                   key={idx}
                   title={card.card_name}
@@ -372,15 +375,14 @@ export default class StudentWallet extends React.Component {
                   type={card.card_type}
                   isPrimary={card.is_primary}
                   id={card.id}
-                  setAsDefault={(id)=>this.setAsDefault(id)}
+                  setAsDefault={(id) => this.setAsDefault(id)}
                 />
-            ))}
+              ))}
             </div>
           </Row>
-
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">
-              <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
+              <CustomDataTable title="Transaction history" data={tHistory} header={columns} />
             </Col>
           </Row>
           {tHistory.length > 0 && <Row className="pagination-center">
