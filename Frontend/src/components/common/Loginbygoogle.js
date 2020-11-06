@@ -13,7 +13,7 @@ export class Loginbygoogle extends Component {
     };
   }
 
-  signup = async(res) => {
+  signup = async (res) => {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   
@@ -90,15 +90,16 @@ export class Loginbygoogle extends Component {
   }
 
   render() {
-    const responseGoogle = (response) => {
+    const responseGoogleSuccess = (response) => {
       this.signup(response);  
     }
-
+    const responseGoogleFailure = (response) => {
+    }
     return (
       <GoogleLogin clientId={GOOGLE_KEY}
         buttonText="Login with Google"
-        onSuccess={responseGoogle}
-        onFailure={responseGoogle}>
+        onSuccess={responseGoogleSuccess}
+        onFailure={responseGoogleFailure}>
       </GoogleLogin>
     )
   }
