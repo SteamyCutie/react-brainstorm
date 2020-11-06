@@ -321,6 +321,14 @@ export default class StudentDashboard extends React.Component {
     })
   }
 
+  handleAdsCall() {
+    this.toggle_callwithdesc(this.state.participantData.id)
+  }
+
+  handleAdsBook() {
+    this.toggle(this.state.participantData.id);
+  }
+
   render() {
     const { loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id, width, participantSelected, participantData, height } = this.state;
     return (
@@ -353,7 +361,20 @@ export default class StudentDashboard extends React.Component {
                 </video> 
               }
             </div>
-            <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
+            {participantSelected ?
+              <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
+                {participantData.instant_call ? 
+                  <Button className="btn-dashboard-ads-button" onClick={() => this.handleAdsCall()}>
+                    Available now
+                  </Button>
+                  : null
+                }
+                <Button className="btn-dashboard-ads-button2" onClick={() => this.handleAdsBook()}>
+                  Book a session
+                </Button>
+              </div>
+              : 
+              <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
                 <Button className="btn-dashboard-control margin-right-auto">
                   <img src={FullScreen} alt="Full Screen"/>
                 </Button>
@@ -380,6 +401,7 @@ export default class StudentDashboard extends React.Component {
                   <img src={EndCall} alt="End"/>
                 </Button>
               </div>
+            }
           </div>
           <div id="dashboard-video-ads-container-small" className="dashboard-video-ads-container-small">
             <img src={DashboardVideoAvatarMini} alt="Brains Share" className="dashboard-video-ads-mini-avatar"/>
@@ -396,33 +418,47 @@ export default class StudentDashboard extends React.Component {
                 <source src={media_url} type="video/mp4"></source>
               </video>
             }
-            <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
-              <Button className="btn-dashboard-control-mini margin-right-auto">
-                <img src={MiniFullScreen} alt="Full Screen"/>
-              </Button>
-              
-              <div className="">
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniMuteMic} alt="Mute mic"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniMuteVideo} alt="Mute video"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniChat} alt="Chat"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniScreenshare} alt="Screen Share"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniAddUser} alt="Add User"/>
+            {participantSelected ? 
+              <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
+                {participantData.instant_call ? 
+                  <Button className="btn-dashboard-ads-button-small" onClick={() => this.handleAdsCall()}>
+                    Available now
+                  </Button>
+                  : null
+                }
+                <Button className="btn-dashboard-ads-button2-small" onClick={() => this.handleAdsBook()}>
+                  Book a call
                 </Button>
               </div>
-              
-              <Button className="btn-room-call-decline-mini margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
-                <img src={MiniEndCall} alt="End"/>
-              </Button>
-            </div>
+              :
+              <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
+                <Button className="btn-dashboard-control-mini margin-right-auto">
+                  <img src={MiniFullScreen} alt="Full Screen"/>
+                </Button>
+                
+                <div className="">
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniMuteMic} alt="Mute mic"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniMuteVideo} alt="Mute video"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniChat} alt="Chat"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniScreenshare} alt="Screen Share"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniAddUser} alt="Add User"/>
+                  </Button>
+                </div>
+                
+                <Button className="btn-room-call-decline-mini margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
+                  <img src={MiniEndCall} alt="End"/>
+                </Button>
+              </div>
+            }
           </div>
           
           <Row noGutters className="page-header py-4">
@@ -443,7 +479,7 @@ export default class StudentDashboard extends React.Component {
                   key = {idx} 
                   ref = {this.mentorRef} 
                   mentorData = {data} 
-                  sendUser = {this.sendUser} 
+                  // sendUser = {this.sendUser} 
                   toggle = {(id) => this.toggle(id)} 
                   callwithdescription = {(id) => this.toggle_callwithdesc(id)}
                   onMentorDetailCardClick = {(mentorData) => this.handleMentorDetailCardClick(mentorData)} 
