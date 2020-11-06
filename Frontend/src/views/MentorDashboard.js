@@ -34,6 +34,7 @@ import Chat from "../images/dashboard-mute-video.svg"
 import ScreenShare from "../images/dashboard-mute-screenshare.svg"
 import AddUser from "../images/dashboard-mute-add-user.svg"
 import EndCall from "../images/dashboard-mute-end.svg"
+import defaultavatar from "../images/avatar.jpg";
 
 
 export default class MentorDashboard extends React.Component {
@@ -51,7 +52,8 @@ export default class MentorDashboard extends React.Component {
       height: '450', 
       ModalCallWithDescOpen: false, 
       callDescription: '', 
-      
+      participantSelected: false, 
+      participantData: {}, 
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -317,8 +319,23 @@ export default class MentorDashboard extends React.Component {
     });
   }
 
+  handleMentorDetailCardClick(mentorData) {
+    this.setState({
+      participantSelected: true, 
+      participantData: mentorData, 
+    })
+  }
+
+  handleAdsCall() {
+    this.toggle_callwithdesc(this.state.participantData.id)
+  }
+
+  handleAdsBook() {
+    this.toggle(this.state.participantData.id);
+  }
+
   render() {
-    const { loading, mentors, totalCnt, ModalOpen, id, ModalCallWithDescOpen,  width, height } = this.state;
+    const { loading, mentors, totalCnt, ModalOpen, id, ModalCallWithDescOpen, participantSelected, participantData, width, height } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -337,70 +354,116 @@ export default class MentorDashboard extends React.Component {
           <div>
             <div id="dashboard-video-ads-container" className="dashboard-video-ads-container">
               <img src={DashboardVideoAvatar} alt="Brains Share" className="dashboard-video-ads-avatar"/>
-              <video id="video" autoPlay>
-                <source src={media_url} type="video/mp4"></source>
-              </video>  
+              {participantSelected ? 
+                <div className="dashboard-participant-infor">
+                  <img src={participantData.avatar ? participantData.avatar : defaultavatar} alt={participantData.name}/>
+                  <label style={{ position: "absolute", top: "35px", left: "20px", fontSize: "80px", fontWeight: "bold", width: "650px", textAlign: "center"}}>{participantData.name}</label>
+                  <label style={{position: "absolute", left: "50px", top: "260px", fontSize: "40px"}}>{participantData.description}</label>
+                </div>
+                :
+                <video id="video" autoPlay>
+                  <source src={media_url} type="video/mp4"></source>
+                </video> 
+              }
             </div>
-            <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
-              <Button className="btn-dashboard-control margin-right-auto">
-                <img src={FullScreen} alt="Full Screen"/>
-              </Button>
-              
-              <div className="">
-                <Button className="btn-dashboard-control float-center">
-                  <img src={MuteMic} alt="Mute mic"/>
-                </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={MuteVideo} alt="Mute video"/>
-                </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={Chat} alt="Chat"/>
-                </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={ScreenShare} alt="Screen Share"/>
-                </Button>
-                <Button className="btn-dashboard-control float-center">
-                  <img src={AddUser} alt="Add User"/>
+            {participantSelected ? 
+              <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
+                {participantData.instant_call ? 
+                  <Button className="btn-dashboard-ads-button" onClick={() => this.handleAdsCall()}>
+                    Available now
+                  </Button>
+                  : null
+                }
+                <Button className="btn-dashboard-ads-button2" onClick={() => this.handleAdsBook()}>
+                  Book a session
                 </Button>
               </div>
-              
-              <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
-                <img src={EndCall} alt="End"/>
-              </Button>
-            </div>
+              :
+              <div id="dashboard-video-ads-container-controls" className="dashboard-video-ads-container-controls">
+                <Button className="btn-dashboard-control margin-right-auto">
+                  <img src={FullScreen} alt="Full Screen"/>
+                </Button>
+                
+                <div className="">
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={MuteMic} alt="Mute mic"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={MuteVideo} alt="Mute video"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={Chat} alt="Chat"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={ScreenShare} alt="Screen Share"/>
+                  </Button>
+                  <Button className="btn-dashboard-control float-center">
+                    <img src={AddUser} alt="Add User"/>
+                  </Button>
+                </div>
+                
+                <Button className="btn-room-call-decline margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
+                  <img src={EndCall} alt="End"/>
+                </Button>
+              </div>
+            }
           </div>
           <div id="dashboard-video-ads-container-small" className="dashboard-video-ads-container-small">
             <img src={DashboardVideoAvatarMini} alt="Brains Share" className="dashboard-video-ads-mini-avatar"/>
-            <video width={width} id="video-small" autoPlay>
-              <source src={media_url} type="video/mp4"></source>
-            </video>
-            <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
-              <Button className="btn-dashboard-control-mini margin-right-auto">
-                <img src={MiniFullScreen} alt="Full Screen"/>
-              </Button>
-              
-              <div className="">
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniMuteMic} alt="Mute mic"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniMuteVideo} alt="Mute video"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniChat} alt="Chat"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniScreenshare} alt="Screen Share"/>
-                </Button>
-                <Button className="btn-dashboard-control-mini float-center">
-                  <img src={MiniAddUser} alt="Add User"/>
+            {participantSelected ? 
+              <div className="dashboard-participant-infor-small">
+                <div>
+                <img src={participantData.avatar ? participantData.avatar : defaultavatar} alt={participantData.name}/>
+                  <label style={{ fontSize: "38px", fontWeight: "bold", position: "absolute", top: "45px", left: "15px", width: "290px", textAlign: "center"}}>{participantData.name}</label>
+                </div>
+                <label style={{fontSize: "20px", position: "absolute", top: "130px", fontWeight: "normal", left: "15px", width: "420px"}}>{participantData.description}</label>
+              </div>
+              :
+              <video width={width} id="video-small" autoPlay>
+                <source src={media_url} type="video/mp4"></source>
+              </video>
+            }
+            {participantSelected ? 
+              <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
+                {participantData.instant_call ? 
+                  <Button className="btn-dashboard-ads-button-small" onClick={() => this.handleAdsCall()}>
+                    Available now
+                  </Button>
+                  : null
+                }
+                <Button className="btn-dashboard-ads-button2-small" onClick={() => this.handleAdsBook()}>
+                  Book a call
                 </Button>
               </div>
-              
-              <Button className="btn-room-call-decline-mini margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
-                <img src={MiniEndCall} alt="End"/>
-              </Button>
-            </div>
+              :
+              <div id="dashboard-video-ads-container-small-controls" className="dashboard-video-ads-container-small-controls">
+                <Button className="btn-dashboard-control-mini margin-right-auto">
+                  <img src={MiniFullScreen} alt="Full Screen"/>
+                </Button>
+                
+                <div className="">
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniMuteMic} alt="Mute mic"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniMuteVideo} alt="Mute video"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniChat} alt="Chat"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniScreenshare} alt="Screen Share"/>
+                  </Button>
+                  <Button className="btn-dashboard-control-mini float-center">
+                    <img src={MiniAddUser} alt="Add User"/>
+                  </Button>
+                </div>
+                
+                <Button className="btn-room-call-decline-mini margin-left-auto" style={{marginRight: "10px", padding: "0px"}}>
+                  <img src={MiniEndCall} alt="End"/>
+                </Button>
+              </div>
+            }
           </div>
           <Row noGutters className="page-header py-4">
             <Col className="page-title">
@@ -408,7 +471,15 @@ export default class MentorDashboard extends React.Component {
             </Col>
           </Row>
           {mentors.map((data, idx) =>(
-            <MentorDetailCardStudentDashboard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} callwithdescription={(id) => this.toggle_callwithdesc(id)}/>
+            <MentorDetailCardStudentDashboard 
+              key = {idx} 
+              ref = {this.mentorRef} 
+              mentorData = {data} 
+              sendUser = {this.sendUser} 
+              toggle = {(id) => this.toggle(id)} 
+              callwithdescription = {(id) => this.toggle_callwithdesc(id)}
+              onMentorDetailCardClick = {(mentorData) => this.handleMentorDetailCardClick(mentorData)} 
+            />
           ))}
           {mentors.length > 0 && <Row className="pagination-center">
             <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
