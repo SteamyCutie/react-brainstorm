@@ -14,6 +14,12 @@ class SmallCardPaymentSubscribe extends React.Component {
   }
 
   componentWillMount() {
+    const { type, is_primary } = this.props;
+    if (is_primary){
+      this.setState({
+        selectedCard : type
+      });
+    }    
   }
 
   changeCard(type, payment_id) {
@@ -27,12 +33,14 @@ class SmallCardPaymentSubscribe extends React.Component {
   render() {
     const { title, image, expireDate, type, payment_id } = this.props;
     const { selectedCard } = this.state;
+    // console.log("+++++++++ smallcardpaymentsubscribe +++++++++ render selectedcard = " + selectedCard + ": Type = " + type);
     return (
       <Card small className="small-card-payment" >
         <CardBody className="no-padding">
           <div className="items-container">
             <div  style={{marginTop: "15px", paddingLeft: "10px"}}>
-              <FormRadio name="card" checked={selectedCard === type} onChange={() => { this.changeCard(type, payment_id) }}></FormRadio>
+              {/* <FormRadio name="card" onChange={() => { this.changeCard(type, payment_id) }} checked={selectedCard === type} ></FormRadio> */}
+              <FormRadio name="card" onChange={() => { this.changeCard(type, payment_id) }}></FormRadio>
             </div>
             <div className="no-padding">
                 <img src={image} className="small-card-payment-logo" alt="card"/>

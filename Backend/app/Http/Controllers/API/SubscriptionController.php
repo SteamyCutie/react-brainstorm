@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\Payment;
+use Log;
 
 class SubscriptionController extends Controller
 {
@@ -24,14 +25,19 @@ class SubscriptionController extends Controller
         ]);
       }
       $student = User::select('id', 'customer_id')->where('email', $email)->first();
-      $mentor_info = User::select('connected_account', 'hourly_price', 'sub_plan_fee', 'sub_plan_id')->where('id', $mentor_id)->first();
+      $mentor_info = User::select('name', 'connected_account', 'hourly_price', 'sub_plan_fee', 'sub_plan_id')->where('id', $mentor_id)->first();
       if ($mentor_info->sub_plan_fee == 0) {
         return response()->json([
           'result' => 'warning',
-          'message' => 'The mentor did not input sub_plane_fee in profile',
+          'message' => $mentor_info->name.' did not input sub_plane_fee in profile',
         ]);
       }
-      
+      if ($mentor_info->connected_account == null || $mentor_info->connected_account == ""){
+        return response()->json([
+          'result' => 'warning',
+          'message' => $mentor_info->name.' disconnected with his bank.'
+        ]);
+      }
       $res_sub = null;
       $is_exist = Subscription::where('mentor_id', $mentor_id)->where('student_id', $student->id)->first();
       if (!$is_exist) {
@@ -60,7 +66,6 @@ class SubscriptionController extends Controller
           ]
         );
         //End set primary_card for stripe
-        
         //Begin set primary_plan_card and create subscription for stripe
         User::where('email', $email)->update(['primary_plan_card' => $payment_id]);
         $subscription = \Stripe\Subscription::create([
@@ -75,7 +80,6 @@ class SubscriptionController extends Controller
           ],
         ]);
         //End set primary_plan_card and create subscription for stripe
-        
         Subscription::where('mentor_id', $mentor_id)->where('student_id', $student->id)->update([
           'st_customer_id' => $student->customer_id,
           'st_subscription_id' => $subscription->id,
