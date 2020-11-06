@@ -104,7 +104,7 @@ export default class SubscribeModal extends React.Component {
       email: localStorage.getItem('email'),
       mentor_id: mentor_id,
       sub_plan_fee: sub_plan_fee,
-      card_type: 'visa',
+      // card_type: 'visa',
       payment_id: this.state.id
     }
     if (param.payment_id === null || param.payment_id === undefined || param.payment_id === "") {
@@ -234,7 +234,7 @@ export default class SubscribeModal extends React.Component {
   render() {
     const { open, item } = this.props;
     const { loading, paymentCard } = this.state;
-    console.log(paymentCard);
+    // console.log(paymentCard);
     return (
       <div>
         <ReactNotification />
@@ -257,6 +257,7 @@ export default class SubscribeModal extends React.Component {
                   image={card.image}
                   payment_id={card.id}
                   changeCard={(payment_id) => this.changeCard(payment_id)}
+                  is_primary = {card.is_primary}
                 />
               ))}
               <a href="javascript:void(0)" onClick={() => this.toggle_modal()}><h5 style={{float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA"}}>+ Add new card</h5></a>
