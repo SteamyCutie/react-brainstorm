@@ -9,7 +9,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
-import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent } from '../api/api';
+import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent, deletestudentcard } from '../api/api';
 import { Badge } from "shards-react";
 
 export default class StudentWallet extends React.Component {
@@ -183,7 +183,7 @@ export default class StudentWallet extends React.Component {
           param.card_name = result.data.data[i].card_name;
           param.is_primary = result.data.data[i].is_primary;
           param.expired_date = result.data.data[i].expired_date;
-          param.id = result.data.data[i].id;          
+          param.id = result.data.data[i].id;
           if (param.card_type === 4) {
             param.image = require("../images/VisaCard-logo.png");
           } else if (param.card_type === 5) {
@@ -232,6 +232,40 @@ export default class StudentWallet extends React.Component {
     try {
       this.setState({ loading: true });
       const result = await setprimarycard(param);
+      if (result.data.result === "success") {
+        this.getUserCards();
+      } else if (result.data.result === "warning") {
+        this.showWarning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.showFail(result.data.message);
+          this.signout();
+        } else {
+          this.showFail(result.data.message);
+        }
+      }
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      this.showFail("Something Went wrong");
+    };
+  }
+
+  deleteStudentCard = async (id) => {
+    let param = {
+      user_id: localStorage.getItem("user_id"),
+      payment_id: id
+    }
+
+    try {
+      this.setState({ loading: true });
+      const result = await deletestudentcard(param);
       if (result.data.result === "success") {
         this.getUserCards();
       } else if (result.data.result === "warning") {
@@ -376,6 +410,7 @@ export default class StudentWallet extends React.Component {
                   isPrimary={card.is_primary}
                   id={card.id}
                   setAsDefault={(id) => this.setAsDefault(id)}
+                  deleteStudentCard={(id) => this.deleteStudentCard(id)}
                 />
               ))}
             </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Invited;
 use App\Models\Session;
+use App\Models\TransactionHistory;
 use App\Models\User;
 use App\Models\SessionUser;
 use Illuminate\Http\Request;
@@ -253,69 +254,33 @@ class PaymentController extends Controller
     }
   }
   
+  public function deletestudentcard(Request $request) {
+    try {
+      $payment_id = $request->payment_id;
+      $user_id = $request->user_id;
+      $pay_info = Payment::where('id', $payment_id)->first();
+      //Begin delete card from stripe
+      $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
+      $stripe->customers->deleteSource(
+        $pay_info->customer_id,
+        $pay_info->card_src,
+        []
+      );
+      //End delete card from stripe
+      Payment::where('id', $payment_id)->delete();
+      return response()->json([
+        'result' => 'success',
+        'message' => 'successfully removed card'
+      ]);
+    } catch (\Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'data' => $th
+      ]);
+    }
+  }
   
   public function testpayment(Request $request) {
-  //tset charge
-    \Stripe\Stripe::setApiKey(env("SK_LIVE"));
-//    $charge = \Stripe\Charge::create([
-//      'amount' => 11110,
-//      'currency' => 'usd',
-//      'customer' => 'cus_IIaXxU5RsCon1q',
-//      'source' => 'card_1Hi0miGRfXBTO7BE1jjllzSD',
-//      'description' => 'test charge',
-//    ]);
-    $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
-    $transfer = $stripe->transfers->create([
-      'amount' => round(110 * 0.8, 2),
-      'currency' => 'usd',
-      'source_transaction' => 'ch_1Hj98nGRfXBTO7BE9nj7z1Jq', //transfer available
-      'destination' => 'acct_1Hi01UGCSs28tFWr',
-      'description' => 'test transfer',
-    ]);
-  
-//        $payout = \Stripe\Payout::create([
-//      'amount' => 8800,
-//      'currency' => 'usd',
-//    ], [
-//      'stripe_account' => 'acct_1Hi01UGCSs28tFWr',
-//    ]);
-  
-    return response()->json([
-      'result' => $transfer
-    ]);
-    //    echo "env SK_LIVE = ".env('SK_LIVE');
-    // Begin available, pending
-//    $connected_account = $request->connected_account;
-    \Stripe\Stripe::setApiKey(env('SK_LIVE'));
-//
-//    $balance = \Stripe\Balance::retrieve(
-//      ['stripe_account' => 'acct_1HgHD3FwTXTDZg0D']
-//    );
-//    return response()->json([
-//      'result' => $balance,
-//    ]);
-    // End available, pending
-    
-//    $balance = \Stripe\Balance::retrieve(
-//      ['stripe_account' => 'acct_1Hi01UGCSs28tFWr']
-//    );
-//    $payout = \Stripe\Payout::create([
-//      'amount' => 20000,
-//      'currency' => 'usd',
-//    ], [
-//      'stripe_account' => 'acct_1HhVnXEy9A4DJWeL',
-//    ]);
-//    return response()->json([
-//      'result' => $payout,
-//    ]);
-  //balanceTransactions->retrieve
-//    $stripe = new \Stripe\StripeClient(
-//      'sk_test_51HV0m8GRfXBTO7BEhCSm4H66pXZAKU1PpMUcbn11BDX5K7Vurr8hEBJ5PcVkygsJVUyIemFwmkJ1gU4sjG7ruSCP00GyCDe4aO'
-//    );
-//    $response = $stripe->balanceTransactions->retrieve(
-//      'txn_1HYhImGRfXBTO7BEIC8ZCiMR',
-//      []
-//    );
   
   }
 }

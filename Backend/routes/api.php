@@ -34,6 +34,7 @@ Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
 Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
 Route::post('/getusercards', 'PaymentController@getusercards');
 Route::post('/setprimarycard', 'PaymentController@setprimarycard');
+Route::post('/deletestudentcard', 'PaymentController@deletestudentcard');
 Route::post('/testpayment', 'PaymentController@testpayment');
 
 Route::post('/payforsession', 'TransactionHistoryController@payforsession');
