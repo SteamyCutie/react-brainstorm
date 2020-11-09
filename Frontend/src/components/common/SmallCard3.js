@@ -76,7 +76,7 @@ class SmallCard3 extends React.Component {
               </div>
             </DropdownToggle>
             <DropdownMenu >
-              <DropdownItem onClick={() => joinSession(room_id)}>
+              <DropdownItem onClick={() => joinSession(this.props.data)}>
                 Join Forum
               </DropdownItem>
             </DropdownMenu>
