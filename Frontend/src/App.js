@@ -16,6 +16,7 @@ import Many2Many from "./components/common/Many2Many"
 import IncomingCall from "../src/components/common/IncomingCall"
 import OutcomingCall from "../src/components/common/OutcomingCall"
 import HaveInvitation from "../src/components/common/HaveInvitation"
+import MentorReview from "../src/components/common/MentorReview";
 import incomingSound from '../src/audio/incoming.mp3'
 
 const NO_CALL = 0;
@@ -50,6 +51,7 @@ export default class App extends React.Component{
       toDescription: '',
       roomCall: false, 
       sessionChannelName: '', 
+      reviewModal: false, 
     }
 
     this.many2manyRef = React.createRef();
@@ -285,17 +287,29 @@ export default class App extends React.Component{
       }
 
       this.sendMessage(message);
+
+      this.setState({
+        callState: NO_CALL,
+        incomingCallStatus: false,
+        videoCallStatus: false,
+        message: message,
+        call: false,
+        isAccepted: false,
+        roomCall: false, 
+        reviewModal: true && !this.state.isMaster,
+      });
+    } else {
+      this.setState({
+        callState: NO_CALL,
+        incomingCallStatus: false,
+        videoCallStatus: false,
+        message: message,
+        call: false,
+        isAccepted: false,
+        roomCall: false, 
+      });
     }
 
-    this.setState({
-      callState: NO_CALL,
-      incomingCallStatus: false,
-      videoCallStatus: false,
-      message: message,
-      call: false,
-      isAccepted: false,
-      roomCall: false, 
-    });
   }
 
   sendMessage(message) {
@@ -490,7 +504,7 @@ export default class App extends React.Component{
     this.sendMessage(message);
   }
 
-  joinSession(room_id) {
+  joinSession(session) {
     this.setState({
       roomCall: true, 
       isMaster: false, 
@@ -501,7 +515,7 @@ export default class App extends React.Component{
       userId: localStorage.getItem("user_id"), 
       userName: localStorage.getItem("user_name"), 
       channelName: localStorage.getItem("channel_name"), 
-      roomName: room_id,
+      roomName: session.room_id,
     }
 
     this.sendMessage(message);
@@ -557,8 +571,14 @@ export default class App extends React.Component{
     })
   }
 
+  toggle_review_modal() {
+    this.setState({
+      reviewModal: !this.state.reviewModal, 
+    })
+  }
+
   render() {
-    const { incomingCallStatus, outcomingCallStatus, invitationStatus, callState, from, call, isAccepted, channel_name } = this.state;
+    const { incomingCallStatus, outcomingCallStatus, mentorData, reviewModal, invitationStatus, callState, from, call, isAccepted, channel_name } = this.state;
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
@@ -651,6 +671,8 @@ export default class App extends React.Component{
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL} description={this.state.toDescription}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar}  errMsg={this.state.errorMsg} />
+          {/* <MentorReview mentorData={mentorData} open={reviewModal} toggle={() => this.toggle_review_modal()} /> */}
+          <MentorReview mentorid={"id"} mentorname={"name"} open={reviewModal} toggle={() => this.toggle_review_modal()}></MentorReview>
           <HaveInvitation open={invitationStatus} onAccept={() => this.handleInviteAccept()} onDecline={() => this.handleInviteDecline()} />
           
           <audio id="incoming-ring">

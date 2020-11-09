@@ -218,9 +218,9 @@ export default class StudentSession extends React.Component {
     window.location.href = "/";
   }
 
-  joinSession(room_id) {
-    localStorage.setItem("room_id", room_id);
-    this.props.joinSession(room_id);
+  joinSession(session) {
+    localStorage.setItem("room_id", session.room_id);
+    this.props.joinSession(session);
   }
 
   render() {
@@ -277,7 +277,7 @@ export default class StudentSession extends React.Component {
               {this.state.sessionList.map((session, idx) => {
                 return (
                   <Col key={idx} xl="4" lg="4" sm="6">
-                    <SmallCard3 key={idx} data={session} joinSession={(room_Id) => this.joinSession(room_Id)}/>
+                    <SmallCard3 key={idx} data={session} joinSession={(session) => this.joinSession(session)}/>
                   </Col>
                 )
               })}
