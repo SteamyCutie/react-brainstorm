@@ -126,9 +126,9 @@ class MentorDetailCardStudentDashboard extends React.Component {
           <div className="mentor-detail-desc">
             <Row className="metor-detail-name-score">
               <div className="mentor-detail-name">{name}</div>
-              {is_mentor ? <div><img src={StarIcon} alt="star-icon" className="mentor-detail-score" />{average_mark}</div> : null}
+              {is_mentor ? <div><img src={StarIcon} alt="star-icon" className="mentor-detail-score"/>{average_mark}</div> : null}
             </Row>
-            {is_mentor ?
+            {is_mentor ? 
               <Row className="mentor-detail-subject-tag">
                 <h5 className="tag-title mentor-detail-subject-title">Teaches: </h5>
                 {tag_name && tag_name.map((teach, idx) => {
@@ -136,14 +136,14 @@ class MentorDetailCardStudentDashboard extends React.Component {
                     return <p key={idx} className="brainsshare-tag" title={teach}>{teach}</p>;
                   else if (idx === 3)
                     return <p key={idx}>{tag_name.length - 3} more</p>
-                  else
+                  else 
                     return <></>;
                 })}
               </Row>
-              : null
+              : null 
             }
             <div className="mentor-detail-myself">
-              {!this.state.more && (description.length > 200 ? <p>{description.slice(0, 200)}...</p> : <p>{description}</p>)}
+              {!this.state.more && (description.length > 200 ? <p>{description.slice(0,200)}...</p> : <p>{description}</p>)}
               {this.state.more && <p>{description}</p>}
               {description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
             </div>
