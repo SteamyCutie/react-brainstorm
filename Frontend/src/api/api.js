@@ -324,6 +324,22 @@ export const gettransactionhistorybystudent = (param) => {
         }
     });
 };
+
+export const gettransactionhistorybymentor = (param) => {
+  return new Promise(async(resolve, reject) => {
+      try {
+          const token = localStorage.getItem('token');
+          const header = {
+              'Authorization': 'bearer ' + token
+          }
+          const response = await axios.post(SERVER_URL+'/api/gettransactionhistorybymentor', param, {headers: header});
+          resolve(response);
+      } catch(error) {
+          reject(error);
+      }
+  });
+};
+
 // ------------WalletController-----------------
 
 
@@ -680,6 +696,22 @@ export const setprimarycard = (param) => {
             reject(error);
         }
     });
+}
+
+export const deletestudentcard = (param) => {
+  const token = localStorage.getItem('token');
+  const header = {
+      'Authorization': 'bearer ' + token,
+  }
+
+  return new Promise(async(resolve, reject) => {
+      try {
+          const response = await axios.post(SERVER_URL+'/api/deletestudentcard', param, {headers: header});
+          resolve(response);
+      } catch (error) {
+          reject(error);
+      }
+  });
 }
 
 export const payforsession = (param) => {

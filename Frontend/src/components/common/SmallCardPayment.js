@@ -32,6 +32,12 @@ class SmallCardPayment extends React.Component {
     console.log(id);
   }
 
+  deleteStudentCard(id) {
+    const { deleteStudentCard } = this.props;
+    deleteStudentCard(id);
+    console.log(id);
+  }
+
   render() {
     const { title, type, expireDate, isPrimary, id } = this.props;
     const { open } = this.state;
@@ -72,8 +78,8 @@ class SmallCardPayment extends React.Component {
                   <DropdownItem onClick={() => this.setAsDefault(id)}>
                     Set As Default
                   </DropdownItem>
-                  <DropdownItem>
-                    Edit
+                  <DropdownItem onClick={() => this.deleteStudentCard(id)}>
+                    Delete
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>

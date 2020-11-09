@@ -829,8 +829,16 @@ class UserController extends Controller
           $share_info[$j]['day'] = date('d/m/y', strtotime($date));
           $share_info[$j]['time'] = date('h:i a', strtotime($date));
         }
-        
         $mentors[$i]->share_info = $share_info;
+  
+        $temp = [];
+        $sub_id = Subscription::select('student_id')->where('mentor_id', $mentors[$i]->id)->get();
+        if (count($sub_id) > 0) {
+          for ($k = 0; $k < count($sub_id); $k++) {
+            $temp[] = $sub_id[$k]->student_id;
+          }
+        }
+        $mentors[$i]->sub_id = $temp;
         $result_res[] = $mentors[$i];
       }
     }

@@ -84,7 +84,8 @@ class SubscriptionController extends Controller
           'st_customer_id' => $student->customer_id,
           'st_subscription_id' => $subscription->id,
           ]);
-        
+        Payment::where('user_id', $student->id)->where('payment_type', 'Card')->update(['is_primary' => false]);
+        Payment::where('id', $payment_id)->update(['is_primary' => true]);
         return response()->json([
           'result' => 'success',
           'data' => [],
