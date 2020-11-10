@@ -1,7 +1,5 @@
 import React from "react";
 import { Button, Row, Col, Container, Card, CardBody } from "shards-react";
-
-
 import MentorVideo from "../../components/common/MentorVideo";
 import SubscribeModal from "../../components/common/SubscribeModal";
 import AddNewCard from "../../components/common/AddNewCard";
@@ -13,6 +11,7 @@ import Clock from "../../images/Clock.svg";
 import defaultavatar from "../../images/avatar.jpg";
 import { unsubscription } from '../../api/api';
 import LoadingModal from "../../components/common/LoadingModal";
+import { ToastsStore } from 'react-toasts';
 
 class MentorDetailCardStudentDashboard extends React.Component {
   constructor(props) {
@@ -78,25 +77,25 @@ class MentorDetailCardStudentDashboard extends React.Component {
       const result = await unsubscription(param);
       if (result.data.result === "success") {
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      this.showFail("Something Went wrong");
+      ToastsStore.error("Something Went wrong");
     };
   }
 

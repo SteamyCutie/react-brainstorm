@@ -1,13 +1,10 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormTextarea } from "shards-react";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
-import { store } from 'react-notifications-component';
 import Rating from '@material-ui/lab/Rating';
 import { setreview, signout } from '../../api/api';
-
-import Close from '../../images/Close.svg'
+import Close from '../../images/Close.svg';
+import { ToastsStore } from 'react-toasts';
 
 export default class MentorReview extends React.Component {
   constructor(props) {
@@ -36,7 +33,7 @@ export default class MentorReview extends React.Component {
 
   toggle() {
     const { toggle } = this.props;
-    toggle();    
+    toggle();
   }
 
   onChangeReview = (e) => {
@@ -44,42 +41,42 @@ export default class MentorReview extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const {reviewinfo} = this.state;
+    const { reviewinfo } = this.state;
     let temp = reviewinfo;
     temp.review = e.target.value;
-    this.setState({reviewinfo: temp});
+    this.setState({ reviewinfo: temp });
   }
 
   onChangeMark = (e, val) => {
     if (val == null)
       val = 0;
-    const {reviewinfo} = this.state;
+    const { reviewinfo } = this.state;
     let temp = reviewinfo;
     temp.mark = val;
-    this.setState({reviewinfo: temp});
+    this.setState({ reviewinfo: temp });
   }
 
-  actionSave = async(mentorid) => {
-    const {reviewinfo} = this.state;
+  actionSave = async (mentorid) => {
+    const { reviewinfo } = this.state;
     reviewinfo.mentor_id = mentorid;
-    const {requiremessage} = this.state;
+    const { requiremessage } = this.state;
     let temp = requiremessage;
     temp.dreview = '';
     this.setState({
       requiremessage: temp
     });
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await setreview(reviewinfo);
       if (result.data.result === "success") {
         this.toggle();
-        this.showSuccess("Review Success");
+        ToastsStore.success("Review Success");
         window.location.href = "/trending";
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.type === 'require') {
-          const {requiremessage} = this.state;
+          const { requiremessage } = this.state;
           let temp = requiremessage;
           if (result.data.message.review) {
             temp.dreview = result.data.message.review[0];
@@ -89,27 +86,27 @@ export default class MentorReview extends React.Component {
           });
         } else {
           if (result.data.message === "Token is Expired") {
-            this.showFail(result.data.message);
+            ToastsStore.error(result.data.message);
             this.signout();
           } else if (result.data.message === "Token is Invalid") {
-            this.showFail(result.data.message);
+            ToastsStore.error(result.data.message);
             this.signout();
           } else if (result.data.message === "Authorization Token not found") {
-            this.showFail(result.data.message);
+            ToastsStore.error(result.data.message);
             this.signout();
           } else {
-            this.showFail(result.data.message);
+            ToastsStore.error(result.data.message);
           }
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -131,7 +128,7 @@ export default class MentorReview extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
@@ -141,64 +138,12 @@ export default class MentorReview extends React.Component {
     window.location.href = "/";
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
   render() {
     const { open, sessionTime } = this.props;
     const {user_id, name} = this.props.session;
     const { requiremessage, reviewinfo, loading } = this.state;
     return (
       <div>
-        <ReactNotification />
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
