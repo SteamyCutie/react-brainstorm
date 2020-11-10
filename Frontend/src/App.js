@@ -52,6 +52,8 @@ export default class App extends React.Component{
       roomCall: false, 
       sessionChannelName: '', 
       reviewModal: false, 
+      sessionTime: 0,
+      session: {},
     }
 
     this.many2manyRef = React.createRef();
@@ -60,6 +62,7 @@ export default class App extends React.Component{
     this.webRtcPeer = null;
     this.setWebRtcPeer = this.setWebRtcPeer.bind(this);
     this.stop = this.stop.bind(this);
+    this.stopMany2Many = this.stopMany2Many.bind(this);
     this.call = this.call.bind(this);
     this.setUser = this.setUser.bind(this);
     this.sendErrorMsg = this.sendErrorMsg.bind(this);
@@ -271,14 +274,7 @@ export default class App extends React.Component{
     }
   }
 
-  stop(status) {
-    if(this.state.callState !== NO_CALL) {
-      var response = {
-        id : 'stop'
-      }
-      this.sendMessage(response);
-    }
-
+  stopMany2Many(sessionTime) {
     if (this.state.roomCall) {
       var message = {
         id: "leaveRoom", 
@@ -292,24 +288,33 @@ export default class App extends React.Component{
         callState: NO_CALL,
         incomingCallStatus: false,
         videoCallStatus: false,
-        message: message,
+        // message: message,
         call: false,
         isAccepted: false,
         roomCall: false, 
         reviewModal: true && !this.state.isMaster,
-      });
-    } else {
-      this.setState({
-        callState: NO_CALL,
-        incomingCallStatus: false,
-        videoCallStatus: false,
-        message: message,
-        call: false,
-        isAccepted: false,
-        roomCall: false, 
+        sessionTime: sessionTime, 
       });
     }
+  }
 
+  stop(status) {
+    if(this.state.callState !== NO_CALL) {
+      var response = {
+        id : 'stop'
+      }
+      this.sendMessage(response);
+    }
+
+    this.setState({
+      callState: NO_CALL,
+      incomingCallStatus: false,
+      videoCallStatus: false,
+      // message: message,
+      call: false,
+      isAccepted: false,
+      roomCall: false, 
+    });
   }
 
   sendMessage(message) {
@@ -508,8 +513,9 @@ export default class App extends React.Component{
     this.setState({
       roomCall: true, 
       isMaster: false, 
+      session: session, 
     })
-
+    console.log(session);
     var message = {
       id: "joinRoom", 
       userId: localStorage.getItem("user_id"), 
@@ -578,7 +584,7 @@ export default class App extends React.Component{
   }
 
   render() {
-    const { incomingCallStatus, outcomingCallStatus, mentorData, reviewModal, invitationStatus, callState, from, call, isAccepted, channel_name } = this.state;
+    const { incomingCallStatus, outcomingCallStatus, session, reviewModal, sessionTime, invitationStatus, callState, from, call, isAccepted, channel_name } = this.state;
     return (
       <Router basename={process.env.REACT_APP_BASENAME || ""}>
         <div>
@@ -658,8 +664,9 @@ export default class App extends React.Component{
               <Draggable bounds="parent" onStart={() => this.dragegableOnStart()}>
                 <div className="box draggable-room-background" style={{position: 'absolute', top: '120px', right: '69px'}}>
                   <Many2Many 
+                    session = {session}
                     ref = {this.many2manyRef}
-                    stop={this.stop}
+                    stopMany2Many={this.stopMany2Many}
                     ws={this.ws}
                   />
                 </div>
@@ -671,8 +678,13 @@ export default class App extends React.Component{
             onAccept={() => this.handleAccept()} onDecline={() => this.incomingCallDecline()} name={this.state.fromName} avatar={this.state.avatarURL} description={this.state.toDescription}/>
           <OutcomingCall ref={this.outcomingRef} open={outcomingCallStatus} toggle={() => this.toggle_outcomingCall_modal()} 
             onDecline={() => this.outcomingCallDecline()} name={this.state.toName} avatar={this.state.toAvatar}  errMsg={this.state.errorMsg} />
-          {/* <MentorReview mentorData={mentorData} open={reviewModal} toggle={() => this.toggle_review_modal()} /> */}
-          <MentorReview mentorid={"id"} mentorname={"name"} open={reviewModal} toggle={() => this.toggle_review_modal()}></MentorReview>
+          <MentorReview 
+            session={session} 
+            open={reviewModal} 
+            toggle={() => this.toggle_review_modal()}
+            sessionTime={sessionTime}
+          />
+          {/* <MentorReview mentorid={"id"} mentorname={"name"} open={reviewModal} toggle={() => this.toggle_review_modal()}></MentorReview> */}
           <HaveInvitation open={invitationStatus} onAccept={() => this.handleInviteAccept()} onDecline={() => this.handleInviteDecline()} />
           
           <audio id="incoming-ring">
