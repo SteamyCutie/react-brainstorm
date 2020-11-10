@@ -202,8 +202,20 @@ export default class ScheduleLiveForum extends React.Component {
     return (
       <div>
         {loading && <LoadingModal open={true} />}
-        <CreateLiveForum open={ModalOpen} toggle={() => this.toggle_createliveforum()} toggle_createsuccess={(text) => this.toggle_createsuccess(text)} toggle_createfail={(text) => this.toggle_createfail(text)} toggle_createwarning={(text) => this.toggle_createwarning(text)}></CreateLiveForum>
-        <EditLiveForum open={ModalEditOpen} id={id} toggle={() => this.toggle_editliveforum()} toggle_editsuccess={(text) => this.toggle_editsuccess(text)} toggle_editfail={(text) => this.toggle_editfail(text)}></EditLiveForum>
+        <CreateLiveForum 
+          open={ModalOpen} 
+          toggle={() => this.toggle_createliveforum()} 
+          toggle_createsuccess={(text) => this.toggle_createsuccess(text)} 
+          toggle_createfail={(text) => this.toggle_createfail(text)} 
+          toggle_createwarning={(text) => this.toggle_createwarning(text)}>
+        </CreateLiveForum>
+        <EditLiveForum 
+          open={ModalEditOpen} 
+          id={id} 
+          toggle={() => this.toggle_editliveforum()} 
+          toggle_editsuccess={(text) => this.toggle_editsuccess(text)} 
+          toggle_editfail={(text) => this.toggle_editfail(text)}>
+        </EditLiveForum>
         <ConfirmModal open={ModalConfirmOpen} id={id} toggle={() => this.toggle_confirm()}></ConfirmModal>
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Card small className="schedule-forum-card">
