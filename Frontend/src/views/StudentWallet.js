@@ -6,9 +6,7 @@ import SmallCardPayment from "../components/common/SmallCardPayment";
 import CustomDataTable from "../components/common/CustomDataTable";
 import AddNewCard from "../components/common/AddNewCard";
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
+import { ToastsStore } from 'react-toasts';
 import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent, deletestudentcard } from '../api/api';
 import { Badge } from "shards-react";
 
@@ -100,25 +98,25 @@ export default class StudentWallet extends React.Component {
       if (result.data.result === "success") {
         this.showSuccess(result.data.result);
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      this.showFail("Something Went wrong");
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -138,25 +136,25 @@ export default class StudentWallet extends React.Component {
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      this.showFail("Something Went wrong");
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -201,25 +199,25 @@ export default class StudentWallet extends React.Component {
           paymentCard: params
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      this.showFail("Something Went wrong");
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -235,25 +233,25 @@ export default class StudentWallet extends React.Component {
       if (result.data.result === "success") {
         this.getUserCards();
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      this.showFail("Something Went wrong");
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -269,25 +267,25 @@ export default class StudentWallet extends React.Component {
       if (result.data.result === "success") {
         this.getUserCards();
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      this.showFail("Something Went wrong");
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -327,69 +325,17 @@ export default class StudentWallet extends React.Component {
     window.location.href = "/";
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
   render() {
     const { paymentCard, tHistory, columns, ModalOpen, loading, totalCnt } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <AddNewCard
           open={ModalOpen}
           toggle={() => this.toggle_add()}
           toggle_success={(text) => this.showSuccess(text)}
-          toggle_fail={(text) => this.showFail(text)}
-          toggle_warning={(text) => this.showWarning(text)}>
+          toggle_fail={(text) => ToastsStore.error(text)}
+          toggle_warning={(text) => ToastsStore.warning(text)}>
         </AddNewCard>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">

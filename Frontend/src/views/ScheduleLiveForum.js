@@ -5,10 +5,8 @@ import CreateLiveForum from "../components/common/CreateLiveForum";
 import EditLiveForum from "../components/common/EditLiveForum";
 import ConfirmModal from "../components/common/ConfirmModal";
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
 import { getforums, getuserinfo, signout } from "../api/api";
+import { ToastsStore } from 'react-toasts';
 
 export default class ScheduleLiveForum extends React.Component {
   constructor(props) {
@@ -20,14 +18,14 @@ export default class ScheduleLiveForum extends React.Component {
       forumInfos: [],
       ModalOpen: false,
       ModalEditOpen: false,
-      ModalConfirmOpen: false, 
-      room: '', 
+      ModalConfirmOpen: false,
+      room: '',
     };
   }
 
   componentWillMount() {
     this.getUserInfo();
-    this.getForums();  
+    this.getForums();
   }
 
   toggle_createliveforum() {
@@ -38,24 +36,24 @@ export default class ScheduleLiveForum extends React.Component {
 
   toggle_createsuccess(text) {
     this.getForums();
-    this.showSuccess(text);
+    ToastsStore.success(text);
   }
 
   toggle_createfail(text) {
-    this.showFail(text);
+    ToastsStore.error(text);
   }
 
   toggle_editsuccess(text) {
     this.getForums();
-    this.showSuccess(text);
+    ToastsStore.success(text);
   }
 
   toggle_createwarning(text) {
-    this.showWarning(text);
+    ToastsStore.warning(text);
   }
 
   toggle_editfail(text) {
-    this.showFail(text);
+    ToastsStore.error(text);
   }
 
   toggle_editliveforum(id) {
@@ -79,116 +77,65 @@ export default class ScheduleLiveForum extends React.Component {
     });
   }
 
-  getForums = async() => {
+  getForums = async () => {
     let param = {
       email: localStorage.getItem('email')
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getforums(param);
       if (result.data.result === "success") {
-        this.setState({forumInfos: result.data.data});
+        this.setState({ forumInfos: result.data.data });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  getUserInfo = async() => {
+  getUserInfo = async () => {
     try {
-      const result = await getuserinfo({email: localStorage.getItem('email')});
+      const result = await getuserinfo({ email: localStorage.getItem('email') });
       if (result.data.result === "success") {
-        this.setState({user: result.data.data});
+        this.setState({ user: result.data.data });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-    } catch(err) {
-      this.showFail("Something Went wrong");
+    } catch (err) {
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -210,7 +157,7 @@ export default class ScheduleLiveForum extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
@@ -235,11 +182,11 @@ export default class ScheduleLiveForum extends React.Component {
   }
 
   startSession(id) {
-    const {forumInfos} = this.state;
+    const { forumInfos } = this.state;
     var index = 0;
     var room_id = null;
 
-    for (index = 0; index < forumInfos.length; index ++) {
+    for (index = 0; index < forumInfos.length; index++) {
       if (forumInfos[index].id === id) {
         room_id = forumInfos[index].room_id;
         break;
@@ -251,11 +198,10 @@ export default class ScheduleLiveForum extends React.Component {
 
   render() {
     const { ModalOpen, ModalEditOpen, ModalConfirmOpen, loading, forumInfos, id, user } = this.state;
-    
+
     return (
       <div>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <CreateLiveForum open={ModalOpen} toggle={() => this.toggle_createliveforum()} toggle_createsuccess={(text) => this.toggle_createsuccess(text)} toggle_createfail={(text) => this.toggle_createfail(text)} toggle_createwarning={(text) => this.toggle_createwarning(text)}></CreateLiveForum>
         <EditLiveForum open={ModalEditOpen} id={id} toggle={() => this.toggle_editliveforum()} toggle_editsuccess={(text) => this.toggle_editsuccess(text)} toggle_editfail={(text) => this.toggle_editfail(text)}></EditLiveForum>
         <ConfirmModal open={ModalConfirmOpen} id={id} toggle={() => this.toggle_confirm()}></ConfirmModal>
@@ -267,20 +213,20 @@ export default class ScheduleLiveForum extends React.Component {
             </CardHeader>
             <CardBody>
               <Row>
-                {forumInfos.map((item, idx) => 
+                {forumInfos.map((item, idx) =>
                   <Col key={idx} xl="4" lg="4" sm="6">
-                    <SmallCardForum 
-                      key={idx} 
-                      item={item} 
-                      toggle_editliveforum={(id) => this.toggle_editliveforum(id)} 
-                      toggle_confirm={(id) => this.toggle_confirm(id)} 
-                      startSession = {(id) => this.startSession(id)}
+                    <SmallCardForum
+                      key={idx}
+                      item={item}
+                      toggle_editliveforum={(id) => this.toggle_editliveforum(id)}
+                      toggle_confirm={(id) => this.toggle_confirm(id)}
+                      startSession={(id) => this.startSession(id)}
                     />
                   </Col>
                 )}
               </Row>
             </CardBody>
-          </Card>    
+          </Card>
         </Container>
       </div>
     )

@@ -110,7 +110,10 @@ class SessionController extends Controller
       $temp_st = [];
       $m_inviteds = Invited::where('mentor_id', $forum->user_id)->get();
       foreach ($m_inviteds as $invited_key => $invited) {
-        $st_info = User::where('id', $invited->student_id)->first();
+        $st_info = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          ->where('id', $invited->student_id)->first();
         $temp_email[$invited_key] = $st_info->email;
         $temp_id[$invited_key] = $invited->student_id;
         $temp_st[$invited_key] = $st_info;
@@ -288,17 +291,10 @@ class SessionController extends Controller
       $session_id = $request['id'];
       $res = Session::where('id', $session_id)->delete();
       $res_invite = Invited::where('session_id', $session_id)->delete();
-      if ($res && $res_invite) {
-        return response()->json([
-          'result'=> 'success',
-          'data' => []
-        ]);
-      } else {
-        return response()->json([
-          'result'=> 'failed',
-          'message' => 'already removed'
-        ]);
-      }
+      return response()->json([
+        'result'=> 'success',
+        'data' => []
+      ]);
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',

@@ -1144,6 +1144,11 @@ body {
     font-weight: normal;
 }
 
+.toasts-container {
+  top: 102px !important;
+  right: 24px !important; 
+  display:block;
+}
 .margin-double-right-class {
     margin-right: 70px;
     font-size: 16px;

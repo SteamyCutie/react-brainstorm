@@ -2,9 +2,7 @@ import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
+import { ToastsStore } from 'react-toasts';
 import SmallCard from "../components/common/SmallCard";
 import AddNewBank from "../components/common/AddNewBank";
 import CustomDataTable from "../components/common/CustomDataTable";
@@ -96,11 +94,11 @@ export default class MentorWallet extends React.Component {
   componentDidMount() {
   }
 
-  toggle_add = async() => {
+  toggle_add = async () => {
     let param = {
       user_id: localStorage.getItem('user_id')
     }
-    
+
     try {
       const result = await getuseridformentor(param);
       if (result.data.result === "success") {
@@ -109,19 +107,19 @@ export default class MentorWallet extends React.Component {
           '_blank'
         );
       } else if (result.data.result === "warning") {
-      } else {}
-    } catch(err) {
+      } else { }
+    } catch (err) {
     };
   }
 
-  getHistory = async(pageNo) => {
+  getHistory = async (pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
       page: pageNo,
       rowsPerPage: 10
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await gettransactionhistorybymentor(param);
       if (result.data.result === "success") {
         this.setState({
@@ -131,80 +129,29 @@ export default class MentorWallet extends React.Component {
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -226,7 +173,7 @@ export default class MentorWallet extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
@@ -237,17 +184,16 @@ export default class MentorWallet extends React.Component {
   }
 
   render() {
-    const {loading, tHistory, columns, smallCards, totalCnt, ModalOpen} = this.state;
+    const { loading, tHistory, columns, smallCards, totalCnt, ModalOpen } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         {/* <AddNewBank 
           open={ModalOpen} 
           toggle={() => this.toggle_add()} 
           toggle_success={(text) => this.showSuccess(text)}
-          toggle_fail={(text) => this.showFail(text)}
-          toggle_warning={(text) => this.showWarning(text)}>
+          toggle_fail={(text) => ToastsStore.error(text)}
+          toggle_warning={(text) => ToastsStore.warning(text)}>
         </AddNewBank> */}
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
@@ -270,7 +216,7 @@ export default class MentorWallet extends React.Component {
 
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">
-              <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
+              <CustomDataTable title="Transaction history" data={tHistory} header={columns} />
             </Col>
           </Row>
           {tHistory.length > 0 && <Row className="pagination-center">
