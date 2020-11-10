@@ -1,12 +1,9 @@
 import React from "react";
 import { Modal, ModalBody, ModalFooter, Button, Col, Row, ModalHeader } from "shards-react";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
-import { store } from 'react-notifications-component';
 import { deleteforum, signout } from '../../api/api';
-
-import Close from '../../images/Close.svg'
+import Close from '../../images/Close.svg';
+import { ToastsStore } from 'react-toasts';
 
 export default class AddNewCard extends React.Component {
   constructor(props) {
@@ -22,48 +19,48 @@ export default class AddNewCard extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.id && this.props.id !== nextProps.id) {
-      this.setState({id: nextProps.id});
+      this.setState({ id: nextProps.id });
     }
   }
 
   toggle() {
     const { toggle } = this.props;
-    toggle();    
+    toggle();
   }
 
-  actionRemove = async(id) => {
-    const param = {id: id};
+  actionRemove = async (id) => {
+    const param = { id: id };
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await deleteforum(param);
       if (result.data.result === "success") {
         this.toggle();
-        this.showSuccess("Delete Schedule Success");
+        ToastsStore.success("Delete Schedule Success");
         window.location.href = "/scheduleLiveForum";
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
-          if (result.data.message === "Token is Expired") {
-            this.showFail(result.data.message);
-            this.signout();
-          } else if (result.data.message === "Token is Invalid") {
-            this.showFail(result.data.message);
-            this.signout();
-          } else if (result.data.message === "Authorization Token not found") {
-            this.showFail(result.data.message);
-            this.signout();
-          } else {
-            this.showFail(result.data.message);      
-          }
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -85,7 +82,7 @@ export default class AddNewCard extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
@@ -95,63 +92,11 @@ export default class AddNewCard extends React.Component {
     window.location.href = "/";
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
   render() {
-    const { open} = this.props;
+    const { open } = this.props;
     const { loading, id } = this.state;
     return (
       <div>
-        <ReactNotification />
         <Modal size="md" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalHeader>Delete Forum</ModalHeader>

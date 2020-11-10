@@ -110,7 +110,10 @@ class SessionController extends Controller
       $temp_st = [];
       $m_inviteds = Invited::where('mentor_id', $forum->user_id)->get();
       foreach ($m_inviteds as $invited_key => $invited) {
-        $st_info = User::where('id', $invited->student_id)->first();
+        $st_info = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          ->where('id', $invited->student_id)->first();
         $temp_email[$invited_key] = $st_info->email;
         $temp_id[$invited_key] = $invited->student_id;
         $temp_st[$invited_key] = $st_info;
@@ -248,9 +251,8 @@ class SessionController extends Controller
           'message' => $validator->messages()
         ];
       }
-      
       $forum = Session::where('id', $id)->first();
-      Invited::where('mentor_id', $forum->user_id)->where('session_id', $id)->delete();
+      Invited::where('session_id', $id)->delete();
       for ($j = 0; $j < count($students); $j++ ){
         Invited::create([
           'mentor_id' => $forum->user_id,
@@ -289,15 +291,10 @@ class SessionController extends Controller
       $session_id = $request['id'];
       $res = Session::where('id', $session_id)->delete();
       $res_invite = Invited::where('session_id', $session_id)->delete();
-      if ($res && $res_invite) {
-        return response()->json([
-          'result'=> 'success',
-        ]);
-      } else {
-        return response()->json([
-          'result'=> 'failed',
-        ]);
-      }
+      return response()->json([
+        'result'=> 'success',
+        'data' => []
+      ]);
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
@@ -338,7 +335,7 @@ class SessionController extends Controller
       $req_time = $request['time'];
       $user = User::select('id', 'is_mentor')->where( 'email', $email)->first();
       $current_time = date("y-m-d h:i:s");
-    
+      
       if ($req_time != null || $req_time != "") {
         $from_time = trim(explode('~', $req_time)[0]);
         $to_time = trim(explode('~', $req_time)[1]);
@@ -349,13 +346,13 @@ class SessionController extends Controller
       if ($user['is_mentor'] == 0) {
         $temp1 = [];
         $temp2 = [];
-      
+        
         $invited_session_id = Invited::select('session_id')->where('student_id', $user->id)->get();
         $result_infos = Session::where('user_id', '!=', $user->id)
           ->where('from','<',date('y-m-d h:i:s', strtotime($current_time)))
           ->whereIn('id',$invited_session_id)
           ->get();
-      
+        
         if ($tag_id == "" || $tag_id == null) {
           $temp1 = $result_infos;
         } else {
@@ -368,7 +365,7 @@ class SessionController extends Controller
             }
           }
         }
-      
+        
         if ($from_time == "" || $to_time == "") {
           $temp2 = $temp1;
         }
@@ -456,7 +453,7 @@ class SessionController extends Controller
             }
           }
         }
-
+        
         if ($from_time == "" || $to_time == "") {
           $temp2 = $temp1;
         }
