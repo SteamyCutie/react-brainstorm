@@ -27,6 +27,10 @@ export default class MentorReview extends React.Component {
   componentWillMount() {
   }
 
+  componentDidMount() {
+    console.log(this.props.session, "#34");
+  }
+
   toggle() {
     const { toggle } = this.props;
     toggle();
@@ -135,24 +139,26 @@ export default class MentorReview extends React.Component {
   }
 
   render() {
-    const { open, mentorid, mentorname } = this.props;
+    const { open, sessionTime } = this.props;
+    const {user_id, name} = this.props.session;
     const { requiremessage, reviewinfo, loading } = this.state;
     return (
       <div>
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-            <h1 className="content-center modal-header-class">Review mentor {mentorname}</h1>
-            <Rating name="size-large" defaultValue={0} size="large" onChange={(e, newValue) => this.onChangeMark(e, newValue)} />
-            <div className="content-center block-content-class modal-input-group-class">
-              <label htmlFor="feEmail" className="profile-detail-important">Review</label>
-              {requiremessage.dreview !== '' && <span className="require-message">{requiremessage.dreview}</span>}
-              {requiremessage.dreview !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" invalid onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review} />}
-              {requiremessage.dreview === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review} />}
-            </div>
-            <div className="content-center block-content-class button-text-group-class">
-              <Button onClick={() => this.actionSave(mentorid)}>Save</Button>
-            </div>
+          <h1 className="content-center modal-header-class">Review mentor {name}</h1>
+          <h1 className="content-center modal-header-class">{sessionTime}</h1>
+          <Rating name="size-large" defaultValue={0} size="large" onChange={(e, newValue) => this.onChangeMark(e, newValue)}/>
+          <div className="content-center block-content-class modal-input-group-class">
+            <label htmlFor="feEmail" className="profile-detail-important">Review</label>
+            {requiremessage.dreview !== '' && <span className="require-message">{requiremessage.dreview}</span>}
+            {requiremessage.dreview !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" invalid onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review}/>}
+            {requiremessage.dreview === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review}/>}
+          </div>
+          <div className="content-center block-content-class button-text-group-class">
+            <Button onClick={() => this.actionSave(user_id)}>Save</Button>
+          </div>
           </ModalBody>
         </Modal>
         {loading && <LoadingModal open={true} />}

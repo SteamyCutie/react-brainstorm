@@ -27,11 +27,17 @@ import MiniMutedMic from '../../images/many2many-mini-muted-mic.svg'
 import MiniMuteVideo from '../../images/many2many-mini-mute-video.svg'
 import MiniMutedVideo from '../../images/many2many-mini-muted-video.svg'
 import ChatBell from '../../images/chat-bell.png'
+import StartTimer from '../../images/startTimer.png'
 
 import { Chat, Channel, Thread, Window } from 'stream-chat-react';
 import { MessageList, MessageInput } from 'stream-chat-react';
 import { StreamChat } from 'stream-chat';
 import 'stream-chat-react/dist/css/index.css';
+
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { store } from 'react-notifications-component';
+
 import { ACCESS_API_KEY, ACCESS_TOKEN_SECRET } from '../../common/config';
 
 var channel;
@@ -617,8 +623,12 @@ export default class Many2Many extends React.Component {
       roomMembers: [], 
       whiteBoardFullScreen: false,
       newChat: false, 
+      sessionStarted: false, 
+      sessionTimeLabel: "00:00:00", 
     };
     
+    this.sessionTimerCount = 0;
+    this.sessionTimer = null;
     this.handleStop = this.handleStop.bind(this);
     this.handleEnd = this.handleEnd.bind(this);
 
@@ -634,7 +644,28 @@ export default class Many2Many extends React.Component {
     this.invitedToRoom = this.invitedToRoom.bind(this);
   }
 
+  sessionTimeCount() {
+    var currentTime = this.sessionTimerCount;
+    currentTime ++;
+    this.sessionTimerCount = currentTime;
+
+    var second = currentTime % 60;
+    if (second < 10)
+      second = "0" + second;
+    var minute = Math.floor((currentTime / 60)) % 60;
+    if (minute < 10)
+      minute = "0" + minute;
+    var hour = Math.floor(Math.floor((currentTime / 60)) / 60);
+    if (hour < 10)
+      hour = "0" + hour
+
+    this.setState({
+      sessionTimeLabel: hour + ":" + minute + ":" + second, 
+    });
+  }
+
   handleEnd() {
+    clearInterval(this.sessionTimer);
     this.handleStop();
     
     document.getElementsByTagName("body")[0].classList.remove("scroll-none");
@@ -759,7 +790,7 @@ export default class Many2Many extends React.Component {
 
     viewer = [];
     fullscreenMode = false;
-    this.props.stop(false);
+    this.props.stopMany2Many(Math.floor(this.sessionTimerCount/60));
   }
 
   swithFullScreen() {
@@ -1215,11 +1246,87 @@ export default class Many2Many extends React.Component {
     })
   }
 
+  showSuccess(text) {
+    store.addNotification({
+      title: "Success",
+      message: text,
+      type: "success",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      },
+    });
+  }
+
+  showFail(text) {
+    store.addNotification({
+      title: "Fail",
+      message: text,
+      type: "danger",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  showWarning(text) {
+    store.addNotification({
+      title: "Warning",
+      message: text,
+      type: "warning",
+      insert: "top",
+      container: "top-right",
+      dismiss: {
+        duration: 500,
+        onScreen: false,
+        waitForAnimation: false,
+        showIcon: false,
+        pauseOnHover: false
+      }
+    });
+  }
+
+  startSessionTimer() {
+    if (!this.state.sessionStarted) {
+      this.sessionTimerCount = 0;
+      this.setState({
+        sessionStarted: true, 
+      })
+  
+      this.sessionTimer = setInterval(() => {
+        this.sessionTimeCount();
+      }, 1000)
+    } else {
+      this.showFail("Sorry. The session is already started.")
+    }
+  }
+
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, newChat, showChat, inviteModal, roomMembers } = this.state;
+    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, newChat, showChat, inviteModal, roomMembers, sessionStarted, sessionTimeLabel } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
+        <div className={isFullscreen ? "session-timer-controls": "session-timer-controls-mini"}>
+          {isFullscreen ? 
+            <Button className="btn-room-start-timer" onClick={() => this.startSessionTimer()}>
+              <img src={StartTimer} alt="start timer" />
+              {sessionStarted ? "Stop " : "Start"}
+            </Button>
+            : null
+          }
+          <label>{sessionTimeLabel}</label>
+        </div>
         <div className="video-call-element-min" id="video-call-element-min">
           {!isFullscreen && 
             <div className="room-control-container-mini">

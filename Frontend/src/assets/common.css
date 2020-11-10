@@ -1271,3 +1271,36 @@ ul#fabric-whiteboard-toolbar-ul li{
   font-size: 16px;
   font-weight: bold;
 }
+
+.session-timer-controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 3000;
+}
+
+.session-timer-controls-mini {
+  position: absolute;
+  top: 10px;
+  left: 47px;
+  z-index: 3000;
+  color: white;
+}
+
+.btn-room-start-timer{
+  width: 100px !important;
+  height: 50px !important;
+  padding: 0px 5px !important;
+  font-size: 20px;
+}
+
+.session-timer-controls img {
+  width: 40px;
+  height: 40px;
+}
+
+.session-timer-controls label {
+  margin-left: 20px;
+  color: white;
+  font-size: 20px;
+}
