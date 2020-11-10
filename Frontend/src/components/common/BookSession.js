@@ -1,13 +1,11 @@
 import React from "react";
 import { Modal, ModalBody, Button, ModalFooter, Col, Row } from "shards-react";
 import LoadingModal from "./LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
 import { getavailabletimesforstudent, signout, booksession } from '../../api/api';
-import Close from '../../images/Close.svg'
-import BackIcon from "../../images/Back_icon.svg"
-import NextIcon from "../../images/Next_icon.svg"
+import Close from '../../images/Close.svg';
+import BackIcon from "../../images/Back_icon.svg";
+import NextIcon from "../../images/Next_icon.svg";
+import { ToastsStore } from 'react-toasts';
 
 export default class BookSession extends React.Component {
   constructor(props) {
@@ -25,7 +23,7 @@ export default class BookSession extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({day: new Date().getFullYear() + "-" + new Date().getMonth() + "-" + new Date().getDate()});
+    this.setState({ day: new Date().getFullYear() + "-" + new Date().getMonth() + "-" + new Date().getDate() });
     this.checkLabel();
   }
 
@@ -37,40 +35,40 @@ export default class BookSession extends React.Component {
 
   toggle() {
     const { toggle } = this.props;
-    toggle();    
+    toggle();
   }
 
-  getAvailableTimeForStudent = async(id) => {
+  getAvailableTimeForStudent = async (id) => {
     let param = {
       user_id: id
     }
 
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getavailabletimesforstudent(param);
 
       if (result.data.result === "success") {
-        this.setState({schedule: result.data.data});
+        this.setState({ schedule: result.data.data });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -113,19 +111,19 @@ export default class BookSession extends React.Component {
     let totalName = `${firstmonthName} ${firstdateName} - ${lastmonthName} ${lastdateName} , ${yearName}`;
 
     var temp = [];
-    let obj1 = { date: firstdayName, day: firstday.getDate(), month: firstday.getMonth() + 1, year: firstday.getFullYear()};
+    let obj1 = { date: firstdayName, day: firstday.getDate(), month: firstday.getMonth() + 1, year: firstday.getFullYear() };
     temp.push(obj1);
-    let obj2 = { date: twodayName, day: twoday.getDate(), month: twoday.getMonth() + 1, year: twoday.getFullYear()};
+    let obj2 = { date: twodayName, day: twoday.getDate(), month: twoday.getMonth() + 1, year: twoday.getFullYear() };
     temp.push(obj2);
-    let obj3 = { date: threedayName, day: threeday.getDate(), month: threeday.getMonth() + 1, year: threeday.getFullYear()};
+    let obj3 = { date: threedayName, day: threeday.getDate(), month: threeday.getMonth() + 1, year: threeday.getFullYear() };
     temp.push(obj3);
-    let obj4 = { date: fourdayName, day: fourday.getDate(), month: fourday.getMonth() + 1, year: fourday.getFullYear()};
+    let obj4 = { date: fourdayName, day: fourday.getDate(), month: fourday.getMonth() + 1, year: fourday.getFullYear() };
     temp.push(obj4);
-    let obj5 = { date: fivedayName, day: fiveday.getDate(), month: fiveday.getMonth() + 1, year: fiveday.getFullYear()};
+    let obj5 = { date: fivedayName, day: fiveday.getDate(), month: fiveday.getMonth() + 1, year: fiveday.getFullYear() };
     temp.push(obj5);
-    let obj6 = { date: sixdayName, day: sixday.getDate(), month: sixday.getMonth() + 1, year: sixday.getFullYear()};
+    let obj6 = { date: sixdayName, day: sixday.getDate(), month: sixday.getMonth() + 1, year: sixday.getFullYear() };
     temp.push(obj6);
-    let obj7 = { date: lastdayName, day: lastday.getDate(), month: lastday.getMonth() + 1, year: lastday.getFullYear()};
+    let obj7 = { date: lastdayName, day: lastday.getDate(), month: lastday.getMonth() + 1, year: lastday.getFullYear() };
     temp.push(obj7);
 
     this.setState({
@@ -158,7 +156,7 @@ export default class BookSession extends React.Component {
     this.checkLabel();
   }
 
-  bookSchedule = async(idx, idx1, time) => {
+  bookSchedule = async (idx, idx1, time) => {
     const { weekdata } = this.state;
 
     let param = {
@@ -169,39 +167,39 @@ export default class BookSession extends React.Component {
     }
 
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await booksession(param);
 
       if (result.data.result === "success") {
-        this.showSuccess(result.data.result);
+        ToastsStore.success(result.data.result);
       } else if (result.data.result === "warning") {
-        this.showWarning("You already booked session at this day!");
+        ToastsStore.warning("You already booked session at this day!");
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  actionBookSession = async() => {
+  actionBookSession = async () => {
     this.props.toggle();
-  } 
+  }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -223,7 +221,7 @@ export default class BookSession extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
@@ -237,7 +235,7 @@ export default class BookSession extends React.Component {
     let month = monthNames.indexOf(totalName.split("-")[0].split(" ")[0]) + 1 + "";
     let year = totalName.split(",")[1] + "";
     let date = day + "";
-    this.setState({day: year+"-"+month+"-"+date});
+    this.setState({ day: year + "-" + month + "-" + date });
   }
 
   removeSession() {
@@ -245,69 +243,17 @@ export default class BookSession extends React.Component {
     window.location.href = "/";
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
   render() {
     const { open } = this.props;
     const { loading, totalName, weekdata, schedule } = this.state;
     return (
       <div>
-        <ReactNotification />
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Book a session</h1>
-            
-            <div className="week-header" style={{display: 'inline'}}>
+
+            <div className="week-header" style={{ display: 'inline' }}>
               {totalName}
             </div>
             <Button onClick={() => this.goToBack()} className="back-icon-class">
@@ -316,10 +262,10 @@ export default class BookSession extends React.Component {
             <Button onClick={() => this.goToNext()} className="next-icon-class">
               <img src={NextIcon} alt="NextIcon" />
             </Button>
-            <Row style={{marginTop: 30}}>
+            <Row style={{ marginTop: 30 }}>
               {weekdata.map((item, idx) => {
                 if (item.date === "Sat" || item.date === "Sun") {
-                  if (item.day === new Date().getDate() && item.month === new Date().getMonth()+1 && item.year === new Date().getFullYear()) {
+                  if (item.day === new Date().getDate() && item.month === new Date().getMonth() + 1 && item.year === new Date().getFullYear()) {
                     return <Col className="week-style-header-disable" key={idx}>
                       <p>{item.date}</p>
                       <button type="button" className="btn btn-primary today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
@@ -331,7 +277,7 @@ export default class BookSession extends React.Component {
                     </Col>;
                   }
                 } else {
-                  if (item.day === new Date().getDate() && item.month === new Date().getMonth()+1 && item.year === new Date().getFullYear()) {
+                  if (item.day === new Date().getDate() && item.month === new Date().getMonth() + 1 && item.year === new Date().getFullYear()) {
                     return <Col className="week-style-header-available" key={idx}>
                       <p>{item.date}</p>
                       <button type="button" className="btn btn-primary today" onClick={() => this.changeDate(item.day)}>{item.day}</button>
@@ -345,11 +291,11 @@ export default class BookSession extends React.Component {
                 }
               })}
             </Row>
-            <Row style={{marginTop: 70}}>
-              {schedule.map((item, idx) => 
-                <Col key={idx} style={{paddingLeft: 0, paddingRight: 0}}>
+            <Row style={{ marginTop: 70 }}>
+              {schedule.map((item, idx) =>
+                <Col key={idx} style={{ paddingLeft: 0, paddingRight: 0 }}>
                   <table>
-                    {item.map((item1, idx1) => 
+                    {item.map((item1, idx1) =>
                       <tr>
                         <button key={idx1} type="button" className={item1.book ? "btn btn-primary schedule active" : "btn btn-primary schedule"} onClick={() => this.bookSchedule(idx, idx1, item1.value)}>{item1.value}</button>
                       </tr>

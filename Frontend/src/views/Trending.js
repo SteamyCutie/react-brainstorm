@@ -6,11 +6,9 @@ import SmallCard2 from "./../components/common/SmallCard2";
 import MentorDetailCard from "./../components/common/MentorDetailCard"
 import BookSession from "./../components/common/BookSession"
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
-
+import { ToastsStore } from 'react-toasts';
 import { getallmentors, signout } from '../api/api';
+
 export default class Trending extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +17,7 @@ export default class Trending extends React.Component {
 
     this.state = {
       id: 0,
-      ModalOpen: false, 
+      ModalOpen: false,
       totalCnt: 0,
       loading: false,
       mentors: [],
@@ -27,7 +25,7 @@ export default class Trending extends React.Component {
         {
           title: "Act science",
           content: "Mentors",
-          image: require ("../images/act-science.svg")
+          image: require("../images/act-science.svg")
         },
         {
           title: "English",
@@ -46,21 +44,21 @@ export default class Trending extends React.Component {
   }
 
   componentWillMount() {
-   this.getMentors(1);
+    this.getMentors(1);
   }
 
   sendUser(to, avatar, name, channel_name, description) {
     this.props.setUser(to, avatar, name, channel_name, description);
   }
 
-  getMentors = async(pageNo) => {
+  getMentors = async (pageNo) => {
     let param = {
       email: localStorage.getItem('email'),
       page: pageNo,
       rowsPerPage: 10
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getallmentors(param);
       if (result.data.result === "success") {
         this.setState({
@@ -69,25 +67,25 @@ export default class Trending extends React.Component {
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -95,7 +93,7 @@ export default class Trending extends React.Component {
     this.getMentors(value);
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -117,7 +115,7 @@ export default class Trending extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
@@ -134,63 +132,11 @@ export default class Trending extends React.Component {
     });
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
   render() {
-    const {loading, smallCards, mentors, totalCnt, ModalOpen, id} = this.state;
+    const { loading, smallCards, mentors, totalCnt, ModalOpen, id } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
@@ -200,14 +146,14 @@ export default class Trending extends React.Component {
           </Row>
           <Row>
             <div className="card-container">
-            {smallCards.map((card, idx) => (
+              {smallCards.map((card, idx) => (
                 <SmallCard2
                   key={idx}
                   title={card.title}
                   content={card.content}
                   image={card.image}
                 />
-            ))}
+              ))}
             </div>
           </Row>
           <Row noGutters className="page-header py-4">
@@ -217,8 +163,8 @@ export default class Trending extends React.Component {
           </Row>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
-              {mentors.map((data, idx) =>(
-                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)}/>
+              {mentors.map((data, idx) => (
+                <MentorDetailCard key={idx} ref={this.mentorRef} mentorData={data} sendUser={this.sendUser} toggle={(id) => this.toggle(id)} />
               ))}
             </Col>
           </Row>

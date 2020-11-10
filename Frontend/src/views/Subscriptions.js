@@ -4,10 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import SubscriptionTable from "./../components/common/SubscriptionTable";
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
-
+import { ToastsStore } from 'react-toasts';
 import { getallmentors, signout } from '../api/api';
 
 export default class Subscriptions extends React.Component {
@@ -131,81 +128,30 @@ export default class Subscriptions extends React.Component {
         });
 
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      this.showFail("Something Went wrong");
+      ToastsStore.error("Something Went wrong");
     };
   }
 
   onChangePagination(e, value) {
     this.getMentors(value);
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
   }
 
   signout = async () => {
@@ -245,7 +191,6 @@ export default class Subscriptions extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row className="wallet-data-table-class py-4">
             <Col lg="12" md="12" sm="12">
