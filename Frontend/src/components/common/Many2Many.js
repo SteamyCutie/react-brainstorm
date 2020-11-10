@@ -785,8 +785,8 @@ export default class Many2Many extends React.Component {
     }
 
     viewer = [];
-    fullscreenMode = false;
-    this.props.stopMany2Many(Math.floor(this.sessionTimerCount/60));
+    fullscreenMode = false;    
+    this.props.stopMany2Many(parseFloat(this.sessionTimerCount / 60).toFixed(2));
   }
 
   swithFullScreen() {
