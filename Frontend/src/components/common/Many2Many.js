@@ -947,7 +947,7 @@ export default class Many2Many extends React.Component {
       showChat: false, 
       newChat: false, 
     })
-    // master_switchToScreenshare();
+    master_switchToScreenshare();
 
     if (this.state.showWhiteBoard) {
       document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
@@ -1362,7 +1362,7 @@ export default class Many2Many extends React.Component {
           <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
             <video id="videoOutput" style={{display: "none"}}></video>
           </div>
-          {/* {(showChat && isFullscreen) ? */}
+          {isFullscreen ?
             <div className={showChat ? "room-group-chat" : "room-group-chat-hidden"}>
               <div className="room-chat-header">
                 <h2 style={{width: "100%", textAlign: "center", fontSize: "38px", fontWeight: "bold", margin: "0px", marginLeft: "50px"}}>Chat</h2>
@@ -1380,8 +1380,8 @@ export default class Many2Many extends React.Component {
                 </Channel>
               </Chat>
             </div>
-            {/* : null
-          } */}
+            : null
+          } 
           {(showWhiteBoard && isFullscreen) ?
             <div id="room-whiteboard-body" className="room-whiteboard">
               <div className="room-whitboard-header">
