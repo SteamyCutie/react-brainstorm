@@ -59,6 +59,8 @@ export default class MentorReview extends React.Component {
   actionSave = async (mentorid) => {
     const { reviewinfo } = this.state;
     reviewinfo.mentor_id = mentorid;
+    reviewinfo.session_id = this.props.session.id;
+    reviewinfo.conference_time = this.props.sessionTime;
     const { requiremessage } = this.state;
     let temp = requiremessage;
     temp.dreview = '';
@@ -73,7 +75,7 @@ export default class MentorReview extends React.Component {
         ToastsStore.success("Review Success");
         window.location.href = "/trending";
       } else if (result.data.result === "warning") {
-        ToastsStore.warning(result.data.message);
+        ToastsStore.warning(result.data.message);        
       } else {
         if (result.data.type === 'require') {
           const { requiremessage } = this.state;

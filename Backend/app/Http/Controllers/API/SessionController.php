@@ -112,7 +112,7 @@ class SessionController extends Controller
       foreach ($m_inviteds as $invited_key => $invited) {
         $st_info = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
           ->where('id', $invited->student_id)->first();
         $temp_email[$invited_key] = $st_info->email;
         $temp_id[$invited_key] = $invited->student_id;
