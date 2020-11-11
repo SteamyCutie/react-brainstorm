@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import MultiSelect from "react-multi-select-component";
-import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
 import { createforum, gettags, getallstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';

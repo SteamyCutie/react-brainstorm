@@ -12,7 +12,7 @@ export default class SignIn extends React.Component {
 
     this.emailInput = React.createRef();
     this.state = {
-      email: "", 
+      email: "",
       password: "",
       validationError: {
         email: '',
@@ -27,14 +27,15 @@ export default class SignIn extends React.Component {
     // console.log(x);
   }
 
-  componentDidMount() {    
-    if(this.props.open){
+  componentDidMount() {
+    if (this.props.open) {
       document.body.style.overflow = 'hidden';
-    }    
+    }
   }
-  
+
   componentWillUnmount() {
-      document.body.style.overflow = 'unset';
+    localStorage.clear();
+    document.body.style.overflow = 'unset';
   }
 
   clearValidationErrors() {
@@ -76,11 +77,11 @@ export default class SignIn extends React.Component {
     let formIsValid = true;
 
     //Email
-    if(!this.state.email){
-        formIsValid = false;
-        errors["email"] = "This field is required";
+    if (!this.state.email) {
+      formIsValid = false;
+      errors["email"] = "This field is required";
     } else {
-      if(this.state.email !== "undefined"){
+      if (this.state.email !== "undefined") {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
@@ -92,11 +93,11 @@ export default class SignIn extends React.Component {
     }
 
     //Password
-    if(!this.state.password) {
+    if (!this.state.password) {
       formIsValid = false;
       errors["password"] = "This field is required";
     }
-    this.setState({validationError: errors}, () => {
+    this.setState({ validationError: errors }, () => {
       this.showValidation();
     });
     return formIsValid;
@@ -105,14 +106,14 @@ export default class SignIn extends React.Component {
   showValidation() {
     var emailInput = document.getElementById("email-input");
     var passwordInput = document.getElementById("password-input");
-    
-    if(this.state.validationError['email']) {
+
+    if (this.state.validationError['email']) {
       emailInput.classList.add("sign-has-err");
     } else {
       emailInput.classList.remove("sign-has-err");
     }
 
-    if(this.state.validationError['password']) {
+    if (this.state.validationError['password']) {
       passwordInput.classList.add("sign-has-err");
     } else {
       passwordInput.classList.remove("sign-has-err");
@@ -120,12 +121,12 @@ export default class SignIn extends React.Component {
   }
 
   handleSignin() {
-    if(this.handleValidation()) {
+    if (this.handleValidation()) {
       this.actionSignin();
     }
   }
 
-  actionSignin = async() => {
+  actionSignin = async () => {
     try {
       const result = await signin(this.state);
       if (result.data.result === "success") {
@@ -137,7 +138,7 @@ export default class SignIn extends React.Component {
         localStorage.setItem('channel_name', result.data.user.channel_name);
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
 
-        if(result.data.user.is_mentor) {
+        if (result.data.user.is_mentor) {
           window.location.href = '/mentordashboard';
         } else {
           window.location.href = '/studentdashboard';
@@ -147,7 +148,7 @@ export default class SignIn extends React.Component {
           signInError: result.data.message
         })
       }
-    } catch(err) {
+    } catch (err) {
       this.setState({
         signInError: 'Error is occured'
       })

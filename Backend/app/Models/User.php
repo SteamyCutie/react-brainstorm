@@ -22,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
     'provider', 'provider_id', 'sub_count', 'tags_id', 'channel_name', 'alias',
     'customer_id', 'connected_account', 'sub_product_id', 'sub_plan_id', 'sub_plan_fee',
     'life_time_earnings', 'pending_balance', 'available_balance',
-    'primary_card', 'primary_plan_card'
+    'primary_card', 'primary_plan_card', 'review_count'
   ];
   
   /**
