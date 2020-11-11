@@ -288,6 +288,18 @@ export default class StudentWallet extends React.Component {
     localStorage.clear();
     window.location.href = "/";
   }
+  
+  showSuccess(text) {
+    ToastsStore.success(text);
+  }
+
+  showFail(text) {
+    ToastsStore.error(text);
+  }
+
+  showWarning(text) {
+    ToastsStore.warning(text);
+  }
 
   render() {
     const { paymentCard, tHistory, columns, ModalOpen, loading, totalCnt } = this.state;
@@ -298,8 +310,8 @@ export default class StudentWallet extends React.Component {
           open={ModalOpen}
           toggle={() => this.toggle_add()}
           toggle_success={(text) => this.showSuccess(text)}
-          toggle_fail={(text) => ToastsStore.error(text)}
-          toggle_warning={(text) => ToastsStore.warning(text)}>
+          toggle_fail={(text) => this.showFail(text)}
+          toggle_warning={(text) => this.showWarning(text)}>
         </AddNewCard>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">

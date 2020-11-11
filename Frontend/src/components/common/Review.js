@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import StarIcon from "../../images/star_icon.svg";
+import avatar from "../../images/avatar.jpg";
 
 class Review extends React.Component {
 
@@ -14,7 +15,9 @@ class Review extends React.Component {
       <div className="subscription-review">
         <div className="subscription-review-desc">
           <div style={{display: "flex", float: "left"}}>
-            <img src={item.student.avatar} className="subscription-review-avatar" alt="avatar" />
+            {item.student.avatar && <img className="subscription-review-avatar" src={item.student.avatar} alt="avatar" />}
+            {!item.student.avatar && <img className="subscription-review-avatar" src={avatar} alt="avatar" />}
+            {/* <img src={item.student.avatar} className="subscription-review-avatar" alt="avatar" /> */}
             <div>
               <h6 className="subscription-review-name">{item.student.name}</h6>
               <h6 className="subscription-review-date">{item.review.day_diff} day ago</h6>

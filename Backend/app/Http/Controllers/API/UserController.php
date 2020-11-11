@@ -225,7 +225,7 @@ class UserController extends Controller
     $temp_names = [];
     $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
       'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
       ->where('email', $email)->first();
     if (!$user) {
       return response()->json([
@@ -276,11 +276,13 @@ class UserController extends Controller
       $res_students = Review::where('mentor_id', $id)->get();
       $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
         ->where('id', $id)->first();
       $temp = [];
       foreach ($res_students as $review_key => $review_value) {
-        $res_student = User::where('id', $review_value->student_id)->first();
+        $res_student = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')->where('id', $review_value->student_id)->first();
         $created_at = date('Y-m-d', strtotime($review_value->created_at));
         $current = date('Y-m-d');
         $date1 = date_create($created_at);
@@ -312,7 +314,7 @@ class UserController extends Controller
       $user->tags = $tag_names;
       $user->student = $res_students;
 //      $user->count_review = $count_review;
-      $user->count_review = $user->sub_count;
+//      $user->count_review = $user->sub_count;
       $user->share_info = $share_info;
 //      if ($count_review > 0) {
 //        $user->average_review = round($average_review/$count_review, 1);
@@ -776,7 +778,7 @@ class UserController extends Controller
 //        $mentors = DB::table('users')
       $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
         ->where('name', 'LIKE', '%' . $mentor_name . '%')
         ->where('id', '!=', $user_id)
         ->orderBy('average_mark', 'DESC')
@@ -787,7 +789,7 @@ class UserController extends Controller
 //        $mentors = DB::table('users')
         $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
           ->where('name', 'LIKE', '%' . $mentor_name . '%')
           ->where('id', '!=', $user_id)
           ->orderBy('average_mark', 'DESC')
@@ -796,7 +798,7 @@ class UserController extends Controller
 //        $mentors = DB::table('users')
         $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
           ->where('id', '!=', $user_id)
           ->orderBy('average_mark', 'DESC')
           ->paginate($rowsPerPage);
@@ -912,8 +914,8 @@ class UserController extends Controller
       $page = $request->page;
       $users = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee')
-        ->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+        ->orderBy('average_mark', 'DESC')->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
       
       for ($i = 0; $i < count($users); $i++) {

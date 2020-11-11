@@ -52,13 +52,14 @@ class ReviewController extends Controller
           'review' => $review,
         ]);
       }
+      
       //Begin get average_mark for Review and User table
-      $average_mark = round(Review::where('mentor_id', 9)->avg('mark'), 2);
-      User::where('id', $mentor_id)->update(['average_mark' => $average_mark]);
+      $average_mark = round(Review::where('mentor_id', $mentor_id)->avg('mark'), 2);
+      $review_count = Review::where('mentor_id', $mentor_id)->count();
+      User::where('id', $mentor_id)->update(['average_mark' => $average_mark, 'review_count' => $review_count]);
       //End get average_mark
+      
       /// Begin Pay for Session
-      
-      
       $student_info = User::select('name', 'primary_card')->where('id', $student_id)->first();
       $mentor_info = User::select('name', 'hourly_price', 'connected_account')->where('id', $mentor_id)->first();
       $session_info = Session::select('user_id', 'title', 'from')->where('id', $session_id)->first();

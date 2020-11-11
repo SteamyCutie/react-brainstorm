@@ -53,6 +53,7 @@ class CreateUsersTable extends Migration
       $table->string('timezone')->default("");
       $table->string('alias')->default("");
       $table->float('average_mark')->default(0);
+      $table->integer('review_count')->default(0);
       $table->timestamp('email_verified_at')->nullable();
       $table->integer('two_factor_code')->default(0);
       $table->string('origin_password')->default("");
