@@ -900,13 +900,13 @@ export default class Many2Many extends React.Component {
   }
 
   chat() {
-    if (this.state.showWhiteBoard && document.getElementById("room-local-video-container").classList.contains("room-local-video-container-fullscreen-screenshare")) {
-      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
-      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+    // if (this.state.showWhiteBoard && document.getElementById("room-local-video-container").classList.contains("room-local-video-container-fullscreen-screenshare")) {
+    //   document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
+    //   document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
 
-      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
-      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
-    }
+    //   document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
+    //   document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    // }
 
     if (this.state.showWhiteBoard) {
       master_switchToScreenshare();
@@ -914,54 +914,54 @@ export default class Many2Many extends React.Component {
 
     this.setState({
       showChat: !this.state.showChat, 
-      showWhiteBoard: false, 
+      // showWhiteBoard: false, 
       newChat: false, 
     })
 
-    if (this.state.showChat) {
-      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-chat")
-      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+    // if (this.state.showChat) {
+    //   document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-chat")
+    //   document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
 
-      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
-      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
-    } else {
-      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
-      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-chat")
+    //   document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
+    //   document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    // } else {
+    //   document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+    //   document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-chat")
 
-      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
-      document.getElementById("participants-video-container").classList.add("participants-video-container-full-chat");
-    }
+    //   document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+    //   document.getElementById("participants-video-container").classList.add("participants-video-container-full-chat");
+    // }
   }
   
   screenShare() {
-    if (this.state.showChat && document.getElementById("room-local-video-container").classList.contains("room-local-video-container-fullscreen-chat")) {
-      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-chat")
-      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+    // if (this.state.showChat && document.getElementById("room-local-video-container").classList.contains("room-local-video-container-fullscreen-chat")) {
+    //   document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-chat")
+    //   document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
 
-      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
-      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
-    }
+    //   document.getElementById("participants-video-container").classList.remove("participants-video-container-full-chat");
+    //   document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    // }
 
     this.setState({
       showWhiteBoard: !this.state.showWhiteBoard, 
-      showChat: false, 
+      // showChat: false, 
       newChat: false, 
     })
     master_switchToScreenshare();
 
-    if (this.state.showWhiteBoard) {
-      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
-      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
+    // if (this.state.showWhiteBoard) {
+    //   document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen-screenshare")
+    //   document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen")
 
-      document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
-      document.getElementById("participants-video-container").classList.add("participants-video-container-full");
-    } else {
-      document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
-      document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-screenshare")
+    //   document.getElementById("participants-video-container").classList.remove("participants-video-container-full-screenshare");
+    //   document.getElementById("participants-video-container").classList.add("participants-video-container-full");
+    // } else {
+    //   document.getElementById("room-local-video-container").classList.remove("room-local-video-container-fullscreen")
+    //   document.getElementById("room-local-video-container").classList.add("room-local-video-container-fullscreen-screenshare")
 
-      document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
-      document.getElementById("participants-video-container").classList.add("participants-video-container-full-screenshare");
-    }
+    //   document.getElementById("participants-video-container").classList.remove("participants-video-container-full");
+    //   document.getElementById("participants-video-container").classList.add("participants-video-container-full-screenshare");
+    // }
   }
   
   addUser() {
@@ -1327,7 +1327,7 @@ export default class Many2Many extends React.Component {
           }
           <label>{sessionTimeLabel}</label>
         </div>
-        <div className="video-call-element-min" id="video-call-element-min">
+        <div className={ (showChat || showWhiteBoard) ? "video-call-element-min-chat-whiteboard" : "video-call-element-min"} id="video-call-element-min">
           {!isFullscreen && 
             <div className="room-control-container-mini">
               <Button className="btn-rooom-control-mini margin-right-auto" onClick={() => this.swithFullScreen()}>
@@ -1349,7 +1349,7 @@ export default class Many2Many extends React.Component {
             </div>
           }
           {isFullscreen &&
-            <video id="selected-video-output" style={{  width: "100%", height: "100vh", objectFit: "fill"}}autoPlay poster={PosterImg} muted>
+            <video id="selected-video-output" className={ (showChat || showWhiteBoard) ? "selected-video-output-chat-whiteboard" : "selected-video-output"} autoPlay poster={PosterImg} muted>
 
             </video>
           }
@@ -1362,7 +1362,7 @@ export default class Many2Many extends React.Component {
           <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
             <video id="videoOutput" style={{display: "none"}}></video>
           </div>
-          {isFullscreen ?
+          {/* {isFullscreen ?
             <div className={showChat ? "room-group-chat" : "room-group-chat-hidden"}>
               <div className="room-chat-header">
                 <h2 style={{width: "100%", textAlign: "center", fontSize: "38px", fontWeight: "bold", margin: "0px", marginLeft: "50px"}}>Chat</h2>
@@ -1381,14 +1381,10 @@ export default class Many2Many extends React.Component {
               </Chat>
             </div>
             : null
-          } 
-          {(showWhiteBoard && isFullscreen) ?
+          }  */}
+          {/* {(showWhiteBoard && isFullscreen) ?
             <div id="room-whiteboard-body" className="room-whiteboard">
               <div className="room-whitboard-header">
-                {/* <Button className="btn-rooom-control2 float-center" style={{marginRight: "auto", padding: "0px"}} onClick={() => this.whiteboardFullscreen()}>
-                  <img src={WhiteboardFullscreenImg} alt="Add user"/>
-                </Button> */}
-                
                 <h2 style={{fontSize: "38px", fontWeight: "bold", margin: "0px", width: "100%", textAlign: "center"}}>Whiteboard</h2>
                 <Button className="btn-rooom-control2 float-center" style={{marginLeft: "auto", padding: "0px"}} onClick={() => this.whiteboardClose()}>
                   <img src={WhiteboardCloseImg} alt="Add user"/>
@@ -1415,7 +1411,7 @@ export default class Many2Many extends React.Component {
               />
             </div>
             : null
-          }
+          } */}
           {isFullscreen && 
             <div className="room-control-container">
               <Button className="btn-rooom-control margin-right-auto" onClick={() => this.swithFullScreen()}>
@@ -1454,6 +1450,55 @@ export default class Many2Many extends React.Component {
           onInvite={(email) => this.handleInvite(email)} 
           onInviteClose={() => this.handleInviteClose()} 
         />
+        {isFullscreen ?
+          <div className="chat-whiteboard-container">
+            <div className={showChat ? ( showWhiteBoard ? "room-group-chat" : "room-group-chat-full-width"): "room-group-chat-hidden"}>
+              <div className="room-chat-header">
+                <h2 style={{width: "100%", textAlign: "center", fontSize: "38px", fontWeight: "bold", margin: "0px", marginLeft: "50px"}}>Chat</h2>
+                <Button className="btn-rooom-control2 float-center" onClick={() => this.chatClose()}>
+                  <img src={WhiteboardCloseImg} alt="Add user"/>
+                </Button>
+              </div>
+              <Chat client={chatClient} theme={'messaging light'}>
+                <Channel channel={channel}>
+                  <Window>
+                    <MessageList />
+                    <MessageInput />
+                  </Window>
+                  <Thread />
+                </Channel>
+              </Chat>
+            </div>
+            <div id="room-whiteboard-body" className={showWhiteBoard ? (showChat ? "room-whiteboard" : "room-whiteboard-full-width") : "room-whiteboard-hidden"}>
+              <div className="room-whitboard-header">
+                <h2 style={{fontSize: "38px", fontWeight: "bold", margin: "0px", width: "100%", textAlign: "center"}}>Whiteboard</h2>
+                <Button className="btn-rooom-control2 float-center" style={{marginLeft: "auto", padding: "0px"}} onClick={() => this.whiteboardClose()}>
+                  <img src={WhiteboardCloseImg} alt="Add user"/>
+                </Button>
+              </div>
+              <WhiteBoard
+                className="room-whiteboard-body"
+                width={width}
+                height={height}
+                showToolbar={true}
+                showBoard={true}
+                mode={mode}
+                onModeClick={this.handleOnModeClick}
+                brushColor={brushColor}
+                brushColors={[
+                  '#f44336',
+                  '#e91e63',
+                  '#9c27b0',
+                  '#673ab7',
+                  '#3f51b5',
+                  '#2196f3',
+                ]}
+                onBrushColorChange={this.handleOnBrushColorChange}
+              />
+            </div>
+          </div>
+          : null
+        }
       </div>
     );
   }
