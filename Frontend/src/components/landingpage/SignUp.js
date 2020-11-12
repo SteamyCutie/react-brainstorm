@@ -25,7 +25,8 @@ class SignUp extends React.Component {
         confirm: '',
       },
       signUpError: '', 
-      is_mentor:  false, 
+      is_mentor:  false,
+      history: null,
     };
   }
 
@@ -64,7 +65,7 @@ class SignUp extends React.Component {
     this.setState({confirmpassword: e.target.value});
   }
 
-  actionSignup = async() => {
+  actionSignup = async() => {        
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   
@@ -72,7 +73,8 @@ class SignUp extends React.Component {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     
     let param = this.state;
-    param.channel_name = text;
+    param.channel_name = text;    
+    this.setState({history: this.props.history});
     try {
       const result = await signup(param);
       if (result.data.result === "success") {
@@ -96,11 +98,12 @@ class SignUp extends React.Component {
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
     });
+    var self = this;
     kinesisvideo.createSignalingChannel(params, function (err, data) {
       if (err) {
         console.log(err, err.stack);
-      } else {
-        this.props.history.push('/verification');
+      } else {        
+        self.state.history.push('/verification');
       } 
     });
   }

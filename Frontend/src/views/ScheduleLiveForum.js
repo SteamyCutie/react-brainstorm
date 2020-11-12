@@ -210,7 +210,7 @@ export default class ScheduleLiveForum extends React.Component {
 
     return (
       <div>
-        {/* {loading && <LoadingModal open={true} />} */}
+        {loading && <LoadingModal open={true} />}
         <CreateLiveForum 
           open={ModalOpen} 
           toggle={() => this.toggle_createliveforum()} 
