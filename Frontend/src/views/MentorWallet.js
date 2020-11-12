@@ -8,7 +8,7 @@ import AddNewBank from "../components/common/AddNewBank";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 import { signout, getuseridformentor, gettransactionhistorybymentor } from '../api/api';
-import { REACT_APP_STRIPE_CLIENT_ID } from '../common/config'
+import { REACT_APP_STRIPE_CLIENT_ID, REACT_APP_STRIPE_EXPRESS } from '../common/config'
 
 export default class MentorWallet extends React.Component {
   constructor(props) {
@@ -102,10 +102,7 @@ export default class MentorWallet extends React.Component {
     try {
       const result = await getuseridformentor(param);
       if (result.data.result === "success") {
-        window.open(
-          'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=' + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write',
-          '_blank'
-        );
+        window.open(REACT_APP_STRIPE_EXPRESS + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write','_blank');
       } else if (result.data.result === "warning") {
       } else { }
     } catch (err) {

@@ -294,6 +294,7 @@ class SessionController extends Controller
       $session_id = $request['id'];
       $res = Session::where('id', $session_id)->delete();
       $res_invite = Invited::where('session_id', $session_id)->delete();
+      $res_posted = PostedNotification::where('session_id', $session_id)->delete();
       return response()->json([
         'result'=> 'success',
         'data' => []
