@@ -4,15 +4,16 @@ import Loginbygoogle from "../common/Loginbygoogle";
 import Loginbyfacebook from "../common/Loginbyfacebook";
 import "../../assets/landingpage.css"
 import { signin } from '../../api/api';
-import Close from '../../images/Close.svg'
+import Close from '../../images/Close.svg';
+import { withRouter } from 'react-router-dom';
 
-export default class SignIn extends React.Component {
+class SignIn extends React.Component {
   constructor(props) {
     super(props);
 
     this.emailInput = React.createRef();
     this.state = {
-      email: "", 
+      email: "",
       password: "",
       validationError: {
         email: '',
@@ -22,19 +23,23 @@ export default class SignIn extends React.Component {
     };
   }
 
+  componentWillMount() {
+    localStorage.clear();
+  }
+  
   componentDidMount() {
     // var x = document.getElementById("google-login").firstChild.innerHTML;
     // console.log(x);
   }
 
-  componentDidMount() {    
-    if(this.props.open){
+  componentDidMount() {
+    if (this.props.open) {
       document.body.style.overflow = 'hidden';
-    }    
+    }
   }
-  
+
   componentWillUnmount() {
-      document.body.style.overflow = 'unset';
+    document.body.style.overflow = 'unset';
   }
 
   clearValidationErrors() {
@@ -49,6 +54,13 @@ export default class SignIn extends React.Component {
 
   toggle() {
     const { toggle } = this.props;
+    this.setState({
+      validationError: {
+        email: '',
+        password: ''
+      },
+      signInError: ''
+    })
     toggle();
   }
 
@@ -76,11 +88,11 @@ export default class SignIn extends React.Component {
     let formIsValid = true;
 
     //Email
-    if(!this.state.email){
-        formIsValid = false;
-        errors["email"] = "This field is required";
+    if (!this.state.email) {
+      formIsValid = false;
+      errors["email"] = "This field is required";
     } else {
-      if(this.state.email !== "undefined"){
+      if (this.state.email !== "undefined") {
         let lastAtPos = this.state.email.lastIndexOf('@');
         let lastDotPos = this.state.email.lastIndexOf('.');
 
@@ -92,11 +104,11 @@ export default class SignIn extends React.Component {
     }
 
     //Password
-    if(!this.state.password) {
+    if (!this.state.password) {
       formIsValid = false;
       errors["password"] = "This field is required";
     }
-    this.setState({validationError: errors}, () => {
+    this.setState({ validationError: errors }, () => {
       this.showValidation();
     });
     return formIsValid;
@@ -105,14 +117,14 @@ export default class SignIn extends React.Component {
   showValidation() {
     var emailInput = document.getElementById("email-input");
     var passwordInput = document.getElementById("password-input");
-    
-    if(this.state.validationError['email']) {
+
+    if (this.state.validationError['email']) {
       emailInput.classList.add("sign-has-err");
     } else {
       emailInput.classList.remove("sign-has-err");
     }
 
-    if(this.state.validationError['password']) {
+    if (this.state.validationError['password']) {
       passwordInput.classList.add("sign-has-err");
     } else {
       passwordInput.classList.remove("sign-has-err");
@@ -120,15 +132,15 @@ export default class SignIn extends React.Component {
   }
 
   handleSignin() {
-    if(this.handleValidation()) {
+    if (this.handleValidation()) {
       this.actionSignin();
     }
   }
 
-  actionSignin = async() => {
+  actionSignin = async () => {
     try {
       const result = await signin(this.state);
-      if (result.data.result === "success") {
+      if (result.data.result === "success") {        
         localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('user_id', result.data.user.id);
         localStorage.setItem('avatar', result.data.user.avatar);
@@ -136,18 +148,19 @@ export default class SignIn extends React.Component {
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
         localStorage.setItem('channel_name', result.data.user.channel_name);
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
+        localStorage.setItem('token', result.data.token);
 
-        if(result.data.user.is_mentor) {
-          window.location.href = '/mentordashboard';
+        if (result.data.user.is_mentor) {
+          this.props.history.push('/mentordashboard');
         } else {
-          window.location.href = '/studentdashboard';
+          this.props.history.push('/studentdashboard');
         }
       } else {
         this.setState({
           signInError: result.data.message
         })
       }
-    } catch(err) {
+    } catch (err) {
       this.setState({
         signInError: 'Error is occured'
       })
@@ -167,7 +180,7 @@ export default class SignIn extends React.Component {
   }
 
   handleforgetPassword() {
-    window.location.href = '/forgetpassword';
+    this.props.history.push('/forgetpassword');
   }
 
   errorOccur(text) {
@@ -235,3 +248,5 @@ export default class SignIn extends React.Component {
     );
   }
 }
+
+export default withRouter(SignIn);

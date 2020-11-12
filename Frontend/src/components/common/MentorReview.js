@@ -5,8 +5,9 @@ import Rating from '@material-ui/lab/Rating';
 import { setreview, signout } from '../../api/api';
 import Close from '../../images/Close.svg';
 import { ToastsStore } from 'react-toasts';
+import { withRouter } from 'react-router-dom';
 
-export default class MentorReview extends React.Component {
+class MentorReview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,6 +60,8 @@ export default class MentorReview extends React.Component {
   actionSave = async (mentorid) => {
     const { reviewinfo } = this.state;
     reviewinfo.mentor_id = mentorid;
+    reviewinfo.session_id = this.props.session.id;
+    reviewinfo.conference_time = this.props.sessionTime;
     const { requiremessage } = this.state;
     let temp = requiremessage;
     temp.dreview = '';
@@ -71,7 +74,7 @@ export default class MentorReview extends React.Component {
       if (result.data.result === "success") {
         this.toggle();
         ToastsStore.success("Review Success");
-        window.location.href = "/trending";
+        this.props.history.push('/trending');
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -135,30 +138,30 @@ export default class MentorReview extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {
     const { open, sessionTime } = this.props;
-    const {user_id, name} = this.props.session;
+    const { user_id, name } = this.props.session;
     const { requiremessage, reviewinfo, loading } = this.state;
     return (
       <div>
         <Modal size="lg" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-          <h1 className="content-center modal-header-class">Review mentor {name}</h1>
-          <h1 className="content-center modal-header-class">{sessionTime}</h1>
-          <Rating name="size-large" defaultValue={0} size="large" onChange={(e, newValue) => this.onChangeMark(e, newValue)}/>
-          <div className="content-center block-content-class modal-input-group-class">
-            <label htmlFor="feEmail" className="profile-detail-important">Review</label>
-            {requiremessage.dreview !== '' && <span className="require-message">{requiremessage.dreview}</span>}
-            {requiremessage.dreview !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" invalid onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review}/>}
-            {requiremessage.dreview === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review}/>}
-          </div>
-          <div className="content-center block-content-class button-text-group-class">
-            <Button onClick={() => this.actionSave(user_id)}>Save</Button>
-          </div>
+            <h1 className="content-center modal-header-class">Review mentor {name}</h1>
+            <h1 className="content-center modal-header-class">{sessionTime}</h1>
+            <Rating name="size-large" defaultValue={0} size="large" onChange={(e, newValue) => this.onChangeMark(e, newValue)} />
+            <div className="content-center block-content-class modal-input-group-class">
+              <label htmlFor="feEmail" className="profile-detail-important">Review</label>
+              {requiremessage.dreview !== '' && <span className="require-message">{requiremessage.dreview}</span>}
+              {requiremessage.dreview !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" invalid onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review} />}
+              {requiremessage.dreview === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Review" autoFocus="1" onChange={(e) => this.onChangeReview(e)} value={reviewinfo.review} />}
+            </div>
+            <div className="content-center block-content-class button-text-group-class">
+              <Button onClick={() => this.actionSave(user_id)}>Save</Button>
+            </div>
           </ModalBody>
         </Modal>
         {loading && <LoadingModal open={true} />}
@@ -166,3 +169,5 @@ export default class MentorReview extends React.Component {
     );
   }
 }
+
+export default withRouter(MentorReview);

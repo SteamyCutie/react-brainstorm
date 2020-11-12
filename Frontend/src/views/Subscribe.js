@@ -111,7 +111,7 @@ export default class Subscribe extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {
@@ -151,8 +151,8 @@ export default class Subscribe extends React.Component {
                         <div className="mentor-detail-name" style={{ fontSize: "30px" }}>{mentorData.name}</div>
                         <div style={{ fontSize: "20px", fontWeight: "bold", display: "flex" }}>
                           <img src={StarIcon} alt="star-icon" className="mentor-detail-score" />
-                          <h6 style={{ paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333" }}>{mentorData.average_review}</h6>
-                          <h6 style={{ paddingTop: "10px", fontSize: "18px", paddingLeft: "5px", color: "#333333" }}>({mentorData.count_review} reviews)</h6>
+                          <h6 style={{ paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333" }}>{mentorData.average_mark}</h6>
+                          <h6 style={{ paddingTop: "10px", fontSize: "18px", paddingLeft: "5px", color: "#333333" }}>({mentorData.review_count} reviews)</h6>
                         </div>
                       </Row>
                       <Row className="mentor-detail-subject-tag">
@@ -208,7 +208,7 @@ export default class Subscribe extends React.Component {
                   <div style={{ display: "flex", paddingLeft: "30px", paddingTop: "20px" }}>
                     <h6 style={{ paddingTop: "10px", paddingRight: "20px", fontSize: "20px", fontWeight: "bold", color: "#333333" }}>Review</h6>
                     <img src={StarIcon} alt="star-icon" className="mentor-detail-score" />
-                    <h6 style={{ paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333" }}>{mentorData.average_review}</h6>
+                    <h6 style={{ paddingTop: "10px", fontSize: "20px", fontWeight: "bold", color: "#333333" }}>{mentorData.average_mark}</h6>
                   </div>
                   <div className="reviews-container">
                     {mentorData.student &&

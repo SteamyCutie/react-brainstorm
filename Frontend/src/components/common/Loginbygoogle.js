@@ -3,14 +3,20 @@ import AWS from 'aws-sdk';
 import GoogleLogin from 'react-google-login';
 import { GOOGLE_KEY, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
+import { withRouter } from 'react-router-dom';
+import { LocalSeeOutlined } from '@material-ui/icons';
 
-export class Loginbygoogle extends Component {
+class Loginbygoogle extends Component {
   constructor(props) {
     super(props);
     this.state = {
       ChannelName: '',
       user: null
     };
+  }
+
+  componentWillMount() {
+    localStorage.clear();
   }
 
   signup = async (res) => {
@@ -46,10 +52,11 @@ export class Loginbygoogle extends Component {
           localStorage.setItem('pay_verified', result.data.user.pay_verified);
           localStorage.setItem('channel_name', result.data.user.channel_name);
           localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
+          localStorage.setItem('token', result.data.token);
           if (result.data.user.is_mentor === 1)
-            window.location.href = "/mentordashboard";
+            this.props.history.push('/mentordashboard');
           else
-            window.location.href = "/studentdashboard";
+            this.props.history.push('/studentdashboard');
         }
       } else {
         errorOccur(result.data.message);
@@ -81,10 +88,10 @@ export class Loginbygoogle extends Component {
         localStorage.setItem('pay_verified', user.pay_verified);
         localStorage.setItem('channel_name', user.channel_name);
         localStorage.setItem('user-type', (user.is_mentor === 1 ? true : false));
-        if (user.is_mentor === 1)
-          window.location.href = "/mentordashboard";
+        if (user.is_mentor === 1)          
+          this.props.history.push('/mentordashboard');
         else
-          window.location.href = "/studentdashboard";
+          this.props.history.push('/studentdashboard');
       } 
     });
   }
@@ -105,4 +112,4 @@ export class Loginbygoogle extends Component {
   }
 }
 
-export default Loginbygoogle;
+export default withRouter(Loginbygoogle);

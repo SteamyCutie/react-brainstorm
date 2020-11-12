@@ -44,7 +44,7 @@ export default class DefaultLayout extends React.Component {
 
   componentWillMount() {
     if (!localStorage.getItem('token')) {
-      window.location.href = '/';
+      this.props.history.push('/');
       return;
     }
 
@@ -134,8 +134,7 @@ export default class DefaultLayout extends React.Component {
     // });
 
     localStorage.setItem('user-type', !JSON.parse(localStorage.getItem('user-type')));
-
-    const { filterType, mentorUrl, studentUrl } = this.state;
+    const { filterType, mentorUrl, studentUrl } = this.state;    
     if (!filterType)
       this.props.history.push(mentorUrl);
     else
@@ -148,7 +147,7 @@ export default class DefaultLayout extends React.Component {
     }
     try {
       this.setState({ loading: true });
-      const result = await switchuser(param);
+      const result = await switchuser(param);      
       if (result.data.result === "success") {
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -175,10 +174,10 @@ export default class DefaultLayout extends React.Component {
 
   handleSearch(searchKey) {
     const { history } = this.props;
-    if (JSON.parse(localStorage.getItem('user-type')))
-      history.push("/mentordashboard");
+    if (JSON.parse(localStorage.getItem('user-type')))      
+      this.props.history.push("/mentordashboard");
     else
-      history.push("/studentdashboard");
+      this.props.history.push("/studentdashboard");
   }
 
   signout = async () => {
@@ -210,7 +209,7 @@ export default class DefaultLayout extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {

@@ -84,42 +84,6 @@ export default class StudentWallet extends React.Component {
     });
   }
 
-  pay = async () => {
-    let param = {
-      mentor_id: 4,
-      student_id: '2',
-      conference_time: '34',
-      session_id: '1'
-    }
-
-    try {
-      this.setState({ loading: true });
-      const result = await payforsession(param);
-      if (result.data.result === "success") {
-        this.showSuccess(result.data.result);
-      } else if (result.data.result === "warning") {
-        ToastsStore.warning(result.data.message);
-      } else {
-        if (result.data.message === "Token is Expired") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else {
-          ToastsStore.error(result.data.message);
-        }
-      }
-      this.setState({ loading: false });
-    } catch (err) {
-      this.setState({ loading: false });
-      ToastsStore.error("Something Went wrong");
-    };
-  }
-
   getHistory = async (pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
@@ -322,7 +286,22 @@ export default class StudentWallet extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
+  }
+  
+  showSuccess(text) {
+    this.setState({
+      ModalOpen: !this.state.ModalOpen
+    });
+    ToastsStore.success(text);
+  }
+
+  showFail(text) {
+    ToastsStore.error(text);
+  }
+
+  showWarning(text) {
+    ToastsStore.warning(text);
   }
 
   render() {
@@ -334,16 +313,15 @@ export default class StudentWallet extends React.Component {
           open={ModalOpen}
           toggle={() => this.toggle_add()}
           toggle_success={(text) => this.showSuccess(text)}
-          toggle_fail={(text) => ToastsStore.error(text)}
-          toggle_warning={(text) => ToastsStore.warning(text)}>
+          toggle_fail={(text) => this.showFail(text)}
+          toggle_warning={(text) => this.showWarning(text)}>
         </AddNewCard>
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col className="page-title">
               <h3>Wallet</h3>
             </Col>
-            <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>
-            <Button className="btn-add-payment" onClick={() => this.pay()}>Test Pay</Button>
+            <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>            
           </Row>
           <Row>
             <div className="card-container">

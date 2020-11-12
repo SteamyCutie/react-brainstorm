@@ -46,8 +46,6 @@ class SubscriptionController extends Controller
           'student_id' => $student->id,
           'sub_plan_fee' => $sub_plan_fee,
         ]);
-        $sub_count = User::select('sub_count')->where('id', $mentor_id)->first();
-        User::where('id', $mentor_id)->update(['sub_count' => $sub_count->sub_count +1]);
       } else {
         $res_sub = Subscription::where('mentor_id', $mentor_id)->where('student_id', $student->id)->update([
           'mentor_id' => $mentor_id,
@@ -55,6 +53,8 @@ class SubscriptionController extends Controller
           'sub_plan_fee' => $sub_plan_fee,
         ]);
       }
+      $sub_count = Subscription::where('mentor_id', $mentor_id)->count();
+      User::where('id', $mentor_id)->update(['sub_count' => $sub_count]);
       if($res_sub) {
         //Begin set primary_card for subscription
         $pay_info = Payment::where('id', $payment_id)->first();
@@ -83,7 +83,7 @@ class SubscriptionController extends Controller
         Subscription::where('mentor_id', $mentor_id)->where('student_id', $student->id)->update([
           'st_customer_id' => $student->customer_id,
           'st_subscription_id' => $subscription->id,
-          ]);
+        ]);
         Payment::where('user_id', $student->id)->where('payment_type', 'Card')->update(['is_primary' => false]);
         Payment::where('id', $payment_id)->update(['is_primary' => true]);
         return response()->json([
@@ -99,7 +99,7 @@ class SubscriptionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -110,9 +110,6 @@ class SubscriptionController extends Controller
       $email = $request->email;
       $student = User::select('id')->where('email', $email)->first();
       
-      $sub_count = User::select('sub_count')->where('id', $mentor_id)->first();
-      $res_dec = User::where('id', $mentor_id)->update(['sub_count' => $sub_count->sub_count - 1]);
-      
       //Begin Cancel Subscription for stripe
       $sub_info = Subscription::where('mentor_id', $mentor_id)->where('student_id', $student->id)->first();
       $stripe = new \Stripe\StripeClient(env('SK_LIVE'));
@@ -121,18 +118,17 @@ class SubscriptionController extends Controller
         []
       );
       //End Cancel Subscription for stripe
-      
       Subscription::where('mentor_id', $mentor_id)->where('student_id', $student->id)->delete();
-      if($res_dec) {
-        return response()->json([
-          'result'=> 'success',
-          'data' => [],
-        ]);
-      }
+      $sub_count = Subscription::where('mentor_id', $mentor_id)->count();
+      User::where('id', $mentor_id)->update(['sub_count' => $sub_count]);
+      return response()->json([
+        'result'=> 'success',
+        'data' => [],
+      ]);
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }

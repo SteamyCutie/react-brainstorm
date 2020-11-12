@@ -7,8 +7,9 @@ import "../../assets/landingpage.css"
 import { signup } from '../../api/api';
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import Close from '../../images/Close.svg';
+import { withRouter } from 'react-router-dom';
 
-export default class SignUp extends React.Component {
+class SignUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,12 +25,22 @@ export default class SignUp extends React.Component {
         confirm: '',
       },
       signUpError: '', 
-      is_mentor:  false, 
+      is_mentor:  false,
+      history: null,
     };
   }
 
   toggle() {
     const { toggle } = this.props;
+    this.setState({
+      validationError: {
+        name: '',
+        email: '',
+        password: '',
+        confirm: ''
+      },
+      signUpError: ''
+    })
     toggle();    
   }
 
@@ -54,7 +65,7 @@ export default class SignUp extends React.Component {
     this.setState({confirmpassword: e.target.value});
   }
 
-  actionSignup = async() => {
+  actionSignup = async() => {        
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   
@@ -62,7 +73,8 @@ export default class SignUp extends React.Component {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     
     let param = this.state;
-    param.channel_name = text;
+    param.channel_name = text;    
+    this.setState({history: this.props.history});
     try {
       const result = await signup(param);
       if (result.data.result === "success") {
@@ -86,11 +98,12 @@ export default class SignUp extends React.Component {
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
     });
+    var self = this;
     kinesisvideo.createSignalingChannel(params, function (err, data) {
       if (err) {
         console.log(err, err.stack);
-      } else {
-        window.location.href = '/verification';
+      } else {        
+        self.state.history.push('/verification');
       } 
     });
   }
@@ -301,3 +314,5 @@ export default class SignUp extends React.Component {
     );
   }
 }
+
+export default withRouter(SignUp);

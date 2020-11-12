@@ -5,8 +5,8 @@ import NavbarSearch from "./NavbarSearch";
 import NavbarDropdown from "./NavbarDropdown";
 import SignIn from "../../landingpage/SignIn";
 import SignUp from "../../landingpage/SignUp";
-
-import projectLogo from '../../../images/logo.svg'
+import projectLogo from '../../../images/logo.svg';
+import { withRouter } from 'react-router-dom';
 
 const classes = classNames(
   "main-navbar",
@@ -14,7 +14,7 @@ const classes = classNames(
   "sticky-top"
 );
 
-export default class MainNavbar extends React.Component{
+class MainNavbar extends React.Component{
 
   constructor(props) {
     super(props);
@@ -31,7 +31,7 @@ export default class MainNavbar extends React.Component{
       signInOpen: !this.state.signInOpen
     });
     if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
+      // this.signInElement.current.clearValidationErrors();
     }
   }
 
@@ -40,7 +40,7 @@ export default class MainNavbar extends React.Component{
       signUpOpen: !this.state.signUpOpen
     });
     if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
+      // this.signUpElement.current.clearValidationErrors();
       this.is_Mentor = false;
     }
   }
@@ -51,10 +51,10 @@ export default class MainNavbar extends React.Component{
       signUpOpen: !this.state.signUpOpen
     });
     if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
+      // this.signInElement.current.clearValidationErrors();
     }
     if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
+      // this.signUpElement.current.clearValidationErrors();
     }
   }
 
@@ -66,16 +66,16 @@ export default class MainNavbar extends React.Component{
     this.is_Mentor = true;
     
     if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
+      // this.signUpElement.current.clearValidationErrors();
     }
   }
 
   findMentor() {
-    window.location.href = '/findmentor';
+    this.props.history.push('/findmentor');
   }
 
   toggle_search(searchText) {
-    window.location.href = '/findmentor';
+    this.props.history.push('/findmentor');
   }
 
   render() {
@@ -117,3 +117,5 @@ export default class MainNavbar extends React.Component{
     );
   }
 };
+
+export default withRouter(MainNavbar);

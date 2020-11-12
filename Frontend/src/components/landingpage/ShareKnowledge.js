@@ -5,9 +5,9 @@ import ScrollAnimation from 'react-animate-on-scroll';
 import MentorActiveImage from '../../images/Mentor_ active session full screen 1.jpg'
 import "../../assets/landingpage.css"
 import "animate.css/animate.min.css";
+import { withRouter } from 'react-router-dom';
 
-
-export default class ShareKnowledge extends React.Component{
+class ShareKnowledge extends React.Component{
 
   constructor(props) {
     super(props);
@@ -15,7 +15,7 @@ export default class ShareKnowledge extends React.Component{
   }
 
   findMentor= () => {
-    window.location.href = "/findmentor"
+    this.props.history.push('/findmentor');
   };
 
   render() {
@@ -50,3 +50,5 @@ export default class ShareKnowledge extends React.Component{
     )
   }
 };
+
+export default withRouter(ShareKnowledge);

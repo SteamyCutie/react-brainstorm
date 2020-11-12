@@ -714,22 +714,6 @@ export const deletestudentcard = (param) => {
   });
 }
 
-export const payforsession = (param) => {
-    const token = localStorage.getItem('token');
-    const header = {
-        'Authorization': 'bearer ' + token,
-    }
-
-    return new Promise(async(resolve, reject) => {
-        try {
-            const response = await axios.post(SERVER_URL+'/api/payforsession', param, {headers: header});
-            resolve(response);
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
-
 export const getuseridformentor = (param) => {
     const token = localStorage.getItem('token');
     const header = {

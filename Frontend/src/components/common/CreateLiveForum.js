@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import MultiSelect from "react-multi-select-component";
-import 'react-notifications-component/dist/theme.css';
 import LoadingModal from "./LoadingModal";
 import { createforum, gettags, getallstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
@@ -162,7 +161,7 @@ export default class CreateLiveForum extends React.Component {
       requiremessage: temp
     });
     try {
-      this.setState({loading: true});
+      // this.setState({loading: true});
       const result = await createforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
@@ -233,7 +232,7 @@ export default class CreateLiveForum extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   onChangeDay = (e) => {

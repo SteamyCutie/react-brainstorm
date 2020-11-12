@@ -5,8 +5,9 @@ import LoadingModal from "../../../../components/common/LoadingModal";
 import { checkednotification, signout } from '../../../../api/api';
 import avatar from "../../../../images/avatar.jpg";
 import { ToastsStore } from 'react-toasts';
+import { withRouter } from 'react-router-dom';
 
-export default class Notifications extends React.Component {
+class Notifications extends React.Component {
   constructor(props) {
     super(props);
 
@@ -53,9 +54,9 @@ export default class Notifications extends React.Component {
         this.setState({ notification_count: temp });
         localStorage.setItem('user-type', (result.data.data === 1 ? true : false));
         if (result.data.data === 1) {
-          window.location.href = '/scheduleLiveForum';
-        } else {
-          window.location.href = '/studentSession';
+          this.props.history.push('/scheduleLiveForum');
+        } else {          
+          this.props.history.push('/studentSession');
         }
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -147,8 +148,8 @@ export default class Notifications extends React.Component {
   }
 
   removeSession() {
-    localStorage.clear();
-    window.location.href = "/";
+    localStorage.clear();    
+    //this.props.history.push('/');
   }
 
   render() {
@@ -203,3 +204,4 @@ export default class Notifications extends React.Component {
   }
 }
 
+export default withRouter(Notifications);

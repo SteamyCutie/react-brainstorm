@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
+Route::post('/signout', 'UserController@logout');
 Route::post('/signbysocial', 'UserController@signBySocial');
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
@@ -29,22 +30,8 @@ Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
 Route::post('/getintroduceinfo', 'UserController@getIntroduceInfo');
 
-Route::post('/registercardbystudent', 'PaymentController@registercardbystudent');
-Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
-Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
-Route::post('/getusercards', 'PaymentController@getusercards');
-Route::post('/setprimarycard', 'PaymentController@setprimarycard');
-Route::post('/deletestudentcard', 'PaymentController@deletestudentcard');
-Route::post('/testpayment', 'PaymentController@testpayment');
-
-Route::post('/payforsession', 'TransactionHistoryController@payforsession');
-Route::post('/gettransactionhistorybystudent', 'TransactionHistoryController@gettransactionhistorybystudent');
-Route::post('/gettransactionhistorybymentor', 'TransactionHistoryController@gettransactionhistorybymentor');
-Route::post('/webhook', 'TransactionHistoryController@webhook');
-Route::post('/connect', 'TransactionHistoryController@webhook');
-
 Route::group(['middleware' => 'jwt.verify'], function () {
-  Route::post('/signout', 'UserController@logout');
+  
   Route::post('/editprofile', 'UserController@editProfile');
   Route::post('/getuserinfo', 'UserController@getUserInfo');
   Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
@@ -77,9 +64,24 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   
   Route::post('/setreview', 'ReviewController@setReview');
+  
   Route::post('/addlibrary', 'LibraryController@addLibrary');
   Route::post('/getlibrary', 'LibraryController@getLibrary');
   Route::post('/addreport', 'ReportController@addReport');
   Route::post('/checkednotification', 'PostedNotificationController@checkedNotification');
   Route::post('/getnotification', 'PostedNotificationController@getNotification');
+  
+  Route::post('/payforsession', 'TransactionHistoryController@payforsession');
+  Route::post('/gettransactionhistorybystudent', 'TransactionHistoryController@gettransactionhistorybystudent');
+  Route::post('/gettransactionhistorybymentor', 'TransactionHistoryController@gettransactionhistorybymentor');
+  Route::post('/webhook', 'TransactionHistoryController@webhook');
+  Route::post('/connect', 'TransactionHistoryController@webhook');
+  
+  Route::post('/registercardbystudent', 'PaymentController@registercardbystudent');
+  Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
+  Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
+  Route::post('/getusercards', 'PaymentController@getusercards');
+  Route::post('/setprimarycard', 'PaymentController@setprimarycard');
+  Route::post('/deletestudentcard', 'PaymentController@deletestudentcard');
+  Route::post('/testpayment', 'PaymentController@testpayment');
 });

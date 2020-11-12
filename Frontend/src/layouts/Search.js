@@ -9,8 +9,9 @@ import { findmentors, signout } from '../api/api';
 import { Store } from "../flux";
 import { Dispatcher, Constants } from "../flux";
 import { ToastsStore } from 'react-toasts';
+import { withRouter } from 'react-router-dom';
 
-export default class SearchLayout extends React.Component {
+class SearchLayout extends React.Component {
   constructor(props) {
     super(props);
 
@@ -239,7 +240,7 @@ export default class SearchLayout extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
 
   showInformation(text) {
@@ -269,3 +270,5 @@ export default class SearchLayout extends React.Component {
     );
   }
 }
+
+export default withRouter(SearchLayout);
