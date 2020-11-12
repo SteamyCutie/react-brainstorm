@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
+Route::post('/signout', 'UserController@logout');
 Route::post('/signbysocial', 'UserController@signBySocial');
 Route::post('/verifycode', 'UserController@verifyCode');
 Route::post('/forgot', 'UserController@forgot');
@@ -30,7 +31,7 @@ Route::post('/featuredmentors', 'UserController@featuredMentors');
 Route::post('/getintroduceinfo', 'UserController@getIntroduceInfo');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
-  Route::post('/signout', 'UserController@logout');
+  
   Route::post('/editprofile', 'UserController@editProfile');
   Route::post('/getuserinfo', 'UserController@getUserInfo');
   Route::post('/getuserinfobyid', 'UserController@getUserInfoById');

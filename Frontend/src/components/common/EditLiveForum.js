@@ -277,7 +277,7 @@ export default class EditLiveForum extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   getSession = async (id) => {
@@ -342,7 +342,6 @@ export default class EditLiveForum extends React.Component {
       }
       this.setState({ loading: false });
     } catch (err) {
-      console.log(err, "++++++++++++");
       this.setState({ loading: false });
       ToastsStore.error("Something Went wrong");
     }

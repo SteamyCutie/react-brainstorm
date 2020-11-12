@@ -33,7 +33,6 @@ class SmallCardPaymentSubscribe extends React.Component {
   render() {
     const { title, image, expireDate, type, payment_id } = this.props;
     const { selectedCard } = this.state;
-    // console.log("+++++++++ smallcardpaymentsubscribe +++++++++ render selectedcard = " + selectedCard + ": Type = " + type);
     return (
       <Card small className="small-card-payment" >
         <CardBody className="no-padding">

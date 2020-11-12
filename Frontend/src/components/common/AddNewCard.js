@@ -4,9 +4,10 @@ import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
 import { registercardbystudent, signout } from '../../api/api';
 import { REACT_APP_STRIPE_KEY } from '../../common/config';
-import Close from '../../images/Close.svg'
+import Close from '../../images/Close.svg';
+import { withRouter } from 'react-router-dom';
 
-export default class AddNewCard extends React.Component {
+class AddNewCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,7 +15,7 @@ export default class AddNewCard extends React.Component {
       expiry: '',
       name: '',
       number: '',
-      loading: false,
+      loading: false,      
       cardinfo: {
         name: '',
         number: '',
@@ -120,7 +121,7 @@ export default class AddNewCard extends React.Component {
               loading: false,
             });
             toggle_success("Add Payment Success");
-            window.location.href = "/studentWallet";
+            this.props.history.push('/studentWallet');
           } else if (result.data.result === "warning") {
             toggle_warning(result.data.message);
           } else {
@@ -196,7 +197,7 @@ export default class AddNewCard extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {
@@ -246,3 +247,5 @@ export default class AddNewCard extends React.Component {
     );
   }
 }
+
+export default withRouter(AddNewCard);

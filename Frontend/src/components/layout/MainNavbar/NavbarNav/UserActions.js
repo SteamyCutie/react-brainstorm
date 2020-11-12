@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getuserinfo, signout } from '../../../../api/api';
 import defaultAvatar from "../../../../images/avatar.jpg";
 import { ToastsStore } from 'react-toasts';
+import { withRouter } from 'react-router-dom';
 import {
   Dropdown,
   DropdownToggle,
@@ -10,7 +11,7 @@ import {
   DropdownItem,
 } from "shards-react";
 
-export default class UserActions extends React.Component {
+class UserActions extends React.Component {
   constructor(props) {
     super(props);
 
@@ -88,7 +89,7 @@ export default class UserActions extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
 
   render() {
@@ -114,3 +115,5 @@ export default class UserActions extends React.Component {
     );
   }
 }
+
+export default withRouter(UserActions);

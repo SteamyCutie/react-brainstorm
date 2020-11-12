@@ -111,12 +111,30 @@ class UserController extends Controller
       return response()->json([
         'result' => 'success',
       ]);
+    } catch(\Stripe\Exception\CardException $e) {
+      // Since it's a decline, \Stripe\Exception\CardException will be caught
+      $message =  $e->getError()->message . '\n';
+      return response()->json(['result' => 'warning', 'message' => $message]);
+    } catch (\Stripe\Exception\RateLimitException $e) {
+      // Too many requests made to the API too quickly
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      // Invalid parameters were supplied to Stripe's API
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\AuthenticationException $e) {
+      // Authentication with Stripe's API failed
+      // (maybe you changed API keys recently)
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiConnectionException $e) {
+      // Network communication with Stripe failed
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+      // Display a very generic error to the user, and maybe send
+      // yourself an email
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
     } catch (Exception $e) {
-      return response()->json([
-        'result' => 'failed',
-        'message' => 'Sorry, user can not register'
-        // ], 500);
-      ]);
+      // Something else happened, completely unrelated to Stripe
+      return response()->json(['result' => 'failed', 'message' => 'Sorry, user can not register' ]);
     }
   }
   
@@ -210,17 +228,36 @@ class UserController extends Controller
           ]);
         }
       }
-    } catch(Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'data' => $th
-      ]);
+    } catch(\Stripe\Exception\CardException $e) {
+      // Since it's a decline, \Stripe\Exception\CardException will be caught
+      $message =  $e->getError()->message . '\n';
+      return response()->json(['result' => 'warning', 'message' => $message]);
+    } catch (\Stripe\Exception\RateLimitException $e) {
+      // Too many requests made to the API too quickly
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      // Invalid parameters were supplied to Stripe's API
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\AuthenticationException $e) {
+      // Authentication with Stripe's API failed
+      // (maybe you changed API keys recently)
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiConnectionException $e) {
+      // Network communication with Stripe failed
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+      // Display a very generic error to the user, and maybe send
+      // yourself an email
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+      return response()->json(['result' => 'failed', 'message' => $e->getMessage() ]);
     }
   }
   
   public function getUserInfo(Request $request)
   {
-//    try {
+    try {
     $email = $request->email;
     $temp_names = [];
     $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
@@ -257,22 +294,19 @@ class UserController extends Controller
       'result' => 'success',
       'data' => $user,
     ]);
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result' => 'failed',
-//        'data' => $th,
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'message' => $th->getMessage(),
+      ]);
+    }
   }
   
   public function getUserInfoById(Request $request)
   {
     try {
       $id = $request->id;
-//      $average_review = 0;
-//      $count_review = 0;
       $tag_names = [];
-      
       $res_students = Review::where('mentor_id', $id)->get();
       $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
@@ -292,8 +326,6 @@ class UserController extends Controller
         $temp['review'] = $review_value;
         $temp['review']['day_diff'] = $diff->format('%a');
         $res_students[$review_key] = $temp;
-//        $count_review++;
-//        $average_review += $review_value->mark;
       }
       $newDate = date("Y-m-d", strtotime($user->dob));
       $user->dob = $newDate;
@@ -313,14 +345,7 @@ class UserController extends Controller
       }
       $user->tags = $tag_names;
       $user->student = $res_students;
-//      $user->count_review = $count_review;
-//      $user->count_review = $user->sub_count;
       $user->share_info = $share_info;
-//      if ($count_review > 0) {
-//        $user->average_review = round($average_review/$count_review, 1);
-//      } else {
-//        $user->average_review = 0;
-//      }
       if ($user->description == null)
         $user->description = "";
       return response()->json([
@@ -330,7 +355,7 @@ class UserController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
@@ -353,7 +378,7 @@ class UserController extends Controller
     } catch(Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th
+        'message' => $th->getMessage()
       ]);
     }
   }
@@ -454,11 +479,30 @@ class UserController extends Controller
         'result' => 'success',
         'data' => $res_user_info,
       ]);
-    } catch (Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'data' => $th,
-      ]);
+    } catch(\Stripe\Exception\CardException $e) {
+      // Since it's a decline, \Stripe\Exception\CardException will be caught
+      $message =  $e->getError()->message . '\n';
+      return response()->json(['result' => 'warning', 'message' => $message]);
+    } catch (\Stripe\Exception\RateLimitException $e) {
+      // Too many requests made to the API too quickly
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      // Invalid parameters were supplied to Stripe's API
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\AuthenticationException $e) {
+      // Authentication with Stripe's API failed
+      // (maybe you changed API keys recently)
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiConnectionException $e) {
+      // Network communication with Stripe failed
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+      // Display a very generic error to the user, and maybe send
+      // yourself an email
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+      return response()->json(['result' => 'failed', 'message' => $e->getMessage() ]);
     }
   }
   
@@ -598,7 +642,7 @@ class UserController extends Controller
     } catch(Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th
+        'message' => $th->getMessage()
       ]);
     }
   }
@@ -660,7 +704,7 @@ class UserController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
@@ -749,13 +793,13 @@ class UserController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
   
   public function findMentorsByTagsOrName(Request $request) {
-//    try {
+    try {
     $user_id = $request->user_id;
     $tag_ids = $request->tags_id;
     $mentor_name = $request->name;
@@ -849,33 +893,21 @@ class UserController extends Controller
       'data' => $result_res,
       'totalRows' => $mentors->total(),
     ]);
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result' => 'failed',
-//        'data' => $th,
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'message' => $th->getMessage(),
+      ]);
+    }
   }
   
   public function featuredMentors(Request $request)
   {
     try {
-//    $users = User::select('id')->get();
-//    foreach ($users as $user_key => $user_value) {
-//      $user_marks = Review::select('mark')->where('mentor_id', $user_value->id)->get();
-//      $sum_marks = 0;
-//      foreach ($user_marks as $mentor_key => $mentor_value) {
-//        $sum_marks += $mentor_value->mark;
-//      }
-//      if (count($user_marks) > 0) {
-//        $average_marks = round($sum_marks/count($user_marks), 1);
-//      } else {
-//        $average_marks = 0;
-//      }
-//
-//      User::where('id', $user_value->id)->update(['average_mark' => $average_marks]);
-//    }
-      $top_mentors = User::where('is_mentor', 1)->orderBy('average_mark', 'DESC')->take(5)->get();
+      $top_mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+        ->where('is_mentor', 1)->orderBy('average_mark', 'DESC')->take(5)->get();
       foreach ($top_mentors as $top_key => $top_value) {
         if ($top_value->description == null) {
           $top_value->description = "";
@@ -901,7 +933,7 @@ class UserController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
@@ -964,14 +996,14 @@ class UserController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
   
   function getAllStudents(Request $request)
   {
-//    try {
+    try {
     $email = $request->email;
     $students = User::select('id', 'email', 'avatar')->where('email', '!=', $email)->get();
     if (count($students) > 0) {
@@ -985,12 +1017,12 @@ class UserController extends Controller
         'data' => [],
       ]);
     }
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result' => 'failed',
-//        'data' => $th,
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'message' => $th->getMessage(),
+      ]);
+    }
   }
   
   public function switchUser(Request $request) {
@@ -1010,13 +1042,13 @@ class UserController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
   
   public function getAllParticipants(Request $request) {
-//    try {
+    try {
     $user_id = $request->user_id;
     $allParticipants = User::select('name', 'id', 'email', 'avatar')->where('id', '!=', $user_id)->get();
     if (count($allParticipants) > 0) {
@@ -1029,12 +1061,12 @@ class UserController extends Controller
         'result' => 'failed',
       ]);
     }
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result' => 'failed',
-//        'data' => $th,
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'message' => $th->getMessage(),
+      ]);
+    }
   }
 }
 

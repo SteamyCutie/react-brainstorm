@@ -1,8 +1,9 @@
 import React from "react";
 import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { forgetPassword } from '../api/api';
+import { withRouter } from 'react-router-dom';
 
-export default class ForgetPassword extends React.Component {
+class ForgetPassword extends React.Component {
   constructor(props) {
     super(props);
     
@@ -59,7 +60,7 @@ export default class ForgetPassword extends React.Component {
       const result = await forgetPassword({email: localStorage.getItem('email')});
 
       if(result.data.result === "success") {
-        window.location.href = '/emailsent';
+        this.props.history.push('/emailsent');
       } else {
         this.setState({
           errorMsg: result.data.message
@@ -129,3 +130,5 @@ export default class ForgetPassword extends React.Component {
     )
   }
 }
+
+export default withRouter(ForgetPassword);

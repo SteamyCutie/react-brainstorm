@@ -286,10 +286,13 @@ export default class StudentWallet extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
   
   showSuccess(text) {
+    this.setState({
+      ModalOpen: !this.state.ModalOpen
+    });
     ToastsStore.success(text);
   }
 

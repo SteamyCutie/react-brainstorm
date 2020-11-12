@@ -111,7 +111,7 @@ export default class Subscribe extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {
