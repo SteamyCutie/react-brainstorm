@@ -610,7 +610,7 @@ export default class Many2Many extends React.Component {
       isDisplay: true,
       isFullscreen: false, 
       mode: 'select',
-      width: '600px',
+      width: '1800px',
       height: '600px',
       brushColor: '#f44336',
       isMuted: false, 
@@ -1368,7 +1368,7 @@ export default class Many2Many extends React.Component {
                 </Channel>
               </Chat>
             </div>
-            <div id="room-whiteboard-body" className={showWhiteBoard ? (showChat ? "room-whiteboard" : "room-whiteboard-full-width") : "room-whiteboard-hidden"}>
+            <div className={showWhiteBoard ? (showChat ? "room-whiteboard" : "room-whiteboard-full-width") : "room-whiteboard-hidden"}>
               <div className="room-whitboard-header">
                 <h2 style={{fontSize: "38px", fontWeight: "bold", margin: "0px", width: "100%", textAlign: "center"}}>Whiteboard</h2>
                 <Button className="btn-rooom-control2 float-center" style={{marginLeft: "auto", padding: "0px"}} onClick={() => this.whiteboardClose()}>
@@ -1377,8 +1377,8 @@ export default class Many2Many extends React.Component {
               </div>
               <WhiteBoard
                 className="room-whiteboard-body"
-                width={width}
-                height={height}
+                // width={width}
+                // height={height}
                 showToolbar={true}
                 showBoard={true}
                 mode={mode}
