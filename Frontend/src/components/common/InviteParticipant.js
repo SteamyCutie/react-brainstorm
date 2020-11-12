@@ -38,7 +38,7 @@ export default class InviteParticipant extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   signout = async() => {

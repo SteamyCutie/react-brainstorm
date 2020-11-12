@@ -34,7 +34,7 @@ class FileController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -57,7 +57,7 @@ class FileController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }

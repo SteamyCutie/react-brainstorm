@@ -161,7 +161,7 @@ export default class CreateLiveForum extends React.Component {
       requiremessage: temp
     });
     try {
-      this.setState({loading: true});
+      // this.setState({loading: true});
       const result = await createforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
@@ -232,7 +232,7 @@ export default class CreateLiveForum extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   onChangeDay = (e) => {

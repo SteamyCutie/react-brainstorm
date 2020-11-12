@@ -93,7 +93,7 @@ export default class AddNewBank extends React.Component {
           loading: false,
         });
         toggle_success("Add Payment Success");
-        window.location.href = "/mentorWallet";
+        this.props.history.push('/mentorWallet');
       } else if (result.data.result === "warning") {
         toggle_warning(result.data.message);
       } else {
@@ -167,7 +167,7 @@ export default class AddNewBank extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {

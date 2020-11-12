@@ -7,7 +7,8 @@ import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
-import defaultavatar from "../../images/avatar.jpg"
+import defaultavatar from "../../images/avatar.jpg";
+import { withRouter } from 'react-router-dom';
 
 class SearchMentorDetailCard extends React.Component {
   constructor(props) {
@@ -45,7 +46,7 @@ class SearchMentorDetailCard extends React.Component {
 
     return (
       <div className="mentor-detail-card">
-        <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview>
+        {/* <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview> */}
         <div style={{position: "relative"}} className="mentor-detail-avatar">
           {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
           {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
@@ -102,4 +103,4 @@ class SearchMentorDetailCard extends React.Component {
   }
 }
 
-export default SearchMentorDetailCard;
+export default withRouter(SearchMentorDetailCard);

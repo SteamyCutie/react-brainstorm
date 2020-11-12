@@ -143,7 +143,7 @@ export default class CreateMyShare extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   onChnageVideo = async (e) => {

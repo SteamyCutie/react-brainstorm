@@ -37,7 +37,10 @@ class SessionController extends Controller
         $res_students = Invited::select('student_id')->where('session_id', $value->id)->get();
         $temp_st = [];
         foreach ($res_students as $st_key => $st_value) {
-          $res_st = User::where('id', $st_value->student_id)->first();
+          $res_st = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+            'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+            'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+            ->where('id', $st_value->student_id)->first();
           $temp_st[$st_key] = $res_st;
         }
         $session_info[$key]['student_info'] = $temp_st;
@@ -66,7 +69,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -108,7 +111,7 @@ class SessionController extends Controller
       $temp_email = [];
       $temp_id = [];
       $temp_st = [];
-      $m_inviteds = Invited::where('mentor_id', $forum->user_id)->get();
+      $m_inviteds = Invited::where('session_id', $id)->get();
       foreach ($m_inviteds as $invited_key => $invited) {
         $st_info = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
@@ -132,7 +135,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -212,7 +215,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -281,7 +284,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -298,7 +301,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -321,7 +324,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -409,7 +412,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -550,7 +553,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -616,7 +619,7 @@ class SessionController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }

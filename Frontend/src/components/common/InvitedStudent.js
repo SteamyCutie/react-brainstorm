@@ -107,7 +107,7 @@ export default class InvitedStudent extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.histhory.push('/');
   }
 
   render() {

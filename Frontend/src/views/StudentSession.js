@@ -158,7 +158,7 @@ export default class StudentSession extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   joinSession(session) {

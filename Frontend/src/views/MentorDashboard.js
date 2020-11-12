@@ -209,7 +209,7 @@ export default class MentorDashboard extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   toggle(id) {

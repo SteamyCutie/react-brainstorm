@@ -1,8 +1,9 @@
 import React from "react";
 import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { verifyCode } from '../api/api';
+import { withRouter } from 'react-router-dom';
 
-export default class EmailVerify extends React.Component {
+class EmailVerify extends React.Component {
   constructor(props) {
     super(props);
     
@@ -29,9 +30,9 @@ export default class EmailVerify extends React.Component {
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
         if(result.data.user.is_mentor) {
-          window.location.href = '/mentorWallet';
+          this.props.history.push('/mentorWallet');
         } else {
-          window.location.href = '/studentWallet';
+          this.props.history.push('/studentWallet');
         }
       } else {
         this.setState({
@@ -99,3 +100,5 @@ export default class EmailVerify extends React.Component {
     )
   }
 }
+
+export default withRouter(EmailVerify);
