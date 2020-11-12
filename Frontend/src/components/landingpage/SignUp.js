@@ -7,8 +7,9 @@ import "../../assets/landingpage.css"
 import { signup } from '../../api/api';
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import Close from '../../images/Close.svg';
+import { withRouter } from 'react-router-dom';
 
-export default class SignUp extends React.Component {
+class SignUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +31,15 @@ export default class SignUp extends React.Component {
 
   toggle() {
     const { toggle } = this.props;
+    this.setState({
+      validationError: {
+        name: '',
+        email: '',
+        password: '',
+        confirm: ''
+      },
+      signUpError: ''
+    })
     toggle();    
   }
 
@@ -90,7 +100,7 @@ export default class SignUp extends React.Component {
       if (err) {
         console.log(err, err.stack);
       } else {
-        window.location.href = '/verification';
+        this.props.history.push('/verification');
       } 
     });
   }
@@ -301,3 +311,5 @@ export default class SignUp extends React.Component {
     );
   }
 }
+
+export default withRouter(SignUp);

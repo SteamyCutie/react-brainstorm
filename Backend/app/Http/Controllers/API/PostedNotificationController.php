@@ -11,7 +11,7 @@ use Mockery\Exception;
 class PostedNotificationController extends Controller
 {
   public function checkedNotification(Request $request) {
-//    try {
+    try {
       $user_id = $request->user_id;
       $session_id = $request->session_id;
       $res_notific = PostedNotification::where(['user_id' => $user_id, 'session_id' => $session_id])->update(['notification_posted' => 1]);
@@ -31,12 +31,12 @@ class PostedNotificationController extends Controller
           'message' => 'did not check notification.',
         ]);
       }
-//    } catch (Exception $th) {
-//      return response()->json([
-//        'result'=> 'failed',
-//        'data'=> $th,
-//      ]);
-//    }
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
   }
   
   public function getNotification(Request $request) {
@@ -58,7 +58,7 @@ class PostedNotificationController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }

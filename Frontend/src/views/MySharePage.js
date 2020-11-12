@@ -93,7 +93,7 @@ export default class MySharePage extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {

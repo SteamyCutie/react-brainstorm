@@ -4,9 +4,10 @@ import Loginbygoogle from "../common/Loginbygoogle";
 import Loginbyfacebook from "../common/Loginbyfacebook";
 import "../../assets/landingpage.css"
 import { signin } from '../../api/api';
-import Close from '../../images/Close.svg'
+import Close from '../../images/Close.svg';
+import { withRouter } from 'react-router-dom';
 
-export default class SignIn extends React.Component {
+class SignIn extends React.Component {
   constructor(props) {
     super(props);
 
@@ -22,6 +23,10 @@ export default class SignIn extends React.Component {
     };
   }
 
+  componentWillMount() {
+    localStorage.clear();
+  }
+  
   componentDidMount() {
     // var x = document.getElementById("google-login").firstChild.innerHTML;
     // console.log(x);
@@ -34,7 +39,6 @@ export default class SignIn extends React.Component {
   }
 
   componentWillUnmount() {
-    localStorage.clear();
     document.body.style.overflow = 'unset';
   }
 
@@ -50,6 +54,13 @@ export default class SignIn extends React.Component {
 
   toggle() {
     const { toggle } = this.props;
+    this.setState({
+      validationError: {
+        email: '',
+        password: ''
+      },
+      signInError: ''
+    })
     toggle();
   }
 
@@ -129,7 +140,7 @@ export default class SignIn extends React.Component {
   actionSignin = async () => {
     try {
       const result = await signin(this.state);
-      if (result.data.result === "success") {
+      if (result.data.result === "success") {        
         localStorage.setItem('email', result.data.user.email);
         localStorage.setItem('user_id', result.data.user.id);
         localStorage.setItem('avatar', result.data.user.avatar);
@@ -137,11 +148,12 @@ export default class SignIn extends React.Component {
         localStorage.setItem('pay_verified', result.data.user.pay_verified);
         localStorage.setItem('channel_name', result.data.user.channel_name);
         localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
+        localStorage.setItem('token', result.data.token);
 
         if (result.data.user.is_mentor) {
-          window.location.href = '/mentordashboard';
+          this.props.history.push('/mentordashboard');
         } else {
-          window.location.href = '/studentdashboard';
+          this.props.history.push('/studentdashboard');
         }
       } else {
         this.setState({
@@ -168,7 +180,7 @@ export default class SignIn extends React.Component {
   }
 
   handleforgetPassword() {
-    window.location.href = '/forgetpassword';
+    this.props.history.push('/forgetpassword');
   }
 
   errorOccur(text) {
@@ -236,3 +248,5 @@ export default class SignIn extends React.Component {
     );
   }
 }
+
+export default withRouter(SignIn);

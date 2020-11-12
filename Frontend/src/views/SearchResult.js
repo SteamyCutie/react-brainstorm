@@ -2,12 +2,12 @@ import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 import SearchMentorDetailCard from "../components/common/SearchMentorDetailCard"
-import SignIn from "../components/landingpage/SignIn"
-import SignUp from "../components/landingpage/SignUp"
+import SignIn from "../components/landingpage/SignIn";
+import SignUp from "../components/landingpage/SignUp";
+import background from "../images/background.jpg";
+import { withRouter } from 'react-router-dom';
 
-import background from "../images/background.jpg"
-
-export default class SearchResult extends React.Component {
+class SearchResult extends React.Component {
   constructor(props) {
     super(props);
       this.signInElement = React.createRef();
@@ -137,3 +137,5 @@ export default class SearchResult extends React.Component {
       )
     }
   }
+
+  export default withRouter(SearchResult);

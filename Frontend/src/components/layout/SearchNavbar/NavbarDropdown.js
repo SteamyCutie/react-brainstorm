@@ -8,6 +8,7 @@ import {
 
 import SignIn from "../../landingpage/SignIn";
 import SignUp from "../../landingpage/SignUp";
+import { withRouter } from 'react-router-dom';
 
 class NavbarDropdown extends React.Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class NavbarDropdown extends React.Component {
       signInOpen: !this.state.signInOpen
     });
     if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
+      // this.signInElement.current.clearValidationErrors();
     }
   }
 
@@ -45,7 +46,7 @@ class NavbarDropdown extends React.Component {
       signUpOpen: !this.state.signUpOpen
     });
     if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
+      // this.signUpElement.current.clearValidationErrors();
     }
   }
 
@@ -55,10 +56,10 @@ class NavbarDropdown extends React.Component {
       signUpOpen: !this.state.signUpOpen
     });
     if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
+      // this.signInElement.current.clearValidationErrors();
     }
     if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
+      // this.signUpElement.current.clearValidationErrors();
     }
   }
 
@@ -86,4 +87,4 @@ class NavbarDropdown extends React.Component {
   }
 }
 
-export default NavbarDropdown;
+export default withRouter(NavbarDropdown);

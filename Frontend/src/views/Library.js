@@ -131,7 +131,7 @@ export default function Library() {
 
   const removeSession = () => {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   return (

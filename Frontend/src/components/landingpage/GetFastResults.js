@@ -4,9 +4,10 @@ import ScrollAnimation from 'react-animate-on-scroll';
 import "animate.css/animate.min.css";
 
 import MentorActiveImage from '../../images/fastResultImage.jpg'
-import "../../assets/landingpage.css"
+import "../../assets/landingpage.css";
+import { withRouter } from 'react-router-dom';
 
-export default class GetFastResult extends React.Component{
+class GetFastResult extends React.Component{
 
   constructor(props) {
     super(props);
@@ -15,7 +16,7 @@ export default class GetFastResult extends React.Component{
 
 
   findMentor = () => {
-    window.location.href = "/findmentor";
+    this.props.history.push('/findmentor');
   }
 
   render() {
@@ -52,3 +53,5 @@ export default class GetFastResult extends React.Component{
     )
   }
 };
+
+export default withRouter(GetFastResult);

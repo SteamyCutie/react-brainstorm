@@ -92,11 +92,30 @@ class PaymentController extends Controller
       'result'=> 'success',
       'message'=> 'card registered successfully',
     ]);
-    } catch (Exception $th) {
-      return response()->json([
-        'result'=> 'failed',
-        'message'=> 'failed card register',
-      ]);
+    } catch(\Stripe\Exception\CardException $e) {
+      // Since it's a decline, \Stripe\Exception\CardException will be caught
+      $message =  $e->getError()->message . '\n';
+      return response()->json(['result' => 'warning', 'message' => $message]);
+    } catch (\Stripe\Exception\RateLimitException $e) {
+      // Too many requests made to the API too quickly
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      // Invalid parameters were supplied to Stripe's API
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\AuthenticationException $e) {
+      // Authentication with Stripe's API failed
+      // (maybe you changed API keys recently)
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiConnectionException $e) {
+      // Network communication with Stripe failed
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+      // Display a very generic error to the user, and maybe send
+      // yourself an email
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+      return response()->json(['result' => 'failed', 'message' => $e->getMessage() ]);
     }
   }
   
@@ -116,7 +135,7 @@ class PaymentController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
-        'data' => $th
+        'message' => $th->getMessage()
       ]);
     }
   }
@@ -182,16 +201,35 @@ class PaymentController extends Controller
       }
       SessionUser::truncate();
       return redirect(env('FRONT_URL').'/mentorWallet');
-    } catch(Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'data' => $th
-      ]);
+    } catch(\Stripe\Exception\CardException $e) {
+      // Since it's a decline, \Stripe\Exception\CardException will be caught
+      $message =  $e->getError()->message . '\n';
+      return response()->json(['result' => 'warning', 'message' => $message]);
+    } catch (\Stripe\Exception\RateLimitException $e) {
+      // Too many requests made to the API too quickly
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      // Invalid parameters were supplied to Stripe's API
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\AuthenticationException $e) {
+      // Authentication with Stripe's API failed
+      // (maybe you changed API keys recently)
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiConnectionException $e) {
+      // Network communication with Stripe failed
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+      // Display a very generic error to the user, and maybe send
+      // yourself an email
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+      return response()->json(['result' => 'failed', 'message' => $e->getMessage() ]);
     }
   }
   
   public function getusercards(Request $request) {
-//    try {
+    try {
       $user_id = $request->user_id;
       //card, primary
       $user_cards = Payment::select('id', 'card_name', 'card_type','card_expiration', 'cvc_code', 'is_primary')
@@ -209,12 +247,12 @@ class PaymentController extends Controller
         'result'=> 'success',
         'data' => $temp_result,
       ]);
-//    } catch(Exception $th) {
-//      return response()->json([
-//        'result' => 'failed',
-//        'data' => $th
-//      ]);
-//    }
+    } catch(Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'message' => $th->getMessage()
+      ]);
+    }
   }
   
   public function setprimarycard(Request $request) {
@@ -246,11 +284,30 @@ class PaymentController extends Controller
           'message'  => 'failed to set primary card',
         ]);
       }
-    } catch (Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'data' => $th
-      ]);
+    } catch(\Stripe\Exception\CardException $e) {
+      // Since it's a decline, \Stripe\Exception\CardException will be caught
+      $message =  $e->getError()->message . '\n';
+      return response()->json(['result' => 'warning', 'message' => $message]);
+    } catch (\Stripe\Exception\RateLimitException $e) {
+      // Too many requests made to the API too quickly
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      // Invalid parameters were supplied to Stripe's API
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\AuthenticationException $e) {
+      // Authentication with Stripe's API failed
+      // (maybe you changed API keys recently)
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiConnectionException $e) {
+      // Network communication with Stripe failed
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+      // Display a very generic error to the user, and maybe send
+      // yourself an email
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+      return response()->json(['result' => 'failed', 'message' => $e->getMessage() ]);
     }
   }
   
@@ -272,11 +329,30 @@ class PaymentController extends Controller
         'result' => 'success',
         'message' => 'successfully removed card'
       ]);
-    } catch (\Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'data' => $th
-      ]);
+    } catch(\Stripe\Exception\CardException $e) {
+      // Since it's a decline, \Stripe\Exception\CardException will be caught
+      $message =  $e->getError()->message . '\n';
+      return response()->json(['result' => 'warning', 'message' => $message]);
+    } catch (\Stripe\Exception\RateLimitException $e) {
+      // Too many requests made to the API too quickly
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      // Invalid parameters were supplied to Stripe's API
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\AuthenticationException $e) {
+      // Authentication with Stripe's API failed
+      // (maybe you changed API keys recently)
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiConnectionException $e) {
+      // Network communication with Stripe failed
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+      // Display a very generic error to the user, and maybe send
+      // yourself an email
+      return response()->json(['result' => 'warning', 'message' => $e->getMessage() ]);
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+      return response()->json(['result' => 'failed', 'message' => $e->getMessage() ]);
     }
   }
   

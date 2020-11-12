@@ -1,8 +1,9 @@
 import React from "react";
 import { Container, Row, Card, CardBody, CardHeader, FormInput, CardFooter, Button } from "shards-react";
 import { resetPassword } from '../api/api';
+import { withRouter } from 'react-router-dom';
 
-export default class ResetPassword extends React.Component {
+class ResetPassword extends React.Component {
   constructor(props) {
     super(props);
     
@@ -167,3 +168,5 @@ export default class ResetPassword extends React.Component {
     )
   }
 }
+
+export default withRouter(ResetPassword);

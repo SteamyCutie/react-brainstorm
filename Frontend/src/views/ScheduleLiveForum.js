@@ -70,11 +70,20 @@ export default class ScheduleLiveForum extends React.Component {
     }
   }
 
-  toggle_confirm(id) {
+  toggle_confirm(id) {    
     this.setState({
       ModalConfirmOpen: !this.state.ModalConfirmOpen,
       id: id
     });
+    // this.getForums();
+  }
+
+  toggle_remove(id) {    
+    this.setState({
+      ModalConfirmOpen: !this.state.ModalConfirmOpen,
+      id: id
+    });
+    this.getForums();
   }
 
   getForums = async () => {
@@ -164,7 +173,7 @@ export default class ScheduleLiveForum extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   handleCreateRoom() {
@@ -201,7 +210,7 @@ export default class ScheduleLiveForum extends React.Component {
 
     return (
       <div>
-        {loading && <LoadingModal open={true} />}
+        {/* {loading && <LoadingModal open={true} />} */}
         <CreateLiveForum 
           open={ModalOpen} 
           toggle={() => this.toggle_createliveforum()} 
@@ -216,7 +225,7 @@ export default class ScheduleLiveForum extends React.Component {
           toggle_editsuccess={(text) => this.toggle_editsuccess(text)} 
           toggle_editfail={(text) => this.toggle_editfail(text)}>
         </EditLiveForum>
-        <ConfirmModal open={ModalConfirmOpen} id={id} toggle={() => this.toggle_confirm()}></ConfirmModal>
+        <ConfirmModal open={ModalConfirmOpen} id={id} toggle={() => this.toggle_confirm()} toggle_remove = {() => this.toggle_remove() }></ConfirmModal>
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Card small className="schedule-forum-card">
             <CardHeader className="live-forum-header">
@@ -231,7 +240,7 @@ export default class ScheduleLiveForum extends React.Component {
                       key={idx}
                       item={item}
                       toggle_editliveforum={(id) => this.toggle_editliveforum(id)}
-                      toggle_confirm={(id) => this.toggle_confirm(id)}
+                      toggle_confirm={(id) => this.toggle_remove(id)}
                       startSession={(id) => this.startSession(id)}
                     />
                   </Col>

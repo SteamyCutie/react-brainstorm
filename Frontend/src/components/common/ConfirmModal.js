@@ -4,8 +4,9 @@ import LoadingModal from "./LoadingModal";
 import { deleteforum, signout } from '../../api/api';
 import Close from '../../images/Close.svg';
 import { ToastsStore } from 'react-toasts';
+import { withRouter } from 'react-router-dom';
 
-export default class AddNewCard extends React.Component {
+class AddNewCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,15 +29,21 @@ export default class AddNewCard extends React.Component {
     toggle();
   }
 
+  toggle_remove() {
+    const { toggle_remove } = this.props;
+    toggle_remove();
+  }
+
   actionRemove = async (id) => {
     const param = { id: id };
     try {
-      this.setState({ loading: true });
+      // this.setState({ loading: true });
       const result = await deleteforum(param);
       if (result.data.result === "success") {
-        this.toggle();
+        // this.toggle();
+        this.toggle_remove();
         ToastsStore.success("Delete Schedule Success");
-        window.location.href = "/scheduleLiveForum";
+        this.props.history.push('/scheduleLiveForum');
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -89,7 +96,7 @@ export default class AddNewCard extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {
@@ -113,8 +120,10 @@ export default class AddNewCard extends React.Component {
             </Row>
           </ModalFooter>
         </Modal>
-        {loading && <LoadingModal open={true} />}
+        {/* {loading && <LoadingModal open={true} />} */}
       </div>
     );
   }
 }
+
+export default withRouter(AddNewCard)
