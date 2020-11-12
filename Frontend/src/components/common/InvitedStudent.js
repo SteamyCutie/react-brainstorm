@@ -112,6 +112,7 @@ export default class InvitedStudent extends React.Component {
 
   render() {
     const { open, students, id } = this.props;
+    console.log(students, "++++++++++++++++++++++");
     const { loading } = this.state;
     return (
       <div>
