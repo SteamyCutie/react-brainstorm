@@ -687,6 +687,18 @@ ul#fabric-whiteboard-toolbar-ul li{
   display: inline;
 }
 
+.fabric-whiteboard-board .canvas-container {
+  width: 100% !important;
+}
+
+.canvas-container .lower-canvas {
+  width: 100% !important;
+}
+
+.canvas-container .upper-canvas {
+  width: 100% !important;
+}
+
 .fabric-whiteboard-toolbar [title~=thickness] {
   display: none !important;
 }
@@ -1319,4 +1331,9 @@ ul#fabric-whiteboard-toolbar-ul li{
   height: 40vh;
   background-color: white;
   display: flex;
+}
+
+.room-whiteboard-body {
+  width: 100%;
+  height: 300px;
 }
