@@ -37,7 +37,7 @@ class Loginbygoogle extends Component {
       provider: 'Google',
       channel_name: text
     };
-
+    
     try {
       const result = await signbysocial(googleresponse);
       if (result.data.result === "success") {
@@ -77,6 +77,7 @@ class Loginbygoogle extends Component {
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
     });
+    var self = this;
     kinesisvideo.createSignalingChannel(params, function (err, data) {
       if (err) {
         console.log(err, err.stack);
@@ -89,9 +90,9 @@ class Loginbygoogle extends Component {
         localStorage.setItem('channel_name', user.channel_name);
         localStorage.setItem('user-type', (user.is_mentor === 1 ? true : false));
         if (user.is_mentor === 1)          
-          this.props.history.push('/mentordashboard');
+          self.props.history.push('/mentordashboard');
         else
-          this.props.history.push('/studentdashboard');
+          self.props.history.push('/studentdashboard');
       } 
     });
   }
