@@ -73,7 +73,7 @@ class ResetPassword extends React.Component {
     try {
       const result = await resetPassword({email: localStorage.getItem('email'), password: this.state.password, vCode: this.state.vCode});      
       if(result.data.result === "success") {
-        window.location.href = '/';
+        this.props.hsitory.push('/');
       } else {
         this.setState({
           resetErrorMsg: result.data.message

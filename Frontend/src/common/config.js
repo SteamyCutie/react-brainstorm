@@ -8,8 +8,8 @@ export const PUSHER_KEY = 'e89985ed54dad44cf61e';
 export const GOOGLE_KEY = '850815176291-fnp4vo85brnr2feiutb26f5a5irlk0pg.apps.googleusercontent.com';
 export const FACEBOOK_KEY = '682908192243627';
 
-export const REACT_APP_STRIPE_KEY = 'pk_test_51HV0m8GRfXBTO7BEo7Gs4S8ESPUkumh52Cz9B1JOyaqZliur3tmcIBI4Nd7Szq9mPXD9y5fEuMGX9i98iO7azMMe00KuXtfaYM';
-export const REACT_APP_STRIPE_CLIENT_ID = "ca_I9av7M0wWC1IWF2svmr6luUAPuoyVipB";
+export const REACT_APP_STRIPE_KEY = 'pk_test_51Hmwr0GqFsxP0uiE4Dk8RRPWOmHzPub2si8pmiMk48xu8iYjWtaiSkcwo5vvxUyPWgCk52Xj35zyLCEgeyvMB48200k8RCPIdj';
+export const REACT_APP_STRIPE_CLIENT_ID = "ca_INkQQ0L2mNLys9om5hsE8aEew4boLbom";
 export const REACT_APP_STRIPE_EXPRESS = 'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=';
 export const REACT_APP_STRIPE_SCOPE = '&scope=read_write';
 

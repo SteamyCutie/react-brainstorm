@@ -8,7 +8,7 @@ class EmailSent extends React.Component {
   }
 
   handleGoBack() {
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
 
   render() {
