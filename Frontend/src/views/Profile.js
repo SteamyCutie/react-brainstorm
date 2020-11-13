@@ -1,10 +1,11 @@
 import React from "react";
 import MultiSelect from "react-multi-select-component";
 import { ToastsStore } from 'react-toasts';
-import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormSelect, Form, FormTextarea, DatePicker } from "shards-react";
-import expertise from '../common/constants';
+import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormSelect, Form, FormTextarea, DatePicker, Popover, PopoverBody } from "shards-react";
+import { expertise, category, subcategory, minimum_age } from '../common/constants';
 import LoadingModal from "../components/common/LoadingModal";
 import Icon from "../images/Lightning.svg"
+import Question from "../images/question.svg"
 import Tooltip from "../images/Tooltip.svg"
 import avatar from "../images/avatar.jpg"
 import { editprofile, getuserinfo, uploadimage, gettags, signout } from '../api/api';
@@ -18,6 +19,7 @@ export default class MySharePage extends React.Component {
       selectedTags: [],
       tags: [],
       loading: false,
+      open: false,
       displaydate: '',
       displaygethourlyprice: '0.00',
       displaycuthourlyprice: '0.00',
@@ -26,7 +28,11 @@ export default class MySharePage extends React.Component {
       requiremessage: {
         dname: '',
         demail: '',
+        dphone: '',
         dexpertise: '',
+        dcategory: '',
+        dage: '',
+        dsubcategory: '',
         dhourlyprice: '',
         dsubpagename: '',
         dsubplanfee: '',
@@ -36,8 +42,12 @@ export default class MySharePage extends React.Component {
         name: '',
         birthday: '',
         email: '',
+        phone: '',
         description: '',
         expertise: 1,
+        category: 1,
+        subcategory: 1,
+        minimum_age: 1,
         hourlyprice: 0,
         subpagename: '',
         subplanfee: 0,
@@ -72,6 +82,7 @@ export default class MySharePage extends React.Component {
         const { param } = this.state;
         let temp = param;
         temp.name = result.data.data.name;
+        temp.phone = result.data.data.phone;
         temp.birthday = (result.data.data.dob === null || result.data.data.dob === "") ? '2020-01-01' : result.data.data.dob;
         temp.email = result.data.data.email;
         temp.avatar = result.data.data.avatar;
@@ -202,8 +213,12 @@ export default class MySharePage extends React.Component {
     const { requiremessage, param } = this.state;
     let temp = requiremessage;
     temp.dname = '';
+    temp.dphone = '';
     temp.demail = '';
     temp.dexpertise = '';
+    temp.dcategory = '';
+    temp.dage = '';
+    temp.dsubcategory = '';
     temp.dhourlyprice = '';
     temp.dsubpagename = '';
     temp.dsubplanfee = '';
@@ -229,11 +244,23 @@ export default class MySharePage extends React.Component {
           if (result.data.message.name) {
             temp.dname = result.data.message.name[0];
           }
+          if (result.data.message.phone) {
+            temp.dphone = result.data.message.phone[0];
+          }
           if (result.data.message.email) {
             temp.demail = result.data.message.email[0];
           }
           if (result.data.message.expertise) {
             temp.dexpertise = result.data.message.expertise[0];
+          }
+          if (result.data.message.expertise) {
+            temp.dcategory = result.data.message.category[0];
+          }
+          if (result.data.message.expertise) {
+            temp.dage = result.data.message.minimum_age[0];
+          }
+          if (result.data.message.expertise) {
+            temp.dsubcategory = result.data.message.subcategory[0];
           }
           if (result.data.message.hourlyprice) {
             temp.dhourlyprice = result.data.message.hourlyprice[0];
@@ -283,6 +310,13 @@ export default class MySharePage extends React.Component {
     this.setState({ param: temp });
   };
 
+  onChangePhoneNumber = (e) => {
+    const { param } = this.state;
+    let temp = param;
+    temp.phone = e.target.value;
+    this.setState({ param: temp });
+  };
+
   onChangeBirthDay = (e) => {
     const { param } = this.state;
     let temp = param;
@@ -311,12 +345,26 @@ export default class MySharePage extends React.Component {
     this.setState({ param: temp });
   }
 
-  onChangeExpertise = (e) => {
+  onChangeCategory = (e) => {
     const { param } = this.state;
     let temp = param;
-    temp.expertise = e.target.value;
+    temp.catetory = e.target.value;
     this.setState({ param: temp });
   }
+
+  onChangeSubcategory = (e) => {
+    const { param } = this.state;
+    let temp = param;
+    temp.subcategory = e.target.value;
+    this.setState({ param: temp });
+  }
+
+  onChangeAge = (e) => {
+    const { param } = this.state;
+    let temp = param;
+    temp.minimum_age = e.target.value;
+    this.setState({ param: temp });
+  }  
 
   onChangeHourlyPrice = (e) => {
     const { param } = this.state;
@@ -451,6 +499,19 @@ export default class MySharePage extends React.Component {
     //this.props.history.push('/');
   }
 
+  setSelectedAge = (e) => {
+    const { selectedAge } = this.state;
+    let temp = selectedAge;
+    temp = e;
+    this.setState({ selectedAge: temp });
+  }
+
+  toggleQuestion() {
+    this.setState({
+      open: !this.state.open
+    });
+  }
+
   render() {
     const { selectedTags, tags, param, requiremessage, loading, displaydate, displaycuthourlyprice, displaycutplanfee, displaygethourlyprice, displaygetplanfee } = this.state;
     return (
@@ -527,9 +588,62 @@ export default class MySharePage extends React.Component {
                           </Row>
                           <Row form>
                             <Col md="6" className="project-detail-input-group">
+                              <label htmlFor="feInputState" className="profile-detail-important" >Category</label>
+                              <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeCategory(e)}>
+                                {category.map((item, idx) =>
+                                  item.value === param.category ?
+                                    <option key={idx} value={item.value} selected>{item.name}</option>
+                                    : <option key={idx} value={item.value}>{item.name}</option>
+                                )}
+                              </FormSelect>
+                            </Col>
+                            <Col md="6" className="project-detail-input-group">
+                              <label htmlFor="feInputState" className="profile-detail-important" >SubCategory</label>
+                              <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeSubcategory(e)}>
+                                {subcategory.map((item, idx) =>
+                                  item.value === param.subcategory ?
+                                    <option key={idx} value={item.value} selected>{item.name}</option>
+                                    : <option key={idx} value={item.value}>{item.name}</option>
+                                )}
+                              </FormSelect>
+                            </Col>
+                          </Row>
+                          <Row form>
+                            <Col md="6" className="project-detail-input-group">
+                              <label htmlFor="feInputState" className="profile-detail-important">Select minimum age</label>
+                              <img id="popover-1" alt="icon" style={{ paddingRight: "5px", paddingBottom: "5px" }} src={Question} onClick={() => this.toggleQuestion()} />
+                              <Popover
+                                placement="top"
+                                open={this.state.open}
+                                toggle={this.toggle}
+                                target="#popover-1"
+                              >
+                                <PopoverBody>
+                                  Set an age limit for student or people
+                                  who can participate or interact with
+                                  your content and share page
+                                </PopoverBody>
+                              </Popover>
+                              <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeAge(e)}>
+                                {minimum_age.map((item, idx) =>
+                                  item.value === param.minimum_age ?
+                                    <option key={idx} value={item.value} selected>{item.label}</option>
+                                    : <option key={idx} value={item.value}>{item.label}</option>
+                                )}
+                              </FormSelect>                              
+                            </Col>
+                            <Col md="6" className="project-detail-input-group">
+                              <label htmlFor="fePhoneNumber" className="profile-detail-important">Phone Number</label>
+                              {requiremessage.dphone !== '' && <span className="require-message">{requiremessage.dphone}</span>}
+                              {requiremessage.dphone !== '' && <FormInput className="profile-detail-input" placeholder="phone number" autoFocus="1" invalid onChange={(e) => this.onChangePhoneNumber(e)} value={param.phone} />}
+                              {requiremessage.dphone === '' && <FormInput className="profile-detail-input" placeholder="phone number" autoFocus="1" onChange={(e) => this.onChangePhoneNumber(e)} value={param.phone} />}
+                            </Col>
+                          </Row>
+                          <Row form>
+                            <Col md="6" className="project-detail-input-group">
                               <label htmlFor="feEmailAddress" className="profile-detail-important">Hourly price</label>
-                              {requiremessage.dhourlyprice !== '' && <span className="require-message">{requiremessage.dhourlyprice}</span>}
                               {requiremessage.dhourlyprice !== '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" invalid onChange={(e) => this.onChangeHourlyPrice(e)} value={param.hourlyprice} />}
+                              {requiremessage.dhourlyprice !== '' && <span className="require-message">{requiremessage.dhourlyprice}</span>}
                               {requiremessage.dhourlyprice === '' && <FormInput className="profile-detail-input no-margin" type="number" placeholder="Hourly price" onChange={(e) => this.onChangeHourlyPrice(e)} value={param.hourlyprice} />}
                               <label className="profile-detail-comment">
                                 <span>You get 80% of your price. ({displaygethourlyprice} $)</span><br></br>

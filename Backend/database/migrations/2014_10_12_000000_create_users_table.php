@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
       $table->string('channel_name')->nullable()->unique();
       $table->string('tags_id')->default("");
       $table->boolean('is_mentor')->default(false);
+      $table->string('$phone')->nullable();
       
       $table->string('customer_id')->nullable();
       $table->string('connected_account')->nullable();
@@ -44,6 +45,9 @@ class CreateUsersTable extends Migration
       $table->string('avatar')->nullable();
       $table->integer('is_active')->default(0);
       $table->integer('expertise')->default(1);
+      $table->string('category')->default("");
+      $table->string('subcategory')->default("");
+      $table->string('minimum_age')->default("");
       $table->integer('sub_count')->default(0);
       $table->string('sub_page_name')->default("");
       $table->timestamp('dob')->nullable();
