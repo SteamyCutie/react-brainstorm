@@ -197,10 +197,10 @@ class PaymentController extends Controller
           'oauth_code' => $oauth_code,
           'connected_account' => $connected_account_id,
         ]);
-        User::where('id', $user_id)->update([
-          'connected_account' => $connected_account_id,
-        ]);
       }
+      User::where('id', $user_id)->update([
+        'connected_account' => $connected_account_id,
+      ]);
       SessionUser::truncate();
       return redirect(env('FRONT_URL').'/mentorWallet');
     } catch(\Stripe\Exception\CardException $e) {

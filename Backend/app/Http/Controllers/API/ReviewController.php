@@ -40,25 +40,7 @@ class ReviewController extends Controller
         ];
       }
       
-      $res_review = 0;
-      $is_exist = Review::where('mentor_id', $mentor_id)->where('student_id', $student_id)->where('session_id', $session_id)->first();
-      if ($is_exist) {
-        Review::where('mentor_id', $mentor_id)->where('student_id', $student_id)->where('session_id', $session_id)->update(['mark' => $mark, 'review' => $review]);
-      } else {
-        $res_review = Review::create([
-          'mentor_id' => $mentor_id,
-          'session_id' => $session_id,
-          'student_id' => $student_id,
-          'mark' => $mark,
-          'review' => $review,
-        ]);
-      }
       
-      //Begin get average_mark for Review and User table
-      $average_mark = round(Review::where('mentor_id', $mentor_id)->avg('mark'), 2);
-      $review_count = Review::where('mentor_id', $mentor_id)->count();
-      User::where('id', $mentor_id)->update(['average_mark' => $average_mark, 'review_count' => $review_count]);
-      //End get average_mark
       
       /// Begin Pay for Session
       $student_info = User::select('name', 'primary_card')->where('id', $student_id)->first();
@@ -99,6 +81,27 @@ class ReviewController extends Controller
           'message' => 'You did not pay for session. Please try again'
         ]);
       }
+      
+      $res_review = 0;
+      $is_exist = Review::where('mentor_id', $mentor_id)->where('student_id', $student_id)->where('session_id', $session_id)->first();
+      if ($is_exist) {
+        Review::where('mentor_id', $mentor_id)->where('student_id', $student_id)->where('session_id', $session_id)->update(['mark' => $mark, 'review' => $review]);
+      } else {
+        $res_review = Review::create([
+          'mentor_id' => $mentor_id,
+          'session_id' => $session_id,
+          'student_id' => $student_id,
+          'mark' => $mark,
+          'review' => $review,
+        ]);
+      }
+  
+      //Begin get average_mark for Review and User table
+      $average_mark = round(Review::where('mentor_id', $mentor_id)->avg('mark'), 2);
+      $review_count = Review::where('mentor_id', $mentor_id)->count();
+      User::where('id', $mentor_id)->update(['average_mark' => $average_mark, 'review_count' => $review_count]);
+      //End get average_mark
+      
       $trans_info = TransactionHistory::create([
         'mentor_id' => $mentor_id,
         'mentor_name' => $mentor_info->name,

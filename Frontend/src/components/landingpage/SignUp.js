@@ -30,6 +30,10 @@ class SignUp extends React.Component {
     };
   }
 
+  componentWillMount() {
+    localStorage.clear();
+  }
+
   toggle() {
     const { toggle } = this.props;
     this.setState({
