@@ -62,6 +62,7 @@ class MentorReview extends React.Component {
     reviewinfo.mentor_id = mentorid;
     reviewinfo.session_id = this.props.session.id;
     reviewinfo.conference_time = this.props.sessionTime;
+    reviewinfo.email = localStorage.getItem('email');
     const { requiremessage } = this.state;
     let temp = requiremessage;
     temp.dreview = '';
