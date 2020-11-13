@@ -149,7 +149,7 @@ class PaymentController extends Controller
   
       //Begin Original user connected account delete.
       $user_info = User::select('connected_account', 'email', 'name')->where('id', $user_id)->first();
-      if ($user_info->connected_account != "") {
+      if ($user_info->connected_account != "" || $user_info->connected_account != null) {
         $stripe->accounts->delete(
           $user_info->connected_account,
           []
@@ -196,6 +196,9 @@ class PaymentController extends Controller
       } else {
         Payment::where('user_id', $user_id)->where('payment_type', 'Bank')->update([
           'oauth_code' => $oauth_code,
+          'connected_account' => $connected_account_id,
+        ]);
+        User::where('id', $user_id)->where('payment_type', 'Bank')->update([
           'connected_account' => $connected_account_id,
         ]);
       }
@@ -357,6 +360,13 @@ class PaymentController extends Controller
   }
   
   public function testpayment(Request $request) {
-  
+    \Stripe\Stripe::setApiKey(env('SK_LIVE'));
+    $balance = \Stripe\Balance::retrieve(
+      ['stripe_account' => 'acct_1HhVnXEy9A4DJWeL']
+    );
+    return response()->json([
+      'result' => $balance,
+      'data' => 'balance'
+    ]);
   }
 }
