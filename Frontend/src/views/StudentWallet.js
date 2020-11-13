@@ -292,7 +292,8 @@ export default class StudentWallet extends React.Component {
   showSuccess(text) {
     this.setState({
       ModalOpen: !this.state.ModalOpen
-    });
+    });    
+    this.getUserCards();
     ToastsStore.success(text);
   }
 

@@ -30,6 +30,11 @@ Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
 Route::post('/getintroduceinfo', 'UserController@getIntroduceInfo');
 
+Route::post('/webhook', 'TransactionHistoryController@webhook');
+Route::post('/connect', 'TransactionHistoryController@connect');
+Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
+Route::post('/testpayment', 'PaymentController@testpayment');
+
 Route::group(['middleware' => 'jwt.verify'], function () {
   
   Route::post('/editprofile', 'UserController@editProfile');
@@ -74,14 +79,11 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/payforsession', 'TransactionHistoryController@payforsession');
   Route::post('/gettransactionhistorybystudent', 'TransactionHistoryController@gettransactionhistorybystudent');
   Route::post('/gettransactionhistorybymentor', 'TransactionHistoryController@gettransactionhistorybymentor');
-  Route::post('/webhook', 'TransactionHistoryController@webhook');
-  Route::post('/connect', 'TransactionHistoryController@webhook');
   
   Route::post('/registercardbystudent', 'PaymentController@registercardbystudent');
-  Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
   Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
   Route::post('/getusercards', 'PaymentController@getusercards');
   Route::post('/setprimarycard', 'PaymentController@setprimarycard');
   Route::post('/deletestudentcard', 'PaymentController@deletestudentcard');
-  Route::post('/testpayment', 'PaymentController@testpayment');
+  
 });

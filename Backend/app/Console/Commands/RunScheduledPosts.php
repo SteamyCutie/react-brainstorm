@@ -53,7 +53,7 @@ class RunScheduledPosts extends Command
       event(new StatusLiked($notifications));
     }
     //Begin not register email_verify delete
-    User::where('email_verified_at', null)->delete();
+    User::where('email_verified_at', null)->where('created_at', '<=', Carbon::now()->subMinutes(60))->delete();
     //End not register email_verify delete
     $send_mail = new Controller;
     $subject = "Welcome to BrainsShare!";
