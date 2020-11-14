@@ -4,17 +4,16 @@ import { ToastsStore } from 'react-toasts';
 import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormSelect, Form, FormTextarea, DatePicker, Popover, PopoverBody } from "shards-react";
 import { expertise, category, subcategory, minimum_age } from '../common/constants';
 import LoadingModal from "../components/common/LoadingModal";
-import Icon from "../images/Lightning.svg"
-import Question from "../images/question.svg"
-import Tooltip from "../images/Tooltip.svg"
-import avatar from "../images/avatar.jpg"
+import Icon from "../images/Lightning.svg";
+import Question from "../images/question.svg";
+import Tooltip from "../images/Tooltip.svg";
+import avatar from "../images/avatar.jpg";
 import { editprofile, getuserinfo, uploadimage, gettags, signout } from '../api/api';
 
 export default class MySharePage extends React.Component {
   constructor(props) {
     super(props);
-    this.myRef = React.createRef();
-
+    this.myRef = React.createRef();    
     this.state = {
       selectedTags: [],
       tags: [],
@@ -58,7 +57,7 @@ export default class MySharePage extends React.Component {
         tags: [],
       }
     };
-    this.onDrop = this.onDrop.bind(this);
+    this.onDrop = this.onDrop.bind(this);    
   }
 
   componentWillMount() {
@@ -611,7 +610,7 @@ export default class MySharePage extends React.Component {
                           <Row form>
                             <Col md="6" className="project-detail-input-group">
                               <label htmlFor="feInputState" className="profile-detail-important">Select minimum age</label>
-                              <img id="popover-1" alt="icon" style={{ paddingRight: "5px", paddingBottom: "5px" }} src={Question} onClick={() => this.toggleQuestion()} />
+                              <img id="popover-1" alt="icon" style={{ paddingRight: "5px", paddingBottom: "5px" }} src={Question} onMouseEnter={() => this.toggleQuestion()} onMouseLeave={() => this.toggleQuestion()}/>
                               <Popover
                                 placement="top"
                                 open={this.state.open}

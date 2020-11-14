@@ -1337,3 +1337,7 @@ ul#fabric-whiteboard-toolbar-ul li{
   width: 100%;
   height: 300px;
 }
+
+.popover {
+  z-index: 15000 !important;
+}
