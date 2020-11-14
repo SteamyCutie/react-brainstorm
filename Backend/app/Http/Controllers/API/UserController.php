@@ -389,7 +389,7 @@ class UserController extends Controller
       $name = $request->name;
       $birthday = $request->birthday;
       $email = $request->email;
-      $phone = $request->number;
+      $phone = $request->phone;
       $description = $request->description;
       $expertise = $request->expertise;
       $hourlyprice = $request->hourlyprice;
@@ -470,7 +470,7 @@ class UserController extends Controller
         'name' => $name,
         'dob' => $birthday,
         'email' => $email,
-        'number' => $phone,
+        'phone' => $phone,
         'description' => $description,
         'avatar' => $avatar,
         'expertise' => $expertise,
