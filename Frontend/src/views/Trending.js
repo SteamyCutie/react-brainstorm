@@ -122,7 +122,7 @@ export default class Trending extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
 
   toggle(id) {

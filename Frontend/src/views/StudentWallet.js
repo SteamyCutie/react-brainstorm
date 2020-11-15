@@ -73,7 +73,7 @@ export default class StudentWallet extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount() {    
     this.getHistory(1);
     this.getUserCards();
   }
@@ -288,7 +288,7 @@ export default class StudentWallet extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
   
   showSuccess(text) {

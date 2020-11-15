@@ -1,25 +1,19 @@
 import React from "react";
-import { Container, Row, Col, Card, CardBody, Button } from "shards-react";
+import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
-import MentorVideo from "./../components/common/MentorVideo";
 import BookSession from "./../components/common/BookSession";
 import LoadingModal from "../components/common/LoadingModal";
 import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import { ToastsStore } from 'react-toasts';
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
 import { findmentorsbytagsorname, signout } from '../api/api';
-import avatar from "../images/avatar.jpg";
-import SubscriperImg from "../images/Users.svg";
-import LinkImg from "../images/Link.svg";
 import media_url from "../video/video.mp4";
 import DashboardVideoAvatar from "../images/dashboard-video-avatar.svg"
 import DashboardVideoAvatarMini from "../images/dashboard-video-avatar-mini.svg"
 import MiniEndCall from '../images/many2many-mini-end.svg'
 import MiniFullScreen from '../images/maximize.png'
 import MiniMuteMic from '../images/many2many-mini-mute-mic.svg'
-import MiniMutedMic from '../images/many2many-mini-muted-mic.svg'
 import MiniMuteVideo from '../images/many2many-mini-mute-video.svg'
-import MiniMutedVideo from '../images/many2many-mini-muted-video.svg'
 import MiniChat from "../images/many2many-mini-chat.svg"
 import MiniScreenshare from "../images/many2many-mini-screenshare.svg"
 import MiniAddUser from "../images/many2many-mini-adduser.svg"
@@ -209,7 +203,7 @@ export default class MentorDashboard extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
 
   toggle(id) {
@@ -279,7 +273,7 @@ export default class MentorDashboard extends React.Component {
   }
 
   render() {
-    const { loading, mentors, totalCnt, ModalOpen, id, ModalCallWithDescOpen, participantSelected, participantData, width, height } = this.state;
+    const { loading, mentors, totalCnt, ModalOpen, id, ModalCallWithDescOpen, participantSelected, participantData, width } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}

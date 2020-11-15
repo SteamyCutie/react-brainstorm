@@ -158,7 +158,7 @@ export default class NavbarSearch extends React.Component{
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
 
   onSearch() {
