@@ -299,8 +299,10 @@ class SignUp extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
-              { /* eslint-disable-next-line */}
-              <p>Already have an account?&nbsp;<a href="javascript:void(0)" onClick={() => this.toggle_modal()}>Sign in</a></p>
+              <p>Already have an account?&nbsp;
+                {/* <a href="javascript:void(0)" onClick={ (e) => e.preventDefault(), () => this.toggle_modal()}>Sign in</a> */}
+                <button className="link_underline" onClick={ () => this.toggle_modal()}>Sign in</button>
+              </p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />

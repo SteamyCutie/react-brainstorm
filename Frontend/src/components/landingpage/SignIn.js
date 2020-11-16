@@ -174,8 +174,8 @@ class SignIn extends React.Component {
     }
   }
 
-  handleforgetPassword() {
-    this.props.history.push('/forgetpassword');
+  handleforgetPassword() {    
+    // this.props.history.push('/forgetpassword');
   }
 
   errorOccur(text) {
@@ -209,7 +209,7 @@ class SignIn extends React.Component {
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="fePassword">Password</label>
-              <a href="/#" htmlFor="feForgot" className="forgot-class" onClick={() => this.handleforgetPassword()}>Forgot password?</a>
+              <a href="/forgetpassword" htmlFor="feForgot" className="forgot-class" onClick={() => this.handleforgetPassword()}>Forgot password?</a>
               <FormInput
                 id="password-input"
                 type="password"
@@ -224,8 +224,10 @@ class SignIn extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
-              { /* eslint-disable-next-line */}
-              <p>Don't have an account?&nbsp;<a href="javascript:void(0)" onClick={() => this.toggle_modal()}>Sign up</a></p>
+              <p>Don't have an account?&nbsp;
+                {/* <a href="javascript:void(0)" onClick={ (e) => e.preventDefault(), () => this.toggle_modal()}>Sign up</a> */}
+                <button className="link_underline" onClick={ () => this.toggle_modal()}>Sign up</button>
+                </p>
             </div>
             <div className="content-center seperation-line-class">
               <hr />
