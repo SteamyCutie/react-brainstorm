@@ -168,7 +168,7 @@ export default class NavbarSearch extends React.Component{
   }
 
   render() {
-    const { tags, selectedTags, searchKey, users } = this.state;
+    const { tags, selectedTags, searchKey } = this.state;
     return (
       <>
       <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex">

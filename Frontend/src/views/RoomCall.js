@@ -18,7 +18,7 @@ import { Chat, Channel, ChannelHeader, Thread, Window } from 'stream-chat-react'
 import { MessageList, MessageInput } from 'stream-chat-react';
 import { StreamChat } from 'stream-chat';
 import 'stream-chat-react/dist/css/index.css';
-import { ACCESS_API_KEY, ACCESS_TOKEN_SECRET } from '../common/config';
+import { ACCESS_API_KEY, ACCESS_TOKEN_SECRET, WEB_SOCKET_ADDRESS } from '../common/config';
 
 var channel;
 var chatClient;
@@ -154,7 +154,7 @@ export default class RoomCall extends React.Component {
   }
 
   componentWillMount() {
-    this.setWebsocket('wss://' + 'media.brainsshare.com:8443' + '/groupcall');
+    this.setWebsocket(WEB_SOCKET_ADDRESS);
     //this.setWebsocket('wss://' + '192.168.136.129:8443' + '/groupcall');    
     window.removeEventListener('resize', this.handleBoundsSizeChange);
   }

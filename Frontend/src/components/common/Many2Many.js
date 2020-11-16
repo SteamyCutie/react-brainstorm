@@ -9,7 +9,6 @@ import InviteParticipant from './InviteParticipant'
 
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/Brainshare_logo.svg'
-import WhiteboardFullscreenImg from '../../images/whiteboard-fullscreen.svg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
 import WhiteBoard from 'fabric-whiteboard'
 import MuteMicImg from '../../images/mute-microphone.svg'
@@ -1212,7 +1211,7 @@ export default class Many2Many extends React.Component {
   }
 
   render() {
-    const { mode, width, height, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, newChat, showChat, inviteModal, roomMembers, sessionStarted, sessionTimeLabel } = this.state;
+    const { mode, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, newChat, showChat, inviteModal, roomMembers, sessionStarted, sessionTimeLabel } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
@@ -1326,7 +1325,7 @@ export default class Many2Many extends React.Component {
                 </Button>
                 <Button className="btn-rooom-control float-center" onClick={() => this.chat()}>
                   <img src={ChatImg} alt="Chat"/>
-                  {newChat && <img src={ChatBell} className="img-room-caht-bell" />}
+                  {newChat && <img src={ChatBell} className="img-room-caht-bell" alt="newChat"/>}
                 </Button>
                 <Button className="btn-rooom-control float-center" onClick={() => this.screenShare()}>
                   <img src={ScreenshareImg} alt="Screenshare"/>

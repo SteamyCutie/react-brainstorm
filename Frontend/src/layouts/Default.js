@@ -173,7 +173,6 @@ export default class DefaultLayout extends React.Component {
   }
 
   handleSearch(searchKey) {
-    const { history } = this.props;
     if (JSON.parse(localStorage.getItem('user-type')))      
       this.props.history.push("/mentordashboard");
     else

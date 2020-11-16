@@ -7,10 +7,10 @@ import CustomDataTable from "../components/common/CustomDataTable";
 import AddNewCard from "../components/common/AddNewCard";
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
-import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent, deletestudentcard } from '../api/api';
+import { getusercards, signout, setprimarycard, gettransactionhistorybystudent, deletestudentcard } from '../api/api';
 import { Badge } from "shards-react";
 
-export default class StudentWallet extends React.Component {
+export default class StudentWallet extends React.Component {  
   constructor(props) {
     super(props);
     this.state = {
