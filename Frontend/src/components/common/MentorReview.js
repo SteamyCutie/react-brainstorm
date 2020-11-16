@@ -25,9 +25,6 @@ class MentorReview extends React.Component {
     };
   }
 
-  componentWillMount() {
-  }
-
   componentDidMount() {
     console.log(this.props.session, "#34");
   }

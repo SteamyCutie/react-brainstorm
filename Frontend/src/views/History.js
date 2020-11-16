@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect } from "shards-react";
 import HistoryCard from "../components/common/HistoryCard"
 import LoadingModal from "../components/common/LoadingModal";
-import { getHistory, getweekdata, gettags, getallmentors, signout } from '../api/api';
+import { getHistory, getweekdata, gettags, signout } from '../api/api';
 import { ToastsStore } from 'react-toasts';
 
 export default class History extends React.Component {
@@ -212,7 +212,7 @@ export default class History extends React.Component {
   }
 
   render() {
-    const { loading, historyData, weekList, tags, mentors } = this.state;
+    const { loading, historyData, weekList, tags } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}

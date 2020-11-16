@@ -44,7 +44,7 @@ class SmallCard3 extends React.Component {
   }
 
   render() {
-    const {name, day, from_time, to_time, tag_name, avatar, room_id} = this.props.data;
+    const {name, day, from_time, to_time, tag_name, avatar } = this.props.data;
     const { joinSession } = this.props;
     return (
       <div className="small-card3">
