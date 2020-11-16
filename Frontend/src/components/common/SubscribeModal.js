@@ -205,6 +205,7 @@ export default class SubscribeModal extends React.Component {
                   is_primary={card.is_primary}
                 />
               ))}
+              { /* eslint-disable-next-line */ }
               <a href="javascript:void(0)" onClick={() => this.toggle_modal()}><h5 style={{ float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA" }}>+ Add new card</h5></a>
             </div>
             <div className="content-center block-content-class button-text-group-class" style={{ marginBottom: "40px" }}>

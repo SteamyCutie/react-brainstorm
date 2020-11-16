@@ -28,11 +28,6 @@ class SignIn extends React.Component {
   }
   
   componentDidMount() {
-    // var x = document.getElementById("google-login").firstChild.innerHTML;
-    // console.log(x);
-  }
-
-  componentDidMount() {
     if (this.props.open) {
       document.body.style.overflow = 'hidden';
     }
@@ -229,6 +224,7 @@ class SignIn extends React.Component {
             <div className="content-center block-content-class button-text-group-class">
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
+              { /* eslint-disable-next-line */}
               <p>Don't have an account?&nbsp;<a href="javascript:void(0)" onClick={() => this.toggle_modal()}>Sign up</a></p>
             </div>
             <div className="content-center seperation-line-class">
