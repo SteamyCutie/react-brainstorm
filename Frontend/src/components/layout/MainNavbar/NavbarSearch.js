@@ -10,10 +10,10 @@ import {
 } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import { gettags, signout, getallparticipants } from '../../../api/api';
+import SearchIcon from '../../../images/SearchIcon.svg';
+import { withRouter } from 'react-router-dom';
 
-import SearchIcon from '../../../images/SearchIcon.svg'
-
-export default class NavbarSearch extends React.Component{
+class NavbarSearch extends React.Component{
 
   constructor(props) {
     super(props);
@@ -207,3 +207,5 @@ export default class NavbarSearch extends React.Component{
     )
   }
 };
+
+export default withRouter(NavbarSearch);

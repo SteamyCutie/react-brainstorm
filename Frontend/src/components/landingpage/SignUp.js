@@ -241,6 +241,11 @@ class SignUp extends React.Component {
     }
   }
 
+  onClick = (e) => {
+    e.preventDefault();
+    this.toggle_modal();
+  }
+
   render() {
     const { open } = this.props;
     return (
@@ -300,8 +305,7 @@ class SignUp extends React.Component {
               <label className="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
               <p>Already have an account?&nbsp;
-                {/* <a href="javascript:void(0)" onClick={ (e) => e.preventDefault(), () => this.toggle_modal()}>Sign in</a> */}
-                <button className="link_underline" onClick={ () => this.toggle_modal()}>Sign in</button>
+                <a href="" onClick={ this.onClick }>Sign in</a>                
               </p>
             </div>
             <div className="content-center seperation-line-class">
