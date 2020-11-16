@@ -86,6 +86,7 @@ export default class FeaturedMentors extends React.Component {
                   {data.description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
                 </div>
                 <div className="carousel-component-body-play-class">
+                   {/* eslint-disable react/jsx-no-target-blank */}
                   <a href={data.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
                 </div>
               </div>
