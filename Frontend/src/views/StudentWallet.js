@@ -7,10 +7,10 @@ import CustomDataTable from "../components/common/CustomDataTable";
 import AddNewCard from "../components/common/AddNewCard";
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
-import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent, deletestudentcard } from '../api/api';
+import { getusercards, signout, setprimarycard, gettransactionhistorybystudent, deletestudentcard } from '../api/api';
 import { Badge } from "shards-react";
 
-export default class StudentWallet extends React.Component {
+export default class StudentWallet extends React.Component {  
   constructor(props) {
     super(props);
     this.state = {
@@ -73,7 +73,7 @@ export default class StudentWallet extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount() {    
     this.getHistory(1);
     this.getUserCards();
   }
@@ -196,6 +196,7 @@ export default class StudentWallet extends React.Component {
       const result = await setprimarycard(param);
       if (result.data.result === "success") {
         this.getUserCards();
+        ToastsStore.success("Successfully set primary card")
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -230,6 +231,7 @@ export default class StudentWallet extends React.Component {
       const result = await deletestudentcard(param);
       if (result.data.result === "success") {
         this.getUserCards();
+        ToastsStore.success('Successfully delete card');
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -286,7 +288,7 @@ export default class StudentWallet extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
   
   showSuccess(text) {
@@ -325,9 +327,8 @@ export default class StudentWallet extends React.Component {
             <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>            
           </Row>
           <Row>
-            {/* <div className="card-container"> */}
+            <div className="card-container">
               {paymentCard.map((card, idx) => (
-                <Col md="4" sm="12" lg="4" xl="3">
                 <SmallCardPayment
                   key={idx}
                   title={card.card_name}
@@ -338,9 +339,8 @@ export default class StudentWallet extends React.Component {
                   setAsDefault={(id) => this.setAsDefault(id)}
                   deleteStudentCard={(id) => this.deleteStudentCard(id)}
                 />
-                </Col>
               ))}
-            {/* </div> */}
+            </div>
           </Row>
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">

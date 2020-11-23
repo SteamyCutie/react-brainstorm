@@ -214,7 +214,7 @@ class TransactionHistoryController extends Controller
           $pending_balance = $balance->pending[0]->amount / 100;
         }
         TransactionHistory::where('transfer_id', $payment_event->id)->update(['status' => 'Pending', 'check_confirmed_sum' => true]);
-        $life_time_earnings = TransactionHistory::where('transfer_id', $payment_event->id)->where('check_confirmed_sum', true)->sum('amount');
+        $life_time_earnings = TransactionHistory::where('mentor_id', $mentor_info->id)->where('check_confirmed_sum', true)->sum('amount');
         User::where('id', $trans_info->mentor_id)->update(['available_balance' => $available_balance, 'pending_balance' => $pending_balance, 'life_time_earnings' => $life_time_earnings]);
         break;
       case 'transfer.failed':

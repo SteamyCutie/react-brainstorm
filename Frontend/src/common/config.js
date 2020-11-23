@@ -5,6 +5,9 @@ export const SERVER_URL = 'https://brainsshare.com:8000';
 // export const SERVER_URL = 'http://127.0.0.1:8000';
 export const PUSHER_KEY = 'e89985ed54dad44cf61e';
 
+export const WEB_SOCKET_ADDRESS_GROUP = 'wss://media.brainsshare.com:8443/groupcall';
+export const WEB_SOCKET_ADDRESS_ONE = 'wss://media.brainsshare.com/one2one';
+
 export const GOOGLE_KEY = '850815176291-fnp4vo85brnr2feiutb26f5a5irlk0pg.apps.googleusercontent.com';
 export const FACEBOOK_KEY = '682908192243627';
 
@@ -17,5 +20,5 @@ export const AWS_REGION = 'us-west-2';
 export const AWS_ACCESS_KEY_ID = 'AKIAUBTWQ2NEYQTLHWVA';
 export const AWS_SECRET_ACCESS_KEY = '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';
 
-export const ACCESS_API_KEY = "h4q4k2knn5dr";
-export const ACCESS_TOKEN_SECRET = "6zq52mp3xadfk69ypqtt9k4qz4vztukwjtw6tgdhaybubfk324s5yje72w73bc7q";
+export const ACCESS_API_KEY = "xbmnp35v4fxq";
+export const ACCESS_TOKEN_SECRET = "5bnr5wjm7rk72kj2a2vhpn2qn7yk7esv762dg8rnjxmg9bnh28fcfrzcmaxuxcb9";

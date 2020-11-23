@@ -4,7 +4,6 @@ import GoogleLogin from 'react-google-login';
 import { GOOGLE_KEY, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
 import { withRouter } from 'react-router-dom';
-import { LocalSeeOutlined } from '@material-ui/icons';
 
 class Loginbygoogle extends Component {
   constructor(props) {

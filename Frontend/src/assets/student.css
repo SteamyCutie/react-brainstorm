@@ -518,7 +518,7 @@ body {
 .small-card-payment {
     border-radius: 7px;
     max-width: 360px;
-    min-width: 270px;
+    min-width: 360px;
     max-height: 80px;
     min-height: 80px;
     padding: 10px 10px;

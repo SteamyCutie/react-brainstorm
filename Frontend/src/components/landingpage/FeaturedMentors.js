@@ -57,11 +57,11 @@ export default class FeaturedMentors extends React.Component {
         <AutoplaySlider cssModule={AwesomeSliderStyles} bullets={false} play={true} cancelOnInteraction={false} interval={3000} showTimer={false}>
           {carouselDatas.map((data, idx) => (
             <div className="carousel-component" key={idx}>
-              <div style={{position: "relative"}} key={idx}>
+              <div style={{position: "relative"}} key1={idx}>
                 {data.avatar && <img key={idx} src={data.avatar} alt={data.name} className="carousel-component-img-class" />}
                 {!data.avatar && <img key={idx} src={defaultAvatar} alt={data.name} className="carousel-component-img-class" />}
                 {
-                  data.status === 1 && <div key={idx} className="carousel-component-online-class"></div>
+                  data.status === 1 && <div key2={idx} className="carousel-component-online-class"></div>
                 }
               </div>
               <div className="carousel-component-body-class">
@@ -86,6 +86,7 @@ export default class FeaturedMentors extends React.Component {
                   {data.description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
                 </div>
                 <div className="carousel-component-body-play-class">
+                   {/* eslint-disable react/jsx-no-target-blank */}
                   <a href={data.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
                 </div>
               </div>
