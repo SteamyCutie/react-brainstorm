@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
       $table->string('channel_name')->nullable()->unique();
       $table->string('tags_id')->default("");
       $table->boolean('is_mentor')->default(false);
-      $table->string('$phone')->nullable();
+      $table->string('phone')->nullable();
       
       $table->string('customer_id')->nullable();
       $table->string('connected_account')->nullable();

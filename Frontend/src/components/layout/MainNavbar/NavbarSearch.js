@@ -10,10 +10,10 @@ import {
 } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import { gettags, signout, getallparticipants } from '../../../api/api';
+import SearchIcon from '../../../images/SearchIcon.svg';
+import { withRouter } from 'react-router-dom';
 
-import SearchIcon from '../../../images/SearchIcon.svg'
-
-export default class NavbarSearch extends React.Component{
+class NavbarSearch extends React.Component{
 
   constructor(props) {
     super(props);
@@ -158,7 +158,7 @@ export default class NavbarSearch extends React.Component{
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
 
   onSearch() {
@@ -168,7 +168,7 @@ export default class NavbarSearch extends React.Component{
   }
 
   render() {
-    const { tags, selectedTags, searchKey, users } = this.state;
+    const { tags, selectedTags, searchKey } = this.state;
     return (
       <>
       <Form className="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
@@ -207,3 +207,5 @@ export default class NavbarSearch extends React.Component{
     )
   }
 };
+
+export default withRouter(NavbarSearch);

@@ -1,8 +1,5 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
-
-import MentorReview from "../common/MentorReview";
-
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
@@ -41,8 +38,8 @@ class SearchMentorDetailCard extends React.Component {
   }
 
   render() {
-    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
-    const {ModalOpenReview} = this.state;
+    const {name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
+    // const {ModalOpenReview} = this.state;
 
     return (
       <div className="mentor-detail-card">

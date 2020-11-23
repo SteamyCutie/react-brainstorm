@@ -11,12 +11,13 @@ import "../../src/assets/student.css";
 import "../../src/assets/mentor.css";
 import "../../src/assets/common.css";
 import VideoCallMin from "../components/common/One2OneMin";
-import Many2Many from "../components/common/Many2Many"
-import IncomingCall from "../../src/components/common/IncomingCall"
-import OutcomingCall from "../../src/components/common/OutcomingCall"
-import HaveInvitation from "../../src/components/common/HaveInvitation"
+import Many2Many from "../components/common/Many2Many";
+import IncomingCall from "../../src/components/common/IncomingCall";
+import OutcomingCall from "../../src/components/common/OutcomingCall";
+import HaveInvitation from "../../src/components/common/HaveInvitation";
 import MentorReview from "../../src/components/common/MentorReview";
-import incomingSound from '../../src/audio/incoming.mp3'
+import incomingSound from '../../src/audio/incoming.mp3';
+import { WEB_SOCKET_ADDRESS_ONE } from '../common/config';
 
 const NO_CALL = 0;
 const INCOMING_CALL = 2;
@@ -72,9 +73,7 @@ class App extends React.Component{
   }
 
   componentWillMount() {
-    var wsUri = 'wss://media.brainsshare.com/one2one';
-    // var wsUri = 'wss://192.168.105.13:8443/one2one';
-    this.setWebsocket(wsUri);
+    this.setWebsocket(WEB_SOCKET_ADDRESS_ONE);
   }
 
   setWebsocket(wsUri) {
