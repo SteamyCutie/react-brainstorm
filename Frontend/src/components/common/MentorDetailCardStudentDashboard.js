@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Row, Col, Container, Card, CardBody } from "shards-react";
+import { Button, Row, Col, Card, CardBody } from "shards-react";
 import MentorVideo from "../../components/common/MentorVideo";
 import SubscribeModal from "../../components/common/SubscribeModal";
 import AddNewCard from "../../components/common/AddNewCard";

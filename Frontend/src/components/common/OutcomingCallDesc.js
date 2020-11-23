@@ -1,24 +1,26 @@
 import React from "react";
-import { Button, Modal, ModalBody, Row, FormTextarea, Col } from "shards-react";
+import { Button, Modal, ModalBody, Row, FormTextarea, Col, Popover, PopoverBody } from "shards-react";
 import LoadingModal from "./LoadingModal";
 import "../../assets/landingpage.css";
 import DeclineImg from '../../images/call-decline.svg';
 import AcceptImg from '../../images/call-accept.svg';
 import defaultavatar from '../../images/avatar.jpg';
 import { getuserinfobyid } from '../../api/api';
+import Question from "../../images/question.svg";
 import { ToastsStore } from 'react-toasts';
 
 export default class OutcomingCallDesc extends React.Component {
   constructor(props) {
-    super(props);
-
+    super(props);    
     this.emailInput = React.createRef();
+    this.toggleQuestion = this.toggleQuestion.bind(this);
     this.state = {
       loading: false,
       userinfo: {},
       remaincount: 150,
       description: '',
       callState: false,
+      open_question: false,
     };
   }
 
@@ -136,6 +138,12 @@ export default class OutcomingCallDesc extends React.Component {
     })
   }
 
+  toggleQuestion() {
+    this.setState({
+      open_question: !this.state.open_question
+    });
+  }
+
   render() {
     const { open } = this.props;
     const { loading, userinfo, remaincount, description } = this.state;
@@ -157,6 +165,19 @@ export default class OutcomingCallDesc extends React.Component {
                 </Col>
                 <Col lg="8" md="6" sm="12" xs="12" className="no-padding">
                   <label htmlFor="fePassword">Call description</label>
+                  <img id="popover-1" alt="icon" style={{ paddingRight: "5px", paddingBottom: "5px" }} src={Question} onMouseEnter={() => this.toggleQuestion()} onMouseLeave={() => this.toggleQuestion()} />
+                  <Popover
+                    placement="top"
+                    open={this.state.open_question}
+                    target="#popover-1"
+                    toggle={this.toggleQuestion}
+                  >
+                    <PopoverBody>
+                      Write a short description of the
+                      purpose of your call for the
+                      mentor
+                    </PopoverBody>
+                  </Popover>
                   <label htmlFor="fePassword" className="remain-symbols">{remaincount} symbols left</label>
                   <FormTextarea id="call-description" placeholder="Type here" style={{ height: "175px", fontSize: "17px" }} onChange={(e) => this.changeDescription(e)} value={description} />
                 </Col>

@@ -117,6 +117,7 @@ class SmallCardForum extends React.Component {
         </div>
         <div className="forum-invited-student">
           <div style={{display: "flex"}}>
+             {/* eslint-disable-next-line */}
             <a href="javascript:void(0)" onClick={() => this.toggle_invite()}>
               {student_info.map((item, idx) => {
                 if (idx < 3) {

@@ -11,7 +11,8 @@ class SidebarMainNavbar extends React.Component {
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
   }
 
-  handleToggleSidebar() {
+  handleToggleSidebar = (e) => {
+    e.preventDefault();
     Dispatcher.dispatch({
       actionType: Constants.TOGGLE_SIDEBAR
     });
@@ -39,7 +40,7 @@ class SidebarMainNavbar extends React.Component {
             </div>
           </NavbarBrand>
           <a
-            href="javascript:void(0)"
+            href=""
             className="toggle-sidebar d-sm-inline d-lg-none"
             onClick={this.handleToggleSidebar}
           >

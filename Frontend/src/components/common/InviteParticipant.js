@@ -1,15 +1,11 @@
 import React from "react";
-import { Button, Modal, ModalBody, Row, FormTextarea, FormInput} from "shards-react";
+import { Button, Modal, ModalBody, Row, FormInput} from "shards-react";
 import "../../assets/landingpage.css"
-
-import DeclineImg from '../../images/call-decline.svg'
-import AcceptImg from '../../images/call-accept.svg'
-import defaultavatar from '../../images/avatar.jpg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
 import { signout, getallparticipants } from '../../api/api';
-import UserActions from "../layout/MainNavbar/NavbarNav/UserActions";
+import { withRouter } from 'react-router-dom';
 
-export default class InviteParticipant extends React.Component {
+class InviteParticipant extends React.Component {
   constructor(props) {
     super(props);
 
@@ -146,7 +142,7 @@ export default class InviteParticipant extends React.Component {
     const {suggestedUsers} = this.state;
 
     for (index = 0; index < 4; index ++) {
-      if (suggestedUsers[index].value == e.target.id) {
+      if (suggestedUsers[index].value === e.target.id) {
         email = suggestedUsers[index].email;
         break;
       }
@@ -199,3 +195,5 @@ export default class InviteParticipant extends React.Component {
     );
   }
 }
+
+export default withRouter(InviteParticipant);
