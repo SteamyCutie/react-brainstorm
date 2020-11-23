@@ -117,7 +117,7 @@ export default class SpecificSubscription extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
 
   render() {

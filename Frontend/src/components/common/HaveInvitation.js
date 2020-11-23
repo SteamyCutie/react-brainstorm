@@ -1,10 +1,8 @@
 import React from "react";
-import { Button, Modal, ModalBody, Row, FormTextarea} from "shards-react";
+import { Button, Modal, ModalBody, Row } from "shards-react";
 import "../../assets/landingpage.css"
-
 import DeclineImg from '../../images/call-decline.svg'
 import AcceptImg from '../../images/call-accept.svg'
-import defaultavatar from '../../images/avatar.jpg'
 
 export default class HaveInvitation extends React.Component {
   constructor(props) {

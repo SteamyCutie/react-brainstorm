@@ -389,6 +389,7 @@ class UserController extends Controller
       $name = $request->name;
       $birthday = $request->birthday;
       $email = $request->email;
+      $phone = $request->phone;
       $description = $request->description;
       $expertise = $request->expertise;
       $hourlyprice = $request->hourlyprice;
@@ -398,6 +399,9 @@ class UserController extends Controller
       $instantcall = $request->instantcall;
       $avatar = $request->avatar;
       $is_mentor = $request->is_mentor;
+      $category = $request->category;
+      $subcategory = $request->subcategory;
+      $minimum_age = $request->minimum_age;
       
       $tags = ',' . implode(",", $request->tags) . ',';
       $rules = array(
@@ -407,7 +411,11 @@ class UserController extends Controller
         'hourlyprice' => 'required',
         'subpagename' => 'required',
         'subplanfee' => 'required',
-        'videourl' => 'required|url'
+        'category' => 'required',
+        'subcategory' => 'required',
+        'minimum_age' => 'required',
+        'videourl' => 'required|url',
+        'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10'
       );
       $messages = array(
         'required' => 'This field is required.',
@@ -462,6 +470,7 @@ class UserController extends Controller
         'name' => $name,
         'dob' => $birthday,
         'email' => $email,
+        'phone' => $phone,
         'description' => $description,
         'avatar' => $avatar,
         'expertise' => $expertise,
@@ -472,7 +481,10 @@ class UserController extends Controller
         'instant_call' => $instantcall,
         'status' => 1,
         'is_mentor' => $is_mentor,
-        'tags_id' => $tags
+        'tags_id' => $tags,
+        'minimum_age' => $minimum_age,
+        'category' => $category,
+        'subcategory' => $subcategory
       ));
       $res_user_info = User::where('email', $email)->first();
       return response()->json([

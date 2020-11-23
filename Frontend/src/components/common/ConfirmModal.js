@@ -37,10 +37,9 @@ class AddNewCard extends React.Component {
   actionRemove = async (id) => {
     const param = { id: id };
     try {
-      // this.setState({ loading: true });
+      this.setState({ loading: true });
       const result = await deleteforum(param);
       if (result.data.result === "success") {
-        // this.toggle();
         this.toggle_remove();
         ToastsStore.success("Delete Schedule Success");
         this.props.history.push('/scheduleLiveForum');
@@ -120,7 +119,7 @@ class AddNewCard extends React.Component {
             </Row>
           </ModalFooter>
         </Modal>
-        {/* {loading && <LoadingModal open={true} />} */}
+        {loading && <LoadingModal open={true} />}
       </div>
     );
   }

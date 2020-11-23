@@ -4,7 +4,6 @@ import Pagination from '@material-ui/lab/Pagination';
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
 import SmallCard from "../components/common/SmallCard";
-import AddNewBank from "../components/common/AddNewBank";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 import { signout, getuseridformentor, gettransactionhistorybymentor } from '../api/api';
@@ -177,11 +176,11 @@ export default class MentorWallet extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
+    this.props.history.push('/');
   }
 
   render() {
-    const { loading, tHistory, columns, smallCards, totalCnt, ModalOpen } = this.state;
+    const { loading, tHistory, columns, smallCards, totalCnt } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
