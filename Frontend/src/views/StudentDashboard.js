@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Pagination from '@material-ui/lab/Pagination';
 import AdSense from 'react-adsense';
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
@@ -44,6 +45,8 @@ export default class StudentDashboard extends React.Component {
       height: '450',
       participantSelected: false,
       participantData: {},
+      pageCount: 1, 
+      hasMore: true, 
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -62,6 +65,9 @@ export default class StudentDashboard extends React.Component {
     }
 
     this.getParticipants(searchParams, searchKey, 1);
+    this.setState({
+      pageCount: 2, 
+    })
   }
 
   componentWillMount() {
@@ -77,6 +83,9 @@ export default class StudentDashboard extends React.Component {
     }
 
     this.getParticipants(searchParams, searchKey, 1);
+    this.setState({
+      pageCount: 2, 
+    })
   }
 
   componentDidMount() {
@@ -114,17 +123,26 @@ export default class StudentDashboard extends React.Component {
       name: searchKey,
       tags_id: category,
       page: pageNo,
-      rowsPerPage: 10
+      rowsPerPage: 5
     }
 
     try {
       this.setState({ loading: true });
       const result = await findmentorsbytagsorname(param);
       if (result.data.result === "success") {
+        const { mentors } = this.state;
+        var temp = mentors;
+        temp = temp.concat(result.data.data);
         this.setState({
           loading: false,
-          mentors: result.data.data,
+          mentors: temp,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        }, () => {
+          if (this.state.mentors.length >= result.data.totalRows) {
+            this.setState({
+              hasMore: false, 
+            })
+          }
         });
 
         if (category.length) {
@@ -173,6 +191,25 @@ export default class StudentDashboard extends React.Component {
     }
 
     this.getParticipants(searchParams, searchKey, value);
+  }
+
+  fetchMoreData = () => {
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+
+    this.getParticipants(searchParams, searchKey, this.state.pageCount);
+    this.setState({
+      pageCount: this.state.pageCount + 1,
+    })
+    
   }
 
   signout = async () => {
@@ -417,22 +454,26 @@ export default class StudentDashboard extends React.Component {
           </Row>
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
-              {mentors.map((data, idx) => (
-                <MentorDetailCardStudentDashboard
-                  key={idx}
-                  ref={this.mentorRef}
-                  mentorData={data}
-                  // sendUser = {this.sendUser} 
-                  toggle={(id) => this.toggle(id)}
-                  callwithdescription={(id) => this.toggle_callwithdesc(id)}
-                  onMentorDetailCardClick={(mentorData) => this.handleMentorDetailCardClick(mentorData)}
-                />
-              ))}
+              <InfiniteScroll
+                dataLength={mentors.length}
+                next={this.fetchMoreData}
+                hasMore={this.state.hasMore}
+                loader={<h4>Loading...</h4>}
+              >
+                {mentors.map((data, idx) => (
+                  <MentorDetailCardStudentDashboard
+                    key={idx}
+                    ref={this.mentorRef}
+                    mentorData={data}
+                    sendUser={this.sendUser}
+                    toggle={(id) => this.toggle(id)}
+                    callwithdescription={(id) => this.toggle_callwithdesc(id)}
+                    onMentorDetailCardClick={(mentorData) => this.handleMentorDetailCardClick(mentorData)}
+                  />
+                ))}
+              </InfiniteScroll>
             </Col>
           </Row>
-          {mentors.length > 0 && <Row className="pagination-center">
-            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
-          </Row>}
         </Container>
       </>
     )
