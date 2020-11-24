@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button } from "shards-react";
+import { Container, Row, Col, Button, FormSelect } from "shards-react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Pagination from '@material-ui/lab/Pagination';
 import AdSense from 'react-adsense';
@@ -444,6 +444,14 @@ export default class StudentDashboard extends React.Component {
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
               <h3 id="search-result-label">Top Brainsshare mentors</h3>
+              <div style={{padding: "5px 0px"}}>
+                <label style={{marginRight: "15px", fontWeight: "bold", color: "#333333"}}>Sort by: </label>
+                <FormSelect style={{ height: "40px", width: "150px", marginRight: "10px", fontSize: "15px" }} onChange={(e) => this.onChangeTags(e)}>
+                  <option value="">Select</option>
+                  <option key="1" value="Hourly" >Hourly Rate</option>
+                  <option key="1" value="Language" >Language</option>
+                </FormSelect>
+              </div>
             </Col>
             <AdSense.Google
               client='ca-pub-8022559137099901'
