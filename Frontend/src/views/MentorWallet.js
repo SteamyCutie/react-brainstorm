@@ -4,6 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
 import SmallCard from "../components/common/SmallCard";
+import SmallBankPayment from "../components/common/SmallBankPayment";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
 import { signout, getuseridformentor, gettransactionhistorybymentor } from '../api/api';
@@ -15,6 +16,7 @@ export default class MentorWallet extends React.Component {
     this.state = {
       // ModalOpen: false,
       loading: false,
+      bank_status: false,
       totalCnt: 0,
       smallCards: [
         {
@@ -117,9 +119,10 @@ export default class MentorWallet extends React.Component {
     try {
       this.setState({ loading: true });
       const result = await gettransactionhistorybymentor(param);
-      if (result.data.result === "success") {
+      if (result.data.result === "success") {        
         this.setState({
           loading: false,
+          bank_status: result.data.bank_status === null || result.data.bank_status === ""? false: true,
           smallCards: result.data.balance,
           tHistory: result.data.data,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
@@ -180,7 +183,7 @@ export default class MentorWallet extends React.Component {
   }
 
   render() {
-    const { loading, tHistory, columns, smallCards, totalCnt } = this.state;
+    const { loading, tHistory, columns, smallCards, totalCnt, bank_status } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -197,7 +200,7 @@ export default class MentorWallet extends React.Component {
             {/* <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/> */}
             <Button className="btn-add-payment-mentor" onClick={() => this.toggle_add()}>Add payment method</Button>
           </Row>
-
+          {bank_status && <SmallBankPayment />}
           <Row>
             {smallCards.map((card, idx) => (
               <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
