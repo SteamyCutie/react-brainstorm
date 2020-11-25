@@ -742,26 +742,22 @@ export default class Many2Many extends React.Component {
     });
 
     channel.on(event => {
-      // console.log(event, "channel event");
       if (event.type === 'message.new' && !this.state.showChat) {
-        // new Notification(event.user.name, {
-        //   body: event.message.text, 
-        // });
-
-        // document.getElementById('favicon').href = 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/bell_1f514.png';
-        console.log("New message arrived.");
+       console.log("New message arrived.");
         this.setState({
           newChat: true,
         })
       }
 
       if (event.type === 'message.read' && !event.total_unread_count) {
-        // document.getElementById('favicon').href = '/favicon.ico'
+        
       }
     });
 
     this.calcBoundsSize()
     window.addEventListener('resize', this.handleBoundsSizeChange);
+
+    this.startSessionTimer();
   }
 
   sendMessage(message) {
@@ -773,8 +769,6 @@ export default class Many2Many extends React.Component {
     stopMasterMany();
     viewer.forEach((participant, index) => {
       stopViewerMany(index);
-
-      // document.getElementById("participant-container-" + participant.channelName).remove();
     });
 
     var elements = document.getElementsByClassName("master-participant-container");
@@ -794,8 +788,6 @@ export default class Many2Many extends React.Component {
 
     this.setState({
       isFullscreen: !this.state.isFullscreen,
-      // showChat: false, 
-      // showWhiteBoard: false,
     });
 
     fullscreenMode = !fullscreenMode;
@@ -864,28 +856,7 @@ export default class Many2Many extends React.Component {
     this.setState({
       isVideoMuted: !this.state.isVideoMuted,
     })
-
-    // master.localStream.getTracks().forEach(track => {
-    //   if (track.kind === "video") {
-    //     track.enabled = !track.enabled;
-    //   }
-
-    //   if (track.kind === "audio") {
-    //     track.enabled = true;
-    //   }
-    // });
-
-    // viewer.forEach(participant => {
-    //   participant.localStream.getTracks().forEach(track => {
-    //     if (track.kind === "video") {
-    //       track.enabled = !track.enabled;
-    //     }
-
-    //     if (track.kind === "audio") {
-    //       track.enabled = true;
-    //     }
-    //   })
-    // });
+    
     senders.forEach((sender) => {
       if (sender.track.kind === 'video') {
         sender.track.enabled = !sender.track.enabled;
@@ -1165,17 +1136,6 @@ export default class Many2Many extends React.Component {
     this.setState({
       inviteModal: true,
     })
-
-    // this.props.inviteParticipantToRoom();
-    // console.log("inviteParticipantToRoom", "#1126");
-
-    // var message = {
-    //   id: 'inviteParticipant',
-    //   roomName: localStorage.getItem("room_id"),
-    //   participantId: "222@gmail.com", 
-    // };
-
-    // this.sendMessage(message);
   }
 
   handleInvite(email) {
@@ -1215,13 +1175,6 @@ export default class Many2Many extends React.Component {
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
         <div className={isFullscreen ? "session-timer-controls" : "session-timer-controls-mini"}>
-          {isFullscreen ?
-            <Button className="btn-room-start-timer" onClick={() => this.startSessionTimer()}>
-              <img src={StartTimer} alt="start timer" />
-              {sessionStarted ? "Stop " : "Start"}
-            </Button>
-            : null
-          }
           <label>{sessionTimeLabel}</label>
         </div>
         <div className={(showChat || showWhiteBoard) ? "video-call-element-min-chat-whiteboard" : "video-call-element-min"} id="video-call-element-min">
@@ -1259,56 +1212,6 @@ export default class Many2Many extends React.Component {
           <div id="participants-video-container" className={this.state.isFullscreen ? "participants-video-container-full" : "participants-video-container-mini"}>
             <video id="videoOutput" style={{ display: "none" }}></video>
           </div>
-          {/* {isFullscreen ?
-            <div className={showChat ? "room-group-chat" : "room-group-chat-hidden"}>
-              <div className="room-chat-header">
-                <h2 style={{width: "100%", textAlign: "center", fontSize: "38px", fontWeight: "bold", margin: "0px", marginLeft: "50px"}}>Chat</h2>
-                <Button className="btn-rooom-control2 float-center" onClick={() => this.chatClose()}>
-                  <img src={WhiteboardCloseImg} alt="Add user"/>
-                </Button>
-              </div>
-              <Chat client={chatClient} theme={'messaging light'}>
-                <Channel channel={channel}>
-                  <Window>
-                    <MessageList />
-                    <MessageInput />
-                  </Window>
-                  <Thread />
-                </Channel>
-              </Chat>
-            </div>
-            : null
-          }  */}
-          {/* {(showWhiteBoard && isFullscreen) ?
-            <div id="room-whiteboard-body" className="room-whiteboard">
-              <div className="room-whitboard-header">
-                <h2 style={{fontSize: "38px", fontWeight: "bold", margin: "0px", width: "100%", textAlign: "center"}}>Whiteboard</h2>
-                <Button className="btn-rooom-control2 float-center" style={{marginLeft: "auto", padding: "0px"}} onClick={() => this.whiteboardClose()}>
-                  <img src={WhiteboardCloseImg} alt="Add user"/>
-                </Button>
-              </div>
-              <WhiteBoard
-                className="room-whiteboard-body"
-                width={width}
-                height={height}
-                showToolbar={true}
-                showBoard={true}
-                mode={mode}
-                onModeClick={this.handleOnModeClick}
-                brushColor={brushColor}
-                brushColors={[
-                  '#f44336',
-                  '#e91e63',
-                  '#9c27b0',
-                  '#673ab7',
-                  '#3f51b5',
-                  '#2196f3',
-                ]}
-                onBrushColorChange={this.handleOnBrushColorChange}
-              />
-            </div>
-            : null
-          } */}
           {isFullscreen &&
             <div className="room-control-container">
               <Button className="btn-rooom-control margin-right-auto" onClick={() => this.swithFullScreen()}>
