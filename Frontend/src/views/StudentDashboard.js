@@ -47,6 +47,7 @@ export default class StudentDashboard extends React.Component {
       participantData: {},
       pageCount: 1, 
       hasMore: true, 
+      sortby: "",
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -123,7 +124,8 @@ export default class StudentDashboard extends React.Component {
       name: searchKey,
       tags_id: category,
       page: pageNo,
-      rowsPerPage: 5
+      rowsPerPage: 5, 
+      sortby: this.state.sortby, 
     }
 
     try {
@@ -308,6 +310,20 @@ export default class StudentDashboard extends React.Component {
 
   handleAdsBook() {
     this.toggle(this.state.participantData.id);
+  }
+
+  onChangeTags = (e) => {
+    if (e.target.value === "Language") {
+      return;
+    }
+
+    this.setState({
+      mentors: [], 
+      sortby: e.target.value, 
+      pageCount: 1, 
+    }, () => {
+      this.fetchMoreData();
+    });
   }
 
   render() {

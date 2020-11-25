@@ -1126,7 +1126,9 @@ body {
     box-shadow: none !important;
     height: 50px;
     padding: 0px 24px;
+    position: fixed;
     top: 94px;
+    width: 100%;
     z-index: 1019;
 }
 
