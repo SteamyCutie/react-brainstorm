@@ -79,12 +79,22 @@ return ["
         </div>
         <div class='block'>
             <span>
+                <img src='$mentor_avatar' alt='$mentor_name' style='width:50px; border-radius:25px;'/>
+            </span>
+        </div>
+        <div class='block'>
+            <span>
                 Mentor Name : $mentor_name.
             </span>
         </div>
         <div class='block'>
             <span>
                 Forum Title : $title.
+            </span>
+        </div>
+        <div class='block'>
+            <span>
+                Forum Description : $description.
             </span>
         </div>
         <div class='block'>

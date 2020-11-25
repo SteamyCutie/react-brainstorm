@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Pagination from '@material-ui/lab/Pagination';
 import BookSession from "./../components/common/BookSession";
 import LoadingModal from "../components/common/LoadingModal";
@@ -26,7 +27,6 @@ import AddUser from "../images/dashboard-mute-add-user.svg"
 import EndCall from "../images/dashboard-mute-end.svg"
 import defaultavatar from "../images/avatar.jpg";
 
-
 export default class MentorDashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -44,6 +44,8 @@ export default class MentorDashboard extends React.Component {
       callDescription: '',
       participantSelected: false,
       participantData: {},
+      pageCount: 1, 
+      hasMore: true, 
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -62,6 +64,9 @@ export default class MentorDashboard extends React.Component {
     }
 
     this.getParticipants(searchParams, searchKey, 1);
+    this.setState({
+      pageCount: 2, 
+    })
   }
 
   componentWillMount() {
@@ -77,6 +82,9 @@ export default class MentorDashboard extends React.Component {
     }
 
     this.getParticipants(searchParams, searchKey, 1);
+    this.setState({
+      pageCount: 2, 
+    })
   }
 
   componentDidMount() {
@@ -114,17 +122,26 @@ export default class MentorDashboard extends React.Component {
       tags_id: category,
       name: searchKey,
       page: pageNo,
-      rowsPerPage: 10
+      rowsPerPage: 5
     }
 
     try {
       this.setState({ loading: true });
       const result = await findmentorsbytagsorname(param);
       if (result.data.result === "success") {
+        const { mentors } = this.state;
+        var temp = mentors;
+        temp = temp.concat(result.data.data);
         this.setState({
           loading: false,
-          mentors: result.data.data,
+          mentors: temp,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        }, () => {
+          if (this.state.mentors.length >= result.data.totalRows) {
+            this.setState({
+              hasMore: false, 
+            })
+          }
         });
 
         if (category.length) {
@@ -172,6 +189,25 @@ export default class MentorDashboard extends React.Component {
     }
 
     this.getParticipants(searchParams, searchKey, value);
+  }
+
+  fetchMoreData = () => {
+    let categories = JSON.parse(localStorage.getItem('search-category'));
+    let searchKey = (localStorage.getItem('search-key') === null ? "" : localStorage.getItem('search-key'));
+    let searchParams = [];
+    if (categories === null) {
+      searchParams = [];
+    } else {
+      for (var i = 0; i < categories.length; i++) {
+        searchParams.push(categories[i].value);
+      }
+    }
+
+    this.getParticipants(searchParams, searchKey, this.state.pageCount);
+    this.setState({
+      pageCount: this.state.pageCount + 1,
+    })
+    
   }
 
   signout = async () => {
@@ -407,20 +443,24 @@ export default class MentorDashboard extends React.Component {
               <h3 id="search-result-label">My Share Page</h3>
             </Col>
           </Row>
-          {mentors.map((data, idx) => (
-            <MentorDetailCardStudentDashboard
-              key={idx}
-              ref={this.mentorRef}
-              mentorData={data}
-              sendUser={this.sendUser}
-              toggle={(id) => this.toggle(id)}
-              callwithdescription={(id) => this.toggle_callwithdesc(id)}
-              onMentorDetailCardClick={(mentorData) => this.handleMentorDetailCardClick(mentorData)}
-            />
-          ))}
-          {mentors.length > 0 && <Row className="pagination-center">
-            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
-          </Row>}
+          <InfiniteScroll
+            dataLength={mentors.length}
+            next={this.fetchMoreData}
+            hasMore={this.state.hasMore}
+            loader={<h4>Loading...</h4>}
+          >
+            {mentors.map((data, idx) => (
+              <MentorDetailCardStudentDashboard
+                key={idx}
+                ref={this.mentorRef}
+                mentorData={data}
+                sendUser={this.sendUser}
+                toggle={(id) => this.toggle(id)}
+                callwithdescription={(id) => this.toggle_callwithdesc(id)}
+                onMentorDetailCardClick={(mentorData) => this.handleMentorDetailCardClick(mentorData)}
+              />
+            ))}
+          </InfiniteScroll>
         </Container>
       </>
     )
