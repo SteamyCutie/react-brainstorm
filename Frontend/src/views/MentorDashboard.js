@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button } from "shards-react";
+import { Container, Row, Col, Button, FormSelect } from "shards-react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Pagination from '@material-ui/lab/Pagination';
 import BookSession from "./../components/common/BookSession";
@@ -46,6 +46,7 @@ export default class MentorDashboard extends React.Component {
       participantData: {},
       pageCount: 1, 
       hasMore: true, 
+      sortby: "",
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -122,7 +123,8 @@ export default class MentorDashboard extends React.Component {
       tags_id: category,
       name: searchKey,
       page: pageNo,
-      rowsPerPage: 5
+      rowsPerPage: 5, 
+      sortby: this.state.sortby, 
     }
 
     try {
@@ -308,6 +310,20 @@ export default class MentorDashboard extends React.Component {
     this.toggle(this.state.participantData.id);
   }
 
+  onChangeTags = (e) => {
+    if (e.target.value === "Language") {
+      return;
+    }
+
+    this.setState({
+      mentors: [], 
+      sortby: e.target.value, 
+      pageCount: 1, 
+    }, () => {
+      this.fetchMoreData();
+    });
+  }
+
   render() {
     const { loading, mentors, totalCnt, ModalOpen, id, ModalCallWithDescOpen, participantSelected, participantData, width } = this.state;
     return (
@@ -441,6 +457,14 @@ export default class MentorDashboard extends React.Component {
           <Row noGutters className="page-header py-4">
             <Col className="page-title">
               <h3 id="search-result-label">My Share Page</h3>
+              <div style={{padding: "5px 0px"}}>
+                <label style={{marginRight: "15px", fontWeight: "bold", color: "#333333"}}>Sort by: </label>
+                <FormSelect style={{ height: "40px", width: "150px", marginRight: "10px", fontSize: "15px" }} onChange={(e) => this.onChangeTags(e)}>
+                  <option value="">Select</option>
+                  <option key="1" value="Hourly" >Hourly Rate</option>
+                  <option key="1" value="Language" >Language</option>
+                </FormSelect>
+              </div>
             </Col>
           </Row>
           <InfiniteScroll
