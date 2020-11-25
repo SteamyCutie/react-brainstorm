@@ -830,6 +830,7 @@ class UserController extends Controller
     $tag_ids = $request->tags_id;
     $mentor_name = $request->name;
     $rowsPerPage = $request->rowsPerPage;
+    $mentor_sort = $request->sortby; //Language, Hourly
     $temp_query = "";
     $count_tag = 0;
     if ($tag_ids){
@@ -851,6 +852,7 @@ class UserController extends Controller
         'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->where('name', 'LIKE', '%' . $mentor_name . '%')
         ->where('id', '!=', $user_id)
+        ->orderBy('hourly_price', 'DESC')
         ->orderBy('average_mark', 'DESC')
         ->whereRaw(DB::raw($temp_query))
         ->paginate($rowsPerPage);
@@ -862,6 +864,7 @@ class UserController extends Controller
           'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
           ->where('name', 'LIKE', '%' . $mentor_name . '%')
           ->where('id', '!=', $user_id)
+          ->orderBy('hourly_price', 'DESC')
           ->orderBy('average_mark', 'DESC')
           ->paginate($rowsPerPage);
       } else {
@@ -870,6 +873,7 @@ class UserController extends Controller
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
           'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
           ->where('id', '!=', $user_id)
+          ->orderBy('hourly_price', 'DESC')
           ->orderBy('average_mark', 'DESC')
           ->paginate($rowsPerPage);
       }
