@@ -65,8 +65,10 @@ class RunScheduledPosts extends Command
         $posted_session = [];
         $from = $sn_value->from;
         $title = $sn_value->title;
-        $mentor = User::select('id', 'name', 'email')->where('id', $sn_value->user_id)->first();
+        $description = $sn_value->description;
+        $mentor = User::select('id', 'name', 'email', 'avatar')->where('id', $sn_value->user_id)->first();
         $mentor_name = $mentor->name;
+        $mentor_avatar = $mentor->avatar;
         $name = $mentor_name;
         $toEmail = $mentor->email;
         $app_path = app_path();
