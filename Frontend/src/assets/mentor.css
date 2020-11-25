@@ -36,7 +36,7 @@
 }
 
 .schedule-forum-card {
-    margin-top: 20px;
+    margin-top: 60px;
 }
 
 .live-forum-header {
@@ -153,6 +153,12 @@
 .profile-setting-card {
     padding-top: 20px;
     margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.set-available-card {
+    padding-top: 20px;
+    margin-top: 60px;
     margin-bottom: 20px;
 }
 
