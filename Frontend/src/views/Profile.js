@@ -8,15 +8,19 @@ import Icon from "../images/Lightning.svg";
 import Question from "../images/question.svg";
 import Tooltip from "../images/Tooltip.svg";
 import avatar from "../images/avatar.jpg";
-import { editprofile, getuserinfo, uploadimage, gettags, signout } from '../api/api';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { editprofile, getuserinfo, uploadimage, gettags, signout, getlanguages } from '../api/api';
 
 export default class MySharePage extends React.Component {
   constructor(props) {
     super(props);
-    this.myRef = React.createRef();    
+    this.myRef = React.createRef();
     this.state = {
       selectedTags: [],
       tags: [],
+      language: [],
+      selectedLanguages: [],
       loading: false,
       open: false,
       displaydate: '',
@@ -27,7 +31,6 @@ export default class MySharePage extends React.Component {
       requiremessage: {
         dname: '',
         demail: '',
-        dphone: '',
         dexpertise: '',
         dcategory: '',
         dage: '',
@@ -55,9 +58,10 @@ export default class MySharePage extends React.Component {
         instantcall: false,
         is_mentor: false,
         tags: [],
+        language: []
       }
     };
-    this.onDrop = this.onDrop.bind(this);    
+    this.onDrop = this.onDrop.bind(this);
   }
 
   componentWillMount() {
@@ -67,6 +71,7 @@ export default class MySharePage extends React.Component {
     this.setState({ param: temp });
     this.getUserInformation();
     this.getAllTags();
+    this.getAllLanguages();
   }
 
   componentDidMount() {
@@ -94,6 +99,7 @@ export default class MySharePage extends React.Component {
         temp.instantcall = result.data.data.instant_call;
         temp.is_mentor = result.data.data.is_mentor;
         temp.tags = result.data.data.tags;
+        temp.language = result.data.data.language;
 
         let param1 = {
           label: '',
@@ -101,10 +107,17 @@ export default class MySharePage extends React.Component {
         };
 
         let params = [];
+        let lparams = [];
         for (var i = 0; i < result.data.data.tags.length; i++) {
           param1.label = result.data.data.tags_name[i].trim();
           param1.value = parseInt(result.data.data.tags[i].trim());
           params.push(param1);
+          param1 = {};
+        }
+        for (var i = 0; i < result.data.data.language.length; i++) {
+          param1.label = result.data.data.languages_name[i].trim();
+          param1.value = parseInt(result.data.data.language[i].trim());
+          lparams.push(param1);
           param1 = {};
         }
         this.setState({
@@ -113,7 +126,8 @@ export default class MySharePage extends React.Component {
           displaycuthourlyprice: (parseFloat(result.data.data.hourly_price) * 0.2).toFixed(2),
           displaygetplanfee: (parseFloat(result.data.data.sub_plan_fee) * 0.8).toFixed(2),
           displaycutplanfee: (parseFloat(result.data.data.sub_plan_fee) * 0.2).toFixed(2),
-          selectedTags: params
+          selectedTags: params,
+          selectedLanguages: lparams
         });
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -134,6 +148,43 @@ export default class MySharePage extends React.Component {
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
+    };
+  }
+
+  getAllLanguages = async () => {
+    try {
+      const result = await getlanguages();
+      if (result.data.result === "success") {
+        let param = {
+          label: '',
+          value: ''
+        };
+        let params = [];
+        for (var i = 0; i < result.data.data.length; i++) {
+          param.label = result.data.data[i].language;
+          param.value = result.data.data[i].id;
+          params.push(param);
+          param = {};
+        }
+        this.setState({ language: params });
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
+      }
+    } catch (err) {
       ToastsStore.error("Something Went wrong");
     };
   }
@@ -199,20 +250,32 @@ export default class MySharePage extends React.Component {
     }
   }
 
-  // onChangeUser = (e) => {
-  //   localStorage.setItem('user-type', !JSON.parse(localStorage.getItem('user-type')));
-  //   const {param} = this.state;
-  //   let temp = param;
-  //   temp.is_mentor = !param.is_mentor;
+  onChangeLanguages = (e) => {
+    const { selectedLanguages } = this.state;
+    let temp = selectedLanguages;
+    temp = e;
+    this.setState({ selectedLanguages: temp });
 
-  //   this.setState({param: temp});
-  // }
+    if (e.length > 0) {
+      const { param } = this.state;
+      let temp1 = param;
+      temp1.language = [];
+      for (var i = 0; i < e.length; i++) {
+        temp1.language.push(e[i].value);
+      }
+      this.setState({ param: temp1 });
+    } else {
+      const { param } = this.state;
+      let temp1 = param;
+      temp1.language = [];
+      this.setState({ param: temp1 });
+    }
+  }
 
   actionSave = async () => {
     const { requiremessage, param } = this.state;
     let temp = requiremessage;
     temp.dname = '';
-    temp.dphone = '';
     temp.demail = '';
     temp.dexpertise = '';
     temp.dcategory = '';
@@ -242,9 +305,6 @@ export default class MySharePage extends React.Component {
           let temp = requiremessage;
           if (result.data.message.name) {
             temp.dname = result.data.message.name[0];
-          }
-          if (result.data.message.phone) {
-            temp.dphone = result.data.message.phone[0];
           }
           if (result.data.message.email) {
             temp.demail = result.data.message.email[0];
@@ -309,10 +369,10 @@ export default class MySharePage extends React.Component {
     this.setState({ param: temp });
   };
 
-  onChangePhoneNumber = (e) => {
+  onChangePhoneNumber = (phone) => {
     const { param } = this.state;
     let temp = param;
-    temp.phone = e.target.value;
+    temp.phone = phone;
     this.setState({ param: temp });
   };
 
@@ -363,7 +423,7 @@ export default class MySharePage extends React.Component {
     let temp = param;
     temp.minimum_age = e.target.value;
     this.setState({ param: temp });
-  }  
+  }
 
   onChangeHourlyPrice = (e) => {
     const { param } = this.state;
@@ -429,6 +489,8 @@ export default class MySharePage extends React.Component {
     const node = this.myRef.current;
     node.click();
   }
+
+
 
   onChangeAvatar = async (e) => {
     const formData = new FormData();
@@ -512,7 +574,7 @@ export default class MySharePage extends React.Component {
   }
 
   render() {
-    const { selectedTags, tags, param, requiremessage, loading, displaydate, displaycuthourlyprice, displaycutplanfee, displaygethourlyprice, displaygetplanfee } = this.state;
+    const { selectedTags, tags, param, requiremessage, loading, displaydate, displaycuthourlyprice, displaycutplanfee, displaygethourlyprice, displaygetplanfee, language, selectedLanguages } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -610,7 +672,7 @@ export default class MySharePage extends React.Component {
                           <Row form>
                             <Col md="6" className="project-detail-input-group">
                               <label htmlFor="feInputState" className="profile-detail-important">Select minimum age</label>
-                              <img id="popover-1" alt="icon" style={{ paddingRight: "5px", paddingBottom: "5px" }} src={Question} onMouseEnter={() => this.toggleQuestion()} onMouseLeave={() => this.toggleQuestion()}/>
+                              <img id="popover-1" alt="icon" style={{ paddingRight: "5px", paddingBottom: "5px" }} src={Question} onMouseEnter={() => this.toggleQuestion()} onMouseLeave={() => this.toggleQuestion()} />
                               <Popover
                                 placement="top"
                                 open={this.state.open}
@@ -629,13 +691,18 @@ export default class MySharePage extends React.Component {
                                     <option key={idx} value={item.value} selected>{item.label}</option>
                                     : <option key={idx} value={item.value}>{item.label}</option>
                                 )}
-                              </FormSelect>                              
+                              </FormSelect>
                             </Col>
                             <Col md="6" className="project-detail-input-group">
-                              <label htmlFor="fePhoneNumber" className="profile-detail-important">Phone Number</label>
-                              {requiremessage.dphone !== '' && <span className="require-message">{requiremessage.dphone}</span>}
+                              <label htmlFor="fePhoneNumber" >Phone Number</label>
+                              <PhoneInput
+                                country={'us'}
+                                value={param.phone}
+                                onChange={(phone) => this.onChangePhoneNumber(phone)}
+                              />                              
+                              {/* {requiremessage.dphone !== '' && <span className="require-message">{requiremessage.dphone}</span>}
                               {requiremessage.dphone !== '' && <FormInput className="profile-detail-input" placeholder="phone number" autoFocus="1" invalid onChange={(e) => this.onChangePhoneNumber(e)} value={param.phone} />}
-                              {requiremessage.dphone === '' && <FormInput className="profile-detail-input" placeholder="phone number" autoFocus="1" onChange={(e) => this.onChangePhoneNumber(e)} value={param.phone} />}
+                              {requiremessage.dphone === '' && <FormInput className="profile-detail-input" placeholder="phone number" autoFocus="1" onChange={(e) => this.onChangePhoneNumber(e)} value={param.phone} />} */}
                             </Col>
                           </Row>
                           <Row form>
@@ -675,30 +742,38 @@ export default class MySharePage extends React.Component {
                             </Col>
                           </Row>
                           <Row form>
-                            <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
-                            <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={param.description} />
+                            <Col md="12" className="project-detail-input-group" >
+                              <label htmlFor="feEmailAddress" className="project-detail-input-group">Description</label>
+                              <FormTextarea placeholder="Type here" className="profile-detail-desc profile-detail-input" onChange={(e) => this.onChangeDescription(e)} value={param.description} />
+                            </Col>
                           </Row>
-                          {/* {param.is_mentor ? 
-                          <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
-                          <FormCheckbox toggle checked className="instant-call-toggle custom-toggle" onChange={(e) => this.onChangeUser(e)}>
-                          </FormCheckbox><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span> : 
-
-                          <span><span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Student</span>
-                          <FormCheckbox toggle normal className="instant-call-toggle" onChange={(e) => this.onChangeUser(e)}>
-                          </FormCheckbox>
-                          <span style={{color: '#04B5FA', fontSize: 18, fontWeight: 'bold'}}>Mentor</span></span>} */}
                           {param.is_mentor ?
-                            <>
-                              <div><label htmlFor="fePassword">Tags</label></div>
+                            <Row form>
+                              <Col md="12" className="project-detail-input-group" >
+                                <label htmlFor="fePassword">Tags</label>
+                                <MultiSelect
+                                  hasSelectAll={false}
+                                  options={tags}
+                                  value={selectedTags}
+                                  onChange={(e) => this.onChangeTags(e)}
+                                  labelledBy={"Select"}
+                                />
+                              </Col>
+                            </Row>
+                            : <></>
+                          }
+                          <Row form>
+                            <Col md="12" className="project-detail-input-group" >
+                              <label htmlFor="feEmailAddress" >Language</label>
                               <MultiSelect
                                 hasSelectAll={false}
-                                options={tags}
-                                value={selectedTags}
-                                onChange={(e) => this.onChangeTags(e)}
+                                options={language}
+                                value={selectedLanguages}
+                                onChange={(e) => this.onChangeLanguages(e)}
                                 labelledBy={"Select"}
                               />
-                            </> : <></>
-                          }
+                            </Col>
+                          </Row>
                           <Row className="profile-detail-save center">
                             <Button className="btn-profile-detail-save" onClick={() => this.actionSave()}>Save</Button>
                           </Row>
