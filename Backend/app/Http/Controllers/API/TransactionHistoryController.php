@@ -172,6 +172,7 @@ class TransactionHistoryController extends Controller
         'result' => 'success',
         'data' => $result,
         'balance' => $result_balance,
+        'bank_status' => $mentor_info->connected_account,
         'totalRows' => $mentor_transactions->total(),
       ]);
     } catch (Exception $th){

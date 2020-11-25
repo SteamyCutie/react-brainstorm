@@ -549,6 +549,13 @@ body {
     text-align: left;
 }
 
+.small-bank-payment-title {
+  color: #333333;
+  font-size: 24px !important;  
+  text-align: left;
+  padding-top: 7px;
+}
+
 .small-card-payment-expiredate {
     color: #333333;
     font-size: 14px !important;
@@ -1126,7 +1133,9 @@ body {
     box-shadow: none !important;
     height: 50px;
     padding: 0px 24px;
+    position: fixed;
     top: 94px;
+    width: 100%;
     z-index: 1019;
 }
 
