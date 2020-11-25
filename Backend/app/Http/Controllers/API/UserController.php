@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Tag;
 use App\Models\Review;
 use App\Models\Media;
+use App\Models\Language;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Exception;
@@ -260,9 +261,10 @@ class UserController extends Controller
     try {
     $email = $request->email;
     $temp_names = [];
-    $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+    $temp_languages = [];
+    $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
       'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
       ->where('email', $email)->first();
     if (!$user) {
       return response()->json([
@@ -282,6 +284,11 @@ class UserController extends Controller
     else
       $tags_id = explode(',', trim($user->tags_id, ','));
     $user->tags = $tags_id;
+    if (trim($user->languages_id, ',') == null || trim($user->languages_id, ',') == '')
+      $languages_id = [];
+    else
+      $languages_id = explode(',', trim($user->languages_id, ','));
+    $user->language = $languages_id;
     if ($user->description == null)
       $user->description = "";
     foreach ($tags_id as $tag_key => $tag_id) {
@@ -289,7 +296,13 @@ class UserController extends Controller
         $temp_names[] = $tag_names->name;
       }
     }
+    foreach ($languages_id as $lang_key => $lang_id) {
+      if ($language = Language::select('language')->where('id', $lang_id)->first()) {
+        $temp_languages[] = $language->language;
+      }
+    }
     $user->tags_name = $temp_names;
+    $user->languages_name = $temp_languages;
     return response()->json([
       'result' => 'success',
       'data' => $user,
@@ -310,13 +323,13 @@ class UserController extends Controller
       $res_students = Review::where('mentor_id', $id)->get();
       $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->where('id', $id)->first();
       $temp = [];
       foreach ($res_students as $review_key => $review_value) {
         $res_student = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')->where('id', $review_value->student_id)->first();
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')->where('id', $review_value->student_id)->first();
         $created_at = date('Y-m-d', strtotime($review_value->created_at));
         $current = date('Y-m-d');
         $date1 = date_create($created_at);
@@ -404,6 +417,7 @@ class UserController extends Controller
       $minimum_age = $request->minimum_age;
       
       $tags = ',' . implode(",", $request->tags) . ',';
+      $language = ',' . implode(",", $request->language) . ',';
       $rules = array(
         'name' => 'required',
         'email' => 'required|email',
@@ -415,7 +429,6 @@ class UserController extends Controller
         'subcategory' => 'required',
         'minimum_age' => 'required',
         'videourl' => 'required|url',
-        'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10'
       );
       $messages = array(
         'required' => 'This field is required.',
@@ -482,6 +495,7 @@ class UserController extends Controller
         'status' => 1,
         'is_mentor' => $is_mentor,
         'tags_id' => $tags,
+        'languages_id' => $language,
         'minimum_age' => $minimum_age,
         'category' => $category,
         'subcategory' => $subcategory
@@ -816,6 +830,7 @@ class UserController extends Controller
     $tag_ids = $request->tags_id;
     $mentor_name = $request->name;
     $rowsPerPage = $request->rowsPerPage;
+    $mentor_sort = $request->sortby; //Language, Hourly
     $temp_query = "";
     $count_tag = 0;
     if ($tag_ids){
@@ -829,34 +844,36 @@ class UserController extends Controller
         $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
       }
     }
-    
+    $order_by = 'average_mark';
+    if ( $mentor_sort == 'Hourly')
+      $order_by = 'hourly_price';
     if ($count_tag > 0) {
 //        $mentors = DB::table('users')
-      $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+      $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->where('name', 'LIKE', '%' . $mentor_name . '%')
         ->where('id', '!=', $user_id)
-        ->orderBy('average_mark', 'DESC')
+        ->orderBy($order_by, 'DESC')
         ->whereRaw(DB::raw($temp_query))
         ->paginate($rowsPerPage);
     } else {
       if ($mentor_name != "") {
 //        $mentors = DB::table('users')
-        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
           ->where('name', 'LIKE', '%' . $mentor_name . '%')
           ->where('id', '!=', $user_id)
-          ->orderBy('average_mark', 'DESC')
+          ->orderBy($order_by, 'DESC')
           ->paginate($rowsPerPage);
       } else {
 //        $mentors = DB::table('users')
-        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
           ->where('id', '!=', $user_id)
-          ->orderBy('average_mark', 'DESC')
+          ->orderBy($order_by, 'DESC')
           ->paginate($rowsPerPage);
       }
     }
@@ -916,9 +933,9 @@ class UserController extends Controller
   public function featuredMentors(Request $request)
   {
     try {
-      $top_mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+      $top_mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->where('is_mentor', 1)->orderBy('average_mark', 'DESC')->take(5)->get();
       foreach ($top_mentors as $top_key => $top_value) {
         if ($top_value->description == null) {
@@ -956,9 +973,9 @@ class UserController extends Controller
       $email = $request->email;
       $rowsPerPage = $request->rowsPerPage;
       $page = $request->page;
-      $users = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+      $users = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count')
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->orderBy('average_mark', 'DESC')->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
       

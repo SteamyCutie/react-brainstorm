@@ -409,6 +409,7 @@
     font-size: 30px;
     font-weight: bold;
     color: #333333;
+    margin-top: 40px;
   }
   
   .btn-add-payment {
@@ -553,7 +554,7 @@
     border-bottom-color: rgba(0,0,0,.12);
   }
   
-  .sub-main-nav-bar-class {
+  /* .sub-main-nav-bar-class {
     box-shadow: none !important;
     height: 50px;
     padding: 0px 24px;
@@ -563,7 +564,7 @@
   
   .sub-main-nav-bar-class nav {
     height: 50px !important;
-  }
+  } */
   
   .sub-main-nav-bar-div-class {
     align-items: center;
