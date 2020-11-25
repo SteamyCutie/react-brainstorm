@@ -99,7 +99,7 @@ export default class MySharePage extends React.Component {
   render() {
     const { userInfo, loading } = this.state;
     return (
-      <>
+      <div style={{marginTop: "40px"}}>
         {loading && <LoadingModal open={true} />}
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Row noGutters className="page-header py-4">
@@ -134,7 +134,7 @@ export default class MySharePage extends React.Component {
             </CardBody>
           </Card>
         </Container>
-      </>
+      </div>
     )
   }
 };

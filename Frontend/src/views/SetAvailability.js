@@ -401,7 +401,7 @@ class SetAvailability extends React.Component {
       <>
         {loading && <LoadingModal open={true} />}
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class">
-          <Card small className="profile-setting-card">
+          <Card small className="set-available-card">
             <CardBody>
               <Row className="center">
                 <h2 className="availability-title">Set availability</h2>

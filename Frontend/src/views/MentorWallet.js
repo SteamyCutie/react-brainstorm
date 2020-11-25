@@ -182,7 +182,7 @@ export default class MentorWallet extends React.Component {
   render() {
     const { loading, tHistory, columns, smallCards, totalCnt } = this.state;
     return (
-      <>
+      <div style={{marginTop: "40px"}}>
         {loading && <LoadingModal open={true} />}
         {/* <AddNewBank 
           open={ModalOpen} 
@@ -219,7 +219,7 @@ export default class MentorWallet extends React.Component {
             <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
           </Row>}
         </Container>
-      </>
+      </div>
     )
   }
 };
