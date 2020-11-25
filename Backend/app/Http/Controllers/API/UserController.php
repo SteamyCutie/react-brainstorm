@@ -844,7 +844,9 @@ class UserController extends Controller
         $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
       }
     }
-    
+    $order_by = 'average_mark';
+    if ( $mentor_sort == 'Hourly')
+      $order_by = 'hourly_price';
     if ($count_tag > 0) {
 //        $mentors = DB::table('users')
       $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
@@ -852,8 +854,7 @@ class UserController extends Controller
         'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->where('name', 'LIKE', '%' . $mentor_name . '%')
         ->where('id', '!=', $user_id)
-        ->orderBy('hourly_price', 'DESC')
-        ->orderBy('average_mark', 'DESC')
+        ->orderBy($order_by, 'DESC')
         ->whereRaw(DB::raw($temp_query))
         ->paginate($rowsPerPage);
     } else {
@@ -864,8 +865,7 @@ class UserController extends Controller
           'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
           ->where('name', 'LIKE', '%' . $mentor_name . '%')
           ->where('id', '!=', $user_id)
-          ->orderBy('hourly_price', 'DESC')
-          ->orderBy('average_mark', 'DESC')
+          ->orderBy($order_by, 'DESC')
           ->paginate($rowsPerPage);
       } else {
 //        $mentors = DB::table('users')
@@ -873,8 +873,7 @@ class UserController extends Controller
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
           'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
           ->where('id', '!=', $user_id)
-          ->orderBy('hourly_price', 'DESC')
-          ->orderBy('average_mark', 'DESC')
+          ->orderBy($order_by, 'DESC')
           ->paginate($rowsPerPage);
       }
     }
