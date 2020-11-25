@@ -513,6 +513,22 @@ export const gettags = (param) => {
 };
 //----------TagController--------------
 
+//LanguageController
+export const getlanguages = (param) => {
+  return new Promise(async(resolve, reject) => {
+      try {
+          const token = localStorage.getItem('token');
+          const header = {
+              'Authorization': 'bearer ' + token
+          }
+          const response = await axios.post(SERVER_URL+'/api/getlanguages', param, {headers: header});
+          resolve(response);
+      } catch(error) {
+          reject(error);
+      }
+  });
+};
+//----------LanguageController--------------
 
 //FileController
 export const uploadimage = (param) => {

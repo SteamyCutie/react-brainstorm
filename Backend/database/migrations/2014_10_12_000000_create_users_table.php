@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
       $table->string('password');
       $table->string('channel_name')->nullable()->unique();
       $table->string('tags_id')->default("");
+      $table->string('languages_id')->default("");
       $table->boolean('is_mentor')->default(false);
       $table->string('phone')->nullable();
       
