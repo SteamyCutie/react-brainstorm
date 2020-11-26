@@ -79,7 +79,7 @@ return ["
         </div>
         <div class='block'>
             <span>
-                <img src='$mentor_avatar' alt='$mentor_name' style='width:50px; border-radius:25px;'/>
+                <img src='$mentor_avatar' alt='$mentor_name' style='width:50px; height: 50px; border-radius:25px;'/>
             </span>
         </div>
         <div class='block'>

@@ -56,7 +56,7 @@ class RunScheduledPosts extends Command
     User::where('email_verified_at', null)->where('created_at', '<=', Carbon::now()->subMinutes(60))->delete();
     //End not register email_verify delete
     $send_mail = new Controller;
-    $subject = "Welcome to BrainsShare!";
+    $subject = "You have been invited for Forum!";
     $fronturl = env("APP_URL");
     
     $sessions = Session::where('posted',0)->where('from', '<=', Carbon::now()->addMinutes(15))->get();
