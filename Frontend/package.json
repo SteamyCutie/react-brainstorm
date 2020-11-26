@@ -62,6 +62,7 @@
     "react-infinite-scroll-component": "^5.1.0",
     "react-loader-spinner": "^3.1.14",
     "react-multi-select-component": "^3.0.2",
+    "react-phone-number-input": "^3.1.6",
     "react-phone-input-2": "^2.13.9",
     "react-plaid-link": "^3.0.0",
     "react-player": "^2.6.2",
