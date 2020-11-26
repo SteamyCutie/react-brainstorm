@@ -159,6 +159,7 @@ class SessionController extends Controller
         'description' => 'required',
       );
       
+      $language = $request->language;
       $from = $request['from'];
       $to = $request['to'];
       $day = $request['day'];
@@ -195,6 +196,7 @@ class SessionController extends Controller
         'from' => $from_day_str,
         'to' => $to_day_str,
         'status' => 0,
+        'language' => $language,
         'room_id' => mt_rand(100000,999999),
         'created_id' => $user_id['id'],
       ]);
