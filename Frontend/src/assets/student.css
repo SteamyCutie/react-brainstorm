@@ -1292,6 +1292,13 @@ body {
     font-size: 11px !important;
 }
 
+.react-tel-input .form-control {
+  height: 50px;
+  width: inherit;
+  border: 1px solid #e1e5eb
+  ;
+}
+
 
 @media (max-width: 760px) {
     .calling-avatar {
