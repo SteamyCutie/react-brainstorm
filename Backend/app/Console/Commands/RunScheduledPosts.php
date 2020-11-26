@@ -66,6 +66,7 @@ class RunScheduledPosts extends Command
         $from = $sn_value->from;
         $title = $sn_value->title;
         $description = $sn_value->description;
+        $language = $sn_value->language;
         $mentor = User::select('id', 'name', 'email', 'avatar')->where('id', $sn_value->user_id)->first();
         $mentor_name = $mentor->name;
         $mentor_avatar = $mentor->avatar;

@@ -21,6 +21,7 @@ class CreateSessionsTable extends Migration
       $table->integer('posted')->default(0);
       $table->string('title');
       $table->string('description')->nullable();
+      $table->string('language')->nullable();
       $table->timestamp('from')->nullable();
       $table->timestamp('to')->nullable();
       $table->integer('status')->default(0);
