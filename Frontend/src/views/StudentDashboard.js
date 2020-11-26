@@ -47,7 +47,8 @@ export default class StudentDashboard extends React.Component {
       participantData: {},
       pageCount: 1, 
       hasMore: true, 
-      sortby: "",
+      sort_hourlyRate: "",
+      sort_language: "", 
     };
 
     this.sendUser = this.sendUser.bind(this);
@@ -125,7 +126,8 @@ export default class StudentDashboard extends React.Component {
       tags_id: category,
       page: pageNo,
       rowsPerPage: 5, 
-      sortby: this.state.sortby, 
+      hourlyRate: this.state.sort_hourlyRate,
+      language: this.state.sort_language, 
     }
 
     try {
@@ -312,14 +314,22 @@ export default class StudentDashboard extends React.Component {
     this.toggle(this.state.participantData.id);
   }
 
-  onChangeTags = (e) => {
-    if (e.target.value === "Language") {
-      return;
-    }
-
+  onChangeHourlyRate = (e) => {
     this.setState({
       mentors: [], 
-      sortby: e.target.value, 
+      hasMore: true, 
+      sort_hourlyRate: e.target.value, 
+      pageCount: 1, 
+    }, () => {
+      this.fetchMoreData();
+    });
+  }
+
+  onChangeLanguage = (e) => {
+    this.setState({
+      mentors: [], 
+      hasMore: true, 
+      sort_language: e.target.value, 
       pageCount: 1, 
     }, () => {
       this.fetchMoreData();
@@ -461,12 +471,25 @@ export default class StudentDashboard extends React.Component {
             <Col xs="12" sm="12" className="page-title">
               <h3 id="search-result-label">Top Brainsshare mentors</h3>
               <div style={{padding: "5px 0px"}}>
-                <label style={{marginRight: "15px", fontWeight: "bold", color: "#333333"}}>Sort by: </label>
-                <FormSelect style={{ height: "40px", width: "150px", marginRight: "10px", fontSize: "15px" }} onChange={(e) => this.onChangeTags(e)}>
-                  <option value="">Select</option>
-                  <option key="1" value="Hourly" >Hourly Rate</option>
-                  <option key="1" value="Language" >Language</option>
+                <label style={{marginRight: "15px", fontWeight: "bold", color: "#333333", fontSize: "17px"}}>Horly Rate: </label>
+                <FormSelect style={{ height: "35px", width: "150px", marginRight: "10px", fontSize: "15px" }} onChange={(e) => this.onChangeHourlyRate(e)}>
+                  <option value="">Any hourly rate</option>
+                  <option value="1" >{"$10 and below"}</option>
+                  <option value="2" >{"$10 - $30"}</option>
+                  <option value="3" >{"$30 - $60"}</option>
+                  <option value="4" >{"$60 & above"}</option>
                 </FormSelect>
+                <label style={{marginRight: "15px", fontWeight: "bold", color: "#333333", fontSize: "17px"}}>Language: </label>
+                <FormSelect style={{ height: "35px", width: "150px", marginRight: "10px", fontSize: "15px" }} onChange={(e) => this.onChangeLanguage(e)}>
+                  <option value="">Select language</option>
+                  <option value="1" >English</option>
+                  <option value="2" >Chinese</option>
+                  <option value="3" >Spanish</option>
+                  <option value="4" >French</option>
+                  <option value="5" >Arabic</option>
+                  <option value="6" >Russian</option>
+                  <option value="7" >Portuguese</option>
+                  </FormSelect>
               </div>
             </Col>
             <AdSense.Google
