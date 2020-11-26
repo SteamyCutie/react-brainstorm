@@ -99,6 +99,11 @@ return ["
         </div>
         <div class='block'>
             <span>
+                Forum Language : $language.
+            </span>
+        </div>
+        <div class='block'>
+            <span>
                 Please confirm the Forum.
             </span>
         </div>
