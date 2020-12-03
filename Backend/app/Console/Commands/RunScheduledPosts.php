@@ -92,6 +92,7 @@ class RunScheduledPosts extends Command
           'from' => $sn_value->from,
           'to' => $sn_value->to,
           'is_mentor' => true,
+          'avatar' => $mentor_avatar,
         ]);
         $posted_data[] = $posted_session;
 //        event(new StatusLiked($posted_data));

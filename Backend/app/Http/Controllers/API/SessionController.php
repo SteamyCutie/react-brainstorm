@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\PostedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Session;
@@ -144,7 +145,7 @@ class SessionController extends Controller
   {
     try{
       $email = $request['email'];
-      $user_id = User::select('id', 'hourly_price' , 'sub_plan_fee')->where('email', $email)->first();
+      $user_id = User::select('id', 'hourly_price' , 'sub_plan_fee', 'avatar', 'name')->where('email', $email)->first();
       if ($user_id->hourly_price == 0 || $user_id->sub_plan_fee == 0) {
         return [
           'result' => 'warning',
@@ -160,11 +161,11 @@ class SessionController extends Controller
       );
       
       $language = $request->language;
-      $from = $request['from'];
-      $to = $request['to'];
+      $from_time = $request['from'];
+      $to_time = $request['to'];
       $day = $request['day'];
-      $from_arr = explode(":", $from);
-      $to_arr = explode(":", $to);
+      $from_arr = explode(":", $from_time);
+      $to_arr = explode(":", $to_time);
       
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
       $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
@@ -201,13 +202,50 @@ class SessionController extends Controller
         'created_id' => $user_id['id'],
       ]);
       
+      $send_mail = new Controller;
+      $subject = "You have been invited for Forum!";
+      $fronturl = env("APP_URL");
+      $from = $res_session->from;
+      $mentor_avatar = $user_id->avatar;
+      $mentor_name = $user_id->name;
+      $name = $user_id->name;
+      $toEmail = $email;
+      $app_path = app_path();
+      $body = include($app_path.'/Mails/Session.php');
+      $body = implode(" ",$body);
+      $send_mail->send_email($toEmail, $name, $subject, $body);
+  
+      PostedNotification::create([
+        'user_id' => $user_id['id'],
+        'session_id' => $res_session->id,
+        'session_title' => $res_session->title,
+        'from' => $res_session->from,
+        'to' => $res_session->to,
+        'is_mentor' => true,
+        'avatar' => $mentor_avatar,
+      ]);
+      
       $students = $request['students'];
+      
       for ($i = 0; $i < count($students); $i++) {
         Invited::create([
           'mentor_id' => $user_id->id,
           'student_id' => $students[$i],
           'session_id' => $res_session->id,
         ]);
+        $st_info = User::select('email', 'name')->where('id', $students[$i])->first();
+        PostedNotification::create([
+          'user_id' => $students[$i],
+          'session_id' => $res_session->id,
+          'session_title' => $res_session->title,
+          'from' => $res_session->from,
+          'to' => $res_session->to,
+          'is_mentor' => false,
+          'avatar' => $mentor_avatar,
+        ]);
+        $toEmail = $st_info->email;
+        $name = $st_info->name;
+        $send_mail->send_email($toEmail, $name, $subject, $body);
       }
       
       return response()->json([
