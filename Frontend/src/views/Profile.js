@@ -272,6 +272,13 @@ export default class MySharePage extends React.Component {
     }
   }
 
+  onChangeExpertise = (e) => {
+    const { param } = this.state;
+    let temp = param;
+    temp.expertise = e.target.value;
+    this.setState({ param: temp });
+  }
+
   actionSave = async () => {
     const { requiremessage, param } = this.state;
     let temp = requiremessage;

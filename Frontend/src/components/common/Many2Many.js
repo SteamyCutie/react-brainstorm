@@ -783,7 +783,7 @@ export default class Many2Many extends React.Component {
 
   swithFullScreen() {
     if (this.state.showWhiteBoard) {
-      master_switchToScreenshare();
+      // master_switchToScreenshare();
     }
 
     this.setState({
@@ -1100,7 +1100,7 @@ export default class Many2Many extends React.Component {
       roomMembers: temp,
     })
 
-    this.inviteParticipantRef.current.updateRoomMember(userId);
+    // this.inviteParticipantRef.current.updateRoomMember(userId);
   }
 
   leftRoom(channelName) {
