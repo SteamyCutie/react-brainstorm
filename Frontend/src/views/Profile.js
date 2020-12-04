@@ -1,7 +1,7 @@
 import React from "react";
 import MultiSelect from "react-multi-select-component";
 import { ToastsStore } from 'react-toasts';
-import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormSelect, Form, FormTextarea, DatePicker, Popover, PopoverBody } from "shards-react";
+import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormInput, FormSelect, Form, FormTextarea, Popover, PopoverBody } from "shards-react";
 import { expertise, category, subcategory, minimum_age } from '../common/constants';
 import LoadingModal from "../components/common/LoadingModal";
 import Icon from "../images/Lightning.svg";
@@ -11,6 +11,10 @@ import avatar from "../images/avatar.jpg";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { editprofile, getuserinfo, uploadimage, gettags, signout, getlanguages } from '../api/api';
+import 'moment/locale/it.js';
+import { DatePicker, DatePickerInput } from "rc-datepicker";
+import 'moment/locale/el.js';
+import 'rc-datepicker/lib/style.css';
 
 export default class MySharePage extends React.Component {
   constructor(props) {
@@ -625,16 +629,25 @@ export default class MySharePage extends React.Component {
                             </Col>
                             <Col md="6" className="project-detail-input-group">
                               <div><label htmlFor="fePassword">Date of birth</label></div>
-                              <DatePicker
+                              {/* <DatePicker
                                 md="6"
                                 size="lg"
-                                selected={displaydate}
+                                // selected={displaydate}
                                 onChange={(e) => this.onChangeBirthDay(e)}
                                 value={param.birthday}
                                 placeholderText="Date of birth"
                                 dropdownMode="select"
                                 className="text-center"
+                              /> */}
+                              <DatePickerInput
+                                onChange={(e) => this.onChangeBirthDay(e)}
+                                value={param.birthday}
+                                selected={displaydate}
+                                placeholderText="Date of birth"
+                                className='text-center'   
+                                locale='en'                             
                               />
+                              {/* <DatePicker onChange={(e) => this.onChangeBirthDay(e)} value={param.birthday} locale='fr'/> */}
                             </Col>
                           </Row>
                           <Row form>
@@ -703,7 +716,7 @@ export default class MySharePage extends React.Component {
                             <Col md="6" className="project-detail-input-group">
                               <label htmlFor="fePhoneNumber" >Phone Number</label>
                               <PhoneInput
-                                country={'us'}
+                                country={'us'}  
                                 value={param.phone}
                                 onChange={(phone) => this.onChangePhoneNumber(phone)}
                               />                              

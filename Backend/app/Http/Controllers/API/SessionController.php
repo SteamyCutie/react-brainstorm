@@ -207,6 +207,8 @@ class SessionController extends Controller
       $fronturl = env("APP_URL");
       $from = $res_session->from;
       $mentor_avatar = $user_id->avatar;
+      if ($mentor_avatar == "" || $mentor_avatar == null)
+        $mentor_avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
       $mentor_name = $user_id->name;
       $name = $user_id->name;
       $toEmail = $email;
