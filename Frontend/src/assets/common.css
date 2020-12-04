@@ -1351,3 +1351,18 @@ ul#fabric-whiteboard-toolbar-ul li{
   border: none;
   text-decoration: underline;
 }
+
+.react-datepicker-component .react-datepicker-input {
+  height: 50px;
+  background: none;
+  border: 1px solid #e1e5eb;  
+  color: #6f687b;
+}
+.react-datepicker-component .react-datepicker-input input {
+  font-weight: 400;
+  background: none;
+  font-size: 16px;
+}
+.react-datepicker-component .react-datepicker-input:hover {
+  background: none; 
+}
