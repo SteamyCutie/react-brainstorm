@@ -550,3 +550,10 @@ button:focus {
 .video-react-controls-enabled {
     padding-top: 50% !important;
 }
+
+.mentor-history-page-title h3 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #333333;
+    margin-top: 30px;
+}

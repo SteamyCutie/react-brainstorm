@@ -19,6 +19,7 @@ import Subscribe from "./views/Subscribe";
 import SearchResult from "./views/SearchResult";
 import Library from "./views/Library";
 import History from "./views/History";
+import MentorHistory from "./views/MentorHistory";
 import Recommended from "./views/Recommended";
 import EmailVerify from "./views/EmailVerify"
 import ForgetPassword from "./views/ForgetPassword"
@@ -117,6 +118,11 @@ export default [
     path: "/history",
     layout: DefaultLayout,
     component: History
+  },
+  {
+    path: "/mentorhistory",
+    layout: DefaultLayout,
+    component: MentorHistory
   },
   {
     path: "/recommended",
