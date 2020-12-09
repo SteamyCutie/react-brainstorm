@@ -479,6 +479,8 @@ class UserController extends Controller
         ]);
       }
       //End set plan_id for stripe
+      if ($avatar == "" || $avatar == null)
+        $avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
       User::where('email', $email)->update(array(
         'name' => $name,
         'dob' => $birthday,

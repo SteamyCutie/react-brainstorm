@@ -20,7 +20,7 @@ class CreateSessionsTable extends Migration
       $table->string('tags_id')->nullable();
       $table->integer('posted')->default(0);
       $table->string('title');
-      $table->string('description')->nullable();
+      $table->text('description')->nullable();
       $table->string('language')->nullable();
       $table->timestamp('from')->nullable();
       $table->timestamp('to')->nullable();

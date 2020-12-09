@@ -129,7 +129,7 @@
 
 .video-call-element-min {
   width: 100%;
-  background-color: #00000099;
+  background-color: #4d4d4d;
   border-radius: 6px;
   position: relative;
 }
@@ -137,7 +137,7 @@
 .video-call-element-min-chat-whiteboard {
   width: 100%;
   height: 60vh;
-  background-color: #00000099;
+  background-color: #4d4d4d;
   border-radius: 6px;
   position: relative;
 }
@@ -1350,4 +1350,19 @@ ul#fabric-whiteboard-toolbar-ul li{
   background-color: transparent !important;
   border: none;
   text-decoration: underline;
+}
+
+.react-datepicker-component .react-datepicker-input {
+  height: 50px;
+  background: none;
+  border: 1px solid #e1e5eb;  
+  color: #6f687b;
+}
+.react-datepicker-component .react-datepicker-input input {
+  font-weight: 400;
+  background: none;
+  font-size: 16px;
+}
+.react-datepicker-component .react-datepicker-input:hover {
+  background: none; 
 }

@@ -65,9 +65,13 @@ export default class MentorDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, 1);
     this.setState({
-      pageCount: 2, 
+      mentors: [],
+    }, () => {
+      this.getParticipants(searchParams, searchKey, 1);
+      this.setState({
+        pageCount: 2, 
+      })
     })
   }
 

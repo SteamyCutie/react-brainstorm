@@ -260,6 +260,16 @@ export default class StudentDashboard extends React.Component {
       ModalCallWithDescOpen: !this.state.ModalCallWithDescOpen,
       id: id
     });
+
+    const {mentors} = this.state;
+    let index = 0;
+
+    for (index = 0; index < mentors.length; index ++) {
+      if (mentors[index].id == id) {
+        this.handleMentorDetailCardClick(mentors[index]);
+        break;
+      }
+    }
   }
 
   setDescription(description) {

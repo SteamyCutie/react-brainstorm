@@ -88,6 +88,17 @@ class UserSeeder extends Seeder
         'sub_plan_fee' => 0, 'description' => '','provider' => 'Google', 'provider_id' => '104101111772014424846',
         'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => "",
         'customer_id' => 'cus_IIUfJHCoxuLjm0'
+      ],
+      [
+        'id' => 8, 'name' => "sam walter", 'email' => 'sam@yopmail.com', 'email_verified_at' => '2020-09-08 08:02:06',
+        'sub_count' => 0,'pay_verified' => 0,'average_mark' => 0,
+        'password' => '$2y$10$CheqReBmiE7Rmg98BrA5ROL1ZCgfYMmOftZ54X7WZ2cqjIuw9HbcK',
+        'avatar' => 'https://brainshares.s3-us-west-2.amazonaws.com/full.jpg  ',
+        'dob' => null, 'two_factor_code' => '0', 'channel_name' => '959Ktr',
+        'hourly_price' => 0, 'video_url' => 'http://localhost:8000/video/video.mp4', 'sub_page_name' => '', 'tags_id' => "", 'is_mentor' => 0,
+        'sub_plan_fee' => 0, 'description' => '','provider' => 'Manual',
+        'instant_call' => 0, 'status' => 0, 'is_active' => 1, 'expertise' => '1', 'origin_password' => "",
+        'customer_id' => 'cus_IUWCLrtM1rhDvP', 'alias' => '0195us43dof78ght26mykcjxzriqpbelvwna'
       ]
     ];
     
