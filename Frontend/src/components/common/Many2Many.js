@@ -17,6 +17,7 @@ import MuteVideoImg from '../../images/mute-video.svg'
 import MutedVideoImg from '../../images/muted-video.svg'
 import ChatImg from '../../images/room-chat.svg'
 import ScreenshareImg from '../../images/room-screenshare.svg'
+import WhiteboardImg from '../../images/room_whiteboard.svg'
 import AddUserImg from '../../images/room-adduser.svg'
 import DeclineImg from '../../images/call-decline.svg'
 import MiniEndCall from '../../images/many2many-mini-end.svg'
@@ -876,11 +877,14 @@ export default class Many2Many extends React.Component {
   }
 
   screenShare() {
+    master_switchToScreenshare();
+  }
+
+  whiteboard() {
     this.setState({
       showWhiteBoard: !this.state.showWhiteBoard,
       newChat: false,
     })
-    master_switchToScreenshare();
   }
 
   addUser() {
@@ -1231,6 +1235,9 @@ export default class Many2Many extends React.Component {
                 </Button>
                 <Button className="btn-rooom-control float-center" onClick={() => this.screenShare()}>
                   <img src={ScreenshareImg} alt="Screenshare" />
+                </Button>
+                <Button className="btn-rooom-control float-center" onClick={() => this.whiteboard()}>
+                  <img src={WhiteboardImg} alt="Whiteboard" />
                 </Button>
                 <Button className="btn-rooom-control float-center" onClick={() => this.inviteParticipantToRoom()}>
                   <img src={AddUserImg} alt="Add user" />
