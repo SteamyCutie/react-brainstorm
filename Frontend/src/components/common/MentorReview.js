@@ -25,10 +25,6 @@ class MentorReview extends React.Component {
     };
   }
 
-  componentDidMount() {
-    console.log(this.props.session, "#34");
-  }
-
   toggle() {
     const { toggle } = this.props;
     toggle();
