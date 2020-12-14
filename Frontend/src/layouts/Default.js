@@ -35,6 +35,7 @@ export default class DefaultLayout extends React.Component {
       studentUrl: Store.getStudentHistory(),
       noFooter: true,
       notifications: [],
+      all_notifications: [],
       searchKey: {}
     }
 
@@ -87,7 +88,10 @@ export default class DefaultLayout extends React.Component {
     try {
       const result = await getnotification(param);
       if (result.data.result === "success") {
-        this.setState({ notifications: result.data.data });
+        this.setState({ 
+          notifications: result.data.data.new_notifications,
+          all_notifications: result.data.data.all_notifications
+        });
       } else if (result.data.result === "warning") {
       } else {
         if (result.data.message === "Token is Expired") {
@@ -213,7 +217,7 @@ export default class DefaultLayout extends React.Component {
 
   render() {
     const { children } = this.props;
-    const { noFooter, noNavbar, filterType, notifications, loading } = this.state;
+    const { noFooter, noNavbar, filterType, notifications, all_notifications, loading } = this.state;
     if (children.props.location.pathname === "/mentordashboard" || children.props.location.pathname === "/studentdashboard") {
       children.props.location.search = "search";
     }
@@ -224,7 +228,7 @@ export default class DefaultLayout extends React.Component {
           <Row>
             <MainSidebar filterType={filterType} />
             <Col className="main-content p-0 main-content-class" tag="main">
-              {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications} toggle_search={(searchkey) => this.handleSearch(searchkey)} />}
+              {!noNavbar && <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} notifications={notifications} all_notifications={all_notifications} toggle_search={(searchkey) => this.handleSearch(searchkey)} />}
               {filterType && <SubMainNavbar />}
               <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_RIGHT} />
               {children}

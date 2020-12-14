@@ -174,7 +174,7 @@ class SessionController extends Controller
       
       $forum_start = date('y-m-d h:i:s', strtotime($day.$from_time));
       $now = date('y-m-d h:i:s', strtotime(Carbon::now()));
-      if ( $from_time < $now ) {
+      if ( $forum_start <= $now ) {
         return response()->json([
           'result' => 'warning',
           'message' => 'Please select correct Forum time',
@@ -384,17 +384,14 @@ class SessionController extends Controller
     }
   }
   
-  function getHistory(Request $request)
-  {
+  function getmentorhistory(Request $request) {
     try{
       $result_res = [];
       $email = $request['email'];
       $tag_id = $request['tag_id'];
       $req_time = $request['time'];
       $user = User::select('id', 'is_mentor')->where( 'email', $email)->first();
-      
-      $pasted_session_id = Review::select('session_id')->get();
-      
+    
       if ($req_time != null || $req_time != "") {
         $from_time = trim(explode('~', $req_time)[0]);
         $to_time = trim(explode('~', $req_time)[1]);
@@ -405,19 +402,19 @@ class SessionController extends Controller
       if ($user['is_mentor'] == 0) {
         $temp1 = [];
         $temp2 = [];
-        
+      
         $invited_session_id = Invited::select('session_id')->where('student_id', $user->id)->get();
         $result_infos = Session::where('user_id', '!=', $user->id)
           ->where(function ($query) {
             $current_time = date("y-m-d h:i:s");
             $pasted_session_id = Review::select('session_id')->get();
             $query->where('from','<',date('y-m-d h:i:s', strtotime($current_time)))
-                  ->orwhereIn('id',$pasted_session_id);
+              ->orwhereIn('id',$pasted_session_id);
           })
 //          ->where('from','<',date('y-m-d h:i:s', strtotime($current_time)))
           ->whereIn('id',$invited_session_id)
           ->get();
-        
+      
         if ($tag_id == "" || $tag_id == null) {
           $temp1 = $result_infos;
         } else {
@@ -430,7 +427,7 @@ class SessionController extends Controller
             }
           }
         }
-        
+      
         if ($from_time == "" || $to_time == "") {
           $temp2 = $temp1;
         }
@@ -467,6 +464,107 @@ class SessionController extends Controller
           $result_res[] = $temp;
         }
       }
+      return response()->json([
+        'result'=> 'success',
+        'data'=> $result_res,
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function getHistory(Request $request)
+  {
+    try{
+      $result_res = [];
+      $email = $request['email'];
+      $tag_id = $request['tag_id'];
+      $req_time = $request['time'];
+      $user = User::select('id', 'is_mentor')->where( 'email', $email)->first();
+      
+      if ($req_time != null || $req_time != "") {
+        $from_time = trim(explode('~', $req_time)[0]);
+        $to_time = trim(explode('~', $req_time)[1]);
+      } else {
+        $from_time = "";
+        $to_time = "";
+      }
+      $result_infos = [];
+      if ($user['is_mentor'] == 0) {
+        $invited_session_id = Invited::select('session_id')->where('student_id', $user->id)->get();
+        $result_infos = Session::where('user_id', '!=', $user->id)
+          ->where(function ($query) {
+            $current_time = date("y-m-d h:i:s");
+            $pasted_session_id = Review::select('session_id')->get();
+            $query->where('from','<',date('y-m-d h:i:s', strtotime($current_time)))
+              ->orwhereIn('id',$pasted_session_id);
+          })
+          ->whereIn('id',$invited_session_id)
+          ->get();
+      } else if ($user['is_mentor'] == 1) {
+        $result_infos = Session::where('user_id', $user->id)
+          ->where(function ($query) {
+            $current_time = date("y-m-d h:i:s");
+            $pasted_session_id = Review::select('session_id')->get();
+            $query->where('from','<',date('y-m-d h:i:s', strtotime($current_time)))
+              ->orwhereIn('id',$pasted_session_id);
+          })
+          ->get();
+      }
+        $temp1 = [];
+        $temp2 = [];
+        
+        if ($tag_id == "" || $tag_id == null) {
+          $temp1 = $result_infos;
+        } else {
+          foreach ($result_infos as $tags_key => $result_info) {
+            $tag_array = explode(',', trim($result_info['tags_id'], ','));
+            for ($j = 0; $j < count($tag_array); $j++) {
+              if ($tag_id == trim($tag_array[$j])){
+                $temp1[] = $result_info;
+              }
+            }
+          }
+        }
+        
+        if ($from_time == "" || $to_time == "") {
+          $temp2 = $temp1;
+        } else {
+          foreach ($temp1 as $key => $result) {
+            if ((date('y-m-d', strtotime($result->from)) >= date('y-m-d', strtotime($from_time)))
+              && (date('y-m-d', strtotime($result->to)) <= date('y-m-d', strtotime($to_time)))) {
+              $temp2[] = $result;
+            }
+          }
+        }
+        foreach ($temp2 as $session_key => $session_info)
+        {
+          $result_from = $session_info['from'];
+          $result_to = $session_info['to'];
+          $result_tag = $session_info['tags_id'];
+          $tags_id = explode(',', trim($result_tag, ','));
+          $result_invited = $session_info['invited_id'];
+          $invited_id = explode(',', trim($result_invited, ','));
+          $temp = [];
+          $temp = $session_info;
+          $temp['day'] = date('d/m/y', strtotime($result_from));
+          $temp['from_time'] = date('h:i a', strtotime($result_from));
+          $temp['to_time'] = date('h:i a', strtotime($result_to));
+          $tag_names = [];
+          foreach ($tags_id as $tag_key => $tag_value) {
+            $tags = Tag::select('name')->where('id', $tag_value)->first();
+            $tag_names[$tag_key] = $tags['name'];
+          }
+          $temp['tag_name'] = $tag_names;
+          $mentor_name = User::select('name', 'avatar')->where('id', $session_info['user_id'])->first();
+          $temp['name'] = $mentor_name['name'];
+          $temp['avatar'] = $mentor_name['avatar'];
+          $result_res[] = $temp;
+        }
+      
       return response()->json([
         'result'=> 'success',
         'data'=> $result_res,

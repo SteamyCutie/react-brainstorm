@@ -49,10 +49,13 @@ class PostedNotificationController extends Controller
     try {
       $user_id = $request->user_id;
       $res_notific = PostedNotification::where('user_id', $user_id)->where('notification_posted', 0)->get();
+      $all_notific = PostedNotification::where('user_id', $user_id)->get();
+      $result['new_notifications'] = $res_notific;
+      $result['all_notifications'] = $all_notific;
       if (count($res_notific)) {
         return response()->json([
           'result'=> 'success',
-          'data' => $res_notific,
+          'data' => $result,
         ]);
       } else {
         return response()->json([
