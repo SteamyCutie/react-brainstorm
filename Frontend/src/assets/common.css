@@ -1386,3 +1386,8 @@ ul#fabric-whiteboard-toolbar-ul li{
 .react-datepicker-component .react-datepicker-input:hover {
   background: none; 
 }
+
+.main-navbar .navbar .navbar-nav .dropdown-menu {
+  max-height: 307px;
+  overflow: auto;
+}
