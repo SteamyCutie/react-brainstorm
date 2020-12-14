@@ -27,7 +27,7 @@ export default class MainNavbar extends React.Component {
 
   render() {
 
-    const { filterType, notifications } = this.props;
+    const { filterType, notifications, all_notifications } = this.props;
 
     return (
       <div className={classes}>
@@ -56,7 +56,7 @@ export default class MainNavbar extends React.Component {
                 </NavbarBrand>
               </Navbar>
             </div>
-            <NavbarNav filterType={filterType}  toggleType={() => this.toggleType()} notifications={notifications}/>
+            <NavbarNav filterType={filterType}  toggleType={() => this.toggleType()} notifications={notifications} all_notifications={all_notifications} />
             <NavbarToggle />
           </Navbar>
         </Container>

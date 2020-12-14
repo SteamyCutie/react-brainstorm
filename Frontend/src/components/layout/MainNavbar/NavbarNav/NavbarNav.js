@@ -13,11 +13,11 @@ export default class NavbarNav extends React.Component {
   }
 
   render() {
-    const { filterType, notifications } = this.props;
+    const { filterType, notifications, all_notifications } = this.props;
     return (
       <Nav navbar className="flex-row">
         <UserType filterType={filterType} toggleType={() => this.toggleType()} />
-        <Notifications notifications={notifications}/>
+        <Notifications notifications={notifications} all_notifications={all_notifications} />
         <UserActions />
       </Nav>
     );

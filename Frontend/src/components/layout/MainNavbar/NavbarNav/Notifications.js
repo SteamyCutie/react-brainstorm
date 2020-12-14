@@ -4,6 +4,7 @@ import NotificationsNone from '@material-ui/icons/NotificationsNone';
 import LoadingModal from "../../../../components/common/LoadingModal";
 import { checkednotification, signout } from '../../../../api/api';
 import avatar from "../../../../images/avatar.jpg";
+import close from "../../../../images/close.png";
 import { ToastsStore } from 'react-toasts';
 import { withRouter } from 'react-router-dom';
 
@@ -14,7 +15,8 @@ class Notifications extends React.Component {
     this.state = {
       visible: false,
       notification_count: 0,
-      notifications: []
+      notifications: [],      
+      all_notifications: [],
     };
 
     this.toggleNotifications = this.toggleNotifications.bind(this);
@@ -27,8 +29,13 @@ class Notifications extends React.Component {
     if (nextProps.notifications) {
       this.setState({
         notification_count: nextProps.notifications.length,
-        notifications: nextProps.notifications
+        notifications: nextProps.notifications,
       });
+    }
+    if (nextProps.all_notifications) {
+      this.setState({        
+        all_notifications: nextProps.all_notifications,
+      })
     }
   }
 
@@ -54,9 +61,11 @@ class Notifications extends React.Component {
         this.setState({ notification_count: temp });
         localStorage.setItem('user-type', (result.data.data === 1 ? true : false));
         if (result.data.data === 1) {
-          this.props.history.push('/scheduleLiveForum');
+          // this.props.history.push('/scheduleLiveForum');
+          window.location.href = "/scheduleLiveForum";
         } else {          
-          this.props.history.push('/studentSession');
+          // this.props.history.push('/studentSession');
+          window.location.href = "/studentSession";
         }
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -89,7 +98,7 @@ class Notifications extends React.Component {
     try {
       // this.setState({loading: true});
       const result = await checkednotification(param);
-      if (result.data.result === "success") {
+      if (result.data.result === "success") {        
         this.setState({ notification_count: 0 });
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -153,7 +162,7 @@ class Notifications extends React.Component {
   }
 
   render() {
-    const { visible, notification_count, notifications, loading } = this.state;
+    const { visible, notification_count, notifications, all_notifications, loading } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -173,7 +182,8 @@ class Notifications extends React.Component {
             open={visible}
             className="dropdown-menu dropdown-menu-small"
           >
-            {notifications.map((item, idx) =>
+            {/* {all_notifications.map((item, idx) => */}            
+            {all_notifications.slice(0).reverse().map((item, idx) =>
               <DropdownItem onClick={() => this.checkNotification(item.session_id)}>
                 <div className="notification__icon-wrapper">
                   <div className="notification__icon">
@@ -184,8 +194,8 @@ class Notifications extends React.Component {
                     {/* <i className="material-icons">&#xE6E1;</i> */}
                   </div>
                 </div>
-                <div className="notification__content">
-                  <span className="notification__category">{item.session_title}</span>
+                <div className="notification__content">                  
+                <span className="notification__category">{item.session_title}</span>                       
                   <p>
                     The lecture <span className="text-danger text-semibold">{item.session_title}</span> will start from{" "}
                     <span className="text-success text-semibold">{item.from}</span>
