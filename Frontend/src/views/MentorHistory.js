@@ -1,7 +1,9 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect } from "shards-react";
 import HistoryCard from "../components/common/HistoryCard"
+import SmallCardForum from "../components/common/SmallCardForum";
 import LoadingModal from "../components/common/LoadingModal";
+import ConfirmModal from "../components/common/ConfirmModal";
 import { getHistory, getweekdata, gettags, signout } from '../api/api';
 import { ToastsStore } from 'react-toasts';
 
@@ -20,7 +22,9 @@ export default class MentorHistory extends React.Component {
         tag_id: '',
         // mentor_id: '',
         email: localStorage.getItem('email')
-      }
+      }, 
+      ModalConfirmOpen: false, 
+      id: '', 
     }
   }
 
@@ -211,8 +215,24 @@ export default class MentorHistory extends React.Component {
     this.props.history.push('/');
   }
 
+  toggle_remove(id) {    
+    this.setState({
+      ModalConfirmOpen: !this.state.ModalConfirmOpen,
+      id: id
+    });
+    this.getForums();
+  }
+
+  toggle_confirm(id) {    
+    this.setState({
+      ModalConfirmOpen: !this.state.ModalConfirmOpen,
+      id: id
+    });
+    // this.getForums();
+  }
+
   render() {
-    const { loading, historyData, weekList, tags } = this.state;
+    const { loading, historyData, weekList, tags, ModalConfirmOpen, id } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -267,7 +287,12 @@ export default class MentorHistory extends React.Component {
                 {historyData.map((history, idx) => {
                   return (
                     <Col xl="4" lg="4" sm="6">
-                      <HistoryCard id={idx} data={history} />
+                      <SmallCardForum 
+                        id={idx}
+                        item={history}
+                        history={true}
+                        toggle_confirm={(id) => this.toggle_remove(id)}
+                      />
                     </Col>
                   )
                 })}
@@ -275,6 +300,7 @@ export default class MentorHistory extends React.Component {
             </CardBody>
           </Card>
         </Container>
+        <ConfirmModal open={ModalConfirmOpen} id={id} toggle={() => this.toggle_confirm()} toggle_remove = {() => this.toggle_remove() }></ConfirmModal>
       </>
     )
   }
