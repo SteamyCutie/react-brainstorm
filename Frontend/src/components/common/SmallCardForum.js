@@ -57,7 +57,7 @@ class SmallCardForum extends React.Component {
   }
 
   render() {
-    const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
+    const {title, tag_name, day, from_time, to_time, id, student_info, history} = this.props.item;
     const {toggle_editliveforum, toggle_confirm, startSession} = this.props;
     const { ModalInviteOpen, open } = this.state;
     return (
@@ -75,20 +75,28 @@ class SmallCardForum extends React.Component {
                 />{" "}
               </div>
             </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem onClick={() => startSession(id)}>
-                Start Forum
-              </DropdownItem>
-              <DropdownItem onClick={() => toggle_editliveforum(id)}>
-                Invite students
-              </DropdownItem>
-              <DropdownItem onClick={() => toggle_editliveforum(id)}>
-                Edit
-              </DropdownItem>
-              <DropdownItem onClick={() => toggle_confirm(id)}>
-                Delete
-              </DropdownItem>
-            </DropdownMenu>
+            {history ? 
+              <DropdownMenu>
+                <DropdownItem onClick={() => toggle_confirm(id)}>
+                  Delete
+                </DropdownItem>
+              </DropdownMenu>
+            : 
+              <DropdownMenu>
+                <DropdownItem onClick={() => startSession(id)}>
+                  Start Forum
+                </DropdownItem>
+                <DropdownItem onClick={() => toggle_editliveforum(id)}>
+                  Invite students
+                </DropdownItem>
+                <DropdownItem onClick={() => toggle_editliveforum(id)}>
+                  Edit
+                </DropdownItem>
+                <DropdownItem onClick={() => toggle_confirm(id)}>
+                  Delete
+                </DropdownItem>
+              </DropdownMenu>
+            }
           </Dropdown>
         </div>
         <div style={{display: "flex"}}>

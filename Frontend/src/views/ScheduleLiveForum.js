@@ -239,6 +239,7 @@ export default class ScheduleLiveForum extends React.Component {
                     <SmallCardForum
                       key={idx}
                       item={item}
+                      history={false}
                       toggle_editliveforum={(id) => this.toggle_editliveforum(id)}
                       toggle_confirm={(id) => this.toggle_remove(id)}
                       startSession={(id) => this.startSession(id)}
