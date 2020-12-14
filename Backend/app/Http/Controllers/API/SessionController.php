@@ -28,7 +28,12 @@ class SessionController extends Controller
           'data'=> [],
         ]);
       }
-      $session_info = Session::where('user_id', $user_id['id'])->where('created_id', $user_id['id'])->get();
+      $current_time = date("y-m-d h:i:s");
+      $pasted_session_id = Review::select('session_id')->get();
+      $session_info = Session::where('user_id', $user_id['id'])->where('created_id', $user_id['id'])
+        ->where('from','>',date('y-m-d h:i:s', strtotime($current_time)))
+        ->whereNotIn('id',$pasted_session_id)
+        ->get();
       
       foreach ($session_info as $key => $value) {
         $from_date = $value['from'];
