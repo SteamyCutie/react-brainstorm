@@ -197,6 +197,7 @@ export default class MentorSession extends React.Component {
           <Row className="calendar-class">
             <Calendar
               localizer={localizer}
+              culture='en-GB'
               events={this.state.events}
               defaultDate={moment().toDate()}
               startAccessor="start"
