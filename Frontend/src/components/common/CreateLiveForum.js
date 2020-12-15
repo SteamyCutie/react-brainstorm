@@ -25,7 +25,8 @@ export default class CreateLiveForum extends React.Component {
         language: 'English',
         from: '00:00',
         to: '00:00',
-        day: new Date().toISOString().slice(0, 10)
+        day: new Date().toISOString().slice(0, 10),
+        forum_start: ''
       },
       tags: [],
       students: [],
@@ -154,7 +155,7 @@ export default class CreateLiveForum extends React.Component {
   }
 
   actionSave = async () => {
-    const { requiremessage, foruminfo } = this.state;
+    let { requiremessage, foruminfo } = this.state;
     const { toggle_createsuccess, toggle_createfail, toggle_createwarning } = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
@@ -164,6 +165,10 @@ export default class CreateLiveForum extends React.Component {
     });
     try {
       // this.setState({loading: true});
+      const forum_start = foruminfo.day +" "+ foruminfo.from;
+      let temp = foruminfo;
+      temp.forum_start = new Date(forum_start).getTime()/1000;
+      this.setState({ foruminfo: temp });
       const result = await createforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
