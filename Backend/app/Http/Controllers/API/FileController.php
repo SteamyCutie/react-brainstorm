@@ -45,6 +45,7 @@ class FileController extends Controller
   {
     $file = $request['files'];
     $mimeType = $file[0]->getClientMimeType();
+    $mediaType = explode("/", $mimeType);
     $file_origin_name = $file[0]->getClientOriginalName();
     $file_name = time().'_'.rand(100000, 999999).'_'.$file_origin_name;
     try {
@@ -60,7 +61,7 @@ class FileController extends Controller
       return response()->json([
         'result'=> 'success',
         'data'=> $file_path,
-        'mimetype' => $mimeType,
+        'mimetype' => $mediaType[0],
       ]);
     } catch (Exception $th) {
       return response()->json([
