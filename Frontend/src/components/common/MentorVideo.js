@@ -131,7 +131,7 @@ class MentorVideo extends React.Component {
   }
 
   render() {
-    const { description, media_url, day, time, user_id } = this.props.item;
+    const { description, media_url, day, time, user_id, media_type } = this.props.item;
     const { open, loading } = this.state;
     return (
       <>
@@ -165,11 +165,9 @@ class MentorVideo extends React.Component {
             </h6>
           </div>
           <div>
-            <Player
-              playsInline
-              poster={background}
-              src={media_url}
-            />
+            {media_type === 'video' && <Player playsInline poster={background} src={media_url} />}
+            {media_type === 'image' && <img src={media_url} style={{width: "100%"}}/>}
+            {/* {media_type === 'video' && <Player playsInline poster={background} src={media_url} />} */}
           </div>
         </div>
       </>
