@@ -159,6 +159,7 @@ export default class CreateMyShare extends React.Component {
           const { foruminfo } = this.state;
           let temp = foruminfo;
           temp.media_url = result.data.data;
+          temp.media_type = result.data.mimetype;
           this.setState({ foruminfo: temp });
           ToastsStore.success("Upload Video Success");
         } else {
