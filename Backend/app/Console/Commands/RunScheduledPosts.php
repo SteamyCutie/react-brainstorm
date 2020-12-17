@@ -93,6 +93,8 @@ class RunScheduledPosts extends Command
           'session_title' => $sn_value->title,
           'from' => $sn_value->from,
           'to' => $sn_value->to,
+          'forum_start' => $sn_value->forum->start,
+          'forum_end' => $sn_value->forum_end,
           'is_mentor' => true,
           'avatar' => $mentor_avatar,
         ]);
@@ -113,6 +115,8 @@ class RunScheduledPosts extends Command
               'session_title' => $sn_value->title,
               'from' => $sn_value->from,
               'to' => $sn_value->to,
+              'forum_start' => $sn_value->forum->start,
+              'forum_end' => $sn_value->forum_end,
               'is_mentor' => false,
               'avatar' => $mentor_avatar,
             ]);

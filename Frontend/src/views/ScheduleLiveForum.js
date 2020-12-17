@@ -7,6 +7,9 @@ import ConfirmModal from "../components/common/ConfirmModal";
 import LoadingModal from "../components/common/LoadingModal";
 import { getforums, getuserinfo, signout } from "../api/api";
 import { ToastsStore } from 'react-toasts';
+import moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 
 export default class ScheduleLiveForum extends React.Component {
   constructor(props) {
@@ -25,7 +28,7 @@ export default class ScheduleLiveForum extends React.Component {
 
   componentWillMount() {
     this.getUserInfo();
-    this.getForums();
+    this.getForums();        
   }
 
   toggle_createliveforum() {
@@ -94,7 +97,15 @@ export default class ScheduleLiveForum extends React.Component {
       this.setState({ loading: true });
       const result = await getforums(param);
       if (result.data.result === "success") {
-        this.setState({ forumInfos: result.data.data });
+        let t_forumInfos = result.data.data;
+        t_forumInfos.forEach(t_forumInfo => {
+          t_forumInfo.from = moment(t_forumInfo.forum_start * 1000).format("YYYY-MM-DD h:mm:ss");
+          t_forumInfo.to = moment(t_forumInfo.forum_end * 1000).format("YYYY-MM-DD h:mm:ss");
+          t_forumInfo.day = moment(t_forumInfo.forum_start * 1000).format("DD/MM/YY");
+          t_forumInfo.from_time = moment(t_forumInfo.forum_start * 1000).format("h:mm a");
+          t_forumInfo.to_time = moment(t_forumInfo.forum_end * 1000).format("h:mm a");
+        });              
+        this.setState({ forumInfos: t_forumInfos });
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -236,7 +247,7 @@ export default class ScheduleLiveForum extends React.Component {
               <Row>
                 {forumInfos.map((item, idx) =>
                   <Col key={idx} xl="4" lg="4" sm="6">
-                    <SmallCardForum
+                    <SmallCardForum                      
                       key={idx}
                       item={item}
                       history={false}
