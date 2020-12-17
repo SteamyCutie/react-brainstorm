@@ -24,6 +24,8 @@ class CreateSessionsTable extends Migration
       $table->string('language')->nullable();
       $table->timestamp('from')->nullable();
       $table->timestamp('to')->nullable();
+      $table->string('forum_start')->nullable();
+      $table->string('forum_end')->nullable();
       $table->integer('status')->default(0);
       $table->integer('room_id')->unique()->default(0);
       $table->string('created_id')->nullable();
