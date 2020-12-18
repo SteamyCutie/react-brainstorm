@@ -74,7 +74,7 @@ return ["
         </div>
         <div class='block'>
             <span>
-                Forum will start from $from.
+                Forum will start from $from (UTC Time).
             </span>
         </div>
         <div class='block'>

@@ -70,8 +70,8 @@ class RunScheduledPosts extends Command
         $mentor = User::select('id', 'name', 'email', 'avatar')->where('id', $sn_value->user_id)->first();
         $mentor_name = $mentor->name;
         $mentor_avatar = $mentor->avatar;
-        if ($mentor_avatar == "" || $mentor_avatar == null)
-          $mentor_avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
+//        if ($mentor_avatar == "" || $mentor_avatar == null)
+//          $mentor_avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
         $name = $mentor_name;
         $toEmail = $mentor->email;
         $app_path = app_path();
@@ -93,6 +93,8 @@ class RunScheduledPosts extends Command
           'session_title' => $sn_value->title,
           'from' => $sn_value->from,
           'to' => $sn_value->to,
+          'forum_start' => $sn_value->forum_start,
+          'forum_end' => $sn_value->forum_end,
           'is_mentor' => true,
           'avatar' => $mentor_avatar,
         ]);
@@ -113,6 +115,8 @@ class RunScheduledPosts extends Command
               'session_title' => $sn_value->title,
               'from' => $sn_value->from,
               'to' => $sn_value->to,
+              'forum_start' => $sn_value->forum_start,
+              'forum_end' => $sn_value->forum_end,
               'is_mentor' => false,
               'avatar' => $mentor_avatar,
             ]);

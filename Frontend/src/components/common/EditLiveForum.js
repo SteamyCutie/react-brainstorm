@@ -6,6 +6,9 @@ import { gettags, editforum, getforum, getallstudents, signout } from '../../api
 import Timelinelist from '../../common/TimelistList';
 import Close from '../../images/Close.svg';
 import { ToastsStore } from 'react-toasts';
+import moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 
 export default class EditLiveForum extends React.Component {
   constructor(props) {
@@ -23,7 +26,9 @@ export default class EditLiveForum extends React.Component {
         students: [],
         from: '',
         to: '',
-        day: ''
+        day: '',
+        forum_start: '',
+        forum_end: ''
       },
       tags: [],
       students: [],
@@ -209,6 +214,12 @@ export default class EditLiveForum extends React.Component {
     });
     try {
       this.setState({ loading: true });
+      const forum_start = foruminfo.day +" "+ foruminfo.from;
+      const forum_end = foruminfo.day +" "+ foruminfo.to;
+      let temp = foruminfo;
+      temp.forum_start = new Date(forum_start).getTime()/1000;
+      temp.forum_end = new Date(forum_end).getTime()/1000;
+      this.setState({ foruminfo: temp });
       const result = await editforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
@@ -292,9 +303,13 @@ export default class EditLiveForum extends React.Component {
         temp.id = result.data.data.id;
         temp.title = result.data.data.title;
         temp.description = result.data.data.description;
-        temp.from = result.data.data.from;
-        temp.to = result.data.data.to;
-        temp.day = result.data.data.day;
+        // temp.from = result.data.data.from;
+        temp.from = moment(result.data.data.forum_start * 1000).format("H:mm");
+        // temp.to = result.data.data.to;
+        temp.to = moment(result.data.data.forum_end * 1000).format("H:mm");
+        // temp.day = result.data.data.day;
+        temp.day =  moment(result.data.data.forum_start * 1000).format("YYYY-MM-DD");        
+        
         this.setState({ foruminfo: temp });
         let param = {
           label: '',

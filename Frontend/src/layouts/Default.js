@@ -10,6 +10,9 @@ import { Store } from "../flux";
 import { getnotification, switchuser, signout } from '../api/api';
 import { PUSHER_KEY } from '../common/config';
 import { ToastsContainer, ToastsStore, ToastsContainerPosition } from 'react-toasts';
+import moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 
 export default class DefaultLayout extends React.Component {
   constructor(props) {
@@ -88,8 +91,18 @@ export default class DefaultLayout extends React.Component {
     try {
       const result = await getnotification(param);
       if (result.data.result === "success") {
+        let t_notifications = result.data.data.new_notifications;
+        t_notifications.forEach(t_notification => {
+          t_notification.from = moment(t_notification.forum_start * 1000).format("YYYY-MM-DD h:mm:ss a");
+          t_notification.to = moment(t_notification.forum_end * 1000).format("YYYY-MM-DD h:mm:ss a");
+        });
+        let t_all_notifications = result.data.data.all_notifications;
+        t_all_notifications.forEach(t_all_notification => {
+          t_all_notification.from = moment(t_all_notification.forum_start * 1000).format("YYYY-MM-DD h:mm:ss a");
+          t_all_notification.to = moment(t_all_notification.forum_end * 1000).format("YYYY-MM-DD h:mm:ss a");
+        });
         this.setState({ 
-          notifications: result.data.data.new_notifications,
+          notifications: result.data.data.new_notifications,          
           all_notifications: result.data.data.all_notifications
         });
       } else if (result.data.result === "warning") {

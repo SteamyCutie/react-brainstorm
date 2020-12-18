@@ -5,8 +5,8 @@ import LoadingModal from "./LoadingModal";
 import { createforum, gettags, getallstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Languagelist from '../../common/LanguageList';
-
-import Close from '../../images/Close.svg'
+import Close from '../../images/Close.svg';
+import moment from 'moment';
 
 export default class CreateLiveForum extends React.Component {
   constructor(props) {
@@ -26,7 +26,8 @@ export default class CreateLiveForum extends React.Component {
         from: '00:00',
         to: '00:00',
         day: new Date().toISOString().slice(0, 10),
-        forum_start: ''
+        forum_start: '',
+        forum_end: ''
       },
       tags: [],
       students: [],
@@ -38,12 +39,11 @@ export default class CreateLiveForum extends React.Component {
 
   }
 
-  componentWillMount() {
+  componentWillMount() {    
     const { foruminfo } = this.state;
     let temp = foruminfo;
     temp.email = localStorage.getItem('email');
     this.setState({ foruminfo: temp });
-
     this.getAllTags();
     this.getAllStudents();
   }
@@ -166,10 +166,12 @@ export default class CreateLiveForum extends React.Component {
     try {
       // this.setState({loading: true});
       const forum_start = foruminfo.day +" "+ foruminfo.from;
+      const forum_end = foruminfo.day +" "+ foruminfo.to;
       let temp = foruminfo;
       temp.forum_start = new Date(forum_start).getTime()/1000;
+      temp.forum_end = new Date(forum_end).getTime()/1000;
       this.setState({ foruminfo: temp });
-      const result = await createforum(foruminfo);
+      const result = await createforum(foruminfo);      
       if (result.data.result === "success") {
         this.toggle();
         toggle_createsuccess("Create Forum Success");

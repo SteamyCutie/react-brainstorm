@@ -178,10 +178,11 @@ class SessionController extends Controller
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
       $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
       
-      $front_timestamp = $request['forum_start'];
+      $forum_start = $request['forum_start'];
+      $forum_end = $request['forum_end'];
       $back_timestamp = Carbon::now()->timestamp;
-  
-      if ( $front_timestamp <= $back_timestamp ) {
+      
+      if ( $forum_start < $back_timestamp ) {
         return response()->json([
           'result' => 'warning',
           'message' => 'Please select correct Forum time',
@@ -213,8 +214,10 @@ class SessionController extends Controller
         'title' => $title,
         'description' => $description,
         'tags_id' => $tags,
-        'from' => $from_day_str,
-        'to' => $to_day_str,
+        'from' => date('Y-m-d H:i:s', $forum_start),
+        'to' => date('Y-m-d H:i:s', $forum_end),
+        'forum_start' => $forum_start,
+        'forum_end' => $forum_end,
         'status' => 0,
         'language' => $language,
         'room_id' => mt_rand(100000,999999),
@@ -226,8 +229,8 @@ class SessionController extends Controller
       $fronturl = env("APP_URL");
       $from = $res_session->from;
       $mentor_avatar = $user_id->avatar;
-      if ($mentor_avatar == "" || $mentor_avatar == null)
-        $mentor_avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
+//      if ($mentor_avatar == "" || $mentor_avatar == null)
+//        $mentor_avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
       $mentor_name = $user_id->name;
       $name = $user_id->name;
       $toEmail = $email;
@@ -242,6 +245,8 @@ class SessionController extends Controller
         'session_title' => $res_session->title,
         'from' => $res_session->from,
         'to' => $res_session->to,
+        'forum_start' => $res_session->forum_start,
+        'forum_end' => $res_session->forum_end,
         'is_mentor' => true,
         'avatar' => $mentor_avatar,
       ]);
@@ -261,6 +266,8 @@ class SessionController extends Controller
           'session_title' => $res_session->title,
           'from' => $res_session->from,
           'to' => $res_session->to,
+          'forum_start' => $res_session->forum_start,
+          'forum_end' => $res_session->forum_end,
           'is_mentor' => false,
           'avatar' => $mentor_avatar,
         ]);
@@ -298,6 +305,10 @@ class SessionController extends Controller
       
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
       $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
+  
+      $forum_start = $request['forum_start'];
+      $forum_end = $request['forum_end'];
+      
       $rules = array(
         'title' => 'required',
         'description' => 'required',
@@ -335,7 +346,9 @@ class SessionController extends Controller
           'description' => $description,
           'tags_id' => $tags,
           'from' => $from_day_str,
-          'to' => $to_day_str
+          'to' => $to_day_str,
+          'forum_start' => $forum_start,
+          'forum_end' => $forum_end,
         ));
         return response()->json([
           'result'=> 'success',
@@ -381,6 +394,35 @@ class SessionController extends Controller
         return response()->json([
           'result'=> 'failed',
           'message'=> 'remove invited student',
+        ]);
+      }
+    } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function inviteParticipantToRoom(Request $request) {
+    try{
+      $room_id = $request['roomName'];
+      $user_email = $request['participantId'];
+      $user_info = User::where('email', $user_email)->first();
+      $session_info = Session::where('room_id', $room_id)->first();
+      $res = Invited::create([
+        'mentor_id' => $session_info->user_id,
+        'session_id' => $session_info->id,
+        'student_id' => $user_info->id,
+      ]);
+      if ($res ) {
+        return response()->json([
+          'result'=> 'success',
+        ]);
+      } else {
+        return response()->json([
+          'result'=> 'failed',
+          'message'=> 'failed invite student',
         ]);
       }
     } catch (Exception $th) {

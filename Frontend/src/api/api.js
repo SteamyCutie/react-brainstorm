@@ -499,9 +499,9 @@ export const inviteParticipantToRoom = (param) => {
         try {
             const token = localStorage.getItem('token');
             const header = {
-                'Authorization': 'bearer' + token
+                'Authorization': 'bearer ' + token
             }
-            const response = await axios.post(SERVER_URL+'/api/inviteparticipanttoroom', param, {header: header});
+            const response = await axios.post(SERVER_URL+'/api/inviteparticipanttoroom', param, {headers: header});
             resolve(response)
         } catch(error) {
             reject(error);

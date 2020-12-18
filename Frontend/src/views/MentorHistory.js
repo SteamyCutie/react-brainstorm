@@ -6,6 +6,9 @@ import LoadingModal from "../components/common/LoadingModal";
 import ConfirmModal from "../components/common/ConfirmModal";
 import { getHistory, getweekdata, gettags, signout } from '../api/api';
 import { ToastsStore } from 'react-toasts';
+import moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 
 export default class MentorHistory extends React.Component {
   constructor(props) {
@@ -41,9 +44,16 @@ export default class MentorHistory extends React.Component {
       this.setState({ loading: true });
       const result = await getHistory(param);
       if (result.data.result === "success") {
-        var historyTemp = result.data.data;
+        var historyTemps = result.data.data;
+        historyTemps.forEach(historyTemp => {
+          historyTemp.from = moment(historyTemp.forum_start * 1000).format("YYYY-MM-DD h:mm:ss");
+          historyTemp.to = moment(historyTemp.forum_end * 1000).format("YYYY-MM-DD h:mm:ss");
+          historyTemp.day = moment(historyTemp.forum_start * 1000).format("DD/MM/YY");
+          historyTemp.from_time = moment(historyTemp.forum_start * 1000).format("h:mm a");          
+          historyTemp.to_time = moment(historyTemp.forum_end * 1000).format("h:mm a");
+        });
         this.setState({
-          historyData: historyTemp
+          historyData: historyTemps
         });
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -220,7 +230,7 @@ export default class MentorHistory extends React.Component {
       ModalConfirmOpen: !this.state.ModalConfirmOpen,
       id: id
     });
-    this.getForums();
+    // this.getForums();
   }
 
   toggle_confirm(id) {    
