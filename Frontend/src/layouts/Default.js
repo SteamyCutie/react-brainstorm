@@ -93,13 +93,13 @@ export default class DefaultLayout extends React.Component {
       if (result.data.result === "success") {
         let t_notifications = result.data.data.new_notifications;
         t_notifications.forEach(t_notification => {
-          t_notification.from = moment(t_notification.forum_start * 1000).format("YYYY-MM-DD h:mm:ss");
-          t_notification.to = moment(t_notification.forum_end * 1000).format("YYYY-MM-DD h:mm:ss");
+          t_notification.from = moment(t_notification.forum_start * 1000).format("YYYY-MM-DD h:mm:ss a");
+          t_notification.to = moment(t_notification.forum_end * 1000).format("YYYY-MM-DD h:mm:ss a");
         });
         let t_all_notifications = result.data.data.all_notifications;
         t_all_notifications.forEach(t_all_notification => {
-          t_all_notification.from = moment(t_all_notification.forum_start * 1000).format("YYYY-MM-DD h:mm:ss");
-          t_all_notification.to = moment(t_all_notification.forum_end * 1000).format("YYYY-MM-DD h:mm:ss");
+          t_all_notification.from = moment(t_all_notification.forum_start * 1000).format("YYYY-MM-DD h:mm:ss a");
+          t_all_notification.to = moment(t_all_notification.forum_end * 1000).format("YYYY-MM-DD h:mm:ss a");
         });
         this.setState({ 
           notifications: result.data.data.new_notifications,          

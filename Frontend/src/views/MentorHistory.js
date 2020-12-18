@@ -230,7 +230,7 @@ export default class MentorHistory extends React.Component {
       ModalConfirmOpen: !this.state.ModalConfirmOpen,
       id: id
     });
-    this.getForums();
+    // this.getForums();
   }
 
   toggle_confirm(id) {    
