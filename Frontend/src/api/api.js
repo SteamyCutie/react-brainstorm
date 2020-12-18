@@ -493,6 +493,21 @@ export const booksession = (param) => {
         }
     });
 }
+
+export const inviteParticipantToRoom = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/inviteparticipanttoroom', param, {header: header});
+            resolve(response)
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
 //------------SessionController--------------
 
 
