@@ -142,7 +142,7 @@ class InviteParticipant extends React.Component {
     const {suggestedUsers} = this.state;
 
     for (index = 0; index < 4; index ++) {
-      if (suggestedUsers[index].value === e.target.id) {
+      if (suggestedUsers[index].value == e.target.id) {
         email = suggestedUsers[index].email;
         break;
       }
