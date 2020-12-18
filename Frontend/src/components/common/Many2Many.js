@@ -1,12 +1,12 @@
 import React from "react";
 import { Button } from "shards-react";
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
+import {inviteParticipantToRoom} from '../../api/api'
 import "../../assets/landingpage.css"
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
 import AWS from 'aws-sdk'
 
 import InviteParticipant from './InviteParticipant'
-
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/Brainshare_logo.svg'
 import WhiteboardCloseImg from '../../images/whiteboard-close.svg'
@@ -1150,6 +1150,22 @@ export default class Many2Many extends React.Component {
     };
 
     this.sendMessage(message);
+
+    this.inviteToRoom(localStorage.getItem("room_id"), email);
+  }
+
+  inviteToRoom = async(roomId, email) => {
+    const param = {
+      roomName: roomId,
+      participantId: email, 
+    }
+
+    try {
+      const result = await inviteParticipantToRoom(param);
+      console.log(result);
+    } catch(error) {
+      console.log(error);
+    }
   }
 
   handleInviteClose() {
