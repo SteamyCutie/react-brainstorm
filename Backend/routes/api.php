@@ -55,6 +55,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getforum', 'SessionController@getForum');
   Route::post('/schedulepost', 'SessionController@schedulePost');
   Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
+  Route::post('/inviteparticipanttoroom', 'SessionController@inviteParticipantToRoom');
   Route::post('/booksession', 'SessionController@bookSession');
   Route::post('/getweekdata', 'DayController@index');
   Route::post('/setavailabletimes', 'AvailableTimesController@setAvailableTimes');
