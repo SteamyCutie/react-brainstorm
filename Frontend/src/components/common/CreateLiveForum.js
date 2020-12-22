@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
-import { createforum, gettags, getallstudents, signout } from '../../api/api';
+import { createforum, gettags, getsubscribedstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Languagelist from '../../common/LanguageList';
 import Close from '../../images/Close.svg';
@@ -119,7 +119,7 @@ export default class CreateLiveForum extends React.Component {
       email: localStorage.getItem('email')
     }
     try {
-      const result = await getallstudents(param);
+      const result = await getsubscribedstudents(param);
       if (result.data.result === "success") {
         let param = {
           label: '',
