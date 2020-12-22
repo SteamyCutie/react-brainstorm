@@ -53,7 +53,7 @@ class CreateUsersTable extends Migration
       $table->string('sub_page_name')->default("");
       $table->timestamp('dob')->nullable();
       $table->string('video_url')->nullable();
-      $table->string('description')->default("")->nullable();
+      $table->longText('description')->default("")->nullable();
       $table->integer('status')->default(0);
       $table->string('timezone')->default("");
       $table->string('alias')->default("");
