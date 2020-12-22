@@ -163,6 +163,21 @@ export const getallstudents = (param) => {
     });
 }
 
+export const getsubscribedstudents = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getsubscribedstudents', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const findmentors = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
