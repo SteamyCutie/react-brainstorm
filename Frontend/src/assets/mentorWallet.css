@@ -242,7 +242,6 @@
     .main-content-class {
         margin-left: 260px;
         width: calc(100% - 260px) !important;
-        z-index: 1050;
     }
   }
   
@@ -276,7 +275,6 @@
     .main-content-class {
         margin-left: 16.6666667%;
         width: 83.3333333 !important;
-        z-index: 1050;
     }
   }
   
