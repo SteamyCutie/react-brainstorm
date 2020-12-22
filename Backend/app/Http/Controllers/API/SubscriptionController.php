@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Models\Payment;
+use Illuminate\Support\Facades\DB;
 use Log;
 
 class SubscriptionController extends Controller
@@ -126,6 +127,27 @@ class SubscriptionController extends Controller
         'data' => [],
       ]);
     } catch (Exception $th) {
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+
+  function getSubscribedStudents(Request $request) {
+    try {
+      $mentor_email = $request->email;
+      $mentor_info = User::select('id')->where('email', $mentor_email)->first();
+      $users = DB::table('subscriptions')
+        ->where('subscriptions.mentor_id','=', $mentor_info->id)
+        ->join('users', 'subscriptions.student_id', '=', 'users.id')
+        ->select('users.id', 'users.email', 'users.avatar')
+        ->get();
+      return response()->json([
+        'result' => 'success',
+        'data' => $users
+      ]);
+    }catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
         'message'=> $th->getMessage(),

@@ -42,6 +42,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
   Route::post('/getallmentors', 'UserController@getAllMentors');
   Route::post('/getallstudents', 'UserController@getAllStudents');
+  
   Route::post('/switchuser', 'UserController@switchUser');
   Route::post('/getallparticipants', 'UserController@getAllParticipants');
   Route::post('/findmentorsbytagsorname', 'UserController@findMentorsByTagsOrName');
@@ -69,6 +70,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
+  Route::post('/getsubscribedstudents', 'SubscriptionController@getSubscribedStudents');
   
   Route::post('/setreview', 'ReviewController@setReview');
   
