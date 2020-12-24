@@ -121,7 +121,7 @@ export default class CreateLiveForum extends React.Component {
       email: localStorage.getItem('email')
     }
     try {
-      const result = await getsubscribedstudents(param);
+      const result = await getassociatedstudents(param);
       if (result.data.result === "success") {
         let param = {
           label: '',
