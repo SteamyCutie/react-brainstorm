@@ -428,7 +428,6 @@ class UserController extends Controller
         'category' => 'required',
         'subcategory' => 'required',
         'minimum_age' => 'required',
-        'videourl' => 'required|url',
       );
       $messages = array(
         'required' => 'This field is required.',

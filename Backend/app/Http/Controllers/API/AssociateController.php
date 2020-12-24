@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Associate;
+use App\Models\User;
 
 class AssociateController extends Controller
 {
@@ -14,7 +15,12 @@ class AssociateController extends Controller
     try{
       $request_id = $request->request_id;
       $response_id = $request->response_id;
-      
+      if ($request_id == '' || $request_id == null || $response_id == '' || $response_id == null){
+        return response()->json([
+          'result' => 'warning',
+          'message' => 'empty value'
+        ]);
+      }
       $exist = DB::table('associates')
         ->where('request_id', $request_id)
         ->where('response_id', $response_id)
@@ -73,6 +79,44 @@ class AssociateController extends Controller
         return response()->json([
           'result' => 'failed',
           'message' => 'failed accept'
+        ]);
+      }
+    } catch (Exception $th) {
+      \Log::info(['++++++++++ associateRequest +++++++++', $th->getMessage()]);
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function getassociatedStudents(Request $request)
+  {
+    try{
+      $email = $request->email;
+      $user_info = User::where('email', $email)->first();
+      $user_id = $user_info->id;
+      $temp_associate_id = [];
+      $rest_accept = DB::table('associates')
+        ->where(function($query) use ($user_id){
+          $query->where('request_id', $user_id)
+            ->orWhere('response_id', $user_id);
+        })
+        ->where('accepted', true)
+        ->get();
+      foreach ($rest_accept as $key => $value) {
+        if ($value->request_id == $user_id) {
+          $user_info = User::select('id', 'email', 'avatar')->where('id', $value->response_id)->first();
+          $temp_associate_id[$key] = $user_info;
+        } else {
+          $user_info = User::select('id', 'email', 'avatar')->where('id', $value->request_id)->first();
+          $temp_associate_id[$key] = $user_info;
+        }
+      }
+      if ($rest_accept) {
+        return response()->json([
+          'result' => 'success',
+          'data' => $temp_associate_id
         ]);
       }
     } catch (Exception $th) {

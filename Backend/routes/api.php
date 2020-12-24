@@ -92,4 +92,5 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   
   Route::post('/associaterequest', 'AssociateController@associateRequest');
   Route::post('/associateaccept', 'AssociateController@associateAccept');
+  Route::post('/getassociatedstudents', 'AssociateController@getassociatedStudents');
 });
