@@ -108,7 +108,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
   }
 
   render() {
-    const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, sub_id } = this.props.mentorData;
+    const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, sub_id, subscribe, associate } = this.props.mentorData;
     const { subscriptionOpen, loading } = this.state;
 
     return (
@@ -195,7 +195,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                       <h6 className="no-margin" style={{ paddingRight: "70px" }}>Subscribers</h6>
                       <h6 className="no-margin" style={{ fontWeight: "bold" }}>{sub_count}</h6>
                     </div>
-                    {sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ?
+                    {!subscribe ?
                       <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
                         Subscription ${sub_plan_fee}/month </Button>
                       : <Button className="btn-subscription-unsubscribe" onClick={() => this.handleUnSub(id)}>
