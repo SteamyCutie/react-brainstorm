@@ -39,6 +39,22 @@ class AssociateController extends Controller
         'request_id' => $request_id,
         'response_id' => $response_id
       ]);
+      
+      $fronturl = env("APP_URL");
+      $current_time = date("Y-m-d h:i a");
+      $user_info = User::where('id', $response_id)->first();
+      $toEmail = $user_info->email;
+      $send_mail = new Controller;
+      $subject = "You have received a request about the association!";
+      $mentor_avatar = $user_info->avatar;
+      $name = $user_info->name;
+      $user_info = User::where('id', $request_id)->first();
+      $from_user = $user_info->name;
+      $app_path = app_path();
+      $body = include($app_path.'/Mails/Association.php');
+      $body = implode(" ",$body);
+      $send_mail->send_email($toEmail, $name, $subject, $body);
+      
       if ($res_associate) {
         return response()->json([
           'result' => 'success',
