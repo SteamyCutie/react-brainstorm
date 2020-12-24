@@ -90,4 +90,6 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setprimarycard', 'PaymentController@setprimarycard');
   Route::post('/deletestudentcard', 'PaymentController@deletestudentcard');
   
+  Route::post('/associaterequest', 'AssociateController@associateRequest');
+  Route::post('/associateaccept', 'AssociateController@associateAccept');
 });
