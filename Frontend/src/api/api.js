@@ -178,6 +178,21 @@ export const getsubscribedstudents = (param) => {
     });
 }
 
+export const getassociatedstudents = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getassociatedstudents', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const findmentors = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -507,6 +522,21 @@ export const booksession = (param) => {
             reject(error);
         }
     });
+}
+
+export const accociateUser = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associaterequest', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
 }
 
 export const inviteParticipantToRoom = (param) => {

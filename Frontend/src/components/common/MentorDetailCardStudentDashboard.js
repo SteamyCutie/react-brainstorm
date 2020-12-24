@@ -9,7 +9,7 @@ import Lightening from "../../images/Lightening.svg";
 import SubscriperImg from "../../images/Users.svg";
 import Clock from "../../images/Clock.svg";
 import defaultavatar from "../../images/avatar.jpg";
-import { unsubscription } from '../../api/api';
+import { unsubscription, accociateUser } from '../../api/api';
 import LoadingModal from "../../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
 
@@ -37,6 +37,39 @@ class MentorDetailCardStudentDashboard extends React.Component {
   handleBookSession(id) {
     const { toggle } = this.props;
     toggle(id);
+  }
+
+  handleAssociate = async (id) => {
+    let param ={
+      request_id: localStorage.getItem('user_id'),
+      response_id: id
+    };
+
+    try {
+      this.setState({ loading: true });
+      const result = await accociateUser(param);
+      if (result.data.result === "success") {
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
+      }
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
+    };
   }
 
   readMore() {
@@ -108,7 +141,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
   }
 
   render() {
-    const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, sub_id } = this.props.mentorData;
+    const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, sub_id, subscribe, associate } = this.props.mentorData;
     const { subscriptionOpen, loading } = this.state;
 
     return (
@@ -175,6 +208,15 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 Book a session
               </Button>
             </Row>
+            {!associate ? 
+              <Row className="center">
+                <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleAssociate(id)}>
+                  <img src={Clock} alt="Clock" />
+                  Associate
+                </Button>
+              </Row>
+              : null
+            }
           </div>
           {/* //   : null
         // } */}
@@ -195,7 +237,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                       <h6 className="no-margin" style={{ paddingRight: "70px" }}>Subscribers</h6>
                       <h6 className="no-margin" style={{ fontWeight: "bold" }}>{sub_count}</h6>
                     </div>
-                    {sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ?
+                    {!subscribe ?
                       <Button className="btn-subscription-unsubscribe" onClick={() => this.toggle_unsubscribe()}>
                         Subscription ${sub_plan_fee}/month </Button>
                       : <Button className="btn-subscription-unsubscribe" onClick={() => this.handleUnSub(id)}>
