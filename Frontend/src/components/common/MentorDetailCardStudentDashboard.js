@@ -247,9 +247,13 @@ class MentorDetailCardStudentDashboard extends React.Component {
                   </div>
                 </Col>
                 <Col xl="9" lg="12" className="subscription-mentor-videos">
-                  {share_info && share_info.map((item, idx) =>
-                    <MentorVideo key={idx} item={item} />
-                  )}
+                  {subscribe ? 
+                    share_info && share_info.map((item, idx) =>
+                      <MentorVideo key={idx} item={item} />
+                    )
+                  : 
+                    <label style = {{display: "flex",justifyContent: "center",alignItems: "center",height: "100%",fontSize: "35px",fontWeight: "500"}}>You must subscribe.</label>
+                  }
                 </Col>
               </Row>
             </CardBody>
