@@ -20,6 +20,8 @@ class CreateAvailableTimesTable extends Migration
       $table->integer('toTime')->nullable();
       $table->string('fromTimeStr')->nullable();
       $table->string('toTimeStr')->nullable();
+      $table->string('fromTimestamp')->nullable();
+      $table->string('toTimestamp')->nullable();
       $table->integer('status')->nullable();
       $table->string('day_of_week')->nullable();
       $table->string('timezone')->nullable();

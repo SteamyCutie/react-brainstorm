@@ -24,7 +24,8 @@ class AvailableTimesController extends Controller
         if (count($week_list) > 0) {
           $temp_list = [];
           for ($j = 0; $j < count($week_list); $j++){
-            $temp_list[]['value'] = str_replace(' ', '', $week_list[$j]->fromTimeStr);
+            $temp_list[$j]['value'] = str_replace(' ', '', $week_list[$j]->fromTimeStr);
+            $temp_list[$j]['from_stamp'] = $week_list[$j]->fromTimestamp;
           }
           $res_week[$i] = $temp_list;
         } else {
@@ -78,6 +79,8 @@ class AvailableTimesController extends Controller
             'toTime' => $timeList[$i]['timeList'][$j]['to'],
             'fromTimeStr' => $timeList[$i]['timeList'][$j]['fromStr'],
             'toTimeStr' => $timeList[$i]['timeList'][$j]['toStr'],
+            'fromTimestamp' => $timeList[$i]['timeList'][$j]['fromTimestamp'],
+            'toTimestamp' => $timeList[$i]['timeList'][$j]['toTimestamp'],
             'status' => $timeList[$i]['status'],
             'timezone' => $timeZone,
           ]);
