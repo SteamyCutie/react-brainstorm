@@ -7,6 +7,9 @@ import AddButtonImage from "../images/Add.svg";
 import { getAvailableTimes, setAvailableTimes, signout } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
 import Timelinelist from '../common/TimelistList';
+import moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 
 class SetAvailability extends React.Component {
   constructor(props) {
@@ -144,13 +147,28 @@ class SetAvailability extends React.Component {
 
   handleSave = async () => {
     const { availableTimeList, dayOfWeekStatus, timezone } = this.state;
+    const curr = new Date();
+    var twoday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 2));
+
     for (var i = 0; i < availableTimeList.length; i++) {
       availableTimeList[i].status = dayOfWeekStatus[i];
+      var week_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + i));
+      for (let j = 0; j < availableTimeList[i].timeList.length; j++) {
+        console.log("+++++ timelist = " + availableTimeList[i].timeList[j].fromStr + availableTimeList[i].timeList[j].toStr);
+        let date_from = availableTimeList[i].timeList[j].fromStr.split(" ");
+        let date_to = availableTimeList[i].timeList[j].toStr.split(" ");
+        var date_from_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_from[0] + date_from[1] + date_from[2] + " " + date_from[3];
+        var date_to_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_to[0] + date_to[1] + date_to[2] + " " + date_to[3];
+        
+        availableTimeList[i].timeList[j].fromTimestamp = new Date(date_from_timestamp).getTime()/1000;
+        availableTimeList[i].timeList[j].toTimestamp = new Date(date_to_timestamp).getTime()/1000;
+      }
     }
 
     let param = {
       email: localStorage.getItem('email'),
-      data: this.state.availableTimeList,
+      // data: this.state.availableTimeList,
+      data: availableTimeList,
       timezone: timezone
     }
 

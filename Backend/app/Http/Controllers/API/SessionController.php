@@ -700,7 +700,8 @@ class SessionController extends Controller
       $title = $tags->name;
       $description = $title.'\'s session';
 //      $tags = ','.implode(",", $request['tags']).',';
-      $from = date('H:i:s', strtotime($request['from']));
+//      $from = date('H:i:s', strtotime($request['from']));
+      $from = date('Y-m-d H:i:s', $request['time_stamp']);
 //      $to = $request['to'];
       $day = $request['day'];
       $from_arr = explode(":", $from);
@@ -709,7 +710,7 @@ class SessionController extends Controller
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
 //      $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
       
-      $same_session = Session::where('user_id', $mentor_id)->where('from', $from_day_str)->get();
+      $same_session = Session::where('user_id', $mentor_id)->where('from', $from)->get();
       if (count($same_session) > 0) {
         return [
           'result' => 'warning',
@@ -721,8 +722,10 @@ class SessionController extends Controller
         'title' => $title,
         'description' => $description,
         'tags_id' => $tags->tags_id,
-        'from' => $from_day_str,
+//        'from' => $from_day_str,
+        'from' => $from,
 //        'to' => $to_day_str,
+        'forum_start' => $request['time_stamp'],
         'status' => 0,
         'room_id' => mt_rand(100000,999999),
         'created_id' => $student_id,
