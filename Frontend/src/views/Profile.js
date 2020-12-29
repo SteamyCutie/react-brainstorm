@@ -737,7 +737,7 @@ export default class MySharePage extends React.Component {
                             </label>
                             </Col>
                             <Col md="6" className="project-detail-input-group">
-                              <label htmlFor="fePassword" className="profile-detail-important">Video url</label>
+                              <label htmlFor="fePassword">Video url</label>
                               {requiremessage.videourl !== '' && <span className="require-message">{requiremessage.videourl}</span>}
                               {requiremessage.videourl !== '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" invalid onChange={(e) => this.onChangeVideoUrl(e)} value={param.videourl} />}
                               {requiremessage.videourl === '' && <FormInput className="profile-detail-input" type="url" placeholder="Video url" onChange={(e) => this.onChangeVideoUrl(e)} value={param.videourl} />}

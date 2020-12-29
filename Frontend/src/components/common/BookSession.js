@@ -6,6 +6,9 @@ import Close from '../../images/Close.svg';
 import BackIcon from "../../images/Back_icon.svg";
 import NextIcon from "../../images/Next_icon.svg";
 import { ToastsStore } from 'react-toasts';
+import moment from 'moment';
+import 'moment/locale/es';
+moment.locale('es');
 
 export default class BookSession extends React.Component {
   constructor(props) {
@@ -47,7 +50,12 @@ export default class BookSession extends React.Component {
       this.setState({ loading: true });
       const result = await getavailabletimesforstudent(param);
 
-      if (result.data.result === "success") {
+      if (result.data.result === "success") {        
+        for (let i = 0; i < result.data.data.length; i++) {          
+          for(let j = 0; j < result.data.data[i].length; j++){            
+            result.data.data[i][j].value = moment(result.data.data[i][j].from_stamp * 1000).format("h:mm a");
+          }
+        }        
         this.setState({ schedule: result.data.data });
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -156,14 +164,14 @@ export default class BookSession extends React.Component {
     this.checkLabel();
   }
 
-  bookSchedule = async (idx, idx1, time) => {
-    const { weekdata } = this.state;
-
+  bookSchedule = async (idx, idx1, time, stamp) => {
+    const { weekdata } = this.state;    
     let param = {
       user_id: localStorage.getItem('user_id'),
       mentor_id: this.props.id,
       day: weekdata[idx].year + '-' + weekdata[idx].month + '-' + weekdata[idx].day + '',
-      from: time
+      from: time,
+      time_stamp: stamp
     }
 
     try {
@@ -297,7 +305,7 @@ export default class BookSession extends React.Component {
                   <table>
                     {item.map((item1, idx1) =>
                       <tr>
-                        <button key={idx1} type="button" className={item1.book ? "btn btn-primary schedule active" : "btn btn-primary schedule"} onClick={() => this.bookSchedule(idx, idx1, item1.value)}>{item1.value}</button>
+                        <button key={idx1} type="button" className={item1.book ? "btn btn-primary schedule active" : "btn btn-primary schedule"} onClick={() => this.bookSchedule(idx, idx1, item1.value, item1.from_stamp)}>{item1.value}</button>
                       </tr>
                     )}
                   </table>

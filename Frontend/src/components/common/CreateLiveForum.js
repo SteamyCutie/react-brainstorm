@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
-import { createforum, gettags, getsubscribedstudents, signout } from '../../api/api';
+import { createforum, gettags, getsubscribedstudents, getassociatedstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Languagelist from '../../common/LanguageList';
 import Close from '../../images/Close.svg';
@@ -12,7 +12,8 @@ export default class CreateLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedUsers: [],
+      selectedSubscribedUsers: [],
+      selectedAssociatedUsers: [],
       selectedTags: [],
       loading: false,
       displayday: '',
@@ -45,7 +46,8 @@ export default class CreateLiveForum extends React.Component {
     temp.email = localStorage.getItem('email');
     this.setState({ foruminfo: temp });
     this.getAllTags();
-    this.getAllStudents();
+    this.getSubscribedStudents();
+    this.getAssociatedStudents();
   }
 
   toggle() {
@@ -113,7 +115,48 @@ export default class CreateLiveForum extends React.Component {
     }
   }
 
-  getAllStudents = async () => {
+  getAssociatedStudents = async () => {
+    const { toggle_createfail } = this.props;
+    let param = {
+      email: localStorage.getItem('email')
+    }
+    try {
+      const result = await getassociatedstudents(param);
+      if (result.data.result === "success") {
+        let param = {
+          label: '',
+          value: ''
+        };
+
+        let params = [];
+
+        for (var i = 0; i < result.data.data.length; i++) {
+          param.label = result.data.data[i].email;
+          param.value = result.data.data[i].id;
+          params.push(param);
+          param = {};
+        }
+        this.setState({ associated_students: params });
+      } else {
+        if (result.data.message === "Token is Expired") {
+          toggle_createfail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token in Invalid") {
+          toggle_createfail(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          toggle_createfail(result.data.message);
+          this.signout();
+        } else {
+          toggle_createfail(result.data.message);
+        }
+      }
+    } catch (err) {
+      toggle_createfail("Something Went wrong");
+    }
+  }
+
+  getSubscribedStudents = async () => {
     const { toggle_createfail } = this.props;
     let param = {
       email: localStorage.getItem('email')
@@ -134,7 +177,7 @@ export default class CreateLiveForum extends React.Component {
           params.push(param);
           param = {};
         }
-        this.setState({ students: params });
+        this.setState({ subscribed_students: params });
       } else {
         if (result.data.message === "Token is Expired") {
           toggle_createfail(result.data.message);
@@ -155,7 +198,7 @@ export default class CreateLiveForum extends React.Component {
   }
 
   actionSave = async () => {
-    let { requiremessage, foruminfo } = this.state;
+    let { requiremessage, foruminfo, selectedSubscribedUsers, selectedAssociatedUsers } = this.state;
     const { toggle_createsuccess, toggle_createfail, toggle_createwarning } = this.props;
     let temp = requiremessage;
     temp.dtitle = '';
@@ -170,12 +213,25 @@ export default class CreateLiveForum extends React.Component {
       let temp = foruminfo;
       temp.forum_start = new Date(forum_start).getTime()/1000;
       temp.forum_end = new Date(forum_end).getTime()/1000;
+
+      let students = [];
+      for (var i = 0; i < selectedSubscribedUsers.length; i ++)
+        students.push(selectedSubscribedUsers[i].value);
+
+      for (var i = 0; i < selectedAssociatedUsers.length; i ++) {
+        for (var j = 0; j < students.length; j++) {
+          if(students[i] != selectedAssociatedUsers[i].value)
+            students.push(selectedAssociatedUsers[i].value)
+        }
+      }
+      temp.students = students;
+      
       this.setState({ foruminfo: temp });
       const result = await createforum(foruminfo);      
       if (result.data.result === "success") {
         this.toggle();
         toggle_createsuccess("Create Forum Success");
-        window.location.href="/scheduleLiveForum";
+        // window.location.href="/scheduleLiveForum";
       } else if (result.data.result === "warning") {
         toggle_createwarning(result.data.message);
       } else {
@@ -283,26 +339,56 @@ export default class CreateLiveForum extends React.Component {
     this.setState({ personName: temp })
   };
 
-  setSelectedUsers = (e) => {
-    const { selectedUsers } = this.state;
-    var temp = selectedUsers;
-    temp = e;
-    this.setState({ selectedUsers: temp });
+  setSelectedSubscribedUsers = (e) => {
+    // const { selectedSubscribedUsers } = this.state;
+    // var temp = selectedSubscribedUsers;
+    // temp = e;
+    this.setState({ selectedSubscribedUsers: e });
 
-    if (e.length > 0) {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.students = [];
-      for (var i = 0; i < e.length; i++) {
-        temp1.students.push(e[i].value);
-      }
-      this.setState({ foruminfo: temp1 });
-    } else {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.students = [];
-      this.setState({ foruminfo: temp1 });
-    }
+    // if (e.length > 0) {
+    //   const { foruminfo } = this.state;
+    //   let temp1 = foruminfo;
+    //   temp1.students = [];
+    //   for (var i = 0; i < e.length; i++) {
+    //     for (var j = 0; j < temp1.students.length; j ++) {
+    //       if (temp1.students[j] != e[i].value) {
+    //         temp1.students.push(e[i].value);
+    //       }
+    //     }
+    //   }
+    //   this.setState({ foruminfo: temp1 });
+    // } else {
+    //   const { foruminfo } = this.state;
+    //   let temp1 = foruminfo;
+    //   temp1.students = [];
+    //   this.setState({ foruminfo: temp1 });
+    // }
+  }
+
+  setSelectedAssociatedUsers = (e) => {
+    // const { selectedAssociatedUsers } = this.state;
+    // var temp = selectedAssociatedUsers;
+    // temp = e;
+    this.setState({ selectedAssociatedUsers: e });
+
+    // if (e.length > 0) {
+    //   const { foruminfo } = this.state;
+    //   let temp1 = foruminfo;
+    //   temp1.students = [];
+    //   for (var i = 0; i < e.length; i++) {
+    //     for (var j = 0; j < temp1.students.length; j ++) {
+    //       if (temp1.students[j] != e[i].value) {
+    //         temp1.students.push(e[i].value);
+    //       }
+    //     }
+    //   }
+    //   this.setState({ foruminfo: temp1 });
+    // } else {
+    //   const { foruminfo } = this.state;
+    //   let temp1 = foruminfo;
+    //   temp1.students = [];
+    //   this.setState({ foruminfo: temp1 });
+    // }
   }
 
   setSelectedTags = (e) => {
@@ -329,7 +415,7 @@ export default class CreateLiveForum extends React.Component {
 
   render() {
     const { open } = this.props;
-    const { selectedUsers, selectedTags, tags, students, foruminfo, requiremessage, displayday, loading } = this.state;
+    const { selectedAssociatedUsers, selectedSubscribedUsers, selectedTags, tags, subscribed_students, associated_students, foruminfo, requiremessage, displayday, loading } = this.state;
 
     return (
       <div>
@@ -361,12 +447,22 @@ export default class CreateLiveForum extends React.Component {
               />
             </div>
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
-              <label htmlFor="feEmail">Students</label>
+              <label htmlFor="feEmail">Associated students</label>
               <MultiSelect
                 hasSelectAll={true}
-                options={students}
-                value={selectedUsers}
-                onChange={(e) => this.setSelectedUsers(e)}
+                options={associated_students}
+                value={selectedAssociatedUsers}
+                onChange={(e) => this.setSelectedAssociatedUsers(e)}
+                labelledBy={"Select"}
+              />
+            </div>
+            <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
+              <label htmlFor="feEmail">Subscribed students</label>
+              <MultiSelect
+                hasSelectAll={true}
+                options={subscribed_students}
+                value={selectedSubscribedUsers}
+                onChange={(e) => this.setSelectedSubscribedUsers(e)}
                 labelledBy={"Select"}
               />
             </div>
