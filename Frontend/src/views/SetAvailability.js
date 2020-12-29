@@ -154,7 +154,7 @@ class SetAvailability extends React.Component {
       availableTimeList[i].status = dayOfWeekStatus[i];
       var week_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + i));
       for (let j = 0; j < availableTimeList[i].timeList.length; j++) {
-        console.log("+++++ timelist = " + availableTimeList[i].timeList[j].fromStr + availableTimeList[i].timeList[j].toStr);
+        // console.log("+++++ timelist = " + availableTimeList[i].timeList[j].fromStr + availableTimeList[i].timeList[j].toStr);
         let date_from = availableTimeList[i].timeList[j].fromStr.split(" ");
         let date_to = availableTimeList[i].timeList[j].toStr.split(" ");
         var date_from_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_from[0] + date_from[1] + date_from[2] + " " + date_from[3];
