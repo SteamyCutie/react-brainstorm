@@ -66,7 +66,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, 1);
+    this.getParticipants(searchParams, searchKey, 1, false);
     this.setState({
       pageCount: 2, 
     })
@@ -84,7 +84,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, 1);
+    this.getParticipants(searchParams, searchKey, 1, false);
     this.setState({
       pageCount: 2, 
     })
@@ -119,7 +119,7 @@ export default class StudentDashboard extends React.Component {
     this.props.setUser(to, avatar, name);
   }
 
-  getParticipants = async (category, searchKey, pageNo) => {
+  getParticipants = async (category, searchKey, pageNo, concat) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
       name: searchKey,
@@ -136,7 +136,12 @@ export default class StudentDashboard extends React.Component {
       if (result.data.result === "success") {
         const { mentors } = this.state;
         var temp = mentors;
-        temp = temp.concat(result.data.data);
+        if (concat) {
+          temp = temp.concat(result.data.data);
+        } else {
+          temp = result.data.data;
+        }
+
         this.setState({
           loading: false,
           mentors: temp,
@@ -194,7 +199,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, value);
+    this.getParticipants(searchParams, searchKey, value, true);
   }
 
   fetchMoreData = () => {
@@ -209,7 +214,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, this.state.pageCount);
+    this.getParticipants(searchParams, searchKey, this.state.pageCount, true);
     this.setState({
       pageCount: this.state.pageCount + 1,
     })
