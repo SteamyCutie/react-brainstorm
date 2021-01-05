@@ -64,6 +64,30 @@ class SetAvailability extends React.Component {
         false,
         false,
         false
+      ],
+      specificDate: [
+        {
+          date: "2021-01-07",
+          intervals: [
+            { from: "9:00", to: "12:00" }
+          ]
+        },
+        {
+          date: "2021-01-08",
+          intervals: [
+            { from: "9:00", to: "12:00" },
+            { from: "13:00", to: "15:00" },
+            { from: "17:00", to: "19:00" }
+          ]
+        },
+        {
+          date: "2021-01-12",
+          intervals: [
+            { from: "9:00", to: "12:00" },
+            { from: "13:00", to: "15:00" },
+            { from: "17:00", to: "19:00" }
+          ]
+        }
       ]
     }
 
@@ -413,8 +437,12 @@ class SetAvailability extends React.Component {
     this.props.history.push('/');
   }
 
+  handleAddSpecificDate() {
+
+  }
+
   render() {
-    const { loading, availableTimeList, dayOfWeekStatus, timezone } = this.state;
+    const { loading, availableTimeList, dayOfWeekStatus, timezone, specificDate } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
@@ -534,10 +562,41 @@ class SetAvailability extends React.Component {
                       </div>
                     )
                   })}
-                  <Row className="profile-detail-save center">
-                    <Button className="btn-profile-detail-save" onClick={() => this.handleSave()}>Save</Button>
-                  </Row>
+
                 </Form>
+              </Row>
+              <Row id="hours-specific-dates" className="center">
+                <Row style={{ width: "80%", marginTop: "20px" }}>
+                  <h2 className="availability-specific-dates">Add hours for specific dates.</h2>
+                  <Button className="btn-add-specific-date" onClick={() => this.handleAddSpecificDate()}>+</Button>
+                </Row>
+                <Row className="specific-date-table-header">
+                  <div style={{width: "150px"}}>Dates</div>
+                  <div style={{width: "calc(100% - 150px)"}}>AVAILABILITY</div>
+                </Row>
+                {specificDate.map((item) => {
+                  const date = item.date;
+                  console.log(item.intervals);
+                  return(
+                    item.intervals.map((time) => {
+                      console.log(time.from, time.to);
+                      return (
+                        <Row className="specific-date-table-content">
+                          <div style={{width: "150px"}}>{date}</div>
+                          <div style={{width: "calc(100% - 200px)"}}>{time.from} - {time.to}</div>
+                          <Button className="btn-available-time-add-delete no-padding"
+                            onClick={() => this.handleDelete()}>
+                            <img src={DeleteButtonImage} alt="Delete" />
+                          </Button>
+                        </Row>
+                      )
+                    })
+                  )
+                })}
+              </Row>
+
+              <Row className="profile-detail-save center">
+                <Button className="btn-profile-detail-save" onClick={() => this.handleSave()}>Save</Button>
               </Row>
             </CardBody>
           </Card>

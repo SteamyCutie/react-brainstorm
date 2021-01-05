@@ -557,3 +557,48 @@ button:focus {
     color: #333333;
     margin-top: 30px;
 }
+
+.availability-specific-dates {
+    color: #333333;
+    /* font-weight: bold; */
+    font-size: 22px;
+    padding-bottom: 30px;
+}
+
+.btn-add-specific-date {
+    color: #04B5FA;
+    background-color: white;
+    border: 1px #04B5FA solid;
+    font-size: xx-large;
+    height: 55px;
+    padding-top: 2px;
+    margin-left: auto;
+}
+
+.btn-add-specific-date:hover {
+    background-color: #04B5FA ;
+    border: 1px #04B5FA solid;
+}
+
+.btn-add-specific-date:active {
+    background-color: #04B5FA !important;
+    border: 1px #04B5FA solid !important;
+}
+
+.specific-date-table-header{
+    width: 80%;
+    background-color: #f9f9f9;
+    height: 60px;
+    align-items: center;
+    padding-left: 20px;
+    border: solid 1px var(--text-color-level3, rgba(77, 80, 85, 0.1));
+}
+
+.specific-date-table-content {
+    width: 80%;
+    background-color: white;
+    height: 60px;
+    align-items: center;
+    padding-left: 20px;
+    border: solid 1px var(--text-color-level3, rgba(77, 80, 85, 0.1));
+}
