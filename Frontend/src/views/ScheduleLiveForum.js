@@ -8,8 +8,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import { getforums, getuserinfo, signout } from "../api/api";
 import { ToastsStore } from 'react-toasts';
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+moment.locale('en');
 
 export default class ScheduleLiveForum extends React.Component {
   constructor(props) {

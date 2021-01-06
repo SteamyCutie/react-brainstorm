@@ -7,8 +7,7 @@ import Timelinelist from '../../common/TimelistList';
 import Close from '../../images/Close.svg';
 import { ToastsStore } from 'react-toasts';
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+moment.locale('en');
 
 export default class EditLiveForum extends React.Component {
   constructor(props) {

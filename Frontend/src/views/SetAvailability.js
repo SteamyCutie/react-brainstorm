@@ -9,8 +9,8 @@ import { getAvailableTimes, setAvailableTimes, signout } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
 import Timelinelist from '../common/TimelistList';
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+
+moment.locale('en');
 
 class SetAvailability extends React.Component {
   constructor(props) {

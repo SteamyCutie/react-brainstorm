@@ -142,6 +142,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
 
   render() {
     const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, sub_id, subscribe, associate } = this.props.mentorData;
+    const { index } = this.props;
     const { subscriptionOpen, loading } = this.state;
 
     return (
@@ -203,7 +204,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
               : null
             }
             <Row className="center">
-              <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
+              <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(index)}>
                 <img src={Clock} alt="Clock" />
                 Book a session
               </Button>

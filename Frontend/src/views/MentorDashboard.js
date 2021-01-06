@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, FormSelect } from "shards-react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Pagination from '@material-ui/lab/Pagination';
 import BookSession from "./../components/common/BookSession";
+import BookSession2 from "./../components/common/BookSession2";
 import LoadingModal from "../components/common/LoadingModal";
 import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import { ToastsStore } from 'react-toasts';
@@ -27,6 +28,8 @@ import AddUser from "../images/dashboard-mute-add-user.svg"
 import EndCall from "../images/dashboard-mute-end.svg"
 import defaultavatar from "../images/avatar.jpg";
 
+import TimeList from "../common/AvailableTimes.json"
+
 export default class MentorDashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -50,7 +53,9 @@ export default class MentorDashboard extends React.Component {
       sort_language: "",
     };
 
+    this.availableTimes = TimeList.days;
     this.sendUser = this.sendUser.bind(this);
+    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -348,7 +353,14 @@ export default class MentorDashboard extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
+        {/* <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession> */}
+        <BookSession2 
+          open={ModalOpen} 
+          toggle={() => this.toggle()} 
+          availableTimes={this.availableTimes}//{mentors[id].availableTimes}
+          // mentorName={mentors[id].name}
+          // id={id} 
+        />
         <OutcomingCallDesc
           id={id}
           open={ModalCallWithDescOpen}
@@ -508,6 +520,7 @@ export default class MentorDashboard extends React.Component {
             {mentors.map((data, idx) => (
               <MentorDetailCardStudentDashboard
                 key={idx}
+                index={idx}
                 ref={this.mentorRef}
                 mentorData={data}
                 sendUser={this.sendUser}

@@ -5,11 +5,10 @@ import AddButtonImage from "../../images/Add.svg";
 import DeleteButtonImage from "../../images/Delete.svg";
 import Timelinelist from '../../common/TimelistList';
 import moment from 'moment';
-import 'moment/locale/es';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
-moment.locale('es');
+moment.locale('en');
 
 export default class AddSpecificDate extends React.Component {
   constructor(props) {
