@@ -87,11 +87,6 @@ export default class BookSession2 extends React.Component {
     });
   }
 
-  handleApply() {
-    // addSpecificDate(this.state.currentDate, this.state.timeList);
-    this.toggle();
-  }
-
   getAvailableTimes(currentDate) {
     const { availableTimes } = this.props;
     let timeList = [];
@@ -116,7 +111,7 @@ export default class BookSession2 extends React.Component {
   }
 
   handleBookSession() {
-
+    this.toggle();
   }
 
   getTimezone(){
