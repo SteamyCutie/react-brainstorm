@@ -1,10 +1,6 @@
 import React from "react";
-import { Modal, ModalBody, Button, ModalHeader, ModalFooter, FormTextarea, Row, Col } from "shards-react";
+import { Modal, ModalBody, Button, ModalHeader, FormTextarea, Row, Col } from "shards-react";
 import Close from '../../images/Close.svg';
-import AddButtonImage from "../../images/Add.svg";
-import DeleteButtonImage from "../../images/Delete.svg";
-import Timelinelist from '../../common/TimelistList';
-import Clock from "../../images/Clock.svg";
 import moment from 'moment';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -30,6 +26,7 @@ export default class BookSession2 extends React.Component {
 
     this.setState({
       currentDate: "",
+      showBookingComponents: false,
       timeList: []
     })
 
@@ -42,49 +39,6 @@ export default class BookSession2 extends React.Component {
       displayDate: moment(value).format('dddd, MMMM DD').toString(),
       timeList: []
     })
-  }
-
-  handleAdd() {
-    const {timeList} = this.state;
-    let temp = timeList;
-    temp.push({
-      from: "00 : 00 am",
-      to: "00 : 00 am"
-    })
-
-    this.setState({
-      timeList: temp
-    })
-  }
-
-  handleDelete(idx) {
-    const {timeList} = this.state;
-    let temp = timeList;
-    temp.splice(idx, 1,);
-
-    this.setState({
-      timeList: temp
-    });
-  }
-
-  handleUpdateFrom(idx, eve) {
-    const {timeList} = this.state;
-    let temp = timeList;
-    temp[idx].from = eve.target.value;
-
-    this.setState({
-      timeList: temp
-    });
-  }
-
-  handleUpdateTo(idx, eve) {
-    const {timeList} = this.state;
-    let temp = timeList;
-    temp[idx].to = eve.target.value;
-
-    this.setState({
-      timeList: temp
-    });
   }
 
   getAvailableTimes(currentDate) {
@@ -167,7 +121,9 @@ export default class BookSession2 extends React.Component {
                 <label>Please share anything that will help prepare for our meeting.</label>
                 <FormTextarea className="booking-components-comment" />
                 <Col>
-                  <label><CalendarTodayIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />{moment(startDateTime).format("h:mm A, dddd, MMMM, DD, YYYY").toString()}</label>
+                  <label><CalendarTodayIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />
+                    {moment(startDateTime).format("h:mm A, dddd, MMMM, DD, YYYY").toString()}
+                  </label>
                   <div><PublicIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />{this.getTimezone()}</div>
                   <div style={{marginTop: "20px"}} className="center">
                     <Button className="btn-mentor-detail-time-book center" onClick={() => this.handleBookSession()}>
