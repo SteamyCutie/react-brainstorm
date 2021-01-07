@@ -1414,15 +1414,19 @@ ul#fabric-whiteboard-toolbar-ul li{
 }
 
 .booking-components {
+  position: relative;
   margin-top: 20px;
   margin-bottom: 40px;
   width: 100%;
-  padding: 0px 60px;
+  padding-left: 50px;
+  padding-right: 20px;
   height: 150px;
 }
 
 .booking-components-comment {
-  width: 70%;
+  font-size: 17px;
+  width: 55%;
   height: 100%;
   resize: none;
+  margin-bottom: 20px;
 }

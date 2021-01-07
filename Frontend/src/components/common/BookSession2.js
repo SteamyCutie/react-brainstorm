@@ -8,6 +8,8 @@ import Clock from "../../images/Clock.svg";
 import moment from 'moment';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import PublicIcon from '@material-ui/icons/Public';
 
 moment.locale('en');
 
@@ -18,7 +20,7 @@ export default class BookSession2 extends React.Component {
       currentDate: "", 
       displayDate: "",
       showBookingComponents: false,
-      bookDateTime: "",
+      startDateTime: "",
       timeList: []
     };
   }
@@ -109,7 +111,7 @@ export default class BookSession2 extends React.Component {
 
     this.setState({
       showBookingComponents: true,
-      bookDateTime: currentDate + " " + moment(time.start_time).format("LT").toString(), 
+      startDateTime: time.start_time, 
     })
   }
 
@@ -117,9 +119,17 @@ export default class BookSession2 extends React.Component {
 
   }
 
+  getTimezone(){
+    const d = new Date();
+    const dtf = Intl.DateTimeFormat(undefined, {timeZoneName: 'long'});
+    const result = dtf.formatToParts(d).find((part) => part.type == 'timeZoneName').value;
+
+    return result;
+  }
+
   render() {
     const { open } = this.props;
-    const { currentDate, displayDate, showBookingComponents, bookDateTime } = this.state;
+    const { currentDate, displayDate, showBookingComponents, startDateTime } = this.state;
     const availableTimes = this.getAvailableTimes(currentDate);
     return (
       <div>
@@ -159,12 +169,16 @@ export default class BookSession2 extends React.Component {
             </div>
             {showBookingComponents && 
               <Row className="booking-components">
+                <label>Please share anything that will help prepare for our meeting.</label>
                 <FormTextarea className="booking-components-comment" />
                 <Col>
-                  <label>{bookDateTime}</label>
-                  <Button className="btn-mentor-detail-time-book" onClick={() => this.handleBookSession()}>
-                    Schedule Event
-                  </Button>
+                  <label><CalendarTodayIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />{moment(startDateTime).format("h:mm A, dddd, MMMM, DD, YYYY").toString()}</label>
+                  <div><PublicIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />{this.getTimezone()}</div>
+                  <div style={{marginTop: "20px"}} className="center">
+                    <Button className="btn-mentor-detail-time-book center" onClick={() => this.handleBookSession()}>
+                      Schedule Event
+                    </Button>
+                  </div>
                 </Col>
               </Row>
             }
