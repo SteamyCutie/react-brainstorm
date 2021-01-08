@@ -31,7 +31,8 @@ class SessionController extends Controller
       }
       $current_time = date("y-m-d h:i:s");
       $pasted_session_id = Review::select('session_id')->get();
-      $session_info = Session::where('user_id', $user_id['id'])->where('created_id', $user_id['id'])
+      $session_info = Session::where('user_id', $user_id['id'])
+//        ->where('created_id', $user_id['id'])
         ->where('from','>',date('y-m-d h:i:s', strtotime($current_time)))
         ->whereNotIn('id',$pasted_session_id)
         ->get();
@@ -685,16 +686,16 @@ class SessionController extends Controller
       $student_id = $request['user_id'];
       $tags = User::select('tags_id', 'name', 'hourly_price', 'sub_plan_fee')->where('id', $mentor_id)->first();
       $st_info = User::select('hourly_price', 'sub_plan_fee')->where('id', $student_id)->first();
-      if ($st_info->hourly_price || $st_info->sub_plan_fee) {
-        return [
-          'result' => 'warning',
-          'message' => 'Mentor\'s hourly or subscription does not exist.',
-        ];
-      }
-      if ($tags->hourly_price || $tags->sub_plan_fee) {
+      if (!$st_info->hourly_price) {
         return [
           'result' => 'warning',
           'message' => 'You must input hourly or subscription plan fee',
+        ];
+      }
+      if (!$tags->hourly_price) {
+        return [
+          'result' => 'warning',
+          'message' => 'Mentor\'s hourly or subscription does not exist.',
         ];
       }
       $title = $tags->name;
