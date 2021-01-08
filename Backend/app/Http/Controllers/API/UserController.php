@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
+use App\Models\Associate;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -945,10 +946,16 @@ class UserController extends Controller
               ->where('response_id', $user_id);
           })
           ->first();
-        $mentors[$i]->associate = false;
+        $mentors[$i]->associate = 0;
         if ($res_associate) {
+          if(Associate::where('request_id', $user_id)->where('response_id', $response_id)->first()) {
+            $mentors[$i]->associate = 1;
+          }
+          if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->first()) {
+            $mentors[$i]->associate = 2;
+          }
           if ($res_associate->accepted){
-            $mentors[$i]->associate = true;
+            $mentors[$i]->associate = 3;
           }
         }
         $res_sub = Subscription::where('mentor_id', $mentors[$i]->id)
