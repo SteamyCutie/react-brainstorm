@@ -5,8 +5,7 @@ import LoadingModal from "../components/common/LoadingModal";
 import { getHistory, getweekdata, gettags, signout } from '../api/api';
 import { ToastsStore } from 'react-toasts';
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+moment.locale('en');
 
 export default class History extends React.Component {
   constructor(props) {

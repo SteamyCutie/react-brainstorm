@@ -5,6 +5,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import AdSense from 'react-adsense';
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
 import BookSession from "./../components/common/BookSession";
+import BookSession2 from "./../components/common/BookSession2";
 import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
@@ -26,6 +27,8 @@ import ScreenShare from "../images/dashboard-mute-screenshare.svg";
 import AddUser from "../images/dashboard-mute-add-user.svg";
 import EndCall from "../images/dashboard-mute-end.svg";
 import defaultavatar from "../images/avatar.jpg";
+
+import TimeList from "../common/AvailableTimes.json"
 
 import { findmentorsbytagsorname, signout } from '../api/api';
 export default class StudentDashboard extends React.Component {
@@ -51,6 +54,7 @@ export default class StudentDashboard extends React.Component {
       sort_language: "", 
     };
 
+    this.availableTimes = TimeList.days;
     this.sendUser = this.sendUser.bind(this);
   }
 
@@ -356,7 +360,12 @@ export default class StudentDashboard extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
+        <BookSession2 
+          open={ModalOpen} 
+          toggle={() => this.toggle()} 
+          availableTimes={this.availableTimes}//{mentors[id].availableTimes}
+          // mentorName={mentors[id].name}
+        />
         <OutcomingCallDesc
           id={id}
           open={ModalCallWithDescOpen}

@@ -7,8 +7,7 @@ import BackIcon from "../../images/Back_icon.svg";
 import NextIcon from "../../images/Next_icon.svg";
 import { ToastsStore } from 'react-toasts';
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+moment.locale('en');
 
 export default class BookSession extends React.Component {
   constructor(props) {

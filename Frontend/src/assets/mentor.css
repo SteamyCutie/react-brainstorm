@@ -557,3 +557,195 @@ button:focus {
     color: #333333;
     margin-top: 30px;
 }
+
+.availability-specific-dates {
+    color: #333333;
+    /* font-weight: bold; */
+    font-size: 22px;
+    padding-bottom: 30px;
+}
+
+.btn-add-specific-date {
+    color: #04B5FA;
+    background-color: white;
+    border: 1px #04B5FA solid;
+    font-size: xx-large;
+    height: 55px;
+    padding-top: 2px;
+    margin-left: auto;
+}
+
+.btn-add-specific-date:hover {
+    background-color: #04B5FA ;
+    border: 1px #04B5FA solid;
+}
+
+.btn-add-specific-date:active {
+    background-color: #04B5FA !important;
+    border: 1px #04B5FA solid !important;
+}
+
+.specific-date-table-header{
+    width: 80%;
+    background-color: #f9f9f9;
+    height: 60px;
+    align-items: center;
+    padding-left: 20px;
+    border: solid 1px var(--text-color-level3, rgba(77, 80, 85, 0.1));
+}
+
+.specific-date-table-content {
+    width: 80%;
+    background-color: white;
+    height: 60px;
+    align-items: center;
+    padding-left: 20px;
+    border: solid 1px var(--text-color-level3, rgba(77, 80, 85, 0.1));
+}
+
+.specific-date-table-content:hover {
+    background-color: #f3f6fa;
+}
+
+.specific-date-calendar {
+    padding: 20px 5px;
+    align-items: stretch;
+}
+
+.react-calendar__month-view__days__day {
+    color: var(--primary-color, rgb(0, 162, 255));
+    background-color: var(--primary-color-level4, rgba(0, 162, 255, 0.05));
+    border: 1px solid transparent;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 16px;
+    width: 44px;
+    height: 44px;
+}
+
+.react-calendar__month-view__days__day:hover {
+    background-color: var(--primary-color-level3, rgba(0, 162, 255, 0.15)) !important;
+}
+
+.react-calendar__month-view__days__day:active {
+    /* background-color: var(--primary-color, rgb(0, 162, 255)) !important; */
+    background-color: var(--primary-color, rgb(0, 162, 255)) !important;
+    color: white;
+}
+
+.react-calendar__month-view__days__day:focus {
+    /* background-color: var(--primary-color, rgb(0, 162, 255)) !important; */
+    background-color: var(--primary-color, rgb(0, 162, 255)) !important;
+    color: white;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    font-weight: 400;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.react-calendar__month-view__days__day[disabled] {
+    font-size: 16px;
+    font-weight: normal;
+    background: transparent;
+    color: var(--text-color, #4d5055);
+}
+
+.react-calendar__month-view__days__day[disabled]:hover {
+    background: transparent !important;
+}
+
+.react-calendar__navigation__next-button {
+    color: rgb(0, 162, 255);
+    font-size: 30px;
+    border-radius: 50%;
+}
+
+.react-calendar__navigation__next-button:hover {
+    background-color: white !important;
+}
+
+.react-calendar__navigation__next-button:active {
+    background-color: white !important;
+}
+
+.react-calendar__navigation__next-button:focus {
+    background-color: white !important;
+}
+
+.react-calendar__navigation__prev-button {
+    color: rgb(0, 162, 255);
+    font-size: 30px;
+    border-radius: 50%;
+}
+
+.react-calendar__navigation__prev-button[disabled] {
+    background-color: white !important;
+    color: var(--text-color, #4d5055);
+}
+
+.react-calendar__navigation__prev-button[disabled]:hover {
+    background-color: white !important;
+}
+
+.react-calendar__navigation__prev-button:hover {
+    background-color: white !important;
+}
+
+.react-calendar__navigation__prev-button:active {
+    background-color: white !important;
+}
+
+.react-calendar__navigation__prev-button:focus {
+    background-color: white !important;
+}
+
+
+.react-calendar {
+    border: none;
+}
+
+.specific-date-times {
+    width: 330px;
+    height: 100%;
+    margin-left: 30px;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.margin-left-auto {
+    margin-left: auto !important;
+}
+
+.specific-available-time-input {
+    color: #333333;
+    font-size: 16px;
+    height: 50px !important;
+    margin-bottom: 20px;
+    width: 120px;
+    margin-right: 20px;
+}
+
+.btn-specific-available-time-delete {
+    width: 27px;
+    height: 27px;
+    background-color: white;
+    border: none;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-specific-available-time-delete:hover {
+    background-color: white !important;
+    box-shadow: none;
+    border: none;
+}
+
+.btn-specific-available-time-delete:focus {
+    background-color: white !important;
+    box-shadow: none;
+    border: none;
+}
