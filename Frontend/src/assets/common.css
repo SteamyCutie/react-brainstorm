@@ -1425,8 +1425,19 @@ ul#fabric-whiteboard-toolbar-ul li{
 
 .booking-components-comment {
   font-size: 17px;
-  width: 55%;
+  width: 53%;
   height: 100%;
   resize: none;
   margin-bottom: 20px;
+}
+
+.booking-components-hours {
+  font-size: 17px;
+  height: 40px;
+  margin-bottom: 8px;
+  width: 60px;
+}
+
+.booking-components-hours:focus {
+  border-color: #04B5FA !important;
 }

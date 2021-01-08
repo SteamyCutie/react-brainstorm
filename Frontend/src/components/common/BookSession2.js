@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, ModalBody, Button, ModalHeader, FormTextarea, Row, Col } from "shards-react";
+import { Modal, ModalBody, Button, ModalHeader, FormInput, FormTextarea, Row, Col } from "shards-react";
 import Close from '../../images/Close.svg';
 import moment from 'moment';
 import Calendar from 'react-calendar';
@@ -126,7 +126,9 @@ export default class BookSession2 extends React.Component {
                   </label>
                   <div><PublicIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />{this.getTimezone()}</div>
                   <div style={{marginTop: "20px"}} className="center">
-                    <Button className="btn-mentor-detail-time-book center" onClick={() => this.handleBookSession()}>
+                    <FormInput className="booking-components-hours" type="number" max="12" min="1"/>
+                    <label style={{marginRight: "20px", marginLeft: "5px"}}>hours</label>
+                    <Button className="btn-mentor-detail-time-book" onClick={() => this.handleBookSession()}>
                       Schedule Event
                     </Button>
                   </div>

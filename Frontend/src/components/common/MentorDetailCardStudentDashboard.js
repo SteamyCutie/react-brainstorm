@@ -9,7 +9,7 @@ import Lightening from "../../images/Lightening.svg";
 import SubscriperImg from "../../images/Users.svg";
 import Clock from "../../images/Clock.svg";
 import defaultavatar from "../../images/avatar.jpg";
-import { unsubscription, accociateUser } from '../../api/api';
+import { unsubscription, accociateUser, accociateAccept, getassociationstatus } from '../../api/api';
 import LoadingModal from "../../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
 
@@ -23,10 +23,19 @@ class MentorDetailCardStudentDashboard extends React.Component {
       subscriptionOpen: false,
       addnewcardModal: false,
       loading: false,
+      associationStatus: null
     }
   }
 
   componentWillMount() {
+  }
+
+  componentDidMount() {
+    const {associate} = this.props.mentorData;
+
+    this.setState({
+      associationStatus: associate
+    });
   }
 
   handleInstantLive(id) {
@@ -49,6 +58,77 @@ class MentorDetailCardStudentDashboard extends React.Component {
       this.setState({ loading: true });
       const result = await accociateUser(param);
       if (result.data.result === "success") {
+        this.getAssociationStatus(id);
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
+      }
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
+    };
+  }
+
+  handleAssociateAccept = async (id) => {
+    let param ={
+      request_id: localStorage.getItem('user_id'),
+      response_id: id
+    };
+
+    try {
+      this.setState({ loading: true });
+      const result = await accociateAccept(param);
+      if (result.data.result === "success") {
+        this.getAssociationStatus(id);
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
+      }
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
+    };
+  }
+
+  getAssociationStatus = async (id) => {
+    let param ={
+      request_id: localStorage.getItem('user_id'),
+      response_id: id
+    };
+
+    try {
+      this.setState({ loading: true });
+      const result = await getassociationstatus(param);
+      if (result.data.result === "success") {
+        this.setState({
+          associationStatus: result.data.data
+        })
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -143,7 +223,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
   render() {
     const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, sub_id, subscribe, associate } = this.props.mentorData;
     const { index } = this.props;
-    const { subscriptionOpen, loading } = this.state;
+    const { subscriptionOpen, loading, associationStatus } = this.state;
 
     return (
       <>
@@ -209,14 +289,29 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 Book a session
               </Button>
             </Row>
-            {!associate ? 
+            {associationStatus == 0 &&
               <Row className="center">
                 <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleAssociate(id)}>
                   <img src={Clock} alt="Clock" />
                   Associate
                 </Button>
               </Row>
-              : null
+            }
+            {associationStatus == 1 &&
+              <Row className="center">
+                <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" >
+                  <img src={Clock} alt="Clock" />
+                  Pending
+                </Button>
+              </Row>
+            }
+            {associationStatus == 2 &&
+              <Row className="center">
+                <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleAssociateAccept(id)}>
+                  <img src={Clock} alt="Clock" />
+                  Accept
+                </Button>
+              </Row>
             }
           </div>
           {/* //   : null
