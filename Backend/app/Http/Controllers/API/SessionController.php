@@ -31,7 +31,8 @@ class SessionController extends Controller
       }
       $current_time = date("y-m-d h:i:s");
       $pasted_session_id = Review::select('session_id')->get();
-      $session_info = Session::where('user_id', $user_id['id'])->where('created_id', $user_id['id'])
+      $session_info = Session::where('user_id', $user_id['id'])
+//        ->where('created_id', $user_id['id'])
         ->where('from','>',date('y-m-d h:i:s', strtotime($current_time)))
         ->whereNotIn('id',$pasted_session_id)
         ->get();
@@ -685,22 +686,23 @@ class SessionController extends Controller
       $student_id = $request['user_id'];
       $tags = User::select('tags_id', 'name', 'hourly_price', 'sub_plan_fee')->where('id', $mentor_id)->first();
       $st_info = User::select('hourly_price', 'sub_plan_fee')->where('id', $student_id)->first();
-      if ($st_info->hourly_price || $st_info->sub_plan_fee) {
-        return [
-          'result' => 'warning',
-          'message' => 'Mentor\'s hourly or subscription does not exist.',
-        ];
-      }
-      if ($tags->hourly_price || $tags->sub_plan_fee) {
+      if (!$st_info->hourly_price) {
         return [
           'result' => 'warning',
           'message' => 'You must input hourly or subscription plan fee',
         ];
       }
+      if (!$tags->hourly_price) {
+        return [
+          'result' => 'warning',
+          'message' => 'Mentor\'s hourly or subscription does not exist.',
+        ];
+      }
       $title = $tags->name;
       $description = $title.'\'s session';
 //      $tags = ','.implode(",", $request['tags']).',';
-      $from = date('H:i:s', strtotime($request['from']));
+//      $from = date('H:i:s', strtotime($request['from']));
+      $from = date('Y-m-d H:i:s', $request['time_stamp']);
 //      $to = $request['to'];
       $day = $request['day'];
       $from_arr = explode(":", $from);
@@ -709,7 +711,7 @@ class SessionController extends Controller
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
 //      $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
       
-      $same_session = Session::where('user_id', $mentor_id)->where('from', $from_day_str)->get();
+      $same_session = Session::where('user_id', $mentor_id)->where('from', $from)->get();
       if (count($same_session) > 0) {
         return [
           'result' => 'warning',
@@ -721,8 +723,10 @@ class SessionController extends Controller
         'title' => $title,
         'description' => $description,
         'tags_id' => $tags->tags_id,
-        'from' => $from_day_str,
+//        'from' => $from_day_str,
+        'from' => $from,
 //        'to' => $to_day_str,
+        'forum_start' => $request['time_stamp'],
         'status' => 0,
         'room_id' => mt_rand(100000,999999),
         'created_id' => $student_id,

@@ -1,12 +1,16 @@
 import React from "react";
 import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormSelect, Form } from "shards-react";
 import LoadingModal from "../components/common/LoadingModal";
+import AddSpecificDate from "../components/common/AddSpecificDate";
 import { ToastsStore } from 'react-toasts';
 import DeleteButtonImage from "../images/Delete.svg";
 import AddButtonImage from "../images/Add.svg";
 import { getAvailableTimes, setAvailableTimes, signout } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
 import Timelinelist from '../common/TimelistList';
+import moment from 'moment';
+
+moment.locale('en');
 
 class SetAvailability extends React.Component {
   constructor(props) {
@@ -61,7 +65,9 @@ class SetAvailability extends React.Component {
         false,
         false,
         false
-      ]
+      ],
+      addSpecificDateModal: false, 
+      specificDate: []
     }
 
     this.handleAdd = this.handleAdd.bind(this);
@@ -144,13 +150,28 @@ class SetAvailability extends React.Component {
 
   handleSave = async () => {
     const { availableTimeList, dayOfWeekStatus, timezone } = this.state;
+    const curr = new Date();
+    var twoday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 2));
+
     for (var i = 0; i < availableTimeList.length; i++) {
       availableTimeList[i].status = dayOfWeekStatus[i];
+      var week_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + i));
+      for (let j = 0; j < availableTimeList[i].timeList.length; j++) {
+        // console.log("+++++ timelist = " + availableTimeList[i].timeList[j].fromStr + availableTimeList[i].timeList[j].toStr);
+        let date_from = availableTimeList[i].timeList[j].fromStr.split(" ");
+        let date_to = availableTimeList[i].timeList[j].toStr.split(" ");
+        var date_from_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_from[0] + date_from[1] + date_from[2] + " " + date_from[3];
+        var date_to_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_to[0] + date_to[1] + date_to[2] + " " + date_to[3];
+        
+        availableTimeList[i].timeList[j].fromTimestamp = new Date(date_from_timestamp).getTime()/1000;
+        availableTimeList[i].timeList[j].toTimestamp = new Date(date_to_timestamp).getTime()/1000;
+      }
     }
 
     let param = {
       email: localStorage.getItem('email'),
-      data: this.state.availableTimeList,
+      // data: this.state.availableTimeList,
+      data: availableTimeList,
       timezone: timezone
     }
 
@@ -395,11 +416,54 @@ class SetAvailability extends React.Component {
     this.props.history.push('/');
   }
 
+  handleAddSpecificDate() {
+    this.toggle_AddSpecificDate();
+  }
+
+  toggle_AddSpecificDate() {
+    this.setState({
+      addSpecificDateModal: !this.state.addSpecificDateModal
+    })
+  }
+
+  addSpecificDate(date, timeList) {
+    const { specificDate } = this.state;
+    let temp = specificDate;
+    const buf = {
+      date: date,
+      intervals: timeList
+    }
+    
+    temp.push(buf);
+
+    this.setState({
+      specificDate: temp
+    })
+  }
+
+  handleSpecificDelete(idx_date, idx_time) {
+    const {specificDate} = this.state;
+    let temp = specificDate;
+
+    temp[idx_date].intervals.splice(idx_time, 1);
+    if (!temp[idx_date].intervals.length)
+      temp.splice(idx_date, 1);
+
+    this.setState({
+      specificDate: temp
+    });
+  }
+
   render() {
-    const { loading, availableTimeList, dayOfWeekStatus, timezone } = this.state;
+    const { loading, availableTimeList, dayOfWeekStatus, timezone, specificDate, addSpecificDateModal } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
+        <AddSpecificDate 
+          open={addSpecificDateModal} 
+          toggle={() => this.toggle_AddSpecificDate()}
+          addSpecificDate={(date, timeList) => this.addSpecificDate(date, timeList)}
+        />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class">
           <Card small className="set-available-card">
             <CardBody>
@@ -411,7 +475,7 @@ class SetAvailability extends React.Component {
                   <Row form>
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
-                      <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
+                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
                         {TimezoneOptions.map((item, idx) => {
                           return (
                             item.value === timezone ? <option key={idx} value={item.value} selected> {item.name}</option> : <option key={idx} value={item.value}> {item.name}</option>
@@ -446,7 +510,7 @@ class SetAvailability extends React.Component {
                               return (
                                 <Row key={timeIdx} form>
                                   <Col md="5" xs="4" className="available-time-group" style={{ marginRight: "70px" }}>
-                                    <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
                                           time.from === item.id
@@ -457,7 +521,7 @@ class SetAvailability extends React.Component {
                                     </FormSelect>
                                   </Col>
                                   <Col md="5" xs="4">
-                                    <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
                                           time.to === item.id
@@ -485,7 +549,7 @@ class SetAvailability extends React.Component {
                             // : null
                             : <Row form>
                               <Col md="5" xs="4" className="available-time-group">
-                                <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
+                                <FormSelect disabled className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
                                   {Timelinelist.map((item, idx) => {
                                     return (
                                       <option key={idx} >{item.str}</option>
@@ -494,7 +558,7 @@ class SetAvailability extends React.Component {
                                 </FormSelect>
                               </Col>
                               <Col md="5" xs="4">
-                                <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
+                                <FormSelect disabled className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
                                   {Timelinelist.map((item, idx) => {
                                     return (
                                       <option key={idx} >{item.str}</option>
@@ -516,10 +580,38 @@ class SetAvailability extends React.Component {
                       </div>
                     )
                   })}
-                  <Row className="profile-detail-save center">
-                    <Button className="btn-profile-detail-save" onClick={() => this.handleSave()}>Save</Button>
-                  </Row>
+
                 </Form>
+              </Row>
+              <Row id="hours-specific-dates" className="center">
+                <Row style={{ width: "80%", marginTop: "20px" }}>
+                  <h2 className="availability-specific-dates">Add hours for specific dates.</h2>
+                  <Button className="btn-add-specific-date" onClick={() => this.handleAddSpecificDate()}>+</Button>
+                </Row>
+                <Row className="specific-date-table-header">
+                  <div style={{width: "150px"}}>Dates</div>
+                  <div style={{width: "calc(100% - 150px)"}}>AVAILABILITY</div>
+                </Row>
+                {specificDate.map((item, idx_date) => {
+                  const date = item.date;
+                  return(
+                    item.intervals.map((time, idx_time) => {
+                      return (
+                        <Row className="specific-date-table-content">
+                          <div style={{width: "150px"}}>{date}</div>
+                          <div style={{width: "calc(100% - 200px)"}}>{time.from} - {time.to}</div>
+                          <Button className="btn-available-time-add-delete no-padding"
+                            onClick={() => this.handleSpecificDelete(idx_date, idx_time)}>
+                            <img src={DeleteButtonImage} alt="Delete" />
+                          </Button>
+                        </Row>
+                      )
+                    })
+                  )
+                })}
+              </Row>
+              <Row className="profile-detail-save center">
+                <Button className="btn-profile-detail-save" onClick={() => this.handleSave()}>Save</Button>
               </Row>
             </CardBody>
           </Card>

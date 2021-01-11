@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
+use App\Models\Associate;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -428,7 +429,6 @@ class UserController extends Controller
         'category' => 'required',
         'subcategory' => 'required',
         'minimum_age' => 'required',
-        'videourl' => 'required|url',
       );
       $messages = array(
         'required' => 'This field is required.',
@@ -936,8 +936,37 @@ class UserController extends Controller
           $share_info[$j]['day'] = date('d/m/y', strtotime($date));
           $share_info[$j]['time'] = date('h:i a', strtotime($date));
         }
-        $mentors[$i]->share_info = $share_info;
-  
+        
+        $response_id = $mentors[$i]->id;
+        $res_associate = DB::table('associates')
+          ->where('request_id', $user_id)
+          ->where('response_id', $response_id)
+          ->orWhere(function($query) use ($user_id, $response_id){
+            $query->where('request_id', $response_id)
+              ->where('response_id', $user_id);
+          })
+          ->first();
+        $mentors[$i]->associate = 0;
+        if ($res_associate) {
+          if(Associate::where('request_id', $user_id)->where('response_id', $response_id)->first()) {
+            $mentors[$i]->associate = 1;
+          }
+          if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->first()) {
+            $mentors[$i]->associate = 2;
+          }
+          if ($res_associate->accepted){
+            $mentors[$i]->associate = 3;
+          }
+        }
+        $res_sub = Subscription::where('mentor_id', $mentors[$i]->id)
+          ->where('student_id', $user_id)
+          ->first();
+        $mentors[$i]->share_info = [];
+        $mentors[$i]->subscribe = false;
+        if ($res_sub) {
+          $mentors[$i]->share_info = $share_info;
+          $mentors[$i]->subscribe = true;
+        }
         $temp = [];
         $sub_id = Subscription::select('student_id')->where('mentor_id', $mentors[$i]->id)->get();
         if (count($sub_id) > 0) {

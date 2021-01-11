@@ -7,8 +7,7 @@ import ConfirmModal from "../components/common/ConfirmModal";
 import { getHistory, getweekdata, gettags, signout } from '../api/api';
 import { ToastsStore } from 'react-toasts';
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+moment.locale('en');
 
 export default class MentorHistory extends React.Component {
   constructor(props) {

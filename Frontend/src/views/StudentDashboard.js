@@ -5,6 +5,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import AdSense from 'react-adsense';
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
 import BookSession from "./../components/common/BookSession";
+import BookSession2 from "./../components/common/BookSession2";
 import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
@@ -26,6 +27,8 @@ import ScreenShare from "../images/dashboard-mute-screenshare.svg";
 import AddUser from "../images/dashboard-mute-add-user.svg";
 import EndCall from "../images/dashboard-mute-end.svg";
 import defaultavatar from "../images/avatar.jpg";
+
+import TimeList from "../common/AvailableTimes.json"
 
 import { findmentorsbytagsorname, signout } from '../api/api';
 export default class StudentDashboard extends React.Component {
@@ -51,6 +54,7 @@ export default class StudentDashboard extends React.Component {
       sort_language: "", 
     };
 
+    this.availableTimes = TimeList.days;
     this.sendUser = this.sendUser.bind(this);
   }
 
@@ -66,7 +70,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, 1);
+    this.getParticipants(searchParams, searchKey, 1, false);
     this.setState({
       pageCount: 2, 
     })
@@ -84,7 +88,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, 1);
+    this.getParticipants(searchParams, searchKey, 1, false);
     this.setState({
       pageCount: 2, 
     })
@@ -119,7 +123,7 @@ export default class StudentDashboard extends React.Component {
     this.props.setUser(to, avatar, name);
   }
 
-  getParticipants = async (category, searchKey, pageNo) => {
+  getParticipants = async (category, searchKey, pageNo, concat) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
       name: searchKey,
@@ -136,7 +140,12 @@ export default class StudentDashboard extends React.Component {
       if (result.data.result === "success") {
         const { mentors } = this.state;
         var temp = mentors;
-        temp = temp.concat(result.data.data);
+        if (concat) {
+          temp = temp.concat(result.data.data);
+        } else {
+          temp = result.data.data;
+        }
+
         this.setState({
           loading: false,
           mentors: temp,
@@ -194,7 +203,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, value);
+    this.getParticipants(searchParams, searchKey, value, true);
   }
 
   fetchMoreData = () => {
@@ -209,7 +218,7 @@ export default class StudentDashboard extends React.Component {
       }
     }
 
-    this.getParticipants(searchParams, searchKey, this.state.pageCount);
+    this.getParticipants(searchParams, searchKey, this.state.pageCount, true);
     this.setState({
       pageCount: this.state.pageCount + 1,
     })
@@ -351,7 +360,12 @@ export default class StudentDashboard extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession>
+        <BookSession2 
+          open={ModalOpen} 
+          toggle={() => this.toggle()} 
+          availableTimes={this.availableTimes}//{mentors[id].availableTimes}
+          // mentorName={mentors[id].name}
+        />
         <OutcomingCallDesc
           id={id}
           open={ModalCallWithDescOpen}
