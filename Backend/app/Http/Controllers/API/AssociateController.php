@@ -159,4 +159,52 @@ class AssociateController extends Controller
       ]);
     }
   }
+  
+  function getassociationstatus (Request $request)
+  {
+    try{
+      $request_id = $request->request_id;
+      $response_id = $request->response_id;
+      
+      $res_associate = DB::table('associates')
+        ->where('request_id', $request_id)
+        ->where('response_id', $response_id)
+        ->orWhere(function($query) use ($request_id, $response_id){
+          $query->where('request_id', $response_id)
+            ->where('response_id', $request_id);
+        })
+        ->first();
+      
+      $status = 0;
+      if ($res_associate) {
+        if(Associate::where('request_id', $request_id)->where('response_id', $response_id)->first()) {
+          $status = 1;
+        }
+        if(Associate::where('response_id', $request_id)->where('request_id', $response_id)->first()) {
+          $status = 2;
+        }
+        if ($res_associate->accepted){
+          $status = 3;
+        }
+      }
+      
+      if ($res_associate) {
+        return response()->json([
+          'result' => 'success',
+          'data' => $status
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'failed get status'
+        ]);
+      }
+    } catch (Exception $th) {
+      \Log::info(['++++++++++ associateRequest +++++++++', $th->getMessage()]);
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
 }
