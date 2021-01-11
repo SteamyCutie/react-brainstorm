@@ -11,8 +11,7 @@ import { getnotification, switchuser, signout } from '../api/api';
 import { PUSHER_KEY } from '../common/config';
 import { ToastsContainer, ToastsStore, ToastsContainerPosition } from 'react-toasts';
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
+moment.locale('en');
 
 export default class DefaultLayout extends React.Component {
   constructor(props) {

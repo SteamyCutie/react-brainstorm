@@ -1391,3 +1391,53 @@ ul#fabric-whiteboard-toolbar-ul li{
   max-height: 307px;
   overflow: auto;
 }
+
+.book-date-time-list {
+  width: 100%;
+  height: 300px;
+  overflow-y: auto;
+  padding-left: 40px;
+}
+
+.btn-mentor-detail-time-book {
+  color: #04B5FA !important;
+  background-color: #FFFFFF !important;
+  font-size: 16px !important;
+  font-weight: normal !important;
+  border-color: #04B5FA !important;
+  border-width: 1px !important;
+  border-radius: 6px !important;
+  width: 80%;
+  padding-left: 10px;
+  height: 50px;
+  margin-bottom: 20px;
+}
+
+.booking-components {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  width: 100%;
+  padding-left: 50px;
+  padding-right: 20px;
+  height: 150px;
+}
+
+.booking-components-comment {
+  font-size: 17px;
+  width: 53%;
+  height: 100%;
+  resize: none;
+  margin-bottom: 20px;
+}
+
+.booking-components-hours {
+  font-size: 17px;
+  height: 40px;
+  margin-bottom: 8px;
+  width: 60px;
+}
+
+.booking-components-hours:focus {
+  border-color: #04B5FA !important;
+}

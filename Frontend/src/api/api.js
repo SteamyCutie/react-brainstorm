@@ -539,6 +539,36 @@ export const accociateUser = (param) => {
     })
 }
 
+export const accociateAccept = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associateaccept', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const getassociationstatus = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getassociationstatus', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
 export const inviteParticipantToRoom = (param) => {
     return new Promise(async(resolve, reject) => {
         try {

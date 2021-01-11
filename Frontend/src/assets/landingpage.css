@@ -803,14 +803,6 @@ body {
     pointer-events: none; /* prevent events (mouse clicking etc.) */
 }
 
-.modal-content-class {
-    align-items: center;
-    justify-content: center;
-    display: block;
-    padding: 0px !important;
-    width: 65%;
-}
-
 .modal-class {
     height: 100%;
     margin: auto !important;
