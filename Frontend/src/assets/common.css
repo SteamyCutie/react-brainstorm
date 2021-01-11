@@ -1441,3 +1441,25 @@ ul#fabric-whiteboard-toolbar-ul li{
 .booking-components-hours:focus {
   border-color: #04B5FA !important;
 }
+
+.tool-box-margin {
+  margin-top: 40px !important;
+}
+
+.association-button {
+  width: 90px;
+  height: 30px;
+  min-width: 90px;
+  min-height: 30px;
+  padding: 5px 5px;
+  text-align: center;
+  border-radius: 7px;
+  color: #04b5fa;
+  border: 1px #04b5fa solid;
+  margin: 0px 5px;
+}
+
+.association-button:hover {
+  color: white;
+  background-color: #04b5fa;
+}
