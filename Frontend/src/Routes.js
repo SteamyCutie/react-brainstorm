@@ -25,6 +25,7 @@ import EmailVerify from "./views/EmailVerify"
 import ForgetPassword from "./views/ForgetPassword"
 import ResetPassword from "./views/ResetPassword"
 import EmailSent from "./views/EmailSent"
+import Association from "./views/Association"
 
 export default [
   {
@@ -127,6 +128,11 @@ export default [
     path: "/recommended",
     layout: DefaultLayout,
     component: Recommended
+  },
+  {
+    path: "/associations",
+    layout: DefaultLayout,
+    component: Association
   },
   {
     path: "/verification",

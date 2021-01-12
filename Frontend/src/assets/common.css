@@ -1441,3 +1441,95 @@ ul#fabric-whiteboard-toolbar-ul li{
 .booking-components-hours:focus {
   border-color: #04B5FA !important;
 }
+
+.tool-box-margin {
+  margin-top: 40px !important;
+}
+
+.association-button {
+  width: 90px;
+  height: 30px;
+  min-width: 90px;
+  min-height: 30px;
+  padding: 5px 5px;
+  text-align: center;
+  border-radius: 7px;
+  color: #04b5fa;
+  border: 1px #04b5fa solid;
+  margin: 0px 5px;
+}
+
+.association-button:hover {
+  color: white;
+  background-color: #04b5fa;
+}
+
+.association-status-ribbon-pending {
+  background-color: #04B5FA;
+  color: white;
+  border-radius: 20px;
+  width: 160px;
+  text-align: center;
+}
+
+.association-status-ribbon-admiting {
+  background-color: #04B5FA;
+  color: white;
+  border-radius: 20px;
+  width: 160px;
+  text-align: center;
+}
+
+.association-status-ribbon-cancelled {
+  background-color: #04B5FA;
+  color: white;
+  border-radius: 20px;
+  width: 160px;
+  text-align: center;
+}
+
+.association-status-ribbon-declined {
+  background-color: #04B5FA;
+  color: white;
+  border-radius: 20px;
+  width: 160px;
+  text-align: center;
+}
+
+.association-status-ribbon-connected {
+  background-color: #04B5FA;
+  color: white;
+  border-radius: 20px;
+  width: 160px;
+  text-align: center;
+}
+
+.tooltip-include .tooltiptext {
+  visibility: hidden;
+  width: 150px;
+  font-size: 15px;
+  background-color: #999999;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 110%;
+  left: 0;
+}
+
+.tooltip-include .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #999999 transparent;
+}
+
+.tooltip-include:hover .tooltiptext {
+  visibility: visible;
+}
