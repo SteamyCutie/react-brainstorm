@@ -1,64 +1,20 @@
 import React from "react";
 import { Container, Row, Col } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
-
 import AssociationTable from "../components/common/AssociationTable";
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
 import { 
-  getallmentors, 
   signout, 
   accociateAccept,
   associateDecline,
   associateUnassociate,
   associateReassociate,
-  associateWithdraw 
+  associateWithdraw,
+  getAssociatedUsers 
 } from '../api/api';
 
-const mentorData = [
-  {
-    user_id: 0,
-    avatar: "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg",
-    mentorName: "Dmytro Holovach",
-    status: 4
-  },
-  {
-    user_id: 1,
-    avatar: "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg",
-    mentorName: "Arturs Brokans",
-    status: 1
-  },
-  {
-    user_id: 2,
-    avatar: "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg",
-    mentorName: "Eriks Guisev",
-    status: 2
-  },
-  {
-    user_id: 3,
-    avatar: "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg",
-    mentorName: "Saint Walker",
-    status: 3
-  },
-  {
-    user_id: 4,
-    avatar: "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg",
-    mentorName: "Guy Walker",
-    status: 2
-  },
-  {
-    user_id: 5,
-    avatar: "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg",
-    mentorName: "Shyan Walker",
-    status: 1
-  },
-  {
-    user_id: 6,
-    avatar: "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg",
-    mentorName: "Shenea Walker",
-    status: 0
-  }
-]
+import EmptyAvatar from "../images/avatar.jpg"
 
 export default class Association extends React.Component {
   constructor(props) {
@@ -78,9 +34,11 @@ export default class Association extends React.Component {
           },
           cell: row =>
             <div>
-              <img style={{ height: '36px' }} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              {/* <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{color: 'black'}}>{row.mentorName}</a> */}
-              <span>{row.mentorName}</span>
+              {(row.avatar === undefined || row.avatar === "" || row.avatar == null) 
+                ? <img style={{ height: '36px' }} src={EmptyAvatar} className="subscription-mentor-avatar" alt="User avatar" />
+                : <img style={{ height: '36px' }} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
+              }
+              <span>{row.name}</span>
             </div>,
         },
         {
@@ -107,62 +65,36 @@ export default class Association extends React.Component {
           cell: row =>
             <div style={{display: "flex"}}>
               {row.status == 0 &&
-                <>
-                {/* <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}> */}
-                  <div className="association-button" onClick={() => this.handleWithdraw(row.user_id)}>
-                    {/* {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
-                    {/* <a href="javascript:void(0)" style={{ color: '#04b5fa' }}>Withdraw</a> */}
-                    Withdraw
-                  </div>
-                </>
+                <div className="association-button" onClick={() => this.handleWithdraw(row.id)}>
+                  Withdraw
+                </div>
               }
               {row.status == 1 &&
-                <>
-                {/* <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}> */}
-                  <div className="association-button" onClick={() => this.handleUnassociate(row.user_id)}>
-                    {/* {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
-                    {/* <a href="javascript:void(0)" style={{ color: '#04b5fa' }}>Unassociate</a> */}
-                    Unassociate
-                  </div>
-                </>
+                <div className="association-button" onClick={() => this.handleUnassociate(row.id)}>
+                  Unassociate
+                </div>
               }
               {row.status == 2 &&
-                <>
-                  {/* <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}> */}
-                  <div className="association-button" onClick={() => this.handleReassociate(row.user_id)}>
-                    {/* {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
-                    {/* <a href="javascript:void(0)" style={{ color: '#04b5fa' }}>Reassociate</a> */}
-                    Reassociate
-                  </div>
-                </>
+                <div className="association-button" onClick={() => this.handleReassociate(row.id)}>
+                  Reassociate
+                </div>
               }
               {row.status == 3 &&
-                <>
-                  {/* <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}> */}
-                  <div className="association-button" onClick={() => this.handleReassociate(row.user_id)}>
-                    {/* {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
-                    {/* <a href="javascript:void(0)" style={{ color: '#04b5fa' }}>Reassociate</a> */}
-                    Reassociate
-                  </div>
-                </>
+                <div className="association-button" onClick={() => this.handleReassociate(row.id)}>
+                  Reassociate
+                </div>
               }
               {row.status == 4 &&
                 <>
-                  {/* <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}> */}
-                  <div className="association-button" onClick={() => this.handleAccept(row.user_id)}>
-                    {/* {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
-                    {/* <a href="javascript:void(0)" style={{ color: '#04b5fa' }}>Accept</a> */}
+                  <div className="association-button" onClick={() => this.handleAccept(row.id)}>
                     Accept
                   </div>
-                  {/* <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}> */}
-                  <div className="association-button" onClick={() => this.handleDecline(row.user_id)}>
-                    {/* {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>} */}
-                    {/* <a href="javascript:void(0)" style={{ color: '#04b5fa' }}>Decline</a> */}
+                  <div className="association-button" onClick={() => this.handleDecline(row.id)}>
                     Decline
                   </div>
                 </>
               } 
-            </div>,
+            </div>
         }
       ]
     };
@@ -172,21 +104,10 @@ export default class Association extends React.Component {
     this.getMentors(1);
   }
 
-  handleSub(id) {
-    const { history } = this.props;
-    history.push('/subscribe-specific/' + id);
-  }
-
-  handleUnsub(id) {
-    const { history } = this.props;
-    history.push('/unsubscription-specific/' + id);
-  }
-
   handleAccept = async (id) => {
-    console.log("Accept", id);
     let param ={
-      request_id: localStorage.getItem('user_id'),
-      response_id: id
+      request_id: id,
+      response_id: localStorage.getItem('user_id')
     };
 
     try {
@@ -218,10 +139,9 @@ export default class Association extends React.Component {
   }
 
   handleDecline = async (id) => {
-    console.log("Decline", id);
     let param ={
-      request_id: localStorage.getItem('user_id'),
-      response_id: id
+      request_id: id,
+      response_id: localStorage.getItem('user_id')
     };
 
     try {
@@ -253,7 +173,6 @@ export default class Association extends React.Component {
   }
 
   handleUnassociate = async (id) => {
-    console.log("Unassociate", id);
     let param ={
       request_id: localStorage.getItem('user_id'),
       response_id: id
@@ -288,7 +207,6 @@ export default class Association extends React.Component {
   }
 
   handleReassociate = async (id) => {
-    console.log("Reassociate", id);
     let param ={
       request_id: localStorage.getItem('user_id'),
       response_id: id
@@ -323,7 +241,6 @@ export default class Association extends React.Component {
   }
 
   handleWithdraw = async (id) => {
-    console.log("Withdraw", id);
     let param ={
       request_id: localStorage.getItem('user_id'),
       response_id: id
@@ -365,38 +282,11 @@ export default class Association extends React.Component {
     }
     try {
       this.setState({ loading: true });
-      const result = await getallmentors(param);
+      const result = await getAssociatedUsers(param);
       if (result.data.result === "success") {
-        var data_arr = [];
-        var arr = {
-          id: '',
-          avatar: '',
-          mentorName: '',
-          pageName: '',
-          planFee: 0,
-          status: false,
-          edit: false,
-          subscribe: false,
-          sub_id: []
-        };
-        for (var i = 0; i < result.data.data.length; i++) {
-          arr.id = result.data.data[i].id;
-          if (result.data.data[i].avatar === undefined || result.data.data[i].avatar === "" || result.data.data[i].avatar == null)
-            arr.avatar = require("../images/avatar.jpg");
-          else
-            arr.avatar = result.data.data[i].avatar;
-          arr.mentorName = result.data.data[i].name;
-          arr.pageName = result.data.data[i].sub_page_name;
-          arr.planFee = result.data.data[i].sub_plan_fee;
-          arr.status = result.data.data[i].status;
-          arr.sub_id = result.data.data[i].sub_id;
-
-          data_arr.push(arr);
-          arr = {};
-        }
         this.setState({
           loading: false,
-          mentors: data_arr,
+          mentors: result.data.data.data,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
 
@@ -467,15 +357,16 @@ export default class Association extends React.Component {
         <Container fluid className="main-content-container px-4 main-content-container-class tool-box-margin">
           <Row className="wallet-data-table-class py-4">
             <Col lg="12" md="12" sm="12">
-              <AssociationTable data={mentorData} header={columns} />
+              <AssociationTable data={mentors} header={columns} />
             </Col>
           </Row>
-          {mentors.length > 0 && <Row className="pagination-center">
-            <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
-          </Row>}
+          {mentors.length > 0 && 
+            <Row className="pagination-center">
+              <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
+            </Row>
+          }
         </Container>
       </>
     )
   }
 };
-

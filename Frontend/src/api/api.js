@@ -524,6 +524,21 @@ export const booksession = (param) => {
     });
 }
 
+export const getAssociatedUsers = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getassociatedusers', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const accociateUser = (param) => {
     return new Promise(async(resolve, reject) => {
         try {

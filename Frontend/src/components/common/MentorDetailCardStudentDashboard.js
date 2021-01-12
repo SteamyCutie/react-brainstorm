@@ -289,7 +289,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 Book a session
               </Button>
             </Row>
-            {associationStatus == 0 &&
+            {associationStatus == -1 &&
               <Row className="center">
                 <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleAssociate(id)}>
                   <img src={Clock} alt="Clock" />
@@ -297,7 +297,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 </Button>
               </Row>
             }
-            {associationStatus == 1 &&
+            {associationStatus == 0 &&
               <Row className="center">
                 <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" >
                   <img src={Clock} alt="Clock" />
@@ -305,14 +305,14 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 </Button>
               </Row>
             }
-            {associationStatus == 2 &&
+            {/* {associationStatus == 2 &&
               <Row className="center">
                 <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleAssociateAccept(id)}>
                   <img src={Clock} alt="Clock" />
                   Accept
                 </Button>
               </Row>
-            }
+            } */}
           </div>
           {/* //   : null
         // } */}
