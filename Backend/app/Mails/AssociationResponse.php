@@ -74,7 +74,7 @@ return ["
         </div>
         <div class='block'>
             <span>
-                You have received a response about the association from $from_user at $current_time (UTC Time).
+                $from_user accepted your response at $current_time (UTC Time).
             </span>
         </div>
         <div class='block'>

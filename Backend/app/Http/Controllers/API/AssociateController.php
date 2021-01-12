@@ -37,7 +37,8 @@ class AssociateController extends Controller
       }
       $res_associate = Associate::create([
         'request_id' => $request_id,
-        'response_id' => $response_id
+        'response_id' => $response_id,
+        'status' => 'Pending'
       ]);
       
       $fronturl = env("APP_URL");
@@ -84,7 +85,7 @@ class AssociateController extends Controller
             ->where('response_id', $request_id);
         })
         ->update([
-          'accepted' => true
+          'status' => 'Connected'
         ]);
       
       $fronturl = env("APP_URL");
@@ -92,11 +93,11 @@ class AssociateController extends Controller
       $user_info = User::where('id', $request_id)->first();
       $toEmail = $user_info->email;
       $send_mail = new Controller;
-      $subject = "You have received a response about the association!";
       $name = $user_info->name;
       $user_info = User::where('id', $response_id)->first();
       $mentor_avatar = $user_info->avatar;
       $from_user = $user_info->name;
+      $subject = $from_user." accepted your request.";
       $app_path = app_path();
       $body = include($app_path.'/Mails/AssociationResponse.php');
       $body = implode(" ",$body);
@@ -121,6 +122,155 @@ class AssociateController extends Controller
       ]);
     }
   }
+
+  function associatedecline(Request $request) {
+    try{
+      $request_id = $request->request_id;
+      $response_id = $request->response_id;
+    
+      $rest_accept = DB::table('associates')
+        ->where('request_id', $request_id)
+        ->where('response_id', $response_id)
+        ->orWhere(function($query) use ($request_id, $response_id){
+          $query->where('request_id', $response_id)
+            ->where('response_id', $request_id);
+        })
+        ->update([
+          'status' => 'Declined'
+        ]);
+    
+      if ($rest_accept) {
+        return response()->json([
+          'result' => 'success',
+          'data' => []
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'failed decline'
+        ]);
+      }
+    } catch (Exception $th) {
+      \Log::info(['++++++++++ associateRequest +++++++++', $th->getMessage()]);
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function associateunassociate(Request $request) {
+    try{
+      $request_id = $request->request_id;
+      $response_id = $request->response_id;
+    
+      $rest_accept = DB::table('associates')
+        ->where('request_id', $request_id)
+        ->where('response_id', $response_id)
+        ->orWhere(function($query) use ($request_id, $response_id){
+          $query->where('request_id', $response_id)
+            ->where('response_id', $request_id);
+        })
+        ->update([
+          'status' => 'Cancelled'
+        ]);
+    
+      if ($rest_accept) {
+        return response()->json([
+          'result' => 'success',
+          'data' => []
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'failed unassociate.'
+        ]);
+      }
+    } catch (Exception $th) {
+      \Log::info(['++++++++++ associateRequest +++++++++', $th->getMessage()]);
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function associatereassociate(Request $request) {
+    try{
+      $request_id = $request->request_id;
+      $response_id = $request->response_id;
+    
+      $rest_accept1 = DB::table('associates')
+        ->where('request_id', $request_id)
+        ->where('response_id', $response_id)
+        ->update([
+          'status' => 'Pending',
+          'request_id' => $response_id,
+          'response_id' => $request_id
+        ]);
+  
+      $rest_accept2 = DB::table('associates')
+        ->where('request_id', $response_id)
+        ->where('response_id', $request_id)
+        ->update([
+          'status' => 'Pending',
+          'request_id' => $request_id,
+          'response_id' => $response_id
+        ]);
+    
+      if ($rest_accept1 || $rest_accept2) {
+        return response()->json([
+          'result' => 'success',
+          'data' => []
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'failed reassociation'
+        ]);
+      }
+    } catch (Exception $th) {
+      \Log::info(['++++++++++ associateRequest +++++++++', $th->getMessage()]);
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function associatewithdraw(Request $request) {
+    try{
+      $request_id = $request->request_id;
+      $response_id = $request->response_id;
+    
+      $rest_accept = DB::table('associates')
+        ->where('request_id', $request_id)
+        ->where('response_id', $response_id)
+        ->orWhere(function($query) use ($request_id, $response_id){
+          $query->where('request_id', $response_id)
+            ->where('response_id', $request_id);
+        })
+        ->delete();
+      
+      if ($rest_accept) {
+        return response()->json([
+          'result' => 'success',
+          'data' => []
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'failed withdraw'
+        ]);
+      }
+    } catch (Exception $th) {
+      \Log::info(['++++++++++ associateRequest +++++++++', $th->getMessage()]);
+      return response()->json([
+        'result'=> 'failed',
+        'message'=> $th->getMessage(),
+      ]);
+    }
+  }
   
   function getassociatedStudents(Request $request)
   {
@@ -134,7 +284,7 @@ class AssociateController extends Controller
           $query->where('request_id', $user_id)
             ->orWhere('response_id', $user_id);
         })
-        ->where('accepted', true)
+        ->where('status', 'Connected')
         ->get();
       foreach ($rest_accept as $key => $value) {
         if ($value->request_id == $user_id) {
@@ -177,14 +327,22 @@ class AssociateController extends Controller
       
       $status = 0;
       if ($res_associate) {
-        if(Associate::where('request_id', $request_id)->where('response_id', $response_id)->first()) {
-          $status = 1;
+        switch ($res_associate->status) {
+          case 'Pending':
+            $status = 0;
+            break;
+          case 'Connected':
+            $status = 1;
+            break;
+          case 'Declined':
+            $status = 2;
+            break;
+          case 'Cancelled':
+            $status = 3;
+            break;
         }
-        if(Associate::where('response_id', $request_id)->where('request_id', $response_id)->first()) {
-          $status = 2;
-        }
-        if ($res_associate->accepted){
-          $status = 3;
+        if(Associate::where('response_id', $request_id)->where('request_id', $response_id)->where('status', 'Pending')->first()) {
+          $status = 4;
         }
       }
       
@@ -204,6 +362,68 @@ class AssociateController extends Controller
       return response()->json([
         'result'=> 'failed',
         'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function getassociatedusers(Request $request) {
+    try {
+      $email = $request->email;
+      $rowsPerPage = $request->rowsPerPage;
+      $page = $request->page;
+      $user_info = User::where('email', $email)->first();
+      $user_id = $user_info->id;
+      
+      $users_info = DB::table('users')
+        ->join('associates', function ($join) use ($user_id) {
+          $join->where('request_id', $user_id)
+            ->on('users.id', '=', 'associates.response_id')
+            ->orWhere(function($query) use ($user_id){
+              $query->where('response_id', $user_id)
+                    ->on('users.id', '=', 'associates.request_id');
+            });
+        })
+        ->select('users.id', 'users.name', 'users.email', 'users.avatar', 'associates.status', 'associates.response_id')
+        ->paginate($rowsPerPage);
+      foreach ($users_info as $user_key =>$user_info) {
+        if ($user_info) {
+          switch ($user_info->status) {
+            case 'Pending':
+              $user_info->status = 0;
+              if(Associate::where('response_id', $user_id)
+                ->where('request_id', $user_info->id)
+                ->where('status', 'Pending')
+                ->first()) {
+                $user_info->status = 4;
+              }
+              break;
+            case 'Connected':
+              $user_info->status = 1;
+              break;
+            case 'Declined':
+              $user_info->status = 2;
+              if ($user_id == $user_info->response_id) {
+                unset($users_info[$user_key]);
+              }
+              break;
+            case 'Cancelled':
+              $user_info->status = 3;
+              break;
+            case 'Admiting':
+              $user_info->status = 4;
+              break;
+          }
+        }
+      }
+      return response()->json([
+        'result' => 'success',
+        'data' => $users_info,
+        'totalRows' => $users_info->total(),
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'message' => $th->getMessage(),
       ]);
     }
   }
