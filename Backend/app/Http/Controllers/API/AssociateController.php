@@ -172,7 +172,6 @@ class AssociateController extends Controller
             ->where('response_id', $request_id);
         })
         ->update([
-          'ed' => false,
           'status' => 'Cancelled'
         ]);
     
