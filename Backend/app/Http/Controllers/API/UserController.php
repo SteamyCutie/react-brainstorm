@@ -836,6 +836,7 @@ class UserController extends Controller
     $mentor_hourlyRate = $request->hourlyRate; //hourlyRate
     $temp_query = "";
     $count_tag = 0;
+    $user_info = User::select('is_mentor')->where('id', $user_id)->first();
     if ($tag_ids){
       $count_tag = count($tag_ids);
     }
@@ -947,7 +948,7 @@ class UserController extends Controller
           })
           ->first();
         $mentors[$i]['associate'] = -1;
-        if ($res_associate) {
+        if ($res_associate && $user_info->is_mentor) {
           switch ($res_associate->status) {
             case 'Pending':
               $mentors[$i]['associate'] = 0;
@@ -965,6 +966,9 @@ class UserController extends Controller
           if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->where('status', 'Pending')->first()) {
             $mentors[$i]['associate'] = 4;
           }
+        }
+        if ($user_info->is_mentor == 0) {
+          $mentors[$i]['associate'] = -2;
         }
         $res_sub = Subscription::where('mentor_id', $mentors[$i]->id)
           ->where('student_id', $user_id)
