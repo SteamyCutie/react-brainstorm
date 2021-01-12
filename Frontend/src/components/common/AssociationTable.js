@@ -74,9 +74,6 @@ class AssociationTable extends React.Component {
               (
                 <div style={{ display: 'flex', alignItems: 'center' }} className="subscription-table-header">
                   <h2 className="subscription-table-title">Associations</h2>
-                  {/* <Button theme="primary" className="mb-2 mr-3 btn-subscription-table">
-                    Find a mentor
-                  </Button> */}
                 </div>
               )
             }

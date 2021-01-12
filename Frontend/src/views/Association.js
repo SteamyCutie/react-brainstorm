@@ -114,7 +114,7 @@ export default class Association extends React.Component {
       this.setState({ loading: true });
       const result = await accociateAccept(param);
       if (result.data.result === "success") {
-        // this.getAssociationStatus(id);
+        this.getMentors();
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -148,7 +148,7 @@ export default class Association extends React.Component {
       this.setState({ loading: true });
       const result = await associateDecline(param);
       if (result.data.result === "success") {
-        // this.getAssociationStatus(id);
+        this.getMentors();
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -182,7 +182,7 @@ export default class Association extends React.Component {
       this.setState({ loading: true });
       const result = await associateUnassociate(param);
       if (result.data.result === "success") {
-        // this.getAssociationStatus(id);
+        this.getMentors();
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -216,7 +216,7 @@ export default class Association extends React.Component {
       this.setState({ loading: true });
       const result = await associateReassociate(param);
       if (result.data.result === "success") {
-        // this.getAssociationStatus(id);
+        this.getMentors();
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -250,7 +250,7 @@ export default class Association extends React.Component {
       this.setState({ loading: true });
       const result = await associateWithdraw(param);
       if (result.data.result === "success") {
-        // this.getAssociationStatus(id);
+        this.getMentors();
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {

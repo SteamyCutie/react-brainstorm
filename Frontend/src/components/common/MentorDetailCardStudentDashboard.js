@@ -267,7 +267,6 @@ class MentorDetailCardStudentDashboard extends React.Component {
               : null
             }
           </div>
-          {/* {is_mentor ? */}
           <div className="mentor-deatail-rate-buttons">
             <Row className="center">
               <p>
@@ -299,23 +298,45 @@ class MentorDetailCardStudentDashboard extends React.Component {
             }
             {associationStatus == 0 &&
               <Row className="center">
-                <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" >
-                  <img src={Clock} alt="Clock" />
+                <div className="association-status-ribbon-pending tooltip-include" >
+                  <span class="tooltiptext">You can control the association status at Associations page</span>
                   Pending
-                </Button>
+                </div>
               </Row>
             }
-            {/* {associationStatus == 2 &&
+            {associationStatus == 1 &&
               <Row className="center">
-                <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleAssociateAccept(id)}>
-                  <img src={Clock} alt="Clock" />
-                  Accept
-                </Button>
+                <div className="association-status-ribbon-connected tooltip-include" >
+                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  Connected
+                </div>
               </Row>
-            } */}
+            }
+            {associationStatus == 2 &&
+              <Row className="center">
+                <div className="association-status-ribbon-declined tooltip-include" >
+                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  Declined
+                </div>
+              </Row>
+            }
+            {associationStatus == 3 &&
+              <Row className="center">
+                <div className="association-status-ribbon-cancelled tooltip-include" >
+                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  Cancelled
+                </div>
+              </Row>
+            }
+            {associationStatus == 4 &&
+              <Row className="center">
+                <div className="association-status-ribbon-admiting tooltip-include" >
+                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  Admiting
+                </div>
+              </Row>
+            }
           </div>
-          {/* //   : null
-        // } */}
         </div>
         {/* {is_mentor ? */}
         <div style={{ paddingRight: 0, paddingLeft: 0, marginBottom: "20px" }}>
