@@ -17,11 +17,11 @@ class CreateAssociatesTable extends Migration
             $table->id();
             $table->integer('request_id')->default(0);
             $table->integer('response_id')->default(0);
-            $table->boolean('accepted')->default(false);
+            $table->enum('status', ['Pending', 'Connected', 'Declined', 'Cancelled', 'Admiting']);
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *

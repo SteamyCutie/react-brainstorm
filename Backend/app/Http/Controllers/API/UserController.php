@@ -946,16 +946,24 @@ class UserController extends Controller
               ->where('response_id', $user_id);
           })
           ->first();
-        $mentors[$i]->associate = 0;
+        $mentors[$i]['associate'] = -1;
         if ($res_associate) {
-          if(Associate::where('request_id', $user_id)->where('response_id', $response_id)->first()) {
-            $mentors[$i]->associate = 1;
+          switch ($res_associate->status) {
+            case 'Pending':
+              $mentors[$i]['associate'] = 0;
+              break;
+            case 'Connected':
+              $mentors[$i]['associate'] = 1;
+              break;
+            case 'Declined':
+              $mentors[$i]['associate'] = 2;
+              break;
+            case 'Cancelled':
+              $mentors[$i]['associate'] = 3;
+              break;
           }
-          if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->first()) {
-            $mentors[$i]->associate = 2;
-          }
-          if ($res_associate->accepted){
-            $mentors[$i]->associate = 3;
+          if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->where('status', 'Pending')->first()) {
+            $mentors[$i]['associate'] = 4;
           }
         }
         $res_sub = Subscription::where('mentor_id', $mentors[$i]->id)
@@ -1039,7 +1047,7 @@ class UserController extends Controller
         'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->orderBy('average_mark', 'DESC')->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
-      
+
       for ($i = 0; $i < count($users); $i++) {
         if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
           $mentors[] = $users[$i];

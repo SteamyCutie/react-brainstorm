@@ -94,4 +94,10 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/associateaccept', 'AssociateController@associateAccept');
   Route::post('/getassociatedstudents', 'AssociateController@getassociatedStudents');
   Route::post('/getassociationstatus ', 'AssociateController@getassociationstatus');
+  
+  Route::post('/associatedecline', 'AssociateController@associatedecline');
+  Route::post('/associateunassociate', 'AssociateController@associateunassociate');
+  Route::post('/associatereassociate', 'AssociateController@associatereassociate');
+  Route::post('/associatewithdraw', 'AssociateController@associatewithdraw');
+  Route::post('/getassociatedusers', 'AssociateController@getassociatedusers');
 });
