@@ -948,8 +948,7 @@ class UserController extends Controller
           })
           ->first();
         $mentors[$i]['associate'] = -1;
-        $user_info = User::select('is_mentor')->where('id', $user_id)->first();
-        if ($res_associate && $user_info->is_mentor) {
+        if ($res_associate) {
           switch ($res_associate->status) {
             case 'Pending':
               $mentors[$i]['associate'] = 0;
@@ -967,9 +966,6 @@ class UserController extends Controller
           if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->where('status', 'Pending')->first()) {
             $mentors[$i]['associate'] = 4;
           }
-        }
-        if ($user_info->is_mentor == 0) {
-          $mentors[$i]['associate'] = -2;
         }
         $res_sub = Subscription::where('mentor_id', $mentors[$i]->id)
           ->where('student_id', $user_id)
