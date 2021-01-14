@@ -836,6 +836,7 @@ class UserController extends Controller
     $mentor_hourlyRate = $request->hourlyRate; //hourlyRate
     $temp_query = "";
     $count_tag = 0;
+    
     if ($tag_ids){
       $count_tag = count($tag_ids);
     }

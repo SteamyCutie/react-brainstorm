@@ -74,12 +74,12 @@ return ["
         </div>
         <div class='block'>
             <span>
-                $from_user accepted your request at $current_time (UTC Time).
+                $from_user wanna associate with you at $current_time(UTC Time).
             </span>
         </div>
         <div class='block'>
             <span>
-                <img src='$mentor_avatar' alt='$from_user' style='width:50px; height: 50px; border-radius:25px;'/>
+                Requster Avatar : <img src='$mentor_avatar' alt='$from_user' style='width:50px; height: 50px; border-radius:25px;'/>
             </span>
         </div>
         <div class='block'>
