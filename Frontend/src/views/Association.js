@@ -51,7 +51,7 @@ export default class Association extends React.Component {
           cell: row => 
             <div>
               {row.status === 0 && "Pending"}
-              {row.status === 1 && "Connected"}
+              {row.status === 1 && "Associated"}
               {row.status === 2 && "Declined"}
               {row.status === 3 && "Cancelled"}
               {row.status === 4 && "Admiting"}

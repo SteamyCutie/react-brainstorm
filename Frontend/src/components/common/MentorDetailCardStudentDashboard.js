@@ -308,7 +308,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
               <Row className="center">
                 <div className="association-status-ribbon-connected tooltip-include" >
                   <span class="tooltiptext">You can control the association status at Associations page</span>
-                  Connected
+                  Associated
                 </div>
               </Row>
             }
