@@ -283,7 +283,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
               : null
             }
             <Row className="center">
-              <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(index)}>
+              <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleBookSession(id)}>
                 <img src={Clock} alt="Clock" />
                 Book a session
               </Button>
