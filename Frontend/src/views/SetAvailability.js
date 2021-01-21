@@ -18,7 +18,7 @@ class SetAvailability extends React.Component {
 
     this.state = {
       loading: false,
-      timezone: '',
+      timezone: "(GMT-12:00) International Date Line West",
       currentUserId: '',
       availableSpecificTimeList: [],
       availableRecurrenceTimeList: [
@@ -419,7 +419,7 @@ class SetAvailability extends React.Component {
   toggle_AddSpecificDate() {
     this.setState({
       addSpecificDateModal: !this.state.addSpecificDateModal
-    })
+    });
   }
 
   addSpecificDate(date, timeList) {
@@ -427,22 +427,22 @@ class SetAvailability extends React.Component {
     let temp = availableSpecificTimeList;
     const buf = {
       date: date,
-      intervals: timeList
-    }
+      timeList: timeList
+    };
     
     temp.push(buf);
 
     this.setState({
       availableSpecificTimeList: temp
-    })
+    });
   }
 
   handleSpecificDelete(idx_date, idx_time) {
     const {availableSpecificTimeList} = this.state;
     let temp = availableSpecificTimeList;
 
-    temp[idx_date].intervals.splice(idx_time, 1);
-    if (!temp[idx_date].intervals.length)
+    temp[idx_date].timeList.splice(idx_time, 1);
+    if (!temp[idx_date].timeList.length)
       temp.splice(idx_date, 1);
 
     this.setState({
@@ -591,7 +591,7 @@ class SetAvailability extends React.Component {
                 {availableSpecificTimeList.map((item, idx_date) => {
                   const date = item.date;
                   return(
-                    item.intervals.map((time, idx_time) => {
+                    item.timeList.map((time, idx_time) => {
                       return (
                         <Row className="specific-date-table-content">
                           <div style={{width: "150px"}}>{date}</div>
