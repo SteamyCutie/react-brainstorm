@@ -17,7 +17,8 @@ export default class BookSession2 extends React.Component {
       displayDate: "",
       showBookingComponents: false,
       startDateTime: "",
-      timeList: []
+      timeList: [],
+      duration: 0
     };
   }
 
@@ -35,8 +36,8 @@ export default class BookSession2 extends React.Component {
 
   onChange(value, event) {
     this.setState({
-      currentDate: moment(value).format('YYYY-MM-DD').toString(),
-      displayDate: moment(value).format('dddd, MMMM DD').toString(),
+      currentDate: moment(value).format('YYYY-MM-DD'),
+      displayDate: moment(value).format('dddd, MMMM DD'),
       timeList: []
     })
   }
@@ -65,7 +66,43 @@ export default class BookSession2 extends React.Component {
   }
 
   handleBookSession() {
-    this.toggle();
+    const { startDateTime, duration } = this.state;
+    const api_param = {
+      start: startDateTime,
+      duration: duration
+    };
+  }
+
+  onActiveStartDateChange(param) {
+    let currentDate = new Date();
+    let startDate = moment(param.activeStartDate);
+    let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("MM-DD-YYYY");
+    if (currentDate.getMonth() == startDate.month()) {
+      startDate = moment(currentDate);
+    }
+
+    const api_param = {
+      startDate: startDate.format("MM-DD-YYYY"),
+      endDate: endDate,
+      timezone: this.getTimezone()
+    };
+  }
+
+  componentDidMount() {
+    let startDate = moment();
+    let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("MM-DD-YYYY");
+
+    const api_param = {
+      startDate: startDate.format("MM-DD-YYYY"),
+      endDate: endDate,
+      timezone: this.getTimezone()
+    };
+  }
+
+  handleDurationChange(eve) {
+    this.setState({
+      duration: eve.target.value
+    });
   }
 
   getTimezone(){
@@ -96,6 +133,7 @@ export default class BookSession2 extends React.Component {
                 prev2Label = {null}
                 calendarType = "Hebrew"
                 onChange={(value, event) => this.onChange(value, event)}
+                onActiveStartDateChange={(param) => this.onActiveStartDateChange(param)}
               />
               <div className="specific-date-times">
                 {currentDate && 
@@ -105,9 +143,9 @@ export default class BookSession2 extends React.Component {
                 }
                 {currentDate && 
                   <div className="book-date-time-list">
-                    {availableTimes.map((time) => {
+                    {availableTimes.map((time, idx) => {
                       return (
-                        <Button className="btn-mentor-detail-time-book" onClick={() => this.handleTimeClick(time)}>
+                        <Button key={idx} className="btn-mentor-detail-time-book" onClick={() => this.handleTimeClick(time)}>
                           {moment(time.start_time).format("LT").toString()}
                         </Button>
                       )
@@ -126,7 +164,7 @@ export default class BookSession2 extends React.Component {
                   </label>
                   <div><PublicIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />{this.getTimezone()}</div>
                   <div style={{marginTop: "20px"}} className="center">
-                    <FormInput className="booking-components-hours" type="number" max="12" min="1"/>
+                    <FormInput className="booking-components-hours" type="number" max="12" min="1" onChange={(eve) => this.handleDurationChange(eve)}/>
                     <label style={{marginRight: "20px", marginLeft: "5px"}}>hours</label>
                     <Button className="btn-mentor-detail-time-book" onClick={() => this.handleBookSession()}>
                       Schedule Event

@@ -130,7 +130,12 @@ export default [
     component: Recommended
   },
   {
-    path: "/associations",
+    path: "/mentorassociations",
+    layout: DefaultLayout,
+    component: Association
+  },
+  {
+    path: "/studentassociations",
     layout: DefaultLayout,
     component: Association
   },
