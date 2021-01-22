@@ -211,7 +211,7 @@ class SetAvailability extends React.Component {
     try {
       this.setState({ loading: true });
       const result = await getAvailableTimes(param);
-
+      console.log(result.data.data.specificList)
       if (result.data.result === "success") {
         var availableRecurrenceTimeListTemp = [
           {
@@ -251,59 +251,60 @@ class SetAvailability extends React.Component {
           }
         ];
         let timezone = "";
-        for (var i = 0; i < result.data.data.length; i++) {
+        for (var i = 0; i < result.data.data.recurrenceList.length; i++) {
           for (var j = 0; j < availableRecurrenceTimeListTemp.length; j++) {
-            if (result.data.data[i].day_of_week === availableRecurrenceTimeListTemp[j].dayOfWeek) {
+            if (result.data.data.recurrenceList[i].day_of_week === availableRecurrenceTimeListTemp[j].dayOfWeek) {
               availableRecurrenceTimeListTemp[j].timeList.push({
-                from: result.data.data[i].fromTime,
-                to: result.data.data[i].toTime,
-                fromStr: result.data.data[i].fromTimeStr,
-                toStr: result.data.data[i].toTimeStr,
-                status: result.data.data[i].status === 1 ? true : false
+                from: result.data.data.recurrenceList[i].fromTime,
+                to: result.data.data.recurrenceList[i].toTime,
+                fromStr: result.data.data.recurrenceList[i].fromTimeStr,
+                toStr: result.data.data.recurrenceList[i].toTimeStr,
+                status: result.data.data.recurrenceList[i].status === 1 ? true : false
               });
-              availableRecurrenceTimeListTemp[j].status = result.data.data[i].status === 1 ? true : false;
+              availableRecurrenceTimeListTemp[j].status = result.data.data.recurrenceList[i].status === 1 ? true : false;
             }
           }
-          if (result.data.data[i].day_of_week === "Sunday") {
+          if (result.data.data.recurrenceList[i].day_of_week === "Sunday") {
             let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[0] = result.data.data[i].status === 1 ? true : false;
+            temp[0] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
-          } else if (result.data.data[i].day_of_week === "Monday") {
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Monday") {
             let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[1] = result.data.data[i].status === 1 ? true : false;
+            temp[1] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
-          } else if (result.data.data[i].day_of_week === "Tuesday") {
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Tuesday") {
             let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[2] = result.data.data[i].status === 1 ? true : false;
+            temp[2] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
-          } else if (result.data.data[i].day_of_week === "Wednesday") {
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Wednesday") {
             let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[3] = result.data.data[i].status === 1 ? true : false;
+            temp[3] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
-          } else if (result.data.data[i].day_of_week === "Thursday") {
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Thursday") {
             let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[4] = result.data.data[i].status === 1 ? true : false;
+            temp[4] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
-          } else if (result.data.data[i].day_of_week === "Friday") {
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Friday") {
             let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[5] = result.data.data[i].status === 1 ? true : false;
+            temp[5] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
-          } else if (result.data.data[i].day_of_week === "Saturday") {
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Saturday") {
             let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[6] = result.data.data[i].status === 1 ? true : false;
+            temp[6] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
           }
-          timezone = result.data.data[i].timezone;
+          timezone = result.data.data.recurrenceList[i].timezone;
         }
         this.setState({
           availableRecurrenceTimeList: availableRecurrenceTimeListTemp,
+          availableSpecificTimeList: result.data.data.specificList,
           timezone: timezone
         });
       } else if (result.data.result === "warning") {
@@ -437,12 +438,12 @@ class SetAvailability extends React.Component {
     });
   }
 
-  handleSpecificDelete(idx_date, idx_time) {
+  handleSpecificDelete(idx_date) {
     const {availableSpecificTimeList} = this.state;
     let temp = availableSpecificTimeList;
 
-    temp[idx_date].timeList.splice(idx_time, 1);
-    if (!temp[idx_date].timeList.length)
+    temp.splice(idx_date, 1);
+    if (!temp.length)
       temp.splice(idx_date, 1);
 
     this.setState({
@@ -545,7 +546,7 @@ class SetAvailability extends React.Component {
                             // : null
                             : <Row form>
                               <Col md="5" xs="4" className="available-time-group">
-                                <FormSelect disabled className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
+                                <FormSelect disabled className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)} defaultValue="(GMT-12:00) International Date Line West">
                                   {Timelinelist.map((item, idx) => {
                                     return (
                                       <option key={idx} >{item.str}</option>
@@ -589,20 +590,15 @@ class SetAvailability extends React.Component {
                   <div style={{width: "calc(100% - 150px)"}}>AVAILABILITY</div>
                 </Row>
                 {availableSpecificTimeList.map((item, idx_date) => {
-                  const date = item.date;
                   return(
-                    item.timeList.map((time, idx_time) => {
-                      return (
-                        <Row className="specific-date-table-content">
-                          <div style={{width: "150px"}}>{date}</div>
-                          <div style={{width: "calc(100% - 200px)"}}>{time.from} - {time.to}</div>
-                          <Button className="btn-available-time-add-delete no-padding"
-                            onClick={() => this.handleSpecificDelete(idx_date, idx_time)}>
-                            <img src={DeleteButtonImage} alt="Delete" />
-                          </Button>
-                        </Row>
-                      )
-                    })
+                    <Row className="specific-date-table-content">
+                      <div style={{width: "150px"}}>{item.sp_date}</div>
+                      <div style={{width: "calc(100% - 200px)"}}>{item.fromTimeStr} - {item.toTimeStr}</div>
+                      <Button className="btn-available-time-add-delete no-padding"
+                        onClick={() => this.handleSpecificDelete(idx_date)}>
+                        <img src={DeleteButtonImage} alt="Delete" />
+                      </Button>
+                    </Row>
                   )
                 })}
               </Row>

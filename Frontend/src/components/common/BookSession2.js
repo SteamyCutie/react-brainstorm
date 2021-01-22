@@ -3,9 +3,11 @@ import { Modal, ModalBody, Button, ModalHeader, FormInput, FormTextarea, Row, Co
 import Close from '../../images/Close.svg';
 import moment from 'moment';
 import Calendar from 'react-calendar';
+import { ToastsStore } from 'react-toasts';
 import 'react-calendar/dist/Calendar.css';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import PublicIcon from '@material-ui/icons/Public';
+import { setbookedtime, signout } from '../../api/api'
 
 moment.locale('en');
 
@@ -23,6 +25,7 @@ export default class BookSession2 extends React.Component {
   }
 
   toggle() {
+    console.log(this.props.id, "??????");
     const { toggle } = this.props;
 
     this.setState({
@@ -65,12 +68,67 @@ export default class BookSession2 extends React.Component {
     })
   }
 
-  handleBookSession() {
+  signout = async () => {
+    const param = {
+      email: localStorage.getItem('email')
+    }
+
+    try {
+      const result = await signout(param);
+      if (result.data.result === "success") {
+        this.removeSession();
+      } else if (result.data.result === "warning") {
+        this.removeSession();
+      } else {
+        if (result.data.message === "Token is Expired") {
+          this.removeSession();
+        } else if (result.data.message === "Token is Invalid") {
+          this.removeSession();
+        } else if (result.data.message === "Authorization Token not found") {
+          this.removeSession();
+        } else {
+          this.removeSession();
+        }
+      }
+    } catch (error) {
+      this.removeSession();
+    }
+  }
+
+  handleBookSession = async () => {
     const { startDateTime, duration } = this.state;
     const api_param = {
+      user_id: localStorage.getItem("user_id"),
+      mentor_id: this.props.id,
       start: startDateTime,
       duration: duration
     };
+
+    try {
+      const result = await setbookedtime(api_param);
+
+      if (result.data.result === "success") {
+        ToastsStore.success("Booking Session Success");
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
+      }
+    } catch (err) {
+      ToastsStore.error("Something Went wrong");
+    }
+    this.toggle();
   }
 
   onActiveStartDateChange(param) {
@@ -84,8 +142,9 @@ export default class BookSession2 extends React.Component {
     const api_param = {
       startDate: startDate.format("MM-DD-YYYY"),
       endDate: endDate,
-      timezone: this.getTimezone()
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
+    console.log(api_param, "++++++")
   }
 
   componentDidMount() {
@@ -95,13 +154,14 @@ export default class BookSession2 extends React.Component {
     const api_param = {
       startDate: startDate.format("MM-DD-YYYY"),
       endDate: endDate,
-      timezone: this.getTimezone()
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
+    console.log(api_param, "159")
   }
 
   handleDurationChange(eve) {
     this.setState({
-      duration: eve.target.value
+      duration: parseInt(eve.target.value)
     });
   }
 
