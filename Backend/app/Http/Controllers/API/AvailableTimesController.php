@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AvailableTimes;
 use App\Models\SpecificDate;
-use App\Models\BookedTime;
+use App\Models\BookingTime;
 use App\Models\User;
 
 class AvailableTimesController extends Controller
@@ -118,14 +118,14 @@ class AvailableTimesController extends Controller
   public function setBookingTime(Request $request)
   {
     try{
-    $res_match = BookedTime::where('fromTime', $request->start)->get();
+    $res_match = BookingTime::where('fromTime', $request->start)->get();
     if (count($res_match) > 0) {
       return response()->json([
         'result'=> 'warning',
         'message' => 'Time already booked'
       ]);
     }
-    $res_stat = BookedTime::create([
+    $res_stat = BookingTime::create([
       'user_id' => $request->user_id,
       'mentor_id' => $request->mentor_id,
       'duration' => $request->duration,
@@ -149,5 +149,47 @@ class AvailableTimesController extends Controller
         'message'   => 'could not set the booking time',
       ], 500);
     }
+  }
+
+  public function getAvailableTimeSlots(Request $request)
+  {
+//    try{
+      $mentor_id = $request->mentor_id;
+      $fromDate = $request->fromDate;
+      $toDate = $request->toDate;
+      $timezone = $request->timezone;
+      
+      $curr = date("y-m-d h:i:s");
+      $week_date = Date($curr.setDate($curr.getDate() - $curr.getDay() + 0));
+      return response()->json([
+        'result'=> 'success',
+        'data' => $week_date
+      ]);
+  
+      $week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday'];
+      $res_week = [];
+      for ($i = 0; $i < 7; $i++) {
+        $week_list = AvailableTimes::where('user_id', $mentor_id)->where('day_of_week', $week[$i])->get();
+        if (count($week_list) > 0) {
+          $temp_list = [];
+          for ($j = 0; $j < count($week_list); $j++){
+            $temp_list[$j]['value'] = str_replace(' ', '', $week_list[$j]->fromTimeStr);
+            $temp_list[$j]['from_stamp'] = $week_list[$j]->fromTimestamp;
+          }
+          $res_week[$i] = $temp_list;
+        } else {
+          $res_week[$i] = [];
+        }
+      }
+      return response()->json([
+        'result'=> 'success',
+        'data' => $res_week
+      ]);
+//    } catch (\Throwable $th) {
+//      return response()->json([
+//        'result'   => "failed",
+//        'message'   => 'could not set the booking time',
+//      ], 500);
+//    }
   }
 }

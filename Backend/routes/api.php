@@ -35,6 +35,8 @@ Route::post('/connect', 'TransactionHistoryController@connect');
 Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
 Route::post('/testpayment', 'PaymentController@testpayment');
 
+Route::post('/getavailabletimeslots', 'AvailableTimesController@getAvailableTimeSlots');
+
 Route::group(['middleware' => 'jwt.verify'], function () {
   
   Route::post('/editprofile', 'UserController@editProfile');
@@ -63,6 +65,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
   Route::post('/getavailabletimesforstudent', 'AvailableTimesController@getavailableTimesForStudent');
   Route::post('/setbookedtime', 'AvailableTimesController@setBookingTime');
+//  Route::post('/getavailabletimeslots', 'AvailableTimesController@getAvailableTimeSlots');
   
   Route::post('/getlanguages', 'LanguageController@getlanguages');
   Route::post('/gettags', 'TagController@gettaglists');
