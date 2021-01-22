@@ -36,6 +36,7 @@ Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
 Route::post('/testpayment', 'PaymentController@testpayment');
 
 Route::post('/getavailabletimeslots', 'AvailableTimesController@getAvailableTimeSlots');
+Route::post('/converttime', 'AvailableTimesController@converttime');
 
 Route::group(['middleware' => 'jwt.verify'], function () {
   
