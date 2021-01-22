@@ -62,6 +62,7 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/setavailabletimes', 'AvailableTimesController@setAvailableTimes');
   Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
   Route::post('/getavailabletimesforstudent', 'AvailableTimesController@getavailableTimesForStudent');
+  Route::post('/setbookedtime', 'AvailableTimesController@setBookingTime');
   
   Route::post('/getlanguages', 'LanguageController@getlanguages');
   Route::post('/gettags', 'TagController@gettaglists');

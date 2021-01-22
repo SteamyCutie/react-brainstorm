@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AvailableTimes;
+use App\Models\SpecificDate;
+use App\Models\BookedTime;
 use App\Models\User;
 
 class AvailableTimesController extends Controller
@@ -39,7 +41,7 @@ class AvailableTimesController extends Controller
     } catch (\Throwable $th) {
       return response()->json([
         'result'   => "failed",
-        'message'   => config('messages.errors.cannot_get'),
+        'message'   => 'could not get the booking time',
       ], 500);
     }
   }
@@ -49,7 +51,10 @@ class AvailableTimesController extends Controller
     try{
       $email = $request['email'];
       $user = User::where('email', $email)->first();
-      $timeList = AvailableTimes::where('user_id', $user['id'])->get();
+      $recurrenceList = AvailableTimes::where('user_id', $user['id'])->get();
+      $specificList = SpecificDate::where('user_id', $user['id'])->get();
+      $timeList['recurrenceList'] = $recurrenceList;
+      $timeList['specificList'] = $specificList;
       return response()->json([
         'result'=> 'success',
         'data' => $timeList
@@ -57,7 +62,7 @@ class AvailableTimesController extends Controller
     } catch (\Throwable $th) {
       return response()->json([
         'result'   => "failed",
-        'message'   => config('messages.errors.cannot_get'),
+        'message'   => 'could not get the booking time',
       ], 500);
     }
   }
@@ -68,20 +73,33 @@ class AvailableTimesController extends Controller
       $email = $request['email'];
       $timeZone = $request['timezone'];
       $user = User::where('email', $email)->first();
-      $timeList = $request['data'];
+      $recurrenceList = $request['recurrence'];
+      $specificList = $request['specific_date'];
       AvailableTimes::where('user_id', $user['id'])->delete();
-      for ($i = 0; $i < count($timeList); $i ++) {
-        for ($j = 0; $j < count($timeList[$i]['timeList']); $j ++) {
+      for ($i = 0; $i < count($recurrenceList); $i ++) {
+        for ($j = 0; $j < count($recurrenceList[$i]['timeList']); $j ++) {
           AvailableTimes::create([
             'user_id' => $user['id'],
-            'day_of_week' => $timeList[$i]['dayOfWeek'],
-            'fromTime' => $timeList[$i]['timeList'][$j]['from'],
-            'toTime' => $timeList[$i]['timeList'][$j]['to'],
-            'fromTimeStr' => $timeList[$i]['timeList'][$j]['fromStr'],
-            'toTimeStr' => $timeList[$i]['timeList'][$j]['toStr'],
-            'fromTimestamp' => $timeList[$i]['timeList'][$j]['fromTimestamp'],
-            'toTimestamp' => $timeList[$i]['timeList'][$j]['toTimestamp'],
-            'status' => $timeList[$i]['status'],
+            'day_of_week' => $recurrenceList[$i]['dayOfWeek'],
+            'fromTime' => $recurrenceList[$i]['timeList'][$j]['from'],
+            'toTime' => $recurrenceList[$i]['timeList'][$j]['to'],
+            'fromTimeStr' => $recurrenceList[$i]['timeList'][$j]['fromStr'],
+            'toTimeStr' => $recurrenceList[$i]['timeList'][$j]['toStr'],
+            'fromTimestamp' => $recurrenceList[$i]['timeList'][$j]['fromTimestamp'],
+            'toTimestamp' => $recurrenceList[$i]['timeList'][$j]['toTimestamp'],
+            'status' => $recurrenceList[$i]['status'],
+            'timezone' => $timeZone,
+          ]);
+        }
+      }
+  
+      for ($i = 0; $i < count($specificList); $i ++) {
+        for ($j = 0; $j < count($specificList[$i]['timeList']); $j ++) {
+          SpecificDate::create([
+            'user_id' => $user['id'],
+            'sp_date' => $specificList[$i]['date'],
+            'fromTimeStr' => $specificList[$i]['timeList'][$j]['from'],
+            'toTimeStr' => $specificList[$i]['timeList'][$j]['to'],
             'timezone' => $timeZone,
           ]);
         }
@@ -92,7 +110,43 @@ class AvailableTimesController extends Controller
     } catch (\Throwable $th) {
       return response()->json([
         'result'   => "failed",
-        'message'   => config('messages.errors.cannot_set'),
+        'message'   => 'could not set the booking time',
+      ], 500);
+    }
+  }
+  
+  public function setBookingTime(Request $request)
+  {
+    try{
+    $res_match = BookedTime::where('fromTime', $request->start)->get();
+    if (count($res_match) > 0) {
+      return response()->json([
+        'result'=> 'warning',
+        'message' => 'Time already booked'
+      ]);
+    }
+    $res_stat = BookedTime::create([
+      'user_id' => $request->user_id,
+      'mentor_id' => $request->mentor_id,
+      'duration' => $request->duration,
+      'fromTime' => $request->start,
+      'description' => $request->description,
+    ]);
+    if ($res_stat) {
+      return response()->json([
+        'result'=> 'success',
+        'message' => 'Time correctly booked'
+      ]);
+    } else {
+      return response()->json([
+        'result'=> 'failed',
+        'message' => 'failed booking'
+      ]);
+    }
+    } catch (\Throwable $th) {
+      return response()->json([
+        'result'   => "failed",
+        'message'   => 'could not set the booking time',
       ], 500);
     }
   }
