@@ -11,6 +11,7 @@ use App\Models\User;
 use DateTime;
 use DateTimeZone;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AvailableTimesController extends Controller
 {
@@ -54,10 +55,17 @@ class AvailableTimesController extends Controller
     try{
       $email = $request['email'];
       $user = User::where('email', $email)->first();
-      $recurrenceList = AvailableTimes::where('user_id', $user['id'])->get();
-      $specificList = SpecificDate::where('user_id', $user['id'])->get();
+      $recurrenceList = AvailableTimes::select('day_of_week', 'status', 'timezone', 'fromTimeStr', 'toTimeStr')->where('user_id', $user['id'])->get();
+      $specificListInfo = SpecificDate::select('sp_date', 'timezone', 'fromTimeStr', 'toTimeStr')->where('user_id', $user['id'])->get();
       $timeList['recurrenceList'] = $recurrenceList;
-      $timeList['specificList'] = $specificList;
+      $timeList['specificList'] = $specificListInfo;
+      $timeList['timezone'] = "";
+      if (count($recurrenceList) > 0) {
+        $timeList['timezone'] = $recurrenceList[0]->timezone;
+      }
+      if (count($specificListInfo) > 0) {
+        $timeList['timezone'] = $specificListInfo[0]->timezone;
+      }
       return response()->json([
         'result'=> 'success',
         'data' => $timeList
@@ -78,19 +86,15 @@ class AvailableTimesController extends Controller
     $user = User::where('email', $email)->first();
     $recurrenceList = $request['recurrence'];
     $specificList = $request['specific_date'];
-    AvailableTimes::where('user_id', $user['id'])->delete();
-    SpecificDate::where('user_id', $user['id'])->delete();
+    DB::table('available_times')->where('user_id', $user['id'])->truncate();
+    DB::table('specific_dates')->where('user_id', $user['id'])->truncate();
     for ($i = 0; $i < count($recurrenceList); $i ++) {
       for ($j = 0; $j < count($recurrenceList[$i]['timeList']); $j ++) {
         AvailableTimes::create([
           'user_id' => $user['id'],
           'day_of_week' => $recurrenceList[$i]['dayOfWeek'],
-          'fromTime' => $recurrenceList[$i]['timeList'][$j]['from'],
-          'toTime' => $recurrenceList[$i]['timeList'][$j]['to'],
-          'fromTimeStr' => $recurrenceList[$i]['timeList'][$j]['fromStr'],
-          'toTimeStr' => $recurrenceList[$i]['timeList'][$j]['toStr'],
-          'fromTimestamp' => $recurrenceList[$i]['timeList'][$j]['fromTimestamp'],
-          'toTimestamp' => $recurrenceList[$i]['timeList'][$j]['toTimestamp'],
+          'fromTimeStr' => $recurrenceList[$i]['timeList'][$j]['fromTimeStr'],
+          'toTimeStr' => $recurrenceList[$i]['timeList'][$j]['toTimeStr'],
           'status' => $recurrenceList[$i]['status'],
           'timezone' => $timeZone,
         ]);
@@ -98,13 +102,15 @@ class AvailableTimesController extends Controller
     }
     
     for ($i = 0; $i < count($specificList); $i ++) {
-      SpecificDate::create([
-        'user_id' => $user['id'],
-        'sp_date' => $specificList[$i]['sp_date'],
-        'fromTimeStr' => $specificList[$i]['fromTimeStr'],
-        'toTimeStr' => $specificList[$i]['toTimeStr'],
-        'timezone' => $timeZone,
-      ]);
+      for ($j = 0; $j < count($specificList[$i]['timeList']); $j ++) {
+        SpecificDate::create([
+          'user_id' => $user['id'],
+          'sp_date' => $specificList[$i]['sp_date'],
+          'fromTimeStr' => $specificList[$i]['timeList'][$j]['fromTimeStr'],
+          'toTimeStr' => $specificList[$i]['timeList'][$j]['toTimeStr'],
+          'timezone' => $timeZone,
+        ]);
+      }
     }
     return response()->json([
       'result'=> 'success',
@@ -176,66 +182,183 @@ class AvailableTimesController extends Controller
       if (count($dateList[$indexDay+1]) > 1) {
         $availableTimeList3 = $dateList[$indexDay+1]['time'];
       }
-      $oneDayTimeSlots = $this->convertDateListToTimeSlots($dateList[$indexDay]['day'], $mentor_timezone, $student_timezone, $availableTimeList1, $availableTimeList2, $availableTimeList3);
+      $booked_timeList = $this->getBookingTimeList($fromDate, $toDate);
+      $oneDayTimeSlots = $this->convertDateListToTimeSlots($dateList[$indexDay]['day'], $mentor_timezone, $student_timezone, $availableTimeList1, $availableTimeList2, $availableTimeList3, $booked_timeList)->timeSlots;
       $temp['date'] = $dateList[$indexDay]['day'];
       $temp['spots'] = $oneDayTimeSlots;
       $wholeDayTimeSlots[] = $temp;
     }
     return response()->json([
       'result'=> 'success',
-      'mentor_id' => $mentor_id,
-      'fromDate' => $fromDate,
-      'toDate' => $toDate,
-      'student_timezone' => $student_timezone,
-      'mentor_timezone' => $mentor_timezone,
-//      'dateList' => $dateList,
-      'wholeDayTimeSlots' => $wholeDayTimeSlots
+      'data' => $wholeDayTimeSlots
     ]);
   }
   
-  private function convertDateListToTimeSlots($date, $timezone1, $timezone2, $availableTimeList1, $availableTimeList2, $availableTimeList3) {
+  private function is_bookable_time($time_start, $duration)
+  {
+    $date = new DateTime($time_start);
+    $timestamp_from = $date->getTimeStamp();
+    $timestamp_to = $timestamp_from + $duration * 3600;
+    $mentor_timezone = "Europe/Warsaw";
+    $student_timezone = "Asia/Tokyo";
+    $retVal = false;
+    foreach (getTimeSlots($date->format("Y-m-d"), $mentor_timezone, $student_timezone)->timeRangeSlots as $time_range) {
+      if (($time_range->from <= $timestamp_from) && ($time_range->to >= $timestamp_to))
+        return true;
+    }
+    return $retVal;
+  }
+  
+  private function convertDateListToTimeSlots($date, $timezone1, $timezone2, $availableTimeList1, $availableTimeList2, $availableTimeList3, $booked_timeList) {
     $tomorrow = new DateTime($date);
-    $tomorrow->modify('+1 day');
-    $tomorrow = $tomorrow->format('Y-m-d');
+    $tomorrow->modify("+1 day");
+    $tomorrow = $tomorrow->format("Y-m-d");
     $yesterday = new DateTime($date);
-    $yesterday->modify('-1 day');
-    $yesterday = $yesterday->format('Y-m-d');
+    $yesterday->modify("-1 day");
+    $yesterday = $yesterday->format("Y-m-d");
     $time_slots = array();
+    $time_range_slots = array();
+  
     foreach ($availableTimeList1 as $value) {
-      foreach($this->getTimeSlots($yesterday, $date, $value['from'], $value['to'], $timezone1, $timezone2) as $time) {
+      $_time_slots = $this->getTimeSlots($yesterday, $date, $value['from'], $value['to'], $timezone1, $timezone2, $booked_timeList);
+      foreach ($_time_slots->timeRangeSlots as $time_slot) {
+        array_push($time_range_slots, $time_slot);
+      }
+      foreach ($_time_slots->timeSlots as $time) {
         array_push($time_slots, $time);
       }
     }
+    
     foreach ($availableTimeList2 as $value) {
-      foreach($this->getTimeSlots($date, $date, $value['from'], $value['to'], $timezone1, $timezone2) as $time) {
+      $_time_slots = $this->getTimeSlots($date, $date, $value['from'], $value['to'], $timezone1, $timezone2, $booked_timeList);
+      foreach ($_time_slots->timeRangeSlots as $time_slot) {
+        array_push($time_range_slots, $time_slot);
+      }
+      foreach ($_time_slots->timeSlots as $time) {
         array_push($time_slots, $time);
       }
     }
     foreach ($availableTimeList3 as $value) {
-      foreach($this->getTimeSlots($tomorrow, $date, $value['from'], $value['to'], $timezone1, $timezone2) as $time) {
+      $_time_slots = $this->getTimeSlots($tomorrow, $date, $value['from'], $value['to'], $timezone1, $timezone2, $booked_timeList);
+      foreach ($_time_slots->timeRangeSlots as $time_slot) {
+        array_push($time_range_slots, $time_slot);
+      }
+      foreach ($_time_slots->timeSlots as $time) {
         array_push($time_slots, $time);
       }
     }
-    return $time_slots;
+    $retVal = (object)array(
+      "timeSlots" => $time_slots,
+      "timeRangeSlots" => $time_range_slots
+    );
+    return $retVal;
   }
   
-  private function getTimeSlots($date1, $date2, $time_from, $time_to, $timezone1, $timezone2) {
+  private function getTimeSlots($date1, $date2, $time_from, $time_to, $timezone1, $timezone2, $booked_timeList) {
     $mentorTimezone = new DateTimeZone($timezone1);
     $studentTimezone = new DateTimeZone($timezone2);
     $time_slots = array();
-    $s = $date1." ".$time_from;
+    $time_range_slots = array();
+    $s = $date1 . " " . $time_from;
     $time_from = new DateTime($s, $mentorTimezone);
     $timestamp_from = $time_from->getTimestamp();
-    $s = $date1." ".$time_to;
+    $s = $date1 . " " . $time_to;
     $time_to = new DateTime($s, $mentorTimezone);
     $timestamp_to = $time_to->getTimestamp();
+    $time_range_from = null;
+    $time_range_to = null;
+    $range_from_set = false;
+    $range_to_set = false;
+    $current_time_stamp = time();
+    $time_range_slot = (object)array(
+      "from" => null,
+      "to" => null
+    );
+    $retVal = (object)array(
+      "timeSlots" => $time_slots,
+      "timeRangeSlots" => $time_range_slots
+    );
+    if ($timestamp_to <= $current_time_stamp)
+      return $retVal;
+    if ($timestamp_from <= $current_time_stamp) {
+      $timestamp_from = $current_time_stamp + (900 - $current_time_stamp % 900); // 900 means 15 mins
+      if ($timestamp_from >= $timestamp_to)
+        return $retVal;
+    }
+    foreach ($booked_timeList as $booked_time) {
+      $book_timestamp_from = (new DateTime($booked_time['from']))->getTimeStamp();
+      $book_timestamp_to = $book_timestamp_from + $booked_time['duration'] * 3600;
+      if (($timestamp_from <= $book_timestamp_from) && ($timestamp_to >= $book_timestamp_to)) {
+        if ($timestamp_from != $book_timestamp_from) {
+          for ($index = $timestamp_from; $index < $book_timestamp_from; $index += 900) {
+            $student_time_slot = (new DateTime("@" . $index))->setTimezone($studentTimezone);
+            if ($student_time_slot->format("Y-m-d") != $date2) {
+              if ($range_from_set && !$range_to_set) {
+                $time_range_to = $index;
+                $range_to_set = true;
+              }
+              continue;
+            }
+            if (!$range_from_set) {
+              $time_range_from = $index;
+              $range_from_set = true;
+            }
+            array_push($time_slots, $student_time_slot->format("c"));
+          }
+          $time_range_slot->from = $time_range_from;
+          $time_range_slot->to = $time_range_to;
+          array_push($time_range_slots, $time_range_slot);
+        }
+        $range_to_set = false;
+        $range_from_set = false;
+        if ($book_timestamp_to != $timestamp_to) {
+          for ($index = $book_timestamp_to; $index < $timestamp_to; $index += 900) {
+            $student_time_slot = (new DateTime("@" . $index))->setTimezone($studentTimezone);
+            if ($student_time_slot->format("Y-m-d") != $date2) {
+              if ($range_from_set && !$range_to_set) {
+                $time_range_to = $index;
+                $range_to_set = true;
+              }
+              continue;
+            }
+            if (!$range_from_set) {
+              $time_range_from = $index;
+              $range_from_set = true;
+            }
+            array_push($time_slots, $student_time_slot->format("c"));
+          }
+          $time_range_slot->from = $time_range_from;
+          $time_range_slot->to = $time_range_to;
+          array_push($time_range_slots, $time_range_slot);
+        }
+        $retVal->timeSlots = $time_slots;
+        $retVal->timeRangeSlots = $time_range_slots;
+        return $retVal;
+      }
+    }
     for ($index = $timestamp_from; $index < $timestamp_to; $index += 900) {
-      $student_time_slot = (new DateTime('@' . $index))->setTimezone($studentTimezone);
-      if ($student_time_slot->format('Y-m-d') != $date2)
+      $student_time_slot = (new DateTime("@" . $index))->setTimezone($studentTimezone);
+      if ($student_time_slot->format("Y-m-d") != $date2) {
+        if ($range_from_set && !$range_to_set) {
+          $time_range_to = $index;
+          $range_to_set = true;
+        }
         continue;
-      array_push($time_slots, $student_time_slot->format('c'));
+      }
+      if (!$range_from_set) {
+        $time_range_from = $index;
+        $range_from_set = true;
+      }
+      array_push($time_slots, $student_time_slot->format("c"));
     };
-    return $time_slots;
+    if ($range_from_set && !$range_to_set)
+      $time_range_to = $timestamp_to;
+    $time_range_slot->from = $time_range_from;
+    $time_range_slot->to = $time_range_to;
+    array_push($time_range_slots, $time_range_slot);
+    $retVal->timeSlots = $time_slots;
+    $retVal->timeRangeSlots = $time_range_slots;
+    return $retVal;
   }
   
   private function getMentorAvailableDataWithWeek($mentor_id, $fromDate, $toDate)
@@ -291,14 +414,21 @@ class AvailableTimesController extends Controller
     return $dateList;
   }
   
-  public function converttime(Request $request) {
-    $current_date_time = Carbon::now()->toDateTimeString();
-    $current_timestamp = Carbon::now()->timestamp;
-    $full_iso = date("c", strtotime($current_date_time));
-    $bookingInfo = BookingTimes::whereDate('fromTime', '>', $full_iso)->get();
-    return response()->json([
-      'result'=> 'success',
-      'bookingTime' => $bookingInfo
-    ]);
+  private function getBookingTimeList($fromDate, $toDate){
+    $bookingTimeList = [];
+    $fromTimestamp = strtotime($fromDate); // 1612137600
+    $toTimestamp = strtotime($toDate); // 1612224000
+    $allBookingTimeInfo = BookingTimes::get();
+  
+    for ($index = 0; $index < count($allBookingTimeInfo); $index++){
+      $temp = [];
+      if ((new DateTime($allBookingTimeInfo[$index]->fromTime))->getTimestamp() >= $fromTimestamp
+        && (new DateTime($allBookingTimeInfo[$index]->fromTime))->getTimestamp() <= $toTimestamp) {
+        $temp['from'] = $allBookingTimeInfo[$index]->fromTime;
+        $temp['duration'] = $allBookingTimeInfo[$index]->duration;
+        $bookingTimeList[] = $temp;
+      }
+    }
+    return $bookingTimeList;
   }
 }
