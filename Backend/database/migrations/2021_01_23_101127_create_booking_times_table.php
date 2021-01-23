@@ -18,7 +18,7 @@ class CreateBookingTimesTable extends Migration
       $table->bigInteger("user_id")->nullable()->unsigned();
       $table->bigInteger("mentor_id")->nullable()->unsigned();
       $table->string('fromTime')->nullable();
-      $table->int('duration')->nullable();
+      $table->Integer('duration')->nullable();
       $table->text('description')->nullable();
       $table->enum('status', ['Pending', 'Connected', 'Declined', 'Cancelled', 'Admiting']);
       $table->timestamps();

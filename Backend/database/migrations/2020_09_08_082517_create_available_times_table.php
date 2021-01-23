@@ -16,12 +16,8 @@ class CreateAvailableTimesTable extends Migration
     Schema::create('available_times', function (Blueprint $table) {
       $table->id();
       $table->bigInteger("user_id")->nullable()->unsigned();
-      $table->integer('fromTime')->nullable();
-      $table->integer('toTime')->nullable();
       $table->string('fromTimeStr')->nullable();
       $table->string('toTimeStr')->nullable();
-      $table->string('fromTimestamp')->nullable();
-      $table->string('toTimestamp')->nullable();
       $table->integer('status')->nullable();
       $table->string('day_of_week')->nullable();
       $table->string('timezone')->nullable();
