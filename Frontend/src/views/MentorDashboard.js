@@ -353,11 +353,13 @@ export default class MentorDashboard extends React.Component {
       <>
         {loading && <LoadingModal open={true} />}
         {/* <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession> */}
-        <BookSession2
-          id={id}
-          open={ModalOpen} 
-          toggle={() => this.toggle()} 
-        />
+        { id &&
+          <BookSession2
+            id={id}
+            open={ModalOpen} 
+            toggle={() => this.toggle()} 
+          />
+        }
         <OutcomingCallDesc
           id={id}
           open={ModalCallWithDescOpen}

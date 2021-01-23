@@ -196,10 +196,6 @@ export default class BookSession2 extends React.Component {
     this.getAvailableTimeSlots(api_param);
   }
 
-  componentDidUpdate() {
-
-  }
-
   getAvailableTimeSlots() {
     let startDate = moment();
     let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("YYYY-MM-DD");
