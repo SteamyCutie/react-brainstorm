@@ -36,7 +36,7 @@ export default class MentorDashboard extends React.Component {
     this.mentorRef = React.createRef();
 
     this.state = {
-      id: 0,
+      id: null,
       ModalOpen: false,
       totalCnt: 0,
       loading: false,
@@ -55,7 +55,6 @@ export default class MentorDashboard extends React.Component {
 
     this.availableTimes = TimeList.days;
     this.sendUser = this.sendUser.bind(this);
-    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -354,12 +353,13 @@ export default class MentorDashboard extends React.Component {
       <>
         {loading && <LoadingModal open={true} />}
         {/* <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession> */}
-        <BookSession2
-          id={id}
-          open={ModalOpen} 
-          toggle={() => this.toggle()} 
-          availableTimes={this.availableTimes}
-        />
+        { id &&
+          <BookSession2
+            id={id}
+            open={ModalOpen} 
+            toggle={() => this.toggle()} 
+          />
+        }
         <OutcomingCallDesc
           id={id}
           open={ModalCallWithDescOpen}
