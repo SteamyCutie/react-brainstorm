@@ -304,6 +304,21 @@ export const setAvailableTimes = (param) => {
     })
 }
 
+export const getavailabletimeslots = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getavailabletimeslots', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const getavailabletimesforstudent = (param) => {
     return new Promise(async(resolve, reject) => {
         try {

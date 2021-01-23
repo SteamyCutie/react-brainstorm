@@ -18,7 +18,7 @@ class SetAvailability extends React.Component {
 
     this.state = {
       loading: false,
-      timezone: "(GMT-12:00) International Date Line West",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       currentUserId: '',
       availableSpecificTimeList: [],
       availableRecurrenceTimeList: [
@@ -150,20 +150,9 @@ class SetAvailability extends React.Component {
 
   handleSave = async () => {
     const { availableRecurrenceTimeList, dayOfWeekStatus, timezone, availableSpecificTimeList } = this.state;
-    const curr = new Date();
 
     for (var i = 0; i < availableRecurrenceTimeList.length; i++) {
       availableRecurrenceTimeList[i].status = dayOfWeekStatus[i];
-      // var week_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + i));
-    //   for (let j = 0; j < availableRecurrenceTimeList[i].timeList.length; j++) {
-    //     let date_from = availableRecurrenceTimeList[i].timeList[j].fromTimeStr.split(" ");
-    //     let date_to = availableRecurrenceTimeList[i].timeList[j].toTimeStr.split(" ");
-    //     var date_from_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_from[0] + date_from[1] + date_from[2] + " " + date_from[3];
-    //     var date_to_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_to[0] + date_to[1] + date_to[2] + " " + date_to[3];
-        
-    //     availableRecurrenceTimeList[i].timeList[j].fromTimestamp = new Date(date_from_timestamp).getTime()/1000;
-    //     availableRecurrenceTimeList[i].timeList[j].toTimestamp = new Date(date_to_timestamp).getTime()/1000;
-    //   }
     } 
 
     let param = {
@@ -456,12 +445,12 @@ class SetAvailability extends React.Component {
     });
   }
 
-  handleSpecificDelete(idx_date) {
+  handleSpecificDelete(idx_date, idx_time) {
     const {availableSpecificTimeList} = this.state;
     let temp = availableSpecificTimeList;
 
-    temp.splice(idx_date, 1);
-    if (!temp.length)
+    temp[idx_date].timeList.splice(idx_time, 1);
+    if (!temp[idx_date].timeList.length)
       temp.splice(idx_date, 1);
 
     this.setState({
@@ -490,10 +479,14 @@ class SetAvailability extends React.Component {
                   <Row form>
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
-                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)} defaultValue={Intl.DateTimeFormat().resolvedOptions().timeZone}>
+                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
                         {TimezoneOptions.map((item, idx) => {
                           return (
-                            item.value === timezone ? <option key={idx} value={item.value} selected> {item.name}</option> : <option key={idx} value={item.value}> {item.name}</option>
+                            item.value === timezone 
+                            ? 
+                              <option key={idx} value={item.value} selected> {item.name}</option>
+                            : 
+                              <option key={idx} value={item.value}> {item.name}</option>
                           );
                         })}
                       </FormSelect>
