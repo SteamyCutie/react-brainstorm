@@ -52,13 +52,25 @@ class AvailableTimesController extends Controller
   
   public function getAvailableTimes(Request $request)
   {
-    try{
+  
+//    try{
       $email = $request['email'];
       $user = User::where('email', $email)->first();
-      $recurrenceList = AvailableTimes::select('day_of_week', 'status', 'timezone', 'fromTimeStr', 'toTimeStr')->where('user_id', $user['id'])->get();
-      $specificListInfo = SpecificDate::select('sp_date', 'timezone', 'fromTimeStr', 'toTimeStr')->where('user_id', $user['id'])->get();
+      $recurrenceList = AvailableTimes::select('day_of_week', 'status', 'timezone', 'fromTimeStr', 'toTimeStr')
+          ->where('user_id', $user['id'])->get();
+      $specificListInfo = SpecificDate::select('sp_date', 'timezone', 'fromTimeStr', 'toTimeStr')
+          ->where('user_id', $user['id'])->get();
+      $tempSpecific = [];
+      
+      for ($index = 0; $index < count($specificListInfo); $index++) {
+        $toDateInfo = $specificListInfo[$index]->sp_date." ".$specificListInfo[$index]->toTimeStr;
+        $toDate = new DateTime($toDateInfo, new DateTimeZone($specificListInfo[$index]->timezone));
+        if ($toDate->getTimestamp() >= Carbon::now()->timestamp) {
+          $tempSpecific[] = $specificListInfo[$index];
+        }
+      }
       $timeList['recurrenceList'] = $recurrenceList;
-      $timeList['specificList'] = $specificListInfo;
+      $timeList['specificList'] = $tempSpecific;
       $timeList['timezone'] = "";
       if (count($recurrenceList) > 0) {
         $timeList['timezone'] = $recurrenceList[0]->timezone;
@@ -70,12 +82,12 @@ class AvailableTimesController extends Controller
         'result'=> 'success',
         'data' => $timeList
       ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'result'   => "failed",
-        'message'   => 'could not get the booking time',
-      ], 500);
-    }
+//    } catch (\Throwable $th) {
+//      return response()->json([
+//        'result'   => "failed",
+//        'message'   => 'could not get the booking time',
+//      ], 500);
+//    }
   }
   
   public function setAvailableTimes(Request $request)
@@ -125,7 +137,7 @@ class AvailableTimesController extends Controller
   
   public function setBookingTime(Request $request)
   {
-    try{
+//    try{
       $res_match = BookingTimes::where('fromTime', $request->start)->get();
       if (count($res_match) > 0) {
         return response()->json([
@@ -133,41 +145,103 @@ class AvailableTimesController extends Controller
           'message' => 'Time already booked'
         ]);
       }
-      $res_stat = BookingTimes::create([
-        'user_id' => $request->user_id,
-        'mentor_id' => $request->mentor_id,
-        'duration' => $request->duration,
-        'fromTime' => $request->start,
-        'description' => $request->description,
-      ]);
-      if ($res_stat) {
+      $user_id = $request->user_id;
+      $mentor_id = $request->mentor_id;
+      $duration = $request->duration;
+      $bookingDate = $request->start;
+      $description = $request->description;
+      $student_timezone = $request->timezone;
+      $mentorInfo = AvailableTimes::where('user_id', $mentor_id)->first();
+      $mentor_timezone = $mentorInfo->timezone;
+      
+      $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, (new DateTime($bookingDate))->format('Y-m-d'), (new DateTime($bookingDate))->format('Y-m-d'));
+      $availableTimeList1 = $availableTimeList2 = $availableTimeList3 = [];
+      for ($indexDay = 1; $indexDay < count($dateList) - 1; $indexDay++) {
+        $availableTimeList1 = $availableTimeList2 = $availableTimeList3 = [];
+        if (count($dateList[$indexDay-1]) > 1) {
+          $availableTimeList1 = $dateList[$indexDay-1]['time'];
+        }
+        if (count($dateList[$indexDay]) > 1) {
+          $availableTimeList2 = $dateList[$indexDay]['time'];
+        }
+        if (count($dateList[$indexDay+1]) > 1) {
+          $availableTimeList3 = $dateList[$indexDay+1]['time'];
+        }
+      }
+      $booked_timeList = $this->getBookingTimeList($bookingDate, $bookingDate);
+      
+      if ($this->isBookableTime($bookingDate, $duration, $mentor_timezone, $student_timezone, $availableTimeList1, $availableTimeList2, $availableTimeList3, $booked_timeList)) {
+        BookingTimes::create([
+          'user_id' => $user_id,
+          'mentor_id' => $mentor_id,
+          'duration' => $duration,
+          'fromTime' => $bookingDate,
+          'description' => $description,
+        ]);
         return response()->json([
           'result'=> 'success',
-          'message' => 'Time correctly booked'
+          'message' => 'Successfully booked'
         ]);
       } else {
         return response()->json([
           'result'=> 'failed',
-          'message' => 'failed booking'
+          'message' => 'could not book'
         ]);
       }
-    } catch (\Throwable $th) {
-      return response()->json([
-        'result'   => "failed",
-        'message'   => 'could not set the booking time',
-      ], 500);
+//    } catch (\Throwable $th) {
+//      return response()->json([
+//        'result'   => "failed",
+//        'message'   => 'could not set the booking time',
+//      ], 500);
+//    }
+  }
+  
+  private function isBookableTime($time_start, $duration, $mentor_timezone, $student_timezone, $availableTimeList1, $availableTimeList2, $availableTimeList3, $booked_timeList)
+  {
+    $date = new DateTime($time_start);
+    $timestamp_from = $date->getTimeStamp();
+    $timestamp_to = $timestamp_from + $duration * 3600;
+    $tomorrow = new DateTime($date->format("Y-m-d"));
+    $tomorrow->modify("+1 day");
+    $tomorrow = $tomorrow->format("Y-m-d");
+    $yesterday = new DateTime($date->format("Y-m-d"));
+    $yesterday->modify("-1 day");
+    $yesterday = $yesterday->format("Y-m-d");
+    
+    foreach ($availableTimeList1 as $value) {
+      foreach ($this->getTimeSlots($yesterday, $date->format("Y-m-d"), $value['from'], $value['to'], $mentor_timezone, $student_timezone, $booked_timeList)->timeRangeSlots as $time_range) {
+        if (($time_range->from <= $timestamp_from) && ($time_range->to >= $timestamp_to))
+          return true;
+      }
     }
+  
+    foreach ($availableTimeList2 as $value) {
+      foreach ($this->getTimeSlots($date->format("Y-m-d"), $date->format("Y-m-d"), $value['from'], $value['to'], $mentor_timezone, $student_timezone, $booked_timeList)->timeRangeSlots as $time_range) {
+        if (($time_range->from <= $timestamp_from) && ($time_range->to >= $timestamp_to))
+          return true;
+      }
+    }
+  
+    foreach ($availableTimeList3 as $value) {
+      foreach ($this->getTimeSlots($tomorrow, $date->format("Y-m-d"), $value['from'], $value['to'], $mentor_timezone, $student_timezone, $booked_timeList)->timeRangeSlots as $time_range) {
+        if (($time_range->from <= $timestamp_from) && ($time_range->to >= $timestamp_to))
+          return true;
+      }
+    }
+    return false;
   }
   
   public function getAvailableTimeSlots(Request $request)
   {
-    $mentor_id = $request->mentor_id;
-    $fromDate = $request->fromDate;
-    $toDate = $request->toDate;
+    $mentor_id = $request->userId;
+    $fromDate = $request->startDate;
+    $toDate = $request->endDate;
     $student_timezone = $request->timezone;
     $mentorInfo = AvailableTimes::where('user_id', $mentor_id)->first();
-    $mentor_timezone = $mentorInfo->timezone;
-
+    $mentor_timezone = "";
+    if ($mentorInfo) {
+      $mentor_timezone = $mentorInfo->timezone;
+    }
     $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, $fromDate, $toDate);
     $wholeDayTimeSlots = [];
     for ($indexDay = 1; $indexDay < count($dateList) - 1; $indexDay++) {
@@ -192,21 +266,6 @@ class AvailableTimesController extends Controller
       'result'=> 'success',
       'data' => $wholeDayTimeSlots
     ]);
-  }
-  
-  private function is_bookable_time($time_start, $duration)
-  {
-    $date = new DateTime($time_start);
-    $timestamp_from = $date->getTimeStamp();
-    $timestamp_to = $timestamp_from + $duration * 3600;
-    $mentor_timezone = "Europe/Warsaw";
-    $student_timezone = "Asia/Tokyo";
-    $retVal = false;
-    foreach (getTimeSlots($date->format("Y-m-d"), $mentor_timezone, $student_timezone)->timeRangeSlots as $time_range) {
-      if (($time_range->from <= $timestamp_from) && ($time_range->to >= $timestamp_to))
-        return true;
-    }
-    return $retVal;
   }
   
   private function convertDateListToTimeSlots($date, $timezone1, $timezone2, $availableTimeList1, $availableTimeList2, $availableTimeList3, $booked_timeList) {
@@ -416,8 +475,8 @@ class AvailableTimesController extends Controller
   
   private function getBookingTimeList($fromDate, $toDate){
     $bookingTimeList = [];
-    $fromTimestamp = strtotime($fromDate); // 1612137600
-    $toTimestamp = strtotime($toDate); // 1612224000
+    $fromTimestamp = strtotime($fromDate) - 86400; // 1612137600
+    $toTimestamp = strtotime($toDate) + + 86400; // 1612224000
     $allBookingTimeInfo = BookingTimes::get();
   
     for ($index = 0; $index < count($allBookingTimeInfo); $index++){
