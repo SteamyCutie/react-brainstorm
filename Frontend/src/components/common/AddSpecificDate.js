@@ -41,8 +41,8 @@ export default class AddSpecificDate extends React.Component {
     const {timeList} = this.state;
     let temp = timeList;
     temp.push({
-      from: "00 : 00 am",
-      to: "00 : 00 am"
+      fromTimeStr: "00:00 am",
+      toTimeStr: "00:00 am"
     })
 
     this.setState({
@@ -63,7 +63,7 @@ export default class AddSpecificDate extends React.Component {
   handleUpdateFrom(idx, eve) {
     const {timeList} = this.state;
     let temp = timeList;
-    temp[idx].from = eve.target.value;
+    temp[idx].fromTimeStr = eve.target.value;
 
     this.setState({
       timeList: temp
@@ -73,7 +73,7 @@ export default class AddSpecificDate extends React.Component {
   handleUpdateTo(idx, eve) {
     const {timeList} = this.state;
     let temp = timeList;
-    temp[idx].to = eve.target.value;
+    temp[idx].toTimeStr = eve.target.value;
 
     this.setState({
       timeList: temp
