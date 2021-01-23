@@ -353,11 +353,12 @@ export default class MentorDashboard extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <BookSession2 
+        {/* <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession> */}
+        <BookSession2
+          id={id}
           open={ModalOpen} 
           toggle={() => this.toggle()} 
-          availableTimes={this.availableTimes}//{mentors[id].availableTimes}
-          // mentorName={mentors[id].name}
+          availableTimes={this.availableTimes}
         />
         <OutcomingCallDesc
           id={id}
@@ -518,7 +519,7 @@ export default class MentorDashboard extends React.Component {
             {mentors.map((data, idx) => (
               <MentorDetailCardStudentDashboard
                 key={idx}
-                index={idx}
+                id={id}
                 ref={this.mentorRef}
                 mentorData={data}
                 sendUser={this.sendUser}
