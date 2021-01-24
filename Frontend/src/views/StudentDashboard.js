@@ -37,7 +37,7 @@ export default class StudentDashboard extends React.Component {
 
     this.mentorRef = React.createRef();
     this.state = {
-      id: 0,
+      id: null,
       ModalOpen: false,
       ModalCallWithDescOpen: false,
       totalCnt: 0,
@@ -360,12 +360,13 @@ export default class StudentDashboard extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <BookSession2 
-          open={ModalOpen} 
-          toggle={() => this.toggle()} 
-          availableTimes={this.availableTimes}//{mentors[id].availableTimes}
-          // mentorName={mentors[id].name}
-        />
+        { id &&
+          <BookSession2
+            id={id}
+            open={ModalOpen} 
+            toggle={() => this.toggle()} 
+          />
+        }
         <OutcomingCallDesc
           id={id}
           open={ModalCallWithDescOpen}

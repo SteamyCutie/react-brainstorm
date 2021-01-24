@@ -81,6 +81,10 @@ class SetAvailability extends React.Component {
     this.getTimeListData();
   }
 
+  componentDidMount() {
+    console.log(this.state.timezone, "++++++++");
+  }
+
   handleAdd(dayIdx) {
     const { availableRecurrenceTimeList } = this.state;
     let list = availableRecurrenceTimeList;
@@ -154,7 +158,7 @@ class SetAvailability extends React.Component {
     for (var i = 0; i < availableRecurrenceTimeList.length; i++) {
       availableRecurrenceTimeList[i].status = dayOfWeekStatus[i];
     } 
-
+    console.log(this.state.timezone, "++++++++");
     let param = {
       email: localStorage.getItem('email'),
       timezone: timezone,
@@ -307,7 +311,10 @@ class SetAvailability extends React.Component {
           availableSpecificTimeListTemp.push({sp_date: sp_date, timeList: timeList});
         }
         
-        timezone = result.data.data.timezone;
+        if (result.data.data.timezone)
+          timezone = result.data.data.timezone;
+        else
+          timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         
         this.setState({
           availableRecurrenceTimeList: availableRecurrenceTimeListTemp,
