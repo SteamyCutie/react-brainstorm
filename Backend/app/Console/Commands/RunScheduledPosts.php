@@ -97,6 +97,7 @@ class RunScheduledPosts extends Command
           'forum_end' => $sn_value->forum_end,
           'is_mentor' => true,
           'avatar' => $mentor_avatar,
+          'type' => 'Session',
         ]);
         $posted_data[] = $posted_session;
 //        event(new StatusLiked($posted_data));
@@ -119,6 +120,7 @@ class RunScheduledPosts extends Command
               'forum_end' => $sn_value->forum_end,
               'is_mentor' => false,
               'avatar' => $mentor_avatar,
+              'type' => 'Booking',
             ]);
             $posted_data[] = $posted_session;
 //            event(new StatusLiked($posted_data));

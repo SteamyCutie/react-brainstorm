@@ -250,6 +250,7 @@ class SessionController extends Controller
         'forum_end' => $res_session->forum_end,
         'is_mentor' => true,
         'avatar' => $mentor_avatar,
+        'type' => 'Session',
       ]);
       
       $students = $request['students'];
@@ -271,6 +272,7 @@ class SessionController extends Controller
           'forum_end' => $res_session->forum_end,
           'is_mentor' => false,
           'avatar' => $mentor_avatar,
+          'type' => 'Session',
         ]);
         $toEmail = $st_info->email;
         $name = $st_info->name;

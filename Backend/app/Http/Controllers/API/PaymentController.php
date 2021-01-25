@@ -11,6 +11,7 @@ use App\Models\SessionUser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Payment;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Log;
 
@@ -356,8 +357,5 @@ class PaymentController extends Controller
       // Something else happened, completely unrelated to Stripe
       return response()->json(['result' => 'failed', 'message' => $e->getMessage() ]);
     }
-  }
-  
-  public function testpayment(Request $request) {
   }
 }

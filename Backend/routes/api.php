@@ -33,7 +33,7 @@ Route::post('/getintroduceinfo', 'UserController@getIntroduceInfo');
 Route::post('/webhook', 'TransactionHistoryController@webhook');
 Route::post('/connect', 'TransactionHistoryController@connect');
 Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
-Route::post('/testpayment', 'PaymentController@testpayment');
+Route::post('/testapi', 'AvailableTimesController@testapi');
 
 /*with token*/
 Route::group(['middleware' => 'jwt.verify'], function () {

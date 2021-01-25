@@ -20,7 +20,7 @@ class CreateBookingTimesTable extends Migration
       $table->string('fromTime')->nullable();
       $table->Integer('duration')->nullable();
       $table->text('description')->nullable();
-      $table->enum('status', ['Pending', 'Connected', 'Declined', 'Cancelled', 'Admiting']);
+      $table->enum('status', ['Pending', 'Connected', 'Declined', 'Cancelled', 'Admiting'])->nullable();
       $table->timestamps();
     });
   }
