@@ -152,10 +152,19 @@ class AvailableTimesController extends Controller
       $bookingDate = $request->start;
       $description = $request->description;
       $student_timezone = $request->timezone;
-      $mentorInfo = AvailableTimes::where('user_id', $mentor_id)->first();
-      $mentor_timezone = $mentorInfo->timezone;
-      
-      $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, (new DateTime($bookingDate))->format('Y-m-d'), (new DateTime($bookingDate))->format('Y-m-d'));
+  
+      $mentorInfoAvail = AvailableTimes::where('user_id', $mentor_id)->first();
+      $mentorInfoSpecific = SpecificDate::where('user_id', $mentor_id)->first();
+      $mentor_timezone = "";
+      if ($mentorInfoAvail) {
+        $mentor_timezone = $mentorInfoAvail->timezone;
+      }
+      if ($mentorInfoSpecific) {
+        $mentor_timezone = $mentorInfoSpecific->timezone;
+      }
+    
+  
+    $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, (new DateTime($bookingDate))->format('Y-m-d'), (new DateTime($bookingDate))->format('Y-m-d'));
       $availableTimeList1 = $availableTimeList2 = $availableTimeList3 = [];
       for ($indexDay = 1; $indexDay < count($dateList) - 1; $indexDay++) {
         $availableTimeList1 = $availableTimeList2 = $availableTimeList3 = [];
@@ -172,14 +181,6 @@ class AvailableTimesController extends Controller
       $booked_timeList = $this->getBookingTimeList($bookingDate, $bookingDate);
       
       if ($this->isBookableTime($bookingDate, $duration, $mentor_timezone, $student_timezone, $availableTimeList1, $availableTimeList2, $availableTimeList3, $booked_timeList)) {
-        BookingTimes::create([
-          'user_id' => $user_id,
-          'mentor_id' => $mentor_id,
-          'duration' => $duration,
-          'fromTime' => $bookingDate, //Iso 8601 format 2021-01-25T09:00:00+01:00
-          'description' => $description,
-        ]);
-        
         //Todo: send Email
         $fronturl = env("APP_URL");
         $current_time = date("Y-m-d h:i a");
@@ -202,13 +203,21 @@ class AvailableTimesController extends Controller
           'user_id' => $mentor_id,
           'session_id' => null,
           'session_title' => $description,
-          'from' => date('Y-m-d H:i:s', $startForum),
-          'to' => date('Y-m-d H:i:s', $startForum + 3600 * $duration),
+          'from' => date('Y-m-d H:i', $startForum),
+          'to' => date('Y-m-d H:i', $startForum + 3600 * $duration),
           'forum_start' => $startForum,
           'forum_end' => $startForum + 3600 * $duration,
           'is_mentor' => true,
           'avatar' => $mentor_avatar,
           'type' => 'Booking',
+        ]);
+  
+        BookingTimes::create([
+          'user_id' => $user_id,
+          'mentor_id' => $mentor_id,
+          'duration' => $duration,
+          'fromTime' => $bookingDate, //Iso 8601 format 2021-01-25T09:00:00+01:00
+          'description' => $description,
         ]);
         
         return response()->json([
@@ -270,11 +279,16 @@ class AvailableTimesController extends Controller
     $fromDate = $request->startDate;
     $toDate = $request->endDate;
     $student_timezone = $request->timezone;
-    $mentorInfo = AvailableTimes::where('user_id', $mentor_id)->first();
+    $mentorInfoAvail = AvailableTimes::where('user_id', $mentor_id)->first();
+    $mentorInfoSpecific = SpecificDate::where('user_id', $mentor_id)->first();
     $mentor_timezone = "";
-    if ($mentorInfo) {
-      $mentor_timezone = $mentorInfo->timezone;
+    if ($mentorInfoAvail) {
+      $mentor_timezone = $mentorInfoAvail->timezone;
     }
+    if ($mentorInfoSpecific) {
+      $mentor_timezone = $mentorInfoSpecific->timezone;
+    }
+    
     $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, $fromDate, $toDate);
     $wholeDayTimeSlots = [];
     for ($indexDay = 1; $indexDay < count($dateList) - 1; $indexDay++) {
@@ -524,12 +538,8 @@ class AvailableTimesController extends Controller
   }
   
   public function testapi(Request $request) {
-    BookingTimes::create([
-      'user_id' => 1,
-      'mentor_id' => 2,
-      'duration' => 1,
-      'fromTime' => '2021-01-25T09:00:00+01:00', //Iso 8601 format 2021-01-25T09:00:00+01:00
-      'description' => 'asd',
-    ]);
+    
+    $name = DB::table('specific_dates')->where('user_id', 9)->pluck('timezone')[0];
+    echo $name;
   }
 }

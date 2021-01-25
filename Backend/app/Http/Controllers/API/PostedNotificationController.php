@@ -52,7 +52,6 @@ class PostedNotificationController extends Controller
       $all_notific = PostedNotification::where('user_id', $user_id)->get();
       $result['new_notifications'] = $res_notific;
       $result['all_notifications'] = $all_notific;
-      PostedNotification::where(['user_id' => $user_id, 'type' => 'Booking'])->update(['notification_posted' => 1]);
       if (count($res_notific)) {
         return response()->json([
           'result'=> 'success',
