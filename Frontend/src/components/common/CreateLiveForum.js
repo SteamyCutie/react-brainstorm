@@ -14,6 +14,8 @@ export default class CreateLiveForum extends React.Component {
     this.state = {
       selectedSubscribedUsers: [],
       selectedAssociatedUsers: [],
+      associated_students: [], 
+      subscribed_students: [], 
       selectedTags: [],
       loading: false,
       displayday: '',
@@ -41,10 +43,9 @@ export default class CreateLiveForum extends React.Component {
   }
 
   componentWillMount() {    
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.email = localStorage.getItem('email');
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.email = localStorage.getItem('email');
+    this.setState({ foruminfo });
     this.getAllTags();
     this.getSubscribedStudents();
     this.getAssociatedStudents();
@@ -60,10 +61,9 @@ export default class CreateLiveForum extends React.Component {
     if (array.length > 30) {
       return;
     }
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.title = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.title = e.target.value;
+    this.setState({ foruminfo });
   }
 
   onChangeDescription = (e) => {
@@ -71,10 +71,9 @@ export default class CreateLiveForum extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.description = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.description = e.target.value;
+    this.setState({ foruminfo });
   }
 
   getAllTags = async () => {
@@ -200,52 +199,47 @@ export default class CreateLiveForum extends React.Component {
   actionSave = async () => {
     let { requiremessage, foruminfo, selectedSubscribedUsers, selectedAssociatedUsers } = this.state;
     const { toggle_createsuccess, toggle_createfail, toggle_createwarning } = this.props;
-    let temp = requiremessage;
-    temp.dtitle = '';
-    temp.description = '';
+    requiremessage.dtitle = '';
+    requiremessage.description = '';
     this.setState({
-      requiremessage: temp
+      requiremessage
     });
     try {
-      // this.setState({loading: true});
       const forum_start = foruminfo.day +" "+ foruminfo.from;
       const forum_end = foruminfo.day +" "+ foruminfo.to;
       let temp = foruminfo;
       temp.forum_start = new Date(forum_start).getTime()/1000;
       temp.forum_end = new Date(forum_end).getTime()/1000;
-
       let students = [];
       for (var i = 0; i < selectedSubscribedUsers.length; i ++)
-        students.push(selectedSubscribedUsers[i].value);
-
+      students.push(selectedSubscribedUsers[i].value);
+      
       for (var i = 0; i < selectedAssociatedUsers.length; i ++) {
         for (var j = 0; j < students.length; j++) {
-          if(students[i] != selectedAssociatedUsers[i].value)
-            students.push(selectedAssociatedUsers[i].value)
+          if(students[j] != selectedAssociatedUsers[i].value)
+          students.push(selectedAssociatedUsers[i].value)
         }
       }
-      temp.students = students;
-      
+      foruminfo.students = students;
+
       this.setState({ foruminfo: temp });
       const result = await createforum(foruminfo);      
       if (result.data.result === "success") {
         this.toggle();
         toggle_createsuccess("Create Forum Success");
-        // window.location.href="/scheduleLiveForum";
       } else if (result.data.result === "warning") {
         toggle_createwarning(result.data.message);
       } else {
         if (result.data.type === 'require') {
-          const { requiremessage } = this.state;
-          let temp = requiremessage;
+          let { requiremessage } = this.state;
           if (result.data.message.title) {
-            temp.dtitle = result.data.message.title[0];
+            requiremessage.dtitle = result.data.message.title[0];
           }
           if (result.data.message.description) {
-            temp.ddescription = result.data.message.description[0];
+            requiremessage.ddescription = result.data.message.description[0];
           }
           this.setState({
-            requiremessage: temp
+            requiremessage
           });
         } else {
           if (result.data.message === "Token is Expired") {
@@ -302,114 +296,60 @@ export default class CreateLiveForum extends React.Component {
   }
 
   onChangeDay = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
+    let { foruminfo } = this.state;
     let date = new Date(e);
     let displayday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-    temp.day = displayday;
-    this.setState({ foruminfo: temp });
+    foruminfo.day = displayday;
+    this.setState({ foruminfo });
     this.setState({ displayday: date });
   };
 
   onChangeFrom = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.from = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.from = e.target.value;
+    this.setState({ foruminfo });
   };
 
   onChangeLanguage = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.language = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.language = e.target.value;
+    this.setState({ foruminfo });
   };
 
   onChangeTo = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.to = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.to = e.target.value;
+    this.setState({ foruminfo });
   };
 
   handleChange = (event) => {
-    const { personName } = this.state;
-    const temp = personName;
-    temp.push(event);
-    this.setState({ personName: temp })
+    let { personName } = this.state;
+    personName.push(event);
+    this.setState({ personName })
   };
 
   setSelectedSubscribedUsers = (e) => {
-    // const { selectedSubscribedUsers } = this.state;
-    // var temp = selectedSubscribedUsers;
-    // temp = e;
     this.setState({ selectedSubscribedUsers: e });
-
-    // if (e.length > 0) {
-    //   const { foruminfo } = this.state;
-    //   let temp1 = foruminfo;
-    //   temp1.students = [];
-    //   for (var i = 0; i < e.length; i++) {
-    //     for (var j = 0; j < temp1.students.length; j ++) {
-    //       if (temp1.students[j] != e[i].value) {
-    //         temp1.students.push(e[i].value);
-    //       }
-    //     }
-    //   }
-    //   this.setState({ foruminfo: temp1 });
-    // } else {
-    //   const { foruminfo } = this.state;
-    //   let temp1 = foruminfo;
-    //   temp1.students = [];
-    //   this.setState({ foruminfo: temp1 });
-    // }
   }
 
   setSelectedAssociatedUsers = (e) => {
-    // const { selectedAssociatedUsers } = this.state;
-    // var temp = selectedAssociatedUsers;
-    // temp = e;
     this.setState({ selectedAssociatedUsers: e });
-
-    // if (e.length > 0) {
-    //   const { foruminfo } = this.state;
-    //   let temp1 = foruminfo;
-    //   temp1.students = [];
-    //   for (var i = 0; i < e.length; i++) {
-    //     for (var j = 0; j < temp1.students.length; j ++) {
-    //       if (temp1.students[j] != e[i].value) {
-    //         temp1.students.push(e[i].value);
-    //       }
-    //     }
-    //   }
-    //   this.setState({ foruminfo: temp1 });
-    // } else {
-    //   const { foruminfo } = this.state;
-    //   let temp1 = foruminfo;
-    //   temp1.students = [];
-    //   this.setState({ foruminfo: temp1 });
-    // }
   }
 
   setSelectedTags = (e) => {
-    const { selectedTags } = this.state;
-    let temp = selectedTags;
-    temp = e;
-    this.setState({ selectedTags: temp });
+    this.setState({ selectedTags: e });
 
     if (e.length > 0) {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.tags = [];
+      let { foruminfo } = this.state;
+      foruminfo.tags = [];
       for (var i = 0; i < e.length; i++) {
-        temp1.tags.push(e[i].value);
+        foruminfo.tags.push(e[i].value);
       }
-      this.setState({ foruminfo: temp1 });
+      this.setState({ foruminfo });
     } else {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.tags = [];
-      this.setState({ foruminfo: temp1 });
+      let { foruminfo } = this.state;
+      foruminfo.tags = [];
+      this.setState({ foruminfo });
     }
   }
 

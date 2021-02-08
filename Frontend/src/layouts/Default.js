@@ -145,9 +145,6 @@ export default class DefaultLayout extends React.Component {
 
   handleClick() {
     this.switchUser();
-    // Dispatcher.dispatch({
-    //   actionType: Constants.TOGGLE_USER_TYPE,
-    // });
 
     localStorage.setItem('user-type', !JSON.parse(localStorage.getItem('user-type')));
     const { filterType, mentorUrl, studentUrl } = this.state;    

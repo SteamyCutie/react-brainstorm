@@ -44,24 +44,21 @@ class AddNewCard extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.name = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.name = e.target.value;
+    this.setState({cardinfo});
   }
 
   onChangeNumber = (e) => {
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.number = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.number = e.target.value;
+    this.setState({cardinfo});
   }
 
   onChangeDate = (e) => {
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.date = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.date = e.target.value;
+    this.setState({cardinfo});
   }
 
   onChangeCode = (e) => {
@@ -69,21 +66,19 @@ class AddNewCard extends React.Component {
     if (array.length > 3) {
       return;
     }
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.code = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.code = e.target.value;
+    this.setState({cardinfo});
   }
 
   actionAdd = async() => {
-    const { cardinfo, requiremessage } = this.state;
+    let { cardinfo, requiremessage } = this.state;
     const { toggle_success, toggle_fail, toggle_warning} = this.props;
 
-    let temp = requiremessage;
-    temp.dname = '';
-    temp.dnumber = '';
-    temp.ddate = '';
-    temp.dcode = '';
+    requiremessage.dname = '';
+    requiremessage.dnumber = '';
+    requiremessage.ddate = '';
+    requiremessage.dcode = '';
     let param = {
       user_id: localStorage.getItem('user_id'),
       card_name: cardinfo.name,
@@ -126,23 +121,22 @@ class AddNewCard extends React.Component {
             toggle_warning(result.data.message);
           } else {
             if (result.data.type === "require") {
-              const {requiremessage} = this.state;
-              let temp = requiremessage;
+              let {requiremessage} = this.state;
               if (result.data.message.card_name) {
-                temp.dname = result.data.message.card_name[0];
+                requiremessage.dname = result.data.message.card_name[0];
               }
               if (result.data.message.card_number) {
-                temp.dnumber = result.data.message.card_number[0];
+                requiremessage.dnumber = result.data.message.card_number[0];
               }
               if (result.data.message.cvc_code) {
-                temp.dcode = result.data.message.cvc_code[0];
+                requiremessage.dcode = result.data.message.cvc_code[0];
               }
               if (result.data.message.card_expiration) {
-                temp.ddate = result.data.message.card_expiration[0];
+                requiremessage.ddate = result.data.message.card_expiration[0];
               }
               
               this.setState({
-                requiremessage: temp
+                requiremessage
               });
             } else {
               if (result.data.message === "Token is Expired") {

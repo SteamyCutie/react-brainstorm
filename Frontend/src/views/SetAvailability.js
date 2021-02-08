@@ -18,7 +18,7 @@ class SetAvailability extends React.Component {
 
     this.state = {
       loading: false,
-      timezone: "(GMT-12:00) International Date Line West",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       currentUserId: '',
       availableSpecificTimeList: [],
       availableRecurrenceTimeList: [
@@ -81,34 +81,35 @@ class SetAvailability extends React.Component {
     this.getTimeListData();
   }
 
+  componentDidMount() {
+    console.log(this.state.timezone, "++++++++");
+  }
+
   handleAdd(dayIdx) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
-    list[dayIdx].timeList.push({ from: 0, to: 0 });
+    let { availableRecurrenceTimeList } = this.state;
+    availableRecurrenceTimeList[dayIdx].timeList.push({ fromTimeStr: "00:00 am", toTimeStr: "00:00 am" });
 
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList,
     });
   }
 
   handleDelete(dayIdx, idx) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
-
-    if (list[dayIdx].timeList.length === 1) {
-      list[dayIdx].timeList.splice(idx, 1);
+    let { availableRecurrenceTimeList } = this.state;
+    
+    if (availableRecurrenceTimeList[dayIdx].timeList.length === 1) {
+      availableRecurrenceTimeList[dayIdx].timeList.splice(idx, 1);
     } else {
-      list[dayIdx].timeList.splice(idx, 1);
+      availableRecurrenceTimeList[dayIdx].timeList.splice(idx, 1);
     }
 
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList,
     });
   }
 
   handleUpdateto(dayIdx, timeIdx, e) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
+    let { availableRecurrenceTimeList } = this.state;
     let timeId = 1;
     let timeStr = "";
     for (var i = 0; i < Timelinelist.length; i++) {
@@ -118,16 +119,15 @@ class SetAvailability extends React.Component {
       }
     }
 
-    list[dayIdx].timeList[timeIdx].to = timeId;
-    list[dayIdx].timeList[timeIdx].toStr = timeStr;
+    // list[dayIdx].timeList[timeIdx].to = timeId;
+    availableRecurrenceTimeList[dayIdx].timeList[timeIdx].toTimeStr = timeStr;
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList,
     });
   }
 
   handleUpdatefrom(dayIdx, timeIdx, e) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
+    let { availableRecurrenceTimeList } = this.state;
     let timeId = 1;
     let timeStr = "";
     for (var i = 0; i < Timelinelist.length; i++) {
@@ -137,10 +137,10 @@ class SetAvailability extends React.Component {
       }
     }
 
-    list[dayIdx].timeList[timeIdx].from = timeId;
-    list[dayIdx].timeList[timeIdx].fromStr = timeStr;
+    // list[dayIdx].timeList[timeIdx].from = timeId;
+    availableRecurrenceTimeList[dayIdx].timeList[timeIdx].fromTimeStr = timeStr;
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList: availableRecurrenceTimeList,
     });
   }
 
@@ -150,22 +150,11 @@ class SetAvailability extends React.Component {
 
   handleSave = async () => {
     const { availableRecurrenceTimeList, dayOfWeekStatus, timezone, availableSpecificTimeList } = this.state;
-    const curr = new Date();
 
     for (var i = 0; i < availableRecurrenceTimeList.length; i++) {
       availableRecurrenceTimeList[i].status = dayOfWeekStatus[i];
-      var week_date = new Date(curr.setDate(curr.getDate() - curr.getDay() + i));
-      for (let j = 0; j < availableRecurrenceTimeList[i].timeList.length; j++) {
-        let date_from = availableRecurrenceTimeList[i].timeList[j].fromStr.split(" ");
-        let date_to = availableRecurrenceTimeList[i].timeList[j].toStr.split(" ");
-        var date_from_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_from[0] + date_from[1] + date_from[2] + " " + date_from[3];
-        var date_to_timestamp = moment(week_date).format("YYYY-MM-DD ") + date_to[0] + date_to[1] + date_to[2] + " " + date_to[3];
-        
-        availableRecurrenceTimeList[i].timeList[j].fromTimestamp = new Date(date_from_timestamp).getTime()/1000;
-        availableRecurrenceTimeList[i].timeList[j].toTimestamp = new Date(date_to_timestamp).getTime()/1000;
-      }
     } 
-
+    console.log(this.state.timezone, "++++++++");
     let param = {
       email: localStorage.getItem('email'),
       timezone: timezone,
@@ -211,8 +200,8 @@ class SetAvailability extends React.Component {
     try {
       this.setState({ loading: true });
       const result = await getAvailableTimes(param);
-      console.log(result.data.data.specificList)
       if (result.data.result === "success") {
+        var availableSpecificTimeListTemp = [];
         var availableRecurrenceTimeListTemp = [
           {
             dayOfWeek: "Sunday",
@@ -255,10 +244,8 @@ class SetAvailability extends React.Component {
           for (var j = 0; j < availableRecurrenceTimeListTemp.length; j++) {
             if (result.data.data.recurrenceList[i].day_of_week === availableRecurrenceTimeListTemp[j].dayOfWeek) {
               availableRecurrenceTimeListTemp[j].timeList.push({
-                from: result.data.data.recurrenceList[i].fromTime,
-                to: result.data.data.recurrenceList[i].toTime,
-                fromStr: result.data.data.recurrenceList[i].fromTimeStr,
-                toStr: result.data.data.recurrenceList[i].toTimeStr,
+                fromTimeStr: result.data.data.recurrenceList[i].fromTimeStr,
+                toTimeStr: result.data.data.recurrenceList[i].toTimeStr,
                 status: result.data.data.recurrenceList[i].status === 1 ? true : false
               });
               availableRecurrenceTimeListTemp[j].status = result.data.data.recurrenceList[i].status === 1 ? true : false;
@@ -300,11 +287,34 @@ class SetAvailability extends React.Component {
             temp[6] = result.data.data.recurrenceList[i].status === 1 ? true : false;
             this.setState({ dayOfWeekStatus: temp });
           }
-          timezone = result.data.data.recurrenceList[i].timezone;
         }
+        
+        var specificTimes = result.data.data.specificList;
+        if (specificTimes.length) {
+          var sp_date = specificTimes[0].sp_date;
+          var timeList =[];
+          
+          for (var i = 0; i < specificTimes.length; i ++) {
+            if (sp_date == specificTimes[i].sp_date) {
+              timeList.push({fromTimeStr: specificTimes[i].fromTimeStr, toTimeStr: specificTimes[i].toTimeStr});
+            } else {
+              availableSpecificTimeListTemp.push({sp_date: sp_date, timeList: timeList})
+              sp_date = specificTimes[i].sp_date;
+              timeList = [];
+              timeList.push({fromTimeStr: specificTimes[i].fromTimeStr, toTimeStr: specificTimes[i].toTimeStr});
+            }
+          }
+          availableSpecificTimeListTemp.push({sp_date: sp_date, timeList: timeList});
+        }
+        
+        if (result.data.data.timezone)
+          timezone = result.data.data.timezone;
+        else
+          timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
         this.setState({
           availableRecurrenceTimeList: availableRecurrenceTimeListTemp,
-          availableSpecificTimeList: result.data.data.specificList,
+          availableSpecificTimeList: availableSpecificTimeListTemp,
           timezone: timezone
         });
       } else if (result.data.result === "warning") {
@@ -336,9 +346,7 @@ class SetAvailability extends React.Component {
   }
 
   handleChange(e, dayIdx, dayOfWeek) {
-    const { dayOfWeekStatus } = this.state;
-    let temp = dayOfWeekStatus;
-    // if(this.state.dayOfWeekStatus[dayOfWeek]) {
+    let { dayOfWeekStatus } = this.state;
     if (this.state.availableRecurrenceTimeList[dayOfWeek].status) {
       if (this.state.availableRecurrenceTimeList[dayOfWeek].timeList.length) {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
@@ -375,9 +383,9 @@ class SetAvailability extends React.Component {
         }
       }
     }
-    temp[dayOfWeek] = !this.state.availableRecurrenceTimeList[dayOfWeek].status;
+    dayOfWeekStatus[dayOfWeek] = !this.state.availableRecurrenceTimeList[dayOfWeek].status;
     this.setState({
-      dayOfWeekStatus: temp
+      dayOfWeekStatus
     });
   }
 
@@ -424,30 +432,27 @@ class SetAvailability extends React.Component {
   }
 
   addSpecificDate(date, timeList) {
-    const { availableSpecificTimeList } = this.state;
-    let temp = availableSpecificTimeList;
+    let { availableSpecificTimeList } = this.state;
     const buf = {
-      date: date,
+      sp_date: date,
       timeList: timeList
     };
-    
-    temp.push(buf);
+    console.log(timeList);
+    availableSpecificTimeList.push(buf);
 
     this.setState({
-      availableSpecificTimeList: temp
+      availableSpecificTimeList
     });
   }
 
   handleSpecificDelete(idx_date) {
-    const {availableSpecificTimeList} = this.state;
-    let temp = availableSpecificTimeList;
-
-    temp.splice(idx_date, 1);
-    if (!temp.length)
-      temp.splice(idx_date, 1);
+    let {availableSpecificTimeList} = this.state;
+    availableSpecificTimeList.splice(idx_date, 1);
+    if (!availableSpecificTimeList.length)
+    availableSpecificTimeList.splice(idx_date, 1);
 
     this.setState({
-      availableSpecificTimeList: temp
+      availableSpecificTimeList
     });
   }
 
@@ -475,7 +480,11 @@ class SetAvailability extends React.Component {
                       <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
                         {TimezoneOptions.map((item, idx) => {
                           return (
-                            item.value === timezone ? <option key={idx} value={item.value} selected> {item.name}</option> : <option key={idx} value={item.value}> {item.name}</option>
+                            item.value === timezone 
+                            ? 
+                              <option key={idx} value={item.value} selected> {item.name}</option>
+                            : 
+                              <option key={idx} value={item.value}> {item.name}</option>
                           );
                         })}
                       </FormSelect>
@@ -510,7 +519,7 @@ class SetAvailability extends React.Component {
                                     <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          time.from === item.id
+                                          time.fromTimeStr === item.str
                                             ? <option key={idx} vaule={item.id} selected>{item.str}</option>
                                             : <option key={idx} value={item.id}>{item.str}</option>
                                         );
@@ -521,7 +530,7 @@ class SetAvailability extends React.Component {
                                     <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          time.to === item.id
+                                          time.toTimeStr === item.str
                                             ? <option key={idx} value={item.id} selected>{item.str}</option>
                                             : <option key={idx} value={item.id}>{item.str}</option>
                                         );
@@ -591,14 +600,18 @@ class SetAvailability extends React.Component {
                 </Row>
                 {availableSpecificTimeList.map((item, idx_date) => {
                   return(
-                    <Row className="specific-date-table-content">
-                      <div style={{width: "150px"}}>{item.sp_date}</div>
-                      <div style={{width: "calc(100% - 200px)"}}>{item.fromTimeStr} - {item.toTimeStr}</div>
-                      <Button className="btn-available-time-add-delete no-padding"
-                        onClick={() => this.handleSpecificDelete(idx_date)}>
-                        <img src={DeleteButtonImage} alt="Delete" />
-                      </Button>
-                    </Row>
+                    item.timeList.map((time, idx_time) => {
+                      return (
+                        <Row className="specific-date-table-content">
+                          <div style={{width: "150px"}}>{item.sp_date}</div>
+                          <div style={{width: "calc(100% - 200px)"}}>{time.fromTimeStr} - {time.toTimeStr}</div>
+                          <Button className="btn-available-time-add-delete no-padding"
+                            onClick={() => this.handleSpecificDelete(idx_date, idx_time)}>
+                            <img src={DeleteButtonImage} alt="Delete" />
+                          </Button>
+                        </Row>
+                      )
+                    })
                   )
                 })}
               </Row>

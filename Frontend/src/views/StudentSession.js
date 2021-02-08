@@ -114,18 +114,16 @@ export default class StudentSession extends React.Component {
   }
 
   onChangeTags = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.tag_id = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.tag_id = e.target.value;
+    this.setState({ param });
     this.getSessionList();
   }
 
   onChangeDate = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.time = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.time = e.target.value;
+    this.setState({ param });
     this.getSessionList();
   }
 

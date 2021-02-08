@@ -165,26 +165,23 @@ export default class History extends React.Component {
   // }
 
   onChangeMentor(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.mentor_id = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.mentor_id = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 
   onChangeCategory(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.tag_id = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.tag_id = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 
   onChangeDate(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.time = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.time = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 

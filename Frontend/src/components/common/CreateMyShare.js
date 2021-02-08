@@ -29,10 +29,9 @@ export default class CreateMyShare extends React.Component {
   }
 
   componentWillMount() {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.email = localStorage.getItem('email');
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.email = localStorage.getItem('email');
+    this.setState({ foruminfo });
   }
 
   toggle() {
@@ -46,27 +45,24 @@ export default class CreateMyShare extends React.Component {
   }
 
   onChangeTitle = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.title = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.title = e.target.value;
+    this.setState({ foruminfo });
   }
 
   onChangeDescription = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.description = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.description = e.target.value;
+    this.setState({ foruminfo });
   }
 
   actionSave = async () => {
-    const { requiremessage } = this.state;
-    let temp = requiremessage;
-    temp.dtitle = '';
-    temp.ddescription = '';
+    let { requiremessage } = this.state;
+    requiremessage.dtitle = '';
+    requiremessage.ddescription = '';
 
     this.setState({
-      requiremessage: temp
+      requiremessage
     });
     try {
       this.setState({ loading: true });
@@ -79,16 +75,15 @@ export default class CreateMyShare extends React.Component {
         ToastsStore.warning(result.data.message);
       } else {
         if (result.data.type === 'require') {
-          const { requiremessage } = this.state;
-          let temp = requiremessage;
+          let { requiremessage } = this.state;
           if (result.data.message.title) {
-            temp.dtitle = result.data.message.title[0];
+            requiremessage.dtitle = result.data.message.title[0];
           }
           if (result.data.message.description) {
-            temp.ddescription = result.data.message.description[0];
+            requiremessage.ddescription = result.data.message.description[0];
           }
           this.setState({
-            requiremessage: temp
+            requiremessage
           });
         } else {
           ToastsStore.error(result.data.message);
@@ -156,11 +151,10 @@ export default class CreateMyShare extends React.Component {
         this.setState({ loading: true });
         const result = await uploadvideo(formData);
         if (result.data.result === "success") {
-          const { foruminfo } = this.state;
-          let temp = foruminfo;
-          temp.media_url = result.data.data;
-          temp.media_type = result.data.mimetype;
-          this.setState({ foruminfo: temp });
+          let { foruminfo } = this.state;
+          foruminfo.media_url = result.data.data;
+          foruminfo.media_type = result.data.mimetype;
+          this.setState({ foruminfo});
           ToastsStore.success("Upload Video Success");
         } else {
           ToastsStore.error();

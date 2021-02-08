@@ -247,7 +247,6 @@ export default class BookSession extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
   }
 
   render() {
