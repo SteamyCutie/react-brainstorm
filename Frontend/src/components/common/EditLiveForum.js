@@ -35,7 +35,7 @@ export default class EditLiveForum extends React.Component {
       selectedUsers: [],
       requiremessage: {
         dtitle: '',
-        ddescription: '',
+        description: '',
       },
     };
   }
@@ -61,10 +61,9 @@ export default class EditLiveForum extends React.Component {
     if (array.length > 30) {
       return;
     }
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.title = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.title = e.target.value;
+    this.setState({ foruminfo });
   }
 
   onChangeDescription = (e) => {
@@ -72,54 +71,45 @@ export default class EditLiveForum extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.description = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.description = e.target.value;
+    this.setState({ foruminfo });
   }
 
   setSelectedUsers = (e) => {
-    const { selectedUsers } = this.state;
-    var temp = selectedUsers;
-    temp = e;
+    var temp = e;
     this.setState({ selectedUsers: temp });
 
     if (e.length > 0) {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.students = [];
+      let { foruminfo } = this.state;
+      foruminfo.students = [];
       for (var i = 0; i < e.length; i++) {
-        temp1.students.push(e[i].value);
+        foruminfo.students.push(e[i].value);
       }
-      this.setState({ foruminfo: temp1 });
+      this.setState({ foruminfo });
     } else {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.students = [];
-      this.setState({ foruminfo: temp1 });
+      let { foruminfo } = this.state;
+      foruminfo.students = [];
+      this.setState({ foruminfo });
     }
   }
 
   setSelectedTags = (e) => {
-    console.log(e, "tags");
-    const { selectedTags } = this.state;
-    let temp = selectedTags;
-    temp = e;
+    let { selectedTags } = this.state;
+    let temp = e;
     this.setState({ selectedTags: temp });
 
     if (e.length > 0) {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.tags = [];
+      let { foruminfo } = this.state;
+      foruminfo.tags = [];
       for (var i = 0; i < e.length; i++) {
-        temp1.tags.push(e[i].value);
+        foruminfo.tags.push(e[i].value);
       }
-      this.setState({ foruminfo: temp1 });
+      this.setState({ foruminfo });
     } else {
-      const { foruminfo } = this.state;
-      let temp1 = foruminfo;
-      temp1.tags = [];
-      this.setState({ foruminfo: temp1 });
+      let { foruminfo } = this.state;
+      foruminfo.tags = [];
+      this.setState({ foruminfo });
     }
   }
 
@@ -203,38 +193,36 @@ export default class EditLiveForum extends React.Component {
   }
 
   actionEdit = async () => {
-    const { requiremessage, foruminfo } = this.state;
+    let { requiremessage, foruminfo } = this.state;
     const { toggle_editsuccess, toggle_editfail } = this.props;
-    let temp = requiremessage;
-    temp.dtitle = '';
-    temp.description = '';
+    requiremessage.dtitle = '';
+    requiremessage.description = '';
     this.setState({
-      requiremessage: temp
+      requiremessage
     });
     try {
       this.setState({ loading: true });
       const forum_start = foruminfo.day +" "+ foruminfo.from;
       const forum_end = foruminfo.day +" "+ foruminfo.to;
-      let temp = foruminfo;
-      temp.forum_start = new Date(forum_start).getTime()/1000;
-      temp.forum_end = new Date(forum_end).getTime()/1000;
-      this.setState({ foruminfo: temp });
+      
+      foruminfo.forum_start = new Date(forum_start).getTime()/1000;
+      foruminfo.forum_end = new Date(forum_end).getTime()/1000;
+      this.setState({ foruminfo });
       const result = await editforum(foruminfo);
       if (result.data.result === "success") {
         this.toggle();
         toggle_editsuccess("Edit Forum Success");
       } else {
         if (result.data.type === 'require') {
-          const { requiremessage } = this.state;
-          let temp = requiremessage;
+          let { requiremessage } = this.state;
           if (result.data.message.title) {
-            temp.dtitle = result.data.message.title[0];
+            requiremessage.dtitle = result.data.message.title[0];
           }
           if (result.data.message.description) {
-            temp.ddescription = result.data.message.description[0];
+            requiremessage.description = result.data.message.description[0];
           }
           this.setState({
-            requiremessage: temp
+            requiremessage
           });
         } else {
           if (result.data.message === "Token is Expired") {
@@ -295,21 +283,17 @@ export default class EditLiveForum extends React.Component {
     try {
       const result = await getforum({ id: id });
       if (result.data.result === "success") {
-        const { foruminfo } = this.state;
-        let temp = foruminfo;
-        temp.tags = result.data.data.tags;
-        temp.students = result.data.data.students_id;
-        temp.id = result.data.data.id;
-        temp.title = result.data.data.title;
-        temp.description = result.data.data.description;
-        // temp.from = result.data.data.from;
-        temp.from = moment(result.data.data.forum_start * 1000).format("H:mm");
-        // temp.to = result.data.data.to;
-        temp.to = moment(result.data.data.forum_end * 1000).format("H:mm");
-        // temp.day = result.data.data.day;
-        temp.day =  moment(result.data.data.forum_start * 1000).format("YYYY-MM-DD");        
+        let { foruminfo } = this.state;
+        foruminfo.tags = result.data.data.tags;
+        foruminfo.students = result.data.data.students_id;
+        foruminfo.id = result.data.data.id;
+        foruminfo.title = result.data.data.title;
+        foruminfo.description = result.data.data.description;
+        foruminfo.from = moment(result.data.data.forum_start * 1000).format("H:mm");
+        foruminfo.to = moment(result.data.data.forum_end * 1000).format("H:mm");
+        foruminfo.day =  moment(result.data.data.forum_start * 1000).format("YYYY-MM-DD");        
         
-        this.setState({ foruminfo: temp });
+        this.setState({ foruminfo });
         let param = {
           label: '',
           value: 0
@@ -362,27 +346,24 @@ export default class EditLiveForum extends React.Component {
   }
 
   onChangeDay = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
+    let { foruminfo } = this.state;
     let date = new Date(e);
     let displayday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-    temp.day = displayday;
-    this.setState({ foruminfo: temp });
+    foruminfo.day = displayday;
+    this.setState({ foruminfo });
     this.setState({ displayday: date });
   };
 
   onChangeFrom = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.from = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.from = e.target.value;
+    this.setState({ foruminfo });
   };
 
   onChangeTo = (e) => {
-    const { foruminfo } = this.state;
-    let temp = foruminfo;
-    temp.to = e.target.value;
-    this.setState({ foruminfo: temp });
+    let { foruminfo } = this.state;
+    foruminfo.to = e.target.value;
+    this.setState({ foruminfo });
   };
 
   render() {
@@ -402,9 +383,9 @@ export default class EditLiveForum extends React.Component {
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Description</label>
-              {this.state.requiremessage.ddescription !== '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
-              {this.state.requiremessage.ddescription !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
-              {this.state.requiremessage.ddescription === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
+              {this.state.requiremessage.description !== '' && <span className="require-message">{this.state.requiremessage.description}</span>}
+              {this.state.requiremessage.description !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
+              {this.state.requiremessage.description === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
             </div>
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
               <label htmlFor="feEmail">Tags</label>

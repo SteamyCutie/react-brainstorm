@@ -63,7 +63,6 @@ class MainNavbar extends React.Component{
   }
 
   render() {
-
     const { signInOpen, signUpOpen } = this.state;
 
     return (

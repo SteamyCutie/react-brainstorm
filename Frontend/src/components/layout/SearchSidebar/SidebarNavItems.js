@@ -37,7 +37,6 @@ class SidebarNavItems extends React.Component {
 
   render() {
     const { navSearchItems: items } = this.state;
-    // const { filterType } = this.props;
     return (
       <div className="nav-wrapper">
         <ul className="search-category" style={{paddingLeft: 65}}>

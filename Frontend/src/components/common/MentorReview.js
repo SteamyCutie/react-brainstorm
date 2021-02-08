@@ -35,32 +35,29 @@ class MentorReview extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const { reviewinfo } = this.state;
-    let temp = reviewinfo;
-    temp.review = e.target.value;
-    this.setState({ reviewinfo: temp });
+    let { reviewinfo } = this.state;
+    reviewinfo.review = e.target.value;
+    this.setState({ reviewinfo });
   }
 
   onChangeMark = (e, val) => {
     if (val == null)
       val = 0;
-    const { reviewinfo } = this.state;
-    let temp = reviewinfo;
-    temp.mark = val;
-    this.setState({ reviewinfo: temp });
+    let { reviewinfo } = this.state;
+    reviewinfo.mark = val;
+    this.setState({ reviewinfo });
   }
 
   actionSave = async (mentorid) => {
-    const { reviewinfo } = this.state;
+    let { reviewinfo } = this.state;
     reviewinfo.mentor_id = mentorid;
     reviewinfo.session_id = this.props.session.id;
     reviewinfo.conference_time = this.props.sessionTime;
     reviewinfo.email = localStorage.getItem('email');
-    const { requiremessage } = this.state;
-    let temp = requiremessage;
-    temp.dreview = '';
+    let { requiremessage } = this.state;
+    requiremessage.dreview = '';
     this.setState({
-      requiremessage: temp
+      requiremessage
     });
     try {
       this.setState({ loading: true });
@@ -73,13 +70,12 @@ class MentorReview extends React.Component {
         ToastsStore.warning(result.data.message);
       } else {
         if (result.data.type === 'require') {
-          const { requiremessage } = this.state;
-          let temp = requiremessage;
+          let { requiremessage } = this.state;
           if (result.data.message.review) {
-            temp.dreview = result.data.message.review[0];
+            requiremessage.dreview = result.data.message.review[0];
           }
           this.setState({
-            requiremessage: temp
+            requiremessage
           });
         } else {
           if (result.data.message === "Token is Expired") {

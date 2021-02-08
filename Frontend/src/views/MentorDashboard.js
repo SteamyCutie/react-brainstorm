@@ -36,7 +36,7 @@ export default class MentorDashboard extends React.Component {
     this.mentorRef = React.createRef();
 
     this.state = {
-      id: 0,
+      id: null,
       ModalOpen: false,
       totalCnt: 0,
       loading: false,
@@ -55,7 +55,6 @@ export default class MentorDashboard extends React.Component {
 
     this.availableTimes = TimeList.days;
     this.sendUser = this.sendUser.bind(this);
-    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -142,17 +141,16 @@ export default class MentorDashboard extends React.Component {
       this.setState({ loading: true });
       const result = await findmentorsbytagsorname(param);
       if (result.data.result === "success") {
-        const { mentors } = this.state;
-        var temp = mentors;
+        let { mentors } = this.state;
         if (concat) {
-          temp = temp.concat(result.data.data);
+          mentors = mentors.concat(result.data.data);
         } else {
-          temp = result.data.data;
+          mentors = result.data.data;
         }
 
         this.setState({
           loading: false,
-          mentors: temp,
+          mentors,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         }, () => {
           if (this.state.mentors.length >= result.data.totalRows) {
@@ -353,13 +351,13 @@ export default class MentorDashboard extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        {/* <BookSession open={ModalOpen} toggle={() => this.toggle()} id={id}></BookSession> */}
-        <BookSession2
-          id={id}
-          open={ModalOpen} 
-          toggle={() => this.toggle()} 
-          availableTimes={this.availableTimes}
-        />
+        { id &&
+          <BookSession2
+            id={id}
+            open={ModalOpen} 
+            toggle={() => this.toggle()} 
+          />
+        }
         <OutcomingCallDesc
           id={id}
           open={ModalCallWithDescOpen}

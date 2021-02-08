@@ -42,42 +42,37 @@ export default class AddNewBank extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const {bankinfo} = this.state;
-    let temp = bankinfo;
-    temp.name = e.target.value;
-    this.setState({bankinfo: temp});
+    let {bankinfo} = this.state;
+    bankinfo.name = e.target.value;
+    this.setState({bankinfo});
   }
 
   onChangeNumber = (e) => {
-    const {bankinfo} = this.state;
-    let temp = bankinfo;
-    temp.number = e.target.value;
-    this.setState({bankinfo: temp});
+    let {bankinfo} = this.state;
+    bankinfo.number = e.target.value;
+    this.setState({bankinfo});
   }
 
   onChangeIFSC = (e) => {
-    const {bankinfo} = this.state;
-    let temp = bankinfo;
-    temp.ifsc = e.target.value;
-    this.setState({bankinfo: temp});
+    let {bankinfo} = this.state;
+    bankinfo.ifsc = e.target.value;
+    this.setState({bankinfo});
   }
 
   onChangeSWIFT = (e) => {
-    const {bankinfo} = this.state;
-    let temp = bankinfo;
-    temp.swift = e.target.value;
-    this.setState({bankinfo: temp});
+    let {bankinfo} = this.state;
+    bankinfo.swift = e.target.value;
+    this.setState({bankinfo});
   }
 
   actionAdd = async() => {
-    const { bankinfo, requiremessage } = this.state;
+    let { bankinfo, requiremessage } = this.state;
     const { toggle_success, toggle_fail, toggle_warning} = this.props;
 
-    let temp = requiremessage;
-    temp.dname = '';
-    temp.dnumber = '';
-    temp.difsc = '';
-    temp.dswift = '';
+    requiremessage.dname = '';
+    requiremessage.dnumber = '';
+    requiremessage.difsc = '';
+    requiremessage.dswift = '';
     let param = {
       user_id: localStorage.getItem('user_id'),
       bank_name: bankinfo.name,
@@ -98,23 +93,22 @@ export default class AddNewBank extends React.Component {
         toggle_warning(result.data.message);
       } else {
         if (result.data.type === "require") {
-          const {requiremessage} = this.state;
-          let temp = requiremessage;
+          let {requiremessage} = this.state;
           if (result.data.message.card_name) {
-            temp.dname = result.data.message.card_name[0];
+            requiremessage.dname = result.data.message.card_name[0];
           }
           if (result.data.message.card_number) {
-            temp.dnumber = result.data.message.card_number[0];
+            requiremessage.dnumber = result.data.message.card_number[0];
           }
           if (result.data.message.cvc_code) {
             temp.dcode = result.data.message.cvc_code[0];
           }
           if (result.data.message.card_expiration) {
-            temp.ddate = result.data.message.card_expiration[0];
+            requiremessage.ddate = result.data.message.card_expiration[0];
           }
           
           this.setState({
-            requiremessage: temp
+            requiremessage
           });
         } else {
           if (result.data.message === "Token is Expired") {

@@ -39,7 +39,6 @@ class SearchMentorDetailCard extends React.Component {
 
   render() {
     const {name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
-    // const {ModalOpenReview} = this.state;
 
     return (
       <div className="mentor-detail-card">

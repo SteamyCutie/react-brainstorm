@@ -7,7 +7,7 @@ import { ToastsStore } from 'react-toasts';
 import 'react-calendar/dist/Calendar.css';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import PublicIcon from '@material-ui/icons/Public';
-import { setbookedtime, signout } from '../../api/api'
+import { setbookedtime, signout, getavailabletimeslots } from '../../api/api'
 
 moment.locale('en');
 
@@ -18,8 +18,10 @@ export default class BookSession2 extends React.Component {
       currentDate: "", 
       displayDate: "",
       showBookingComponents: false,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       startDateTime: "",
-      timeList: [],
+      description: "",
+      timeSlots: [],
       duration: 0
     };
   }
@@ -46,12 +48,12 @@ export default class BookSession2 extends React.Component {
   }
 
   getAvailableTimes(currentDate) {
-    const { availableTimes } = this.props;
+    const { timeSlots } = this.state;
     let timeList = [];
 
-    for (var i in availableTimes) {
-      if (currentDate === availableTimes[i].date) {
-        timeList = availableTimes[i].spots;
+    for (var i in timeSlots) {
+      if (currentDate === timeSlots[i].date) {
+        timeList = timeSlots[i].spots;
         break;
       }
     }
@@ -60,11 +62,9 @@ export default class BookSession2 extends React.Component {
   }
 
   handleTimeClick(time) {
-    const { currentDate } = this.state;
-
     this.setState({
       showBookingComponents: true,
-      startDateTime: time.start_time, 
+      startDateTime: time, 
     })
   }
 
@@ -96,12 +96,14 @@ export default class BookSession2 extends React.Component {
   }
 
   handleBookSession = async () => {
-    const { startDateTime, duration } = this.state;
+    const { startDateTime, duration, description, timezone } = this.state;
     const api_param = {
       user_id: localStorage.getItem("user_id"),
       mentor_id: this.props.id,
       start: startDateTime,
-      duration: duration
+      duration: duration,
+      description: description,
+      timezone: timezone
     };
 
     try {
@@ -131,37 +133,89 @@ export default class BookSession2 extends React.Component {
     this.toggle();
   }
 
+  getAvailableTimeSlots = async (api_param) => {
+    try {
+      const result = await getavailabletimeslots(api_param);
+
+      if (result.data.result === "success") {
+        this.setState({timeSlots: result.data.data});
+        // ToastsStore.success("Booking Session Success");
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          // this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          // this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          // this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
+      }
+    } catch (err) {
+      ToastsStore.error("Something Went wrong");
+    }
+  }
+
   onActiveStartDateChange(param) {
     let currentDate = new Date();
     let startDate = moment(param.activeStartDate);
-    let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("MM-DD-YYYY");
+    let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("YYYY-MM-DD");
     if (currentDate.getMonth() == startDate.month()) {
       startDate = moment(currentDate);
     }
 
     const api_param = {
-      startDate: startDate.format("MM-DD-YYYY"),
+      userId: this.props.id,
+      startDate: startDate.format("YYYY-MM-DD"),
       endDate: endDate,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
-    console.log(api_param, "++++++")
+
+    this.getAvailableTimeSlots(api_param);
   }
 
   componentDidMount() {
     let startDate = moment();
-    let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("MM-DD-YYYY");
+    let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("YYYY-MM-DD");
 
     const api_param = {
-      startDate: startDate.format("MM-DD-YYYY"),
+      userId: this.props.id,
+      startDate: startDate.format("YYYY-MM-DD"),
       endDate: endDate,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
-    console.log(api_param, "159")
+
+    this.getAvailableTimeSlots(api_param);
+  }
+
+  getAvailableTimeSlots() {
+    let startDate = moment();
+    let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("YYYY-MM-DD");
+
+    const api_param = {
+      userId: this.props.id,
+      startDate: startDate.format("YYYY-MM-DD"),
+      endDate: endDate,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+
+    this.getAvailableTimeSlots(api_param);
   }
 
   handleDurationChange(eve) {
     this.setState({
       duration: parseInt(eve.target.value)
+    });
+  }
+
+  handleDescriptionChange(eve) {
+    this.setState({
+      description: eve.target.value
     });
   }
 
@@ -206,7 +260,7 @@ export default class BookSession2 extends React.Component {
                     {availableTimes.map((time, idx) => {
                       return (
                         <Button key={idx} className="btn-mentor-detail-time-book" onClick={() => this.handleTimeClick(time)}>
-                          {moment(time.start_time).format("LT").toString()}
+                          {moment(time).format("LT").toString()}
                         </Button>
                       )
                     })}
@@ -217,7 +271,7 @@ export default class BookSession2 extends React.Component {
             {showBookingComponents && 
               <Row className="booking-components">
                 <label>Please share anything that will help prepare for our meeting.</label>
-                <FormTextarea className="booking-components-comment" />
+                <FormTextarea className="booking-components-comment" onChange={(eve) => this.handleDescriptionChange(eve)}/>
                 <Col>
                   <label><CalendarTodayIcon style={{ fontSize: "30px", color: "#04B5FA", marginRight: "10px"}} />
                     {moment(startDateTime).format("h:mm A, dddd, MMMM, DD, YYYY").toString()}
