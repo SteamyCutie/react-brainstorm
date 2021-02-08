@@ -141,17 +141,16 @@ export default class MentorDashboard extends React.Component {
       this.setState({ loading: true });
       const result = await findmentorsbytagsorname(param);
       if (result.data.result === "success") {
-        const { mentors } = this.state;
-        var temp = mentors;
+        let { mentors } = this.state;
         if (concat) {
-          temp = temp.concat(result.data.data);
+          mentors = mentors.concat(result.data.data);
         } else {
-          temp = result.data.data;
+          mentors = result.data.data;
         }
 
         this.setState({
           loading: false,
-          mentors: temp,
+          mentors,
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         }, () => {
           if (this.state.mentors.length >= result.data.totalRows) {

@@ -93,23 +93,20 @@ class AvailableTimes extends React.Component {
   }
 
   handleAdd() {
-    const {availableTimeList} = this.state;
-    let timeList = availableTimeList;
-    timeList.push([0, 0]);
+    let {availableTimeList} = this.state;
+    availableTimeList.push([0, 0]);
 
     this.setState({
-      availableTimeList: timeList,
+      availableTimeList,
     });
   }
 
   handleDelete(idx) {
-    const {availableTimeList} = this.state;
-    let timeList = availableTimeList;
-    timeList.splice(idx, 1);
-
+    let {availableTimeList} = this.state;
+    availableTimeList.splice(idx, 1);
 
     this.setState({
-      availableTimeList: timeList,
+      availableTimeList
     });
   }
 

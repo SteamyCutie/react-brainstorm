@@ -69,10 +69,9 @@ export default class MySharePage extends React.Component {
   }
 
   componentWillMount() {
-    const { param } = this.state;
-    let temp = param;
-    temp.email = localStorage.getItem('email');
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.email = localStorage.getItem('email');
+    this.setState({ param });
     this.getUserInformation();
     this.getAllTags();
     this.getAllLanguages();
@@ -87,23 +86,22 @@ export default class MySharePage extends React.Component {
       this.setState({ loading: true });
       const result = await getuserinfo({ email: localStorage.getItem('email') });
       if (result.data.result === "success") {
-        const { param } = this.state;
-        let temp = param;
-        temp.name = result.data.data.name;
-        temp.phone = result.data.data.phone;
-        temp.birthday = (result.data.data.dob === null || result.data.data.dob === "") ? '2020-01-01' : result.data.data.dob;
-        temp.email = result.data.data.email;
-        temp.avatar = result.data.data.avatar;
-        temp.description = result.data.data.description;
-        temp.hourlyprice = result.data.data.hourly_price;
-        temp.subpagename = result.data.data.sub_page_name;
-        temp.subplanfee = result.data.data.sub_plan_fee;
-        temp.videourl = result.data.data.video_url;
-        temp.expertise = result.data.data.expertise;
-        temp.instantcall = result.data.data.instant_call;
-        temp.is_mentor = result.data.data.is_mentor;
-        temp.tags = result.data.data.tags;
-        temp.language = result.data.data.language;
+        let { param } = this.state;
+        param.name = result.data.data.name;
+        param.phone = result.data.data.phone;
+        param.birthday = (result.data.data.dob === null || result.data.data.dob === "") ? '2020-01-01' : result.data.data.dob;
+        param.email = result.data.data.email;
+        param.avatar = result.data.data.avatar;
+        param.description = result.data.data.description;
+        param.hourlyprice = result.data.data.hourly_price;
+        param.subpagename = result.data.data.sub_page_name;
+        param.subplanfee = result.data.data.sub_plan_fee;
+        param.videourl = result.data.data.video_url;
+        param.expertise = result.data.data.expertise;
+        param.instantcall = result.data.data.instant_call;
+        param.is_mentor = result.data.data.is_mentor;
+        param.tags = result.data.data.tags;
+        param.language = result.data.data.language;
 
         let param1 = {
           label: '',
@@ -125,7 +123,7 @@ export default class MySharePage extends React.Component {
           param1 = {};
         }
         this.setState({
-          param: temp,
+          param,
           displaygethourlyprice: (parseFloat(result.data.data.hourly_price) * 0.8).toFixed(2),
           displaycuthourlyprice: (parseFloat(result.data.data.hourly_price) * 0.2).toFixed(2),
           displaygetplanfee: (parseFloat(result.data.data.sub_plan_fee) * 0.8).toFixed(2),
@@ -233,71 +231,61 @@ export default class MySharePage extends React.Component {
   }
 
   onChangeTags = (e) => {
-    const { selectedTags } = this.state;
-    let temp = selectedTags;
-    temp = e;
+    let temp = e;
     this.setState({ selectedTags: temp });
 
     if (e.length > 0) {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.tags = [];
+      let { param } = this.state;
+      param.tags = [];
       for (var i = 0; i < e.length; i++) {
-        temp1.tags.push(e[i].value);
+        param.tags.push(e[i].value);
       }
-      this.setState({ param: temp1 });
+      this.setState({ param });
     } else {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.tags = [];
-      this.setState({ param: temp1 });
+      let { param } = this.state;
+      param.tags = [];
+      this.setState({ param });
     }
   }
 
   onChangeLanguages = (e) => {
-    const { selectedLanguages } = this.state;
-    let temp = selectedLanguages;
-    temp = e;
+    let temp = e;
     this.setState({ selectedLanguages: temp });
 
     if (e.length > 0) {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.language = [];
+      let { param } = this.state;
+      param.language = [];
       for (var i = 0; i < e.length; i++) {
-        temp1.language.push(e[i].value);
+        param.language.push(e[i].value);
       }
-      this.setState({ param: temp1 });
+      this.setState({ param });
     } else {
-      const { param } = this.state;
-      let temp1 = param;
-      temp1.language = [];
-      this.setState({ param: temp1 });
+      let { param } = this.state;
+      param.language = [];
+      this.setState({ param });
     }
   }
 
   onChangeExpertise = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.expertise = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.expertise = e.target.value;
+    this.setState({ param });
   }
 
   actionSave = async () => {
-    const { requiremessage, param } = this.state;
-    let temp = requiremessage;
-    temp.dname = '';
-    temp.demail = '';
-    temp.dexpertise = '';
-    temp.dcategory = '';
-    temp.dage = '';
-    temp.dsubcategory = '';
-    temp.dhourlyprice = '';
-    temp.dsubpagename = '';
-    temp.dsubplanfee = '';
-    temp.videourl = '';
+    let { requiremessage, param } = this.state;
+    requiremessage.dname = '';
+    requiremessage.demail = '';
+    requiremessage.dexpertise = '';
+    requiremessage.dcategory = '';
+    requiremessage.dage = '';
+    requiremessage.dsubcategory = '';
+    requiremessage.dhourlyprice = '';
+    requiremessage.dsubpagename = '';
+    requiremessage.dsubplanfee = '';
+    requiremessage.videourl = '';
     this.setState({
-      requiremessage: temp
+      requiremessage
     });
     try {
       this.setState({ loading: true });
@@ -312,40 +300,39 @@ export default class MySharePage extends React.Component {
         ToastsStore.warning(result.data.message);
       } else {
         if (result.data.type === "require") {
-          const { requiremessage } = this.state;
-          let temp = requiremessage;
+          let { requiremessage } = this.state;
           if (result.data.message.name) {
-            temp.dname = result.data.message.name[0];
+            requiremessage.dname = result.data.message.name[0];
           }
           if (result.data.message.email) {
-            temp.demail = result.data.message.email[0];
+            requiremessage.demail = result.data.message.email[0];
           }
           if (result.data.message.expertise) {
-            temp.dexpertise = result.data.message.expertise[0];
+            requiremessage.dexpertise = result.data.message.expertise[0];
           }
           if (result.data.message.expertise) {
-            temp.dcategory = result.data.message.category[0];
+            requiremessage.dcategory = result.data.message.category[0];
           }
           if (result.data.message.expertise) {
-            temp.dage = result.data.message.minimum_age[0];
+            requiremessage.dage = result.data.message.minimum_age[0];
           }
           if (result.data.message.expertise) {
-            temp.dsubcategory = result.data.message.subcategory[0];
+            requiremessage.dsubcategory = result.data.message.subcategory[0];
           }
           if (result.data.message.hourlyprice) {
-            temp.dhourlyprice = result.data.message.hourlyprice[0];
+            requiremessage.dhourlyprice = result.data.message.hourlyprice[0];
           }
           if (result.data.message.subpagename) {
-            temp.dsubpagename = result.data.message.subpagename[0];
+            requiremessage.dsubpagename = result.data.message.subpagename[0];
           }
           if (result.data.message.subplanfee) {
-            temp.dsubplanfee = result.data.message.subplanfee[0];
+            requiremessage.dsubplanfee = result.data.message.subplanfee[0];
           }
           if (result.data.message.videourl) {
-            temp.videourl = result.data.message.videourl[0];
+            requiremessage.videourl = result.data.message.videourl[0];
           }
           this.setState({
-            requiremessage: temp
+            requiremessage
           });
         } else {
           if (result.data.message === "Token is Expired") {
@@ -374,34 +361,30 @@ export default class MySharePage extends React.Component {
     if (array.length > 30) {
       return;
     }
-    const { param } = this.state;
-    let temp = param;
-    temp.name = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.name = e.target.value;
+    this.setState({ param });
   };
 
   onChangePhoneNumber = (phone) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.phone = phone;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.phone = phone;
+    this.setState({ param });
   };
 
   onChangeBirthDay = (e) => {
-    const { param } = this.state;
-    let temp = param;
+    let { param } = this.state;
     let date = new Date(e);
     let displaydate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-    temp.birthday = displaydate;
-    this.setState({ param: temp });
+    param.birthday = displaydate;
+    this.setState({ param });
     this.setState({ displaydate: date });
   };
 
   onChangeEmail = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.email = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.email = e.target.value;
+    this.setState({ param });
   }
 
   onChangeDescription = (e) => {
@@ -409,37 +392,32 @@ export default class MySharePage extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const { param } = this.state;
-    let temp = param;
-    temp.description = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.description = e.target.value;
+    this.setState({ param });
   }
 
   onChangeCategory = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.catetory = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.catetory = e.target.value;
+    this.setState({ param });
   }
 
   onChangeSubcategory = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.subcategory = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.subcategory = e.target.value;
+    this.setState({ param });
   }
 
   onChangeAge = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.minimum_age = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.minimum_age = e.target.value;
+    this.setState({ param });
   }
 
   onChangeHourlyPrice = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.hourlyprice = e.target.value;
+    let { param } = this.state;
+    param.hourlyprice = e.target.value;
     let displaygethourlyprice, displaycuthourlyprice = '';
     if (e.target.value === '') {
       displaygethourlyprice = '0.00';
@@ -449,7 +427,7 @@ export default class MySharePage extends React.Component {
       displaycuthourlyprice = (parseFloat(e.target.value) * 0.2).toFixed(2);
     }
 
-    this.setState({ param: temp });
+    this.setState({ param });
     this.setState({ displaygethourlyprice: displaygethourlyprice });
     this.setState({ displaycuthourlyprice: displaycuthourlyprice });
   }
@@ -459,16 +437,14 @@ export default class MySharePage extends React.Component {
     if (array.length > 50) {
       return;
     }
-    const { param } = this.state;
-    let temp = param;
-    temp.subpagename = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.subpagename = e.target.value;
+    this.setState({ param });
   }
 
   onChangeSubPlanFee = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.subplanfee = e.target.value;
+    let { param } = this.state;
+    param.subplanfee = e.target.value;
     let displaygetplanfee, displaycutplanfee = '';
     if (e.target.value === '') {
       displaygetplanfee = '0.00';
@@ -477,23 +453,21 @@ export default class MySharePage extends React.Component {
       displaygetplanfee = (parseFloat(e.target.value) * 0.8).toFixed(2);
       displaycutplanfee = (parseFloat(e.target.value) * 0.2).toFixed(2);
     }
-    this.setState({ param: temp });
+    this.setState({ param });
     this.setState({ displaygetplanfee: displaygetplanfee });
     this.setState({ displaycutplanfee: displaycutplanfee });
   }
 
   onChangeVideoUrl = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.videourl = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.videourl = e.target.value;
+    this.setState({ param });
   }
 
   onChangeInstantCall = (e) => {
-    const { param } = this.state;
-    let temp = param;
-    temp.instantcall = !param.instantcall;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.instantcall = !param.instantcall;
+    this.setState({ param });
   }
 
   onDrop() {
@@ -510,10 +484,9 @@ export default class MySharePage extends React.Component {
       this.setState({ loading: true });
       const result = await uploadimage(formData);
       if (result.data.result === "success") {
-        const { param } = this.state;
-        let temp = param;
-        temp.avatar = result.data.data;
-        this.setState({ param: temp });
+        let { param } = this.state;
+        param.avatar = result.data.data;
+        this.setState({ param });
         ToastsStore.success("Change Avatar Success");
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
@@ -572,9 +545,7 @@ export default class MySharePage extends React.Component {
   }
 
   setSelectedAge = (e) => {
-    const { selectedAge } = this.state;
-    let temp = selectedAge;
-    temp = e;
+    let temp = e;
     this.setState({ selectedAge: temp });
   }
 

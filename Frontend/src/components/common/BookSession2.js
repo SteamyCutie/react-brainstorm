@@ -62,8 +62,6 @@ export default class BookSession2 extends React.Component {
   }
 
   handleTimeClick(time) {
-    const { currentDate } = this.state;
-
     this.setState({
       showBookingComponents: true,
       startDateTime: time, 
@@ -140,7 +138,6 @@ export default class BookSession2 extends React.Component {
       const result = await getavailabletimeslots(api_param);
 
       if (result.data.result === "success") {
-        // console.log(result.data.data, "++++++++++++");
         this.setState({timeSlots: result.data.data});
         // ToastsStore.success("Booking Session Success");
       } else if (result.data.result === "warning") {

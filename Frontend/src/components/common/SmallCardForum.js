@@ -51,7 +51,6 @@ class SmallCardForum extends React.Component {
   }
 
   toggle_startliveforum() {
-    // window.open("/room-call");
     const { startSession } = this.props;
     startSession("1234");
   }

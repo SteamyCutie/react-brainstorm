@@ -129,66 +129,24 @@ export default class MentorHistory extends React.Component {
     };
   }
 
-  // getMentors = async() => {
-  //   let param = {
-  //     email: localStorage.getItem('email')
-  //   }
-  //   try {
-  //     this.setState({loading: true});
-  //     const result = await getallmentors(param);
-  //     if (result.data.result === "success") {
-  //       this.setState({
-  //         loading: false,
-  //         mentors: result.data.data,
-  //       });
-  //     } else if (result.data.result === "warning") {
-  //       ToastsStore.warning(result.data.message);
-  //     } else {
-  //       if (result.data.message === "Token is Expired") {
-  //         ToastsStore.error(result.data.message);
-  //         this.signout();
-  //       } else if (result.data.message === "Token is Invalid") {
-  //         ToastsStore.error(result.data.message);
-  //         this.signout();
-  //       } else if (result.data.message === "Authorization Token not found") {
-  //         ToastsStore.error(result.data.message);
-  //         this.signout();
-  //       } else {
-  //         ToastsStore.error(result.data.message);
-  //       }
-  //     }
-  //     this.setState({loading: false});
-  //   } catch(err) {
-  //     this.setState({loading: false});
-  //     ToastsStore.error("Something Went wrong");
-  //   };
-  // }
-
-  // getHistoryList(e, value) {
-  //   this.getMentors(value);
-  // }
-
   onChangeMentor(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.mentor_id = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.mentor_id = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 
   onChangeCategory(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.tag_id = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.tag_id = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 
   onChangeDate(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.time = e.target.value;
-    this.setState({ param: temp });
+    let { param } = this.state;
+    param.time = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 

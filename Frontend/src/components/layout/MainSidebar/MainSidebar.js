@@ -42,7 +42,6 @@ class MainSidebar extends React.Component {
     
     const classes = classNames(
       JSON.parse(localStorage.getItem('user-type')) ? "main-sidebar-mentor" : "main-sidebar",
-      // "main-sidebar",
       "px-0",
       "col-12",
       "main-sidebar-class",

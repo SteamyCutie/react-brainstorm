@@ -86,33 +86,30 @@ class SetAvailability extends React.Component {
   }
 
   handleAdd(dayIdx) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
-    list[dayIdx].timeList.push({ fromTimeStr: "00:00 am", toTimeStr: "00:00 am" });
+    let { availableRecurrenceTimeList } = this.state;
+    availableRecurrenceTimeList[dayIdx].timeList.push({ fromTimeStr: "00:00 am", toTimeStr: "00:00 am" });
 
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList,
     });
   }
 
   handleDelete(dayIdx, idx) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
-
-    if (list[dayIdx].timeList.length === 1) {
-      list[dayIdx].timeList.splice(idx, 1);
+    let { availableRecurrenceTimeList } = this.state;
+    
+    if (availableRecurrenceTimeList[dayIdx].timeList.length === 1) {
+      availableRecurrenceTimeList[dayIdx].timeList.splice(idx, 1);
     } else {
-      list[dayIdx].timeList.splice(idx, 1);
+      availableRecurrenceTimeList[dayIdx].timeList.splice(idx, 1);
     }
 
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList,
     });
   }
 
   handleUpdateto(dayIdx, timeIdx, e) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
+    let { availableRecurrenceTimeList } = this.state;
     let timeId = 1;
     let timeStr = "";
     for (var i = 0; i < Timelinelist.length; i++) {
@@ -123,15 +120,14 @@ class SetAvailability extends React.Component {
     }
 
     // list[dayIdx].timeList[timeIdx].to = timeId;
-    list[dayIdx].timeList[timeIdx].toTimeStr = timeStr;
+    availableRecurrenceTimeList[dayIdx].timeList[timeIdx].toTimeStr = timeStr;
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList,
     });
   }
 
   handleUpdatefrom(dayIdx, timeIdx, e) {
-    const { availableRecurrenceTimeList } = this.state;
-    let list = availableRecurrenceTimeList;
+    let { availableRecurrenceTimeList } = this.state;
     let timeId = 1;
     let timeStr = "";
     for (var i = 0; i < Timelinelist.length; i++) {
@@ -142,9 +138,9 @@ class SetAvailability extends React.Component {
     }
 
     // list[dayIdx].timeList[timeIdx].from = timeId;
-    list[dayIdx].timeList[timeIdx].fromTimeStr = timeStr;
+    availableRecurrenceTimeList[dayIdx].timeList[timeIdx].fromTimeStr = timeStr;
     this.setState({
-      availableRecurrenceTimeList: list,
+      availableRecurrenceTimeList: availableRecurrenceTimeList,
     });
   }
 
@@ -350,9 +346,7 @@ class SetAvailability extends React.Component {
   }
 
   handleChange(e, dayIdx, dayOfWeek) {
-    const { dayOfWeekStatus } = this.state;
-    let temp = dayOfWeekStatus;
-    // if(this.state.dayOfWeekStatus[dayOfWeek]) {
+    let { dayOfWeekStatus } = this.state;
     if (this.state.availableRecurrenceTimeList[dayOfWeek].status) {
       if (this.state.availableRecurrenceTimeList[dayOfWeek].timeList.length) {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
@@ -389,9 +383,9 @@ class SetAvailability extends React.Component {
         }
       }
     }
-    temp[dayOfWeek] = !this.state.availableRecurrenceTimeList[dayOfWeek].status;
+    dayOfWeekStatus[dayOfWeek] = !this.state.availableRecurrenceTimeList[dayOfWeek].status;
     this.setState({
-      dayOfWeekStatus: temp
+      dayOfWeekStatus
     });
   }
 
@@ -438,30 +432,27 @@ class SetAvailability extends React.Component {
   }
 
   addSpecificDate(date, timeList) {
-    const { availableSpecificTimeList } = this.state;
-    let temp = availableSpecificTimeList;
+    let { availableSpecificTimeList } = this.state;
     const buf = {
       sp_date: date,
       timeList: timeList
     };
     console.log(timeList);
-    temp.push(buf);
+    availableSpecificTimeList.push(buf);
 
     this.setState({
-      availableSpecificTimeList: temp
+      availableSpecificTimeList
     });
   }
 
   handleSpecificDelete(idx_date) {
-    const {availableSpecificTimeList} = this.state;
-    let temp = availableSpecificTimeList;
-
-    temp.splice(idx_date, 1);
-    if (!temp.length)
-      temp.splice(idx_date, 1);
+    let {availableSpecificTimeList} = this.state;
+    availableSpecificTimeList.splice(idx_date, 1);
+    if (!availableSpecificTimeList.length)
+    availableSpecificTimeList.splice(idx_date, 1);
 
     this.setState({
-      availableSpecificTimeList: temp
+      availableSpecificTimeList
     });
   }
 
