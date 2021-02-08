@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\PostedNotification;
 use Illuminate\Http\Request;
 use App\Models\AvailableTimes;
 use App\Models\SpecificDate;
@@ -98,15 +99,15 @@ class AvailableTimesController extends Controller
     $user = User::where('email', $email)->first();
     $recurrenceList = $request['recurrence'];
     $specificList = $request['specific_date'];
-    DB::table('available_times')->where('user_id', $user['id'])->truncate();
-    DB::table('specific_dates')->where('user_id', $user['id'])->truncate();
+    DB::table('available_times')->where('user_id', $user['id'])->delete();
+    DB::table('specific_dates')->where('user_id', $user['id'])->delete();
     for ($i = 0; $i < count($recurrenceList); $i ++) {
       for ($j = 0; $j < count($recurrenceList[$i]['timeList']); $j ++) {
         AvailableTimes::create([
           'user_id' => $user['id'],
           'day_of_week' => $recurrenceList[$i]['dayOfWeek'],
-          'fromTimeStr' => $recurrenceList[$i]['timeList'][$j]['fromTimeStr'],
-          'toTimeStr' => $recurrenceList[$i]['timeList'][$j]['toTimeStr'],
+          'fromTimeStr' => $recurrenceList[$i]['timeList'][$j]['fromTimeStr'] == "00:00 am" ? "12:00 am" : $recurrenceList[$i]['timeList'][$j]['fromTimeStr'],
+          'toTimeStr' => $recurrenceList[$i]['timeList'][$j]['toTimeStr'] == "00:00 am" ? "12:00 am" : $recurrenceList[$i]['timeList'][$j]['toTimeStr'],
           'status' => $recurrenceList[$i]['status'],
           'timezone' => $timeZone,
         ]);
@@ -118,8 +119,8 @@ class AvailableTimesController extends Controller
         SpecificDate::create([
           'user_id' => $user['id'],
           'sp_date' => $specificList[$i]['sp_date'],
-          'fromTimeStr' => $specificList[$i]['timeList'][$j]['fromTimeStr'],
-          'toTimeStr' => $specificList[$i]['timeList'][$j]['toTimeStr'],
+          'fromTimeStr' => $specificList[$i]['timeList'][$j]['fromTimeStr'] == "00:00 am" ? "12:00 am" : $specificList[$i]['timeList'][$j]['fromTimeStr'],
+          'toTimeStr' => $specificList[$i]['timeList'][$j]['toTimeStr'] == "00:00 am" ? "12:00 am" : $specificList[$i]['timeList'][$j]['toTimeStr'],
           'timezone' => $timeZone,
         ]);
       }
@@ -151,10 +152,19 @@ class AvailableTimesController extends Controller
       $bookingDate = $request->start;
       $description = $request->description;
       $student_timezone = $request->timezone;
-      $mentorInfo = AvailableTimes::where('user_id', $mentor_id)->first();
-      $mentor_timezone = $mentorInfo->timezone;
-      
-      $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, (new DateTime($bookingDate))->format('Y-m-d'), (new DateTime($bookingDate))->format('Y-m-d'));
+  
+      $mentorInfoAvail = AvailableTimes::where('user_id', $mentor_id)->first();
+      $mentorInfoSpecific = SpecificDate::where('user_id', $mentor_id)->first();
+      $mentor_timezone = "";
+      if ($mentorInfoAvail) {
+        $mentor_timezone = $mentorInfoAvail->timezone;
+      }
+      if ($mentorInfoSpecific) {
+        $mentor_timezone = $mentorInfoSpecific->timezone;
+      }
+    
+  
+    $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, (new DateTime($bookingDate))->format('Y-m-d'), (new DateTime($bookingDate))->format('Y-m-d'));
       $availableTimeList1 = $availableTimeList2 = $availableTimeList3 = [];
       for ($indexDay = 1; $indexDay < count($dateList) - 1; $indexDay++) {
         $availableTimeList1 = $availableTimeList2 = $availableTimeList3 = [];
@@ -171,13 +181,45 @@ class AvailableTimesController extends Controller
       $booked_timeList = $this->getBookingTimeList($bookingDate, $bookingDate);
       
       if ($this->isBookableTime($bookingDate, $duration, $mentor_timezone, $student_timezone, $availableTimeList1, $availableTimeList2, $availableTimeList3, $booked_timeList)) {
+        //Todo: send Email
+        $fronturl = env("APP_URL");
+        $current_time = date("Y-m-d h:i a");
+        $user_info = User::where('id', $mentor_id)->first();
+        $toEmail = $user_info->email;
+        $send_mail = new Controller;
+        $subject = "You have been received Booking Time about the Session!";
+        $name = $user_info->name;
+        $user_info = User::where('id', $user_id)->first();
+        $from_user = $user_info->name;
+        $mentor_avatar = $user_info->avatar;
+        $app_path = app_path();
+        $body = include($app_path.'/Mails/BookingTime.php');
+        $body = implode(" ",$body);
+        $resultMail = $send_mail->send_email($toEmail, $name, $subject, $body);
+        
+        //Todo: send Notification
+        $startForum  = (new DateTime($bookingDate))->getTimestamp();
+        PostedNotification::create([
+          'user_id' => $mentor_id,
+          'session_id' => null,
+          'session_title' => $description,
+          'from' => date('Y-m-d H:i', $startForum),
+          'to' => date('Y-m-d H:i', $startForum + 3600 * $duration),
+          'forum_start' => $startForum,
+          'forum_end' => $startForum + 3600 * $duration,
+          'is_mentor' => true,
+          'avatar' => $mentor_avatar,
+          'type' => 'Booking',
+        ]);
+  
         BookingTimes::create([
           'user_id' => $user_id,
           'mentor_id' => $mentor_id,
           'duration' => $duration,
-          'fromTime' => $bookingDate,
+          'fromTime' => $bookingDate, //Iso 8601 format 2021-01-25T09:00:00+01:00
           'description' => $description,
         ]);
+        
         return response()->json([
           'result'=> 'success',
           'message' => 'Successfully booked'
@@ -237,11 +279,16 @@ class AvailableTimesController extends Controller
     $fromDate = $request->startDate;
     $toDate = $request->endDate;
     $student_timezone = $request->timezone;
-    $mentorInfo = AvailableTimes::where('user_id', $mentor_id)->first();
+    $mentorInfoAvail = AvailableTimes::where('user_id', $mentor_id)->first();
+    $mentorInfoSpecific = SpecificDate::where('user_id', $mentor_id)->first();
     $mentor_timezone = "";
-    if ($mentorInfo) {
-      $mentor_timezone = $mentorInfo->timezone;
+    if ($mentorInfoAvail) {
+      $mentor_timezone = $mentorInfoAvail->timezone;
     }
+    if ($mentorInfoSpecific) {
+      $mentor_timezone = $mentorInfoSpecific->timezone;
+    }
+    
     $dateList = $this->getMentorAvailableDataWithWeek($mentor_id, $fromDate, $toDate);
     $wholeDayTimeSlots = [];
     for ($indexDay = 1; $indexDay < count($dateList) - 1; $indexDay++) {
@@ -287,7 +334,6 @@ class AvailableTimesController extends Controller
         array_push($time_slots, $time);
       }
     }
-    
     foreach ($availableTimeList2 as $value) {
       $_time_slots = $this->getTimeSlots($date, $date, $value['from'], $value['to'], $timezone1, $timezone2, $booked_timeList);
       foreach ($_time_slots->timeRangeSlots as $time_slot) {
@@ -489,5 +535,11 @@ class AvailableTimesController extends Controller
       }
     }
     return $bookingTimeList;
+  }
+  
+  public function testapi(Request $request) {
+    
+    $name = DB::table('specific_dates')->where('user_id', 9)->pluck('timezone')[0];
+    echo $name;
   }
 }

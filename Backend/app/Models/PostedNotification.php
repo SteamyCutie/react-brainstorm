@@ -9,6 +9,6 @@ class PostedNotification extends Model
   protected $fillable = [
     'user_id', 'session_id','session_title',
     'from', 'to', 'avatar', 'notification_posted',
-    'is_mentor', 'forum_start', 'forum_end'
+    'is_mentor', 'forum_start', 'forum_end', 'type',
   ];
 }

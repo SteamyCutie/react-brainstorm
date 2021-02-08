@@ -25,6 +25,7 @@ class CreatePostedNotificationsTable extends Migration
       $table->boolean('is_mentor')->nullable();
       $table->timestamp('from')->nullable();
       $table->timestamp('to')->nullable();
+      $table->enum('type', ['Session', 'Booking'])->nullable();
       $table->timestamps();
     });
   }
