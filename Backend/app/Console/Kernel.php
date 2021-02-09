@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
       ->everyMinute();
     //->weekly();
     $schedule->command('run:notification')
-      ->weekly();
+      ->everyMinute();
   }
   
   /**
