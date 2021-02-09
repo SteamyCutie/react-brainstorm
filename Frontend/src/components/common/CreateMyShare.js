@@ -23,7 +23,7 @@ export default class CreateMyShare extends React.Component {
       tags: [],
       requiremessage: {
         dtitle: "",
-        ddescription: "",
+        description: "",
       },
     };
   }
@@ -59,7 +59,7 @@ export default class CreateMyShare extends React.Component {
   actionSave = async () => {
     let { requiremessage } = this.state;
     requiremessage.dtitle = '';
-    requiremessage.ddescription = '';
+    requiremessage.description = '';
 
     this.setState({
       requiremessage
@@ -80,7 +80,7 @@ export default class CreateMyShare extends React.Component {
             requiremessage.dtitle = result.data.message.title[0];
           }
           if (result.data.message.description) {
-            requiremessage.ddescription = result.data.message.description[0];
+            requiremessage.description = result.data.message.description[0];
           }
           this.setState({
             requiremessage
@@ -184,9 +184,9 @@ export default class CreateMyShare extends React.Component {
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Description</label>
-              {this.state.requiremessage.ddescription !== '' && <span className="require-message">{this.state.requiremessage.ddescription}</span>}
-              {this.state.requiremessage.ddescription !== '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
-              {this.state.requiremessage.ddescription === '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
+              {this.state.requiremessage.description !== '' && <span className="require-message">{this.state.requiremessage.description}</span>}
+              {this.state.requiremessage.description !== '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
+              {this.state.requiremessage.description === '' && <FormInput className="profile-detail-input" type="text" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Video</label>

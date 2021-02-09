@@ -88,6 +88,7 @@ class SetAvailability extends React.Component {
   handleAdd(dayIdx) {
     let { availableRecurrenceTimeList } = this.state;
     availableRecurrenceTimeList[dayIdx].timeList.push({ fromTimeStr: "00:00 am", toTimeStr: "00:00 am" });
+    availableRecurrenceTimeList[dayIdx].status = true;
 
     this.setState({
       availableRecurrenceTimeList,
@@ -103,6 +104,9 @@ class SetAvailability extends React.Component {
       availableRecurrenceTimeList[dayIdx].timeList.splice(idx, 1);
     }
 
+    if (!availableRecurrenceTimeList[dayIdx].timeList.length)
+      availableRecurrenceTimeList[dayIdx].status = false;
+
     this.setState({
       availableRecurrenceTimeList,
     });
@@ -110,16 +114,13 @@ class SetAvailability extends React.Component {
 
   handleUpdateto(dayIdx, timeIdx, e) {
     let { availableRecurrenceTimeList } = this.state;
-    let timeId = 1;
     let timeStr = "";
     for (var i = 0; i < Timelinelist.length; i++) {
       if (parseInt(e.target.value) === Timelinelist[i].id) {
-        timeId = i;
         timeStr = Timelinelist[i].str;
       }
     }
-
-    // list[dayIdx].timeList[timeIdx].to = timeId;
+    
     availableRecurrenceTimeList[dayIdx].timeList[timeIdx].toTimeStr = timeStr;
     this.setState({
       availableRecurrenceTimeList,
@@ -128,16 +129,13 @@ class SetAvailability extends React.Component {
 
   handleUpdatefrom(dayIdx, timeIdx, e) {
     let { availableRecurrenceTimeList } = this.state;
-    let timeId = 1;
     let timeStr = "";
     for (var i = 0; i < Timelinelist.length; i++) {
       if (parseInt(e.target.value) === Timelinelist[i].id) {
-        timeId = i;
         timeStr = Timelinelist[i].str;
       }
     }
-
-    // list[dayIdx].timeList[timeIdx].from = timeId;
+    
     availableRecurrenceTimeList[dayIdx].timeList[timeIdx].fromTimeStr = timeStr;
     this.setState({
       availableRecurrenceTimeList: availableRecurrenceTimeList,
