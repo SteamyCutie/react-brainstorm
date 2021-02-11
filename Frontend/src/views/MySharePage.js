@@ -168,7 +168,7 @@ export default class MySharePage extends React.Component {
                       <div key={idx} className="open-forum">
                         <div style={{display: "flex"}}>
                           <label className="title">{item.title}</label>
-                          <label className="price">20$</label>
+                          <label className="price">{item.price <= 0 ? "free" : `$${item.price}`}</label>
                         </div>
                         <div style={{paddingLeft: "10px"}}>
                           <label className="description">{item.description}</label>
@@ -190,7 +190,7 @@ export default class MySharePage extends React.Component {
                               return (
                                 <div style={{display: "grid", margin: "2px 5px"}} key={idx}>
                                   {this.isImage(attachment.origin_name) && <img src={attachment.path} alt={attachment.origin_name} className="open-forum-file-preview"/>}
-                                  {this.isVideo(attachment.origin_name) && <video src={attachment.path} />}
+                                  {this.isVideo(attachment.origin_name) && <video src={attachment.path}  className="open-forum-file-preview" loop autoPlay/>}
                                   {(!this.isImage(attachment.origin_name) && !this.isVideo(attachment.origin_name)) && <div className="open-forum-file-preview">{this.getExtension(attachment.origin_name)}</div>}
                                   <a download href={attachment.path} key={idx} className="attachment" title={attachment.origin_name}>{attachment.origin_name}</a>
                                 </div>
