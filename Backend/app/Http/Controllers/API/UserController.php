@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Associate;
+use App\Models\Session;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -318,7 +319,7 @@ class UserController extends Controller
   
   public function getUserInfoById(Request $request)
   {
-    try {
+//    try {
       $id = $request->id;
       $tag_names = [];
       $res_students = Review::where('mentor_id', $id)->get();
@@ -351,27 +352,73 @@ class UserController extends Controller
         $tags = Tag::where('id', $tag_value)->first();
         $tag_names[$tag_key] = $tags->name;
       }
-      $share_info = Media::where('user_id', $user->id)->get();
+      $share_info = Media::where('user_id', $user->id)->where('isForum', false)->get();
       for ($i = 0; $i < count($share_info); $i++) {
         $date = $share_info[$i]['created_at'];
         $share_info[$i]['day'] = date('d/m/y', strtotime($date));
         $share_info[$i]['time'] = date('h:i a', strtotime($date));
       }
+      $session_max = Media::where('user_id', $user->id)->where('isForum', true)->max('session_id');
+      $session_min = Media::where('user_id', $user->id)->where('isForum', true)->min('session_id');
+      
+      $forum_infos = [];
+      for ($i = $session_min; $i <= $session_max; $i++) {
+        $attach = [];
+        $forum_info = [];
+        $media_infos = Media::where('user_id', $user->id)->where('isForum', true)->where('session_id', $i)->get();
+        $session_info = Session::where('user_id', $user->id)->where('id', $i)->first();
+        $temp_names = [];
+        if ($session_info) {
+          if ($session_info['tags_id'] == ",,"){
+            $tags_id = [];
+            $session_info['tags_id'] = "";
+          }
+          else {
+            $tags_id = explode(',', trim($session_info['tags_id'], ','));
+          }
+          $session_info['tags'] = $tags_id;
+          foreach ($tags_id as $tag_key=> $tag_id) {
+            $tag_names = Tag::select('name')->where('id', $tag_id)->first();
+            if ($tag_names) {
+              $temp_names[] = $tag_names->name;
+            }
+          }
+        }
+        if (count($media_infos) > 0) {
+          for ($j = 0; $j < count($media_infos); $j++) {
+            $attach['origin_name'] = $media_infos[$j]->origin_name;
+            $attach['path'] = $media_infos[$j]->media_url;
+            $forum_info['attachments'][] = $attach;
+          }
+          $forum_info['title'] = $media_infos[0]->title;
+          $forum_info['description'] = $media_infos[0]->description;
+          $forum_info['isForum'] = $media_infos[0]->isForum;
+          $forum_info['session_id'] = $media_infos[0]->session_id;
+          $forum_info['language'] = $session_info['language'];
+          $forum_info['forum_start'] = $session_info['forum_start'];
+          $forum_info['forum_end'] = $session_info['forum_end'];
+          $forum_info['age_limitation'] = $session_info['age_limitation'];
+          $forum_info['price'] = $session_info['price'];
+          $forum_info['tags_name'] = $temp_names;
+          $forum_infos[] = $forum_info;
+        }
+      }
       $user->tags = $tag_names;
       $user->student = $res_students;
       $user->share_info = $share_info;
+      $user->forum_info = $forum_infos;
       if ($user->description == null)
         $user->description = "";
       return response()->json([
         'result' => 'success',
         'data' => $user,
       ]);
-    } catch (Exception $th) {
-      return response()->json([
-        'result' => 'failed',
-        'message' => $th->getMessage(),
-      ]);
-    }
+//    } catch (Exception $th) {
+//      return response()->json([
+//        'result' => 'failed',
+//        'message' => $th->getMessage(),
+//      ]);
+//    }
   }
   
   public function getIntroduceInfo (Request $request) {

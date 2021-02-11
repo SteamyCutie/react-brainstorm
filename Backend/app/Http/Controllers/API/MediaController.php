@@ -52,6 +52,7 @@ class MediaController extends Controller
         'media_url' => $media_url,
         'user_id' => $user[0]['id'],
         'media_type' => $media_type,
+        'isForum' => 0
       ]);
   
       return response()->json([

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Media;
 use App\Models\PostedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Session;
 use App\Models\Tag;
@@ -153,49 +156,26 @@ class SessionController extends Controller
   function createForum(Request $request)
   {
     try{
-      $email = $request['email'];
-      $user_id = User::select('id', 'hourly_price' , 'sub_plan_fee', 'avatar', 'name')->where('email', $email)->first();
-      if ($user_id->hourly_price == 0 || $user_id->sub_plan_fee == 0) {
-        return [
-          'result' => 'warning',
-          'message' => 'You should input hourly price or subscription plan fee',
-        ];
-      }
-      $title = $request['title'];
-      $description = $request['description'];
-      $tags = ','.implode(",", $request['tags']).',';
+      $forumInfo = json_decode($request->forumInfo);
+      $validatorArrays =  (array) $forumInfo;
+      $email = $forumInfo->email;
+      $title = $forumInfo->title;
+      $description = $forumInfo->description;
+      $language = $forumInfo->language;
+      $forum_start = $forumInfo->forum_start;
+      $forum_end = $forumInfo->forum_end;
+      $opened = $forumInfo->opened;
+      $tags = ','.implode(",", $forumInfo->tags).',';
+      //TODO Validation Check
       $rules = array(
         'title' => 'required',
         'description' => 'required',
       );
-      
-      $language = $request->language;
-      $from_time = $request['from'];
-      $to_time = $request['to'];
-      $day = $request['day'];
-      $from_arr = explode(":", $from_time);
-      $to_arr = explode(":", $to_time);
-      
-      $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
-      $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
-      
-      $forum_start = $request['forum_start'];
-      $forum_end = $request['forum_end'];
-      $back_timestamp = Carbon::now()->timestamp;
-      
-      if ( $forum_start < $back_timestamp ) {
-        return response()->json([
-          'result' => 'warning',
-          'message' => 'Please select correct Forum time',
-        ]);
-      }
-      
       $messages = array(
         'required' => 'This field is required.',
       );
-      $validator = Validator::make( $request->all(), $rules, $messages );
-      
-      if ($validator->fails())
+      $validator = Validator::make( $validatorArrays ,$rules, $messages );
+      if ($res = $validator->fails())
       {
         return response()->json([
           'result' => 'failed',
@@ -203,13 +183,124 @@ class SessionController extends Controller
           'message' => $validator->messages()
         ]);
       }
-      $same_session = Session::where('user_id', $user_id->id)->where('from', $from_day_str)->where('to', $to_day_str)->get();
+      //TODO Mentor hourly, plan_fee check
+      $user_id = User::select('id', 'hourly_price' , 'sub_plan_fee', 'avatar', 'name')->where('email', $email)->first();
+      if ($user_id->hourly_price == 0 || $user_id->sub_plan_fee == 0) {
+        return [
+          'result' => 'warning',
+          'message' => 'You should input hourly price or subscription plan fee',
+        ];
+      }
+      //TODO past time check
+      $back_timestamp = Carbon::now()->timestamp;
+      if ( $forum_start < $back_timestamp ) {
+        return response()->json([
+          'result' => 'warning',
+          'message' => 'Please select correct Forum time',
+        ]);
+      }
+      //TODO same Forum check
+      $same_session = Session::where('user_id', $user_id->id)->where('forum_start', $forum_start)->where('forum_end', $forum_end)->get();
       if (count($same_session) > 0) {
         return response()->json([
           'result' => 'warning',
           'message' => 'The same Forum already exists.'
         ]);
       }
+      //TODO Open Forum
+      if ( $opened ) {
+        try {
+          $ageLimitation = $forumInfo->ageLimitation;
+          $sessionInfo = Session::create([
+            'user_id' => $user_id['id'],
+            'title' => $title,
+            'description' => $description,
+            'tags_id' => $tags,
+            'from' => date('Y-m-d H:i:s', $forum_start),
+            'to' => date('Y-m-d H:i:s', $forum_end),
+            'forum_start' => $forum_start,
+            'forum_end' => $forum_end,
+            'status' => 0,
+            'language' => $language,
+            'room_id' => mt_rand(100000,999999),
+            'created_id' => $user_id['id'],
+            'opened' => $opened,
+            'age_limitation' => $ageLimitation,
+            'price' => $forumInfo->price,
+          ]);
+          
+          $file = $request['files'];
+          for ($i = 0; $i < count($file); $i++) {
+            $mimeType = $file[$i]->getClientMimeType();
+            $mediaType = explode("/", $mimeType);
+            $file_origin_name = $file[$i]->getClientOriginalName();
+            $file_name = time().'_'.rand(100000, 999999).'_'.$file_origin_name;
+            $file = $request->file('files');
+            $s3 = Storage::disk('s3');
+            $s3->put($file_name, file_get_contents($file[$i]), 'public');
+            $file_path = $s3->url($file_name);
+            //TODO save attached files
+            Media::create([
+              'title' => $title,
+              'description' => $description,
+              'media_url' => $file_path,
+              'origin_name' => $file_origin_name,
+              'user_id' => $user_id['id'],
+              'session_id' => $sessionInfo->id,
+              'media_type' => $mediaType[$i],
+              'isForum' => true,
+            ]);
+          }
+          //TODO send Email to mentor in opened Forum
+          $send_mail = new Controller;
+          $subject = "Opened Forum have been created!";
+          $fronturl = env("APP_URL");
+          $from = date('Y-m-d H:i:s', $forum_start);
+          $mentor_avatar = $user_id->avatar;
+          $mentor_name = $user_id->name;
+          $name = $user_id->name;
+          $toEmail = $email;
+          $app_path = app_path();
+          $body = include($app_path.'/Mails/Session.php');
+          $body = implode(" ",$body);
+          $send_mail->send_email($toEmail, $name, $subject, $body);
+          //TODO get associated members for opened Forum
+          $userId = $user_id->id;
+          $associate_users = DB::table('associates')
+            ->where('request_id', $userId)
+            ->where('status', 'Connected')
+            ->orWhere(function($query) use ($userId){
+              $query->where('response_id', $userId)
+                ->where('status', 'Connected');
+            })
+            ->get();
+          $temp_users = [];
+          foreach ($associate_users as $value) {
+            if ($value->request_id != $user_id) {
+              $temp_users[] = $value->request_id;
+            } else {
+              $temp_users[] = $value->response_id;
+            }
+          }
+          //TODO send Email to associated members in opened Forum
+          for ($i = 0; $i < count($temp_users); $i ++){
+            $userInfo = User::select('id', 'hourly_price' , 'sub_plan_fee', 'avatar', 'name')->where('id', $temp_users[$i])->first();
+            $toEmail = $userInfo->email;
+            $name = $userInfo->name;
+            $send_mail->send_email($toEmail, $name, $subject, $body);
+          }
+          return response()->json([
+            'result'=> 'success',
+            'data'=> $file_path,
+          ]);
+        } catch (Exception $th) {
+          return response()->json([
+            'result'=> 'failed',
+            'message'=> $th->getMessage(),
+          ]);
+        }
+      }
+      //TODO Default Forum
       $res_session = Session::create([
         'user_id' => $user_id['id'],
         'title' => $title,
@@ -224,14 +315,12 @@ class SessionController extends Controller
         'room_id' => mt_rand(100000,999999),
         'created_id' => $user_id['id'],
       ]);
-      
+      //TODO send Email to mentor
       $send_mail = new Controller;
       $subject = "You have been invited for Forum!";
       $fronturl = env("APP_URL");
       $from = $res_session->from;
       $mentor_avatar = $user_id->avatar;
-//      if ($mentor_avatar == "" || $mentor_avatar == null)
-//        $mentor_avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
       $mentor_name = $user_id->name;
       $name = $user_id->name;
       $toEmail = $email;
@@ -239,7 +328,7 @@ class SessionController extends Controller
       $body = include($app_path.'/Mails/Session.php');
       $body = implode(" ",$body);
       $send_mail->send_email($toEmail, $name, $subject, $body);
-  
+      //TODO set notification when create Forum
       PostedNotification::create([
         'user_id' => $user_id['id'],
         'session_id' => $res_session->id,
@@ -252,9 +341,7 @@ class SessionController extends Controller
         'avatar' => $mentor_avatar,
         'type' => 'Session',
       ]);
-      
-      $students = $request['students'];
-      
+      $students = $forumInfo->students;
       for ($i = 0; $i < count($students); $i++) {
         Invited::create([
           'mentor_id' => $user_id->id,
@@ -278,7 +365,6 @@ class SessionController extends Controller
         $name = $st_info->name;
         $send_mail->send_email($toEmail, $name, $subject, $body);
       }
-      
       return response()->json([
         'result'=> 'success',
         'data'=> [],
@@ -308,7 +394,7 @@ class SessionController extends Controller
       
       $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
       $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
-  
+      
       $forum_start = $request['forum_start'];
       $forum_end = $request['forum_end'];
       
@@ -372,6 +458,7 @@ class SessionController extends Controller
       $res = Session::where('id', $session_id)->delete();
       $res_invite = Invited::where('session_id', $session_id)->delete();
       $res_posted = PostedNotification::where('session_id', $session_id)->delete();
+      Media::where('session_id', $session_id)->delete();
       return response()->json([
         'result'=> 'success',
         'data' => []
@@ -474,56 +561,56 @@ class SessionController extends Controller
           })
           ->get();
       }
-        $temp1 = [];
-        $temp2 = [];
-        
-        if ($tag_id == "" || $tag_id == null) {
-          $temp1 = $result_infos;
-        } else {
-          foreach ($result_infos as $tags_key => $result_info) {
-            $tag_array = explode(',', trim($result_info['tags_id'], ','));
-            for ($j = 0; $j < count($tag_array); $j++) {
-              if ($tag_id == trim($tag_array[$j])){
-                $temp1[] = $result_info;
-              }
+      $temp1 = [];
+      $temp2 = [];
+      
+      if ($tag_id == "" || $tag_id == null) {
+        $temp1 = $result_infos;
+      } else {
+        foreach ($result_infos as $tags_key => $result_info) {
+          $tag_array = explode(',', trim($result_info['tags_id'], ','));
+          for ($j = 0; $j < count($tag_array); $j++) {
+            if ($tag_id == trim($tag_array[$j])){
+              $temp1[] = $result_info;
             }
           }
         }
-        
-        if ($from_time == "" || $to_time == "") {
-          $temp2 = $temp1;
-        } else {
-          foreach ($temp1 as $key => $result) {
-            if ((date('y-m-d', strtotime($result->from)) >= date('y-m-d', strtotime($from_time)))
-              && (date('y-m-d', strtotime($result->to)) <= date('y-m-d', strtotime($to_time)))) {
-              $temp2[] = $result;
-            }
+      }
+      
+      if ($from_time == "" || $to_time == "") {
+        $temp2 = $temp1;
+      } else {
+        foreach ($temp1 as $key => $result) {
+          if ((date('y-m-d', strtotime($result->from)) >= date('y-m-d', strtotime($from_time)))
+            && (date('y-m-d', strtotime($result->to)) <= date('y-m-d', strtotime($to_time)))) {
+            $temp2[] = $result;
           }
         }
-        foreach ($temp2 as $session_key => $session_info)
-        {
-          $result_from = $session_info['from'];
-          $result_to = $session_info['to'];
-          $result_tag = $session_info['tags_id'];
-          $tags_id = explode(',', trim($result_tag, ','));
-          $result_invited = $session_info['invited_id'];
-          $invited_id = explode(',', trim($result_invited, ','));
-          $temp = [];
-          $temp = $session_info;
-          $temp['day'] = date('d/m/y', strtotime($result_from));
-          $temp['from_time'] = date('h:i a', strtotime($result_from));
-          $temp['to_time'] = date('h:i a', strtotime($result_to));
-          $tag_names = [];
-          foreach ($tags_id as $tag_key => $tag_value) {
-            $tags = Tag::select('name')->where('id', $tag_value)->first();
-            $tag_names[$tag_key] = $tags['name'];
-          }
-          $temp['tag_name'] = $tag_names;
-          $mentor_name = User::select('name', 'avatar')->where('id', $session_info['user_id'])->first();
-          $temp['name'] = $mentor_name['name'];
-          $temp['avatar'] = $mentor_name['avatar'];
-          $result_res[] = $temp;
+      }
+      foreach ($temp2 as $session_key => $session_info)
+      {
+        $result_from = $session_info['from'];
+        $result_to = $session_info['to'];
+        $result_tag = $session_info['tags_id'];
+        $tags_id = explode(',', trim($result_tag, ','));
+        $result_invited = $session_info['invited_id'];
+        $invited_id = explode(',', trim($result_invited, ','));
+        $temp = [];
+        $temp = $session_info;
+        $temp['day'] = date('d/m/y', strtotime($result_from));
+        $temp['from_time'] = date('h:i a', strtotime($result_from));
+        $temp['to_time'] = date('h:i a', strtotime($result_to));
+        $tag_names = [];
+        foreach ($tags_id as $tag_key => $tag_value) {
+          $tags = Tag::select('name')->where('id', $tag_value)->first();
+          $tag_names[$tag_key] = $tags['name'];
         }
+        $temp['tag_name'] = $tag_names;
+        $mentor_name = User::select('name', 'avatar')->where('id', $session_info['user_id'])->first();
+        $temp['name'] = $mentor_name['name'];
+        $temp['avatar'] = $mentor_name['avatar'];
+        $result_res[] = $temp;
+      }
       
       return response()->json([
         'result'=> 'success',
