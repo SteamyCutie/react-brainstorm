@@ -471,14 +471,10 @@ class SetAvailability extends React.Component {
                   <Row form>
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
-                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
+                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)} defaultValue={timezone}>
                         {TimezoneOptions.map((item, idx) => {
                           return (
-                            item.value === timezone 
-                            ? 
-                              <option key={idx} value={item.value} selected> {item.name}</option>
-                            : 
-                              <option key={idx} value={item.value}> {item.name}</option>
+                            <option key={idx} value={item.value}> {item.name}</option>
                           );
                         })}
                       </FormSelect>
@@ -510,23 +506,19 @@ class SetAvailability extends React.Component {
                               return (
                                 <Row key={timeIdx} form>
                                   <Col md="5" xs="4" className="available-time-group" style={{ marginRight: "70px" }}>
-                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)} defaultValue={time.fromTimeStr}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          time.fromTimeStr === item.str
-                                            ? <option key={idx} vaule={item.id} selected>{item.str}</option>
-                                            : <option key={idx} value={item.id}>{item.str}</option>
+                                          <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
                                   </Col>
                                   <Col md="5" xs="4">
-                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)} defaultValue={time.toTimeStr}>
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          time.toTimeStr === item.str
-                                            ? <option key={idx} value={item.id} selected>{item.str}</option>
-                                            : <option key={idx} value={item.id}>{item.str}</option>
+                                          <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>

@@ -127,8 +127,7 @@ class SmallCardForum extends React.Component {
         {history ? null : 
           <div className="forum-invited-student">
             <div style={{display: "flex"}}>
-              {/* eslint-disable-next-line */}
-              <a href="javascript:void(0)" onClick={() => this.toggle_invite()}>
+              <label onClick={() => this.toggle_invite()}>
                 {student_info.map((item, idx) => {
                   if (idx < 3) {
                     if (item.avatar)
@@ -139,7 +138,7 @@ class SmallCardForum extends React.Component {
                     return <></>;
                   }
                 })}
-                </a>
+                </label>
             </div>
             <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
           </div>

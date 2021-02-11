@@ -163,38 +163,13 @@ export default function Library() {
               onChangeIndex={handleChangeIndex}
             >
               <TabPanel value={value} index={0} dir={theme.direction}>
-                <Row>
-                  {library.map((item, idx) =>
-                    <Col xl="4" lg="4" sm="6">
-                      <LibrarySavedContent item={item} />
-                    </Col>
-                  )}
-                </Row>
+                {library.map((item, idx) =>
+                  <Col xl="4" lg="4" sm="6">
+                    <LibrarySavedContent item={item} />
+                  </Col>
+                )}
               </TabPanel>
               <TabPanel value={value} index={1} dir={theme.direction}>
-                {/* <Row> */}
-                {/* <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col> */}
-                {/* </Row> */}
               </TabPanel>
             </SwipeableViews>
           </CardBody>

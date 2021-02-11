@@ -18,9 +18,9 @@ class NavbarToggle extends React.Component {
   render() {
     return (
       <nav className="nav">
-        <a href="javascript:void(0)" onClick={this.handleClick} className="nav-link nav-link-icon toggle-sidebar d-sm-inline d-md-inline d-lg-none text-center">
+        <label onClick={this.handleClick} className="nav-link nav-link-icon toggle-sidebar d-sm-inline d-md-inline d-lg-none text-center">
           <i className="material-icons">&#xE5D2;</i>
-        </a>
+        </label>
       </nav>
     )
   }

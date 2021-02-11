@@ -257,7 +257,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             <div className="mentor-detail-myself">
               {!this.state.more && (description.length > 200 ? <p>{description.slice(0,200)}...</p> : <p>{description}</p>)}
               {this.state.more && <p>{description}</p>}
-              {description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
+              {description.length > 200 && (this.state.more ? <label className="read-more" onClick={() => this.readLess()}>Read less</label> : <label className="read-more" onClick={() => this.readMore()}>Read more</label>)}
             </div>
             {is_mentor ?
               <div className="mentor-detail-video">
@@ -298,7 +298,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             {associationStatus === 0 &&
               <Row className="center">
                 <div className="association-status-ribbon-pending tooltip-include" >
-                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  <span className="tooltiptext">You can control the association status at Associations page</span>
                   Pending
                 </div>
               </Row>
@@ -306,7 +306,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             {associationStatus === 1 &&
               <Row className="center">
                 <div className="association-status-ribbon-connected tooltip-include" >
-                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  <span className="tooltiptext">You can control the association status at Associations page</span>
                   Associated
                 </div>
               </Row>
@@ -314,7 +314,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             {associationStatus === 2 &&
               <Row className="center">
                 <div className="association-status-ribbon-declined tooltip-include" >
-                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  <span className="tooltiptext">You can control the association status at Associations page</span>
                   Declined
                 </div>
               </Row>
@@ -322,7 +322,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             {associationStatus === 3 &&
               <Row className="center">
                 <div className="association-status-ribbon-cancelled tooltip-include" >
-                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  <span className="tooltiptext">You can control the association status at Associations page</span>
                   Cancelled
                 </div>
               </Row>
@@ -330,7 +330,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
             {associationStatus === 4 &&
               <Row className="center">
                 <div className="association-status-ribbon-admiting tooltip-include" >
-                  <span class="tooltiptext">You can control the association status at Associations page</span>
+                  <span className="tooltiptext">You can control the association status at Associations page</span>
                   Admiting
                 </div>
               </Row>

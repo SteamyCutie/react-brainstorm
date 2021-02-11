@@ -26,7 +26,6 @@ export default class Subscriptions extends React.Component {
           cell: row =>
             <div>
               <img style={{ height: '36px' }} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              {/* <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{color: 'black'}}>{row.mentorName}</a> */}
               <span>{row.mentorName}</span>
             </div>,
         },
@@ -63,7 +62,7 @@ export default class Subscriptions extends React.Component {
           center: true,
           cell: row =>
             <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}>
-              {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>}
+              {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <label onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</label> : <label onClick={() => this.handleUnsub(row.id)}>Unsubscribe</label>}
             </div>,
         }
       ]

@@ -171,7 +171,7 @@ class Notifications extends React.Component {
             onClick={this.toggleNotifications}
           >
             <div className="nav-link-icon__wrapper">
-              <a href="javascript:void(0)" style={{ color: '#5a6169', fontSize: 20 }}><NotificationsNone></NotificationsNone></a>
+              <label style={{ color: '#5a6169', fontSize: 20 }}><NotificationsNone></NotificationsNone></label>
               {notification_count > 0 && <Badge pill theme="danger">
                 <span style={{ color: 'white' }}>{notification_count}</span>
               </Badge>}
@@ -181,16 +181,12 @@ class Notifications extends React.Component {
             open={visible}
             className="dropdown-menu dropdown-menu-small"
           >
-            {/* {all_notifications.map((item, idx) => */}            
             {all_notifications.slice(0).reverse().map((item, idx) =>
-              <DropdownItem onClick={() => this.checkNotification(item.session_id)}>
+              <DropdownItem onClick={() => this.checkNotification(item.session_id)} key={idx}>
                 <div className="notification__icon-wrapper">
                   <div className="notification__icon">
                     {item.avatar && <img className="avatar" src={item.avatar} alt="avatar" style={{ width: '35px', height: '35px' }} />}
                     {!item.avatar && <img className="avatar" src={avatar} alt="avatar" style={{ width: '35px', height: '35px' }} />}
-                    {/* { item.avatar && <i className="material-icons"><img className="avatar" src={item.avatar} alt="avatar" style={{width: 35, height: 35}} /></i> }
-                      { !item.avatar && <i className="material-icons"><img className="avatar" src={avatar} alt="avatar" style={{width: 35, height: 35}}/></i> } */}
-                    {/* <i className="material-icons">&#xE6E1;</i> */}
                   </div>
                 </div>
                 <div className="notification__content">                  

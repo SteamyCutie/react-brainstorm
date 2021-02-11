@@ -120,7 +120,7 @@ export default class InvitedStudent extends React.Component {
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Invited students</h1>
             <Row form>
-              <a href="javascript:void(0)" onClick={() => this.toggle_invitemore(id)}><h5 style={{ float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA" }}>+ Invite more students</h5></a>
+              <label onClick={() => this.toggle_invitemore(id)}><h5 style={{ float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA" }}>+ Invite more students</h5></label>
             </Row>
             {students.map((item, idx) => (
               <Row form>

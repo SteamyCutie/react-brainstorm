@@ -157,8 +157,8 @@ export default class MySharePage extends React.Component {
                 </Col>
                 <Col xl="9" lg="12" className="subscription-mentor-videos">
                   <h6 className="profile-link-url">
-                    <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
-                    <a href="javascript:void(0)" style={{ color: '#018ac0' }}>www.Brainsshare.com/{localStorage.getItem("user_name")}</a>
+                    <label onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></label>
+                    <label style={{ color: '#018ac0' }}>www.Brainsshare.com/{localStorage.getItem("user_name")}</label>
                   </h6>
                   {userInfo.share_info && userInfo.share_info.map((item, idx) =>
                     <MentorVideo key={idx} item={item} />
@@ -188,7 +188,7 @@ export default class MySharePage extends React.Component {
                             <label style={{marginRight: "15px"}}>Files: </label>
                             {item.attachments.map((attachment, idx) => {
                               return (
-                                <div style={{display: "grid", margin: "2px 5px"}}>
+                                <div style={{display: "grid", margin: "2px 5px"}} key={idx}>
                                   {this.isImage(attachment.origin_name) && <img src={attachment.path} alt={attachment.origin_name} className="open-forum-file-preview"/>}
                                   {this.isVideo(attachment.origin_name) && <video src={attachment.path} />}
                                   {(!this.isImage(attachment.origin_name) && !this.isVideo(attachment.origin_name)) && <div className="open-forum-file-preview">{this.getExtension(attachment.origin_name)}</div>}

@@ -83,11 +83,10 @@ export default class FeaturedMentors extends React.Component {
                 <div className="carousel-component-body-desc-class">
                   {!this.state.more && (data.description.length > 200 ? <p>{data.description.slice(0,200)}...</p> : <p>{data.description}</p>)}
                   {this.state.more && <p>{data.description}</p>}
-                  {data.description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
+                  {data.description.length > 200 && (this.state.more ? <label className="read-more" onClick={() => this.readLess()}>Read less</label> : <label className="read-more" onClick={() => this.readMore()}>Read more</label>)}
                 </div>
                 <div className="carousel-component-body-play-class">
-                   {/* eslint-disable react/jsx-no-target-blank */}
-                  <a href={data.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
+                  <label><img src={PlayIcon} alt="play-icon"/>Video presentation</label>
                 </div>
               </div>
               <div className="carousel-component-footer-class">
