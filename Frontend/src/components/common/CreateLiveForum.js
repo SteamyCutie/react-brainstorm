@@ -36,7 +36,7 @@ export default class CreateLiveForum extends React.Component {
       students: [],
       requiremessage: {
         dtitle: '',
-        ddescription: '',
+        description: '',
       },
     };
 
@@ -236,7 +236,7 @@ export default class CreateLiveForum extends React.Component {
             requiremessage.dtitle = result.data.message.title[0];
           }
           if (result.data.message.description) {
-            requiremessage.ddescription = result.data.message.description[0];
+            requiremessage.description = result.data.message.description[0];
           }
           this.setState({
             requiremessage
@@ -371,9 +371,9 @@ export default class CreateLiveForum extends React.Component {
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Description</label>
-              {requiremessage.ddescription !== '' && <span className="require-message">{requiremessage.ddescription}</span>}
-              {requiremessage.ddescription !== '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
-              {requiremessage.ddescription === '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
+              {requiremessage.description !== '' && <span className="require-message">{requiremessage.description}</span>}
+              {requiremessage.description !== '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
+              {requiremessage.description === '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
             </div>
 
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
