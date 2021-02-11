@@ -1,12 +1,11 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect } from "shards-react";
+import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect, FormCheckbox } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
 import { createforum, gettags, getsubscribedstudents, getassociatedstudents, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Languagelist from '../../common/LanguageList';
 import Close from '../../images/Close.svg';
-import moment from 'moment';
 
 export default class CreateLiveForum extends React.Component {
   constructor(props) {
@@ -30,7 +29,8 @@ export default class CreateLiveForum extends React.Component {
         to: '00:00',
         day: new Date().toISOString().slice(0, 10),
         forum_start: '',
-        forum_end: ''
+        forum_end: '',
+        price: null
       },
       tags: [],
       students: [],
@@ -38,6 +38,9 @@ export default class CreateLiveForum extends React.Component {
         dtitle: '',
         description: '',
       },
+      opened: false,
+      attachments: [],
+      ageLimitation: "18 and older",
     };
 
   }
@@ -63,6 +66,16 @@ export default class CreateLiveForum extends React.Component {
     }
     let { foruminfo } = this.state;
     foruminfo.title = e.target.value;
+    this.setState({ foruminfo });
+  }
+
+  onChangePrice = (e) => {
+    var array = e.target.value.split("");
+    if (array.length > 30) {
+      return;
+    }
+    let { foruminfo } = this.state;
+    foruminfo.price = e.target.value;
     this.setState({ foruminfo });
   }
 
@@ -197,33 +210,67 @@ export default class CreateLiveForum extends React.Component {
   }
 
   actionSave = async () => {
-    let { requiremessage, foruminfo, selectedSubscribedUsers, selectedAssociatedUsers } = this.state;
+    let { requiremessage, foruminfo, selectedSubscribedUsers, selectedAssociatedUsers, opened } = this.state;
     const { toggle_createsuccess, toggle_createfail, toggle_createwarning } = this.props;
     requiremessage.dtitle = '';
     requiremessage.description = '';
     this.setState({
       requiremessage
     });
+    let param = null;
     try {
-      const forum_start = foruminfo.day +" "+ foruminfo.from;
-      const forum_end = foruminfo.day +" "+ foruminfo.to;
-      let temp = foruminfo;
-      temp.forum_start = new Date(forum_start).getTime()/1000;
-      temp.forum_end = new Date(forum_end).getTime()/1000;
-      let students = [];
-      for (var i = 0; i < selectedSubscribedUsers.length; i ++)
-      students.push(selectedSubscribedUsers[i].value);
-      
-      for (var i = 0; i < selectedAssociatedUsers.length; i ++) {
-        for (var j = 0; j < students.length; j++) {
-          if(students[j] != selectedAssociatedUsers[i].value)
-          students.push(selectedAssociatedUsers[i].value)
+      if (!opened) {
+        const forum_start = foruminfo.day +" "+ foruminfo.from;
+        const forum_end = foruminfo.day +" "+ foruminfo.to;
+        let temp = foruminfo;
+        temp.forum_start = new Date(forum_start).getTime()/1000;
+        temp.forum_end = new Date(forum_end).getTime()/1000;
+        let students = [];
+        for (let i = 0; i < selectedSubscribedUsers.length; i ++)
+        students.push(selectedSubscribedUsers[i].value);
+        
+        for (let i = 0; i < selectedAssociatedUsers.length; i ++) {
+          for (let j = 0; j < students.length; j++) {
+            if(students[j] !== selectedAssociatedUsers[i].value)
+            students.push(selectedAssociatedUsers[i].value)
+          }
         }
-      }
-      foruminfo.students = students;
+        foruminfo.students = students;
+        temp.opened = false;
+        this.setState({ foruminfo: temp });
+        
+        let data = new FormData();
+        data.append("forumInfo", JSON.stringify(temp));
+        param = data;
+      } else {
+        let temp = {};
+        const { title, description, tags, language, from, to, day, email, price} = this.state.foruminfo;
+        const { attachments, ageLimitation } = this.state;
+        const forum_start = day +" "+ from;
+        const forum_end = day +" "+ to;
+        let data = new FormData();
 
-      this.setState({ foruminfo: temp });
-      const result = await createforum(foruminfo);      
+        temp.email = email;
+        temp.title = title;
+        temp.description = description;
+        temp.tags = tags;
+        temp.language = language;
+        temp.from = from;
+        temp.to = to;
+        temp.forum_start = new Date(forum_start).getTime()/1000;
+        temp.forum_end = new Date(forum_end).getTime()/1000;
+        temp.opened = true;
+        temp.ageLimitation = ageLimitation;
+        temp.price = price;
+
+        attachments.forEach(function(file) {
+          data.append("files[]", file)
+        });
+        data.append("forumInfo", JSON.stringify(temp));
+        param = data;
+      }
+
+      const result = await createforum(param);
       if (result.data.result === "success") {
         this.toggle();
         toggle_createsuccess("Create Forum Success");
@@ -353,9 +400,48 @@ export default class CreateLiveForum extends React.Component {
     }
   }
 
+  handleOpenForum = (e) => {
+    this.setState({opened: !this.state.opened});
+  }
+
+  handleFileChange(eve) {
+    const { files } = eve.target;
+    let temp = [...this.state.attachments];
+
+    for( const key in Object.keys(files)) {
+      temp.push(files[key]);
+    }
+
+    this.setState({attachments: temp});
+  }
+
+  handleAttachmentsRemove = (eve, idx) => {
+    let { attachments } = this.state;
+
+    attachments.splice(idx, 1);
+    this.setState({attachments});
+  }
+
+  onChangeAgeLimitaton = (eve) => {
+    this.setState({ageLimitation: eve.target.value});
+  }
+
   render() {
     const { open } = this.props;
-    const { selectedAssociatedUsers, selectedSubscribedUsers, selectedTags, tags, subscribed_students, associated_students, foruminfo, requiremessage, displayday, loading } = this.state;
+    const { 
+      selectedAssociatedUsers,
+      selectedSubscribedUsers,
+      selectedTags,
+      tags,
+      subscribed_students,
+      associated_students,
+      foruminfo,
+      requiremessage,
+      displayday,
+      loading,
+      opened,
+      attachments
+    } = this.state;
 
     return (
       <div>
@@ -363,6 +449,10 @@ export default class CreateLiveForum extends React.Component {
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
             <h1 className="content-center modal-header-class">Create live forum</h1>
+            <div style={{float: "left", width: "100%"}}></div>
+            <div style={{float: "right"}}>
+              <FormCheckbox toggle onChange={e => this.handleOpenForum(e)} >Make this forum as open</FormCheckbox>
+            </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Title</label>
               {requiremessage.dtitle !== '' && <span className="require-message">{requiremessage.dtitle}</span>}
@@ -375,7 +465,23 @@ export default class CreateLiveForum extends React.Component {
               {requiremessage.description !== '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
               {requiremessage.description === '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
             </div>
-
+            {opened &&
+              <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
+                <label htmlFor="feEmail">Age limitation</label>
+                <FormSelect id="feInputState" onChange={(e) => this.onChangeAgeLimitaton(e)}>
+                  <option value={"18 and older"} >18 and older</option>
+                  <option value={"1-17 years"} >1-17 years</option>
+                </FormSelect>
+              </div>
+            }
+            {opened &&
+              <div className="content-center block-content-class modal-input-group-class">
+                <label htmlFor="feEmail" className="profile-detail-important">Price</label>
+                {requiremessage.dtitle !== '' && <span className="require-message">{requiremessage.dtitle}</span>}
+                {requiremessage.dtitle !== '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" invalid autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
+                {requiremessage.dtitle === '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
+              </div>
+            }
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
               <label htmlFor="feEmail">Tags</label>
               <MultiSelect
@@ -386,26 +492,30 @@ export default class CreateLiveForum extends React.Component {
                 labelledBy={"Select"}
               />
             </div>
-            <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
-              <label htmlFor="feEmail">Associated students</label>
-              <MultiSelect
-                hasSelectAll={true}
-                options={associated_students}
-                value={selectedAssociatedUsers}
-                onChange={(e) => this.setSelectedAssociatedUsers(e)}
-                labelledBy={"Select"}
-              />
-            </div>
-            <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
-              <label htmlFor="feEmail">Subscribed students</label>
-              <MultiSelect
-                hasSelectAll={true}
-                options={subscribed_students}
-                value={selectedSubscribedUsers}
-                onChange={(e) => this.setSelectedSubscribedUsers(e)}
-                labelledBy={"Select"}
-              />
-            </div>
+            {!opened &&
+              <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
+                <label htmlFor="feEmail">Associated students</label>
+                <MultiSelect
+                  hasSelectAll={true}
+                  options={associated_students}
+                  value={selectedAssociatedUsers}
+                  onChange={(e) => this.setSelectedAssociatedUsers(e)}
+                  labelledBy={"Select"}
+                />
+              </div>
+            }
+            {!opened &&
+              <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
+                <label htmlFor="feEmail">Subscribed students</label>
+                <MultiSelect
+                  hasSelectAll={true}
+                  options={subscribed_students}
+                  value={selectedSubscribedUsers}
+                  onChange={(e) => this.setSelectedSubscribedUsers(e)}
+                  labelledBy={"Select"}
+                />
+              </div>
+            }
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
               <label htmlFor="feEmail">Language</label>
               <FormSelect id="feInputState" onChange={(e) => this.onChangeLanguage(e)}>
@@ -448,6 +558,27 @@ export default class CreateLiveForum extends React.Component {
                 );
               })}
             </FormSelect>
+            {opened &&
+              <>
+                <div className="content-center block-content-class modal-input-group-class" style={{ marginTop: 20 }}>
+                  <label htmlFor="feEmail">Attachments</label>
+                </div>
+                <div>
+                  <label className="custom-file-upload">
+                    <input type="file" multiple onChange={(eve) => this.handleFileChange(eve)}/>
+                    <i className="fa fa-cloud-upload" /> Browse
+                  </label>
+                </div>
+                {attachments.map((file, idx) => {
+                  return (
+                    <div key={idx} style={{padding: "2px 8px", margin: "0px 8px", backgroundColor: "#04B5FA", borderRadius: "10px", display: "inline-block"}}>
+                      <label style={{color: "white",fontSize: "14px", textTransform: "none", margin: "0px"}}>{file.name}</label>
+                      <label value={idx} style={{color: "white", fontSize: "17px", fontWeight: "bold", margin: "0px", padding: "0px 3px"}} onClick={(evt)=>this.handleAttachmentsRemove(evt,idx)}>×</label>
+                    </div>
+                  )
+                })}
+              </>
+            }
             <div className="content-center block-content-class button-text-group-class-mentor">
               <Button onClick={() => this.actionSave()}>Save</Button>
             </div>

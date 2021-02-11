@@ -221,8 +221,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
   }
 
   render() {
-    const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, sub_id, subscribe, associate } = this.props.mentorData;
-    const { index } = this.props;
+    const { id, name, avatar, tag_name, is_mentor, status, description, hourly_price, instant_call, video_url, average_mark, share_info, sub_count, sub_plan_fee, subscribe } = this.props.mentorData;
     const { subscriptionOpen, loading, associationStatus } = this.state;
 
     return (
@@ -288,7 +287,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 Book a session
               </Button>
             </Row>
-            {associationStatus == -1 &&
+            {associationStatus === -1 &&
               <Row className="center">
                 <Button style={{ marginBottom: 10 }} className="btn-mentor-detail-book" onClick={() => this.handleAssociate(id)}>
                   <img src={Clock} alt="Clock" />
@@ -296,7 +295,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 </Button>
               </Row>
             }
-            {associationStatus == 0 &&
+            {associationStatus === 0 &&
               <Row className="center">
                 <div className="association-status-ribbon-pending tooltip-include" >
                   <span class="tooltiptext">You can control the association status at Associations page</span>
@@ -304,7 +303,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 </div>
               </Row>
             }
-            {associationStatus == 1 &&
+            {associationStatus === 1 &&
               <Row className="center">
                 <div className="association-status-ribbon-connected tooltip-include" >
                   <span class="tooltiptext">You can control the association status at Associations page</span>
@@ -312,7 +311,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 </div>
               </Row>
             }
-            {associationStatus == 2 &&
+            {associationStatus === 2 &&
               <Row className="center">
                 <div className="association-status-ribbon-declined tooltip-include" >
                   <span class="tooltiptext">You can control the association status at Associations page</span>
@@ -320,7 +319,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 </div>
               </Row>
             }
-            {associationStatus == 3 &&
+            {associationStatus === 3 &&
               <Row className="center">
                 <div className="association-status-ribbon-cancelled tooltip-include" >
                   <span class="tooltiptext">You can control the association status at Associations page</span>
@@ -328,7 +327,7 @@ class MentorDetailCardStudentDashboard extends React.Component {
                 </div>
               </Row>
             }
-            {associationStatus == 4 &&
+            {associationStatus === 4 &&
               <Row className="center">
                 <div className="association-status-ribbon-admiting tooltip-include" >
                   <span class="tooltiptext">You can control the association status at Associations page</span>
@@ -338,7 +337,6 @@ class MentorDetailCardStudentDashboard extends React.Component {
             }
           </div>
         </div>
-        {/* {is_mentor ? */}
         <div style={{ paddingRight: 0, paddingLeft: 0, marginBottom: "20px" }}>
           <Card small className="share-page-card">
             <CardBody style={{ paddingLeft: 0 }}>
@@ -376,9 +374,6 @@ class MentorDetailCardStudentDashboard extends React.Component {
             </CardBody>
           </Card>
         </div>
-        {/* : null
-      } */}
-        {/* <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} /> */}
         {subscriptionOpen &&
           <SubscribeModal item={this.props.mentorData} open={subscriptionOpen} actionSuccess={this.actionSuccess} toggle_modal={() => this.toggle_modal()} toggle={() => this.toggle_unsubscribe()} />
         }

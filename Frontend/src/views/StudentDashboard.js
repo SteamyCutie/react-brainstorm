@@ -1,10 +1,8 @@
 import React from "react";
 import { Container, Row, Col, Button, FormSelect } from "shards-react";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Pagination from '@material-ui/lab/Pagination';
 import AdSense from 'react-adsense';
 import MentorDetailCardStudentDashboard from "./../components/common/MentorDetailCardStudentDashboard";
-import BookSession from "./../components/common/BookSession";
 import BookSession2 from "./../components/common/BookSession2";
 import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
 import LoadingModal from "../components/common/LoadingModal";
@@ -273,7 +271,7 @@ export default class StudentDashboard extends React.Component {
     let index = 0;
 
     for (index = 0; index < mentors.length; index ++) {
-      if (mentors[index].id == id) {
+      if (mentors[index].id === id) {
         this.handleMentorDetailCardClick(mentors[index]);
         break;
       }
@@ -355,7 +353,7 @@ export default class StudentDashboard extends React.Component {
   }
 
   render() {
-    const { loading, mentors, totalCnt, ModalOpen, ModalCallWithDescOpen, id, width, participantSelected, participantData } = this.state;
+    const { loading, mentors, ModalOpen, ModalCallWithDescOpen, id, width, participantSelected, participantData } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}

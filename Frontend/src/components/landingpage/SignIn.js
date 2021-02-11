@@ -230,7 +230,7 @@ class SignIn extends React.Component {
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
               <p>Don't have an account?&nbsp;
-                <a href="" onClick={ this.onClick}>Sign up</a>                
+                <a href="" onClick={this.onClick}>Sign up</a>                
                 </p>
             </div>
             <div className="content-center seperation-line-class">

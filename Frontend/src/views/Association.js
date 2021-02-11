@@ -64,27 +64,27 @@ export default class Association extends React.Component {
           center: true,
           cell: row =>
             <div style={{display: "flex"}}>
-              {row.status == 0 &&
+              {row.status === 0 &&
                 <div className="association-button" onClick={() => this.handleWithdraw(row.id)}>
                   Withdraw
                 </div>
               }
-              {row.status == 1 &&
+              {row.status === 1 &&
                 <div className="association-button" onClick={() => this.handleUnassociate(row.id)}>
                   Unassociate
                 </div>
               }
-              {row.status == 2 &&
+              {row.status === 2 &&
                 <div className="association-button" onClick={() => this.handleReassociate(row.id)}>
                   Reassociate
                 </div>
               }
-              {row.status == 3 &&
+              {row.status === 3 &&
                 <div className="association-button" onClick={() => this.handleReassociate(row.id)}>
                   Reassociate
                 </div>
               }
-              {row.status == 4 &&
+              {row.status === 4 &&
                 <>
                   <div className="association-button" onClick={() => this.handleAccept(row.id)}>
                     Accept

@@ -12,7 +12,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { editprofile, getuserinfo, uploadimage, gettags, signout, getlanguages } from '../api/api';
 import 'moment/locale/it.js';
-import { DatePicker, DatePickerInput } from "rc-datepicker";
+import { DatePickerInput } from "rc-datepicker";
 import 'moment/locale/el.js';
 import 'rc-datepicker/lib/style.css';
 
@@ -110,13 +110,13 @@ export default class MySharePage extends React.Component {
 
         let params = [];
         let lparams = [];
-        for (var i = 0; i < result.data.data.tags.length; i++) {
+        for (let i = 0; i < result.data.data.tags.length; i++) {
           param1.label = result.data.data.tags_name[i].trim();
           param1.value = parseInt(result.data.data.tags[i].trim());
           params.push(param1);
           param1 = {};
         }
-        for (var i = 0; i < result.data.data.language.length; i++) {
+        for (let i = 0; i < result.data.data.language.length; i++) {
           param1.label = result.data.data.languages_name[i].trim();
           param1.value = parseInt(result.data.data.language[i].trim());
           lparams.push(param1);

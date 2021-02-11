@@ -511,8 +511,8 @@ class App extends React.Component{
       roomCall: true, 
       isMaster: false, 
       session: session, 
-    })
-    console.log(session);
+    });
+
     var message = {
       id: "joinRoom", 
       userId: localStorage.getItem("user_id"), 

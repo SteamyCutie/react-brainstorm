@@ -4,6 +4,10 @@ import { Container, Row, Col } from "shards-react";
 export default class IntroduceLayout extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      
+    }
   }
 
   componentWillMount() {

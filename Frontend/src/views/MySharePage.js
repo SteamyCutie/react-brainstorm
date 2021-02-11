@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody } from "shards-react";
+import moment from "moment";
 import { getuserinfobyid, signout } from '../api/api';
 import LoadingModal from "../components/common/LoadingModal";
 import { ToastsStore } from 'react-toasts';
@@ -30,7 +31,7 @@ export default class MySharePage extends React.Component {
       const result = await getuserinfobyid(param);
       if (result.data.result === "success") {
         this.setState({ userInfo: result.data.data });
-      } else if (result.datat.result === "warning") {
+      } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
@@ -96,6 +97,39 @@ export default class MySharePage extends React.Component {
     this.props.history.push('/');
   }
 
+  getExtension(filename) {
+    var parts = filename.split('.');
+    return parts[parts.length - 1];
+  }
+
+  isImage(filename) {
+    var ext = this.getExtension(filename);
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+        //etc
+        return true;
+      default:
+    }
+    return false
+  }
+
+  isVideo(filename) {
+    var ext = this.getExtension(filename);
+    switch (ext.toLowerCase()) {
+      case 'm4v':
+      case 'avi':
+      case 'mpg':
+      case 'mp4':
+        // etc
+        return true;
+      default:
+    }
+    return false
+  }
+
   render() {
     const { userInfo, loading } = this.state;
     return (
@@ -129,6 +163,45 @@ export default class MySharePage extends React.Component {
                   {userInfo.share_info && userInfo.share_info.map((item, idx) =>
                     <MentorVideo key={idx} item={item} />
                   )}
+                  {userInfo.forum_info && userInfo.forum_info.map((item, idx) => {
+                    return (
+                      <div key={idx} className="open-forum">
+                        <div style={{display: "flex"}}>
+                          <label className="title">{item.title}</label>
+                          <label className="price">20$</label>
+                        </div>
+                        <div style={{paddingLeft: "10px"}}>
+                          <label className="description">{item.description}</label>
+                          <label>Age Limitation: <label className="content">{item.age_limitation}</label></label>
+                          <div>
+                            <label className="time">From: <label className="content">{moment.unix(parseInt(item.forum_start)).format("YYYY-MM-DD hh:mm")}</label></label>
+                            <label className="time">To: <label className="content">{moment.unix(parseInt(item.forum_end)).format("YYYY-MM-DD hh:mm")}</label></label>
+                          </div>
+                          <label>Language: <label className="content">{item.language}</label></label>
+                          <div style={{display: "flex"}}>
+                            <label style={{marginRight: "15px"}}>Categories: </label>
+                            {item.tags_name.map((tag, idx) => {
+                              return <p key={idx} className="tag content" title={tag}>{tag}</p>;
+                            })}
+                          </div>
+                          <div style={{display: "flex"}}>
+                            <label style={{marginRight: "15px"}}>Files: </label>
+                            {item.attachments.map((attachment, idx) => {
+                              return (
+                                <div style={{display: "grid", margin: "2px 5px"}}>
+                                  {this.isImage(attachment.origin_name) && <img src={attachment.path} alt={attachment.origin_name} className="open-forum-file-preview"/>}
+                                  {this.isVideo(attachment.origin_name) && <video src={attachment.path} />}
+                                  {(!this.isImage(attachment.origin_name) && !this.isVideo(attachment.origin_name)) && <div className="open-forum-file-preview">{this.getExtension(attachment.origin_name)}</div>}
+                                  <a download href={attachment.path} key={idx} className="attachment" title={attachment.origin_name}>{attachment.origin_name}</a>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div className="sperator"/>
+                      </div>
+                    );
+                  })}
                 </Col>
               </Row>
             </CardBody>

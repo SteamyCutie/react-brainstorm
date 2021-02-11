@@ -99,7 +99,7 @@
   justify-content: center;
   display: block;
   padding: 0px !important;
-  width: 65%;
+  width: 80%;
 }
 
 .modal-content {
@@ -1532,4 +1532,30 @@ ul#fabric-whiteboard-toolbar-ul li{
 
 .tooltip-include:hover .tooltiptext {
   visibility: visible;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: black !important;
+}
+
+input[type="file"] {
+  display: none !important;
+}
+
+input[type="file" i] {
+  appearance: initial;
+  background-color: initial;
+  cursor: default;
+  align-items: baseline;
+  color: inherit;
+  text-overflow: ellipsis;
+  white-space: pre;
+  text-align: start !important;
+  padding: initial;
+  border: initial;
+  overflow: hidden !important;
 }

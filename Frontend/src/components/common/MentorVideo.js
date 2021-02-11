@@ -127,7 +127,6 @@ class MentorVideo extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
   }
 
   render() {
@@ -166,8 +165,7 @@ class MentorVideo extends React.Component {
           </div>
           <div>
             {media_type === 'video' && <Player playsInline poster={background} src={media_url} />}
-            {media_type === 'image' && <img src={media_url} style={{width: "100%"}}/>}
-            {/* {media_type === 'video' && <Player playsInline poster={background} src={media_url} />} */}
+            {media_type === 'image' && <img src={media_url} alt="mentor" style={{width: "100%"}}/>}
           </div>
         </div>
       </>

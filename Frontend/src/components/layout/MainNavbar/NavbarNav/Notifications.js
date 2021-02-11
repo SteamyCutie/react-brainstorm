@@ -4,7 +4,6 @@ import NotificationsNone from '@material-ui/icons/NotificationsNone';
 import LoadingModal from "../../../../components/common/LoadingModal";
 import { checkednotification, signout } from '../../../../api/api';
 import avatar from "../../../../images/avatar.jpg";
-import close from "../../../../images/close.png";
 import { ToastsStore } from 'react-toasts';
 import { withRouter } from 'react-router-dom';
 
@@ -162,7 +161,7 @@ class Notifications extends React.Component {
   }
 
   render() {
-    const { visible, notification_count, notifications, all_notifications, loading } = this.state;
+    const { visible, notification_count, all_notifications, loading } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}

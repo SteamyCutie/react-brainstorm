@@ -174,13 +174,11 @@ export default class SubscribeModal extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
   }
 
   render() {
     const { open, item } = this.props;
     const { loading, paymentCard } = this.state;
-    // console.log(paymentCard);
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">

@@ -29,13 +29,11 @@ class SmallCardPayment extends React.Component {
   setAsDefault(id) {
     const { setAsDefault } = this.props;
     setAsDefault(id);
-    console.log(id);
   }
 
   deleteStudentCard(id) {
     const { deleteStudentCard } = this.props;
     deleteStudentCard(id);
-    console.log(id);
   }
 
   render() {

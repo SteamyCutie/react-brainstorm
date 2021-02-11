@@ -95,7 +95,6 @@ export default class EditLiveForum extends React.Component {
   }
 
   setSelectedTags = (e) => {
-    let { selectedTags } = this.state;
     let temp = e;
     this.setState({ selectedTags: temp });
 
