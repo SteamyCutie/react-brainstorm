@@ -38,26 +38,26 @@ class SmallCardForum extends React.Component {
     });
   }
 
-  // toggle_invite() {
-  //   this.setState({
-  //     ModalInviteOpen: !this.state.ModalInviteOpen
-  //   });
-  // }
+  toggle_invite() {
+    this.setState({
+      ModalInviteOpen: !this.state.ModalInviteOpen
+    });
+  }
 
-  // toggle_invitemore(id) {
-  //   const { toggle_editliveforum } = this.props;
-  //   toggle_editliveforum(id);
-  //   this.toggle_invite();
-  // }
+  toggle_invitemore(id) {
+    const { toggle_editliveforum } = this.props;
+    toggle_editliveforum(id);
+    this.toggle_invite();
+  }
 
-  // toggle_startliveforum() {
-  //   const { startSession } = this.props;
-  //   startSession("1234");
-  // }
+  toggle_startliveforum() {
+    const { startSession } = this.props;
+    startSession("1234");
+  }
 
   render() {
-    const {title, tag_name, day, from_time, to_time, id, student_info, opened} = this.props.item;
-    const {forumEdit, forumDelete, startSession, history} = this.props;
+    const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
+    const {toggle_editliveforum, toggle_confirm, startSession, history} = this.props;
     const { ModalInviteOpen, open } = this.state;
     return (
       <div className="small-card-forum">
@@ -78,19 +78,22 @@ class SmallCardForum extends React.Component {
             </DropdownToggle>
             {history ? 
               <DropdownMenu>
-                <DropdownItem onClick={() => forumDelete()}>
+                <DropdownItem onClick={() => toggle_confirm(id)}>
                   Delete
                 </DropdownItem>
               </DropdownMenu>
             : 
               <DropdownMenu>
-                <DropdownItem onClick={() => startSession()}>
+                <DropdownItem onClick={() => startSession(id)}>
                   Start Forum
                 </DropdownItem>
-                <DropdownItem onClick={() => forumEdit()}>
+                <DropdownItem onClick={() => toggle_editliveforum(id)}>
+                  Invite students
+                </DropdownItem>
+                <DropdownItem onClick={() => toggle_editliveforum(id)}>
                   Edit
                 </DropdownItem>
-                <DropdownItem onClick={() => forumDelete()}>
+                <DropdownItem onClick={() => toggle_confirm(id)}>
                   Delete
                 </DropdownItem>
               </DropdownMenu>
@@ -137,7 +140,7 @@ class SmallCardForum extends React.Component {
                 })}
                 </label>
             </div>
-            {<h6 className="forum-student-number no-margin">{opened ? "Open Forum" : `${student_info.length} invited`}</h6>}
+            <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
           </div>
         }
       </div>
