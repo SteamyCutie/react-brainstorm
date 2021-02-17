@@ -57,7 +57,7 @@ class SmallCardForum extends React.Component {
 
   render() {
     const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
-    const {toggle_editliveforum, toggle_confirm, startSession, history} = this.props;
+    const {forumEdit, toggle_confirm, startSession, history} = this.props;
     const { ModalInviteOpen, open } = this.state;
     return (
       <div className="small-card-forum">
@@ -87,10 +87,7 @@ class SmallCardForum extends React.Component {
                 <DropdownItem onClick={() => startSession(id)}>
                   Start Forum
                 </DropdownItem>
-                <DropdownItem onClick={() => toggle_editliveforum(id)}>
-                  Invite students
-                </DropdownItem>
-                <DropdownItem onClick={() => toggle_editliveforum(id)}>
+                <DropdownItem onClick={() => forumEdit(id)}>
                   Edit
                 </DropdownItem>
                 <DropdownItem onClick={() => toggle_confirm(id)}>

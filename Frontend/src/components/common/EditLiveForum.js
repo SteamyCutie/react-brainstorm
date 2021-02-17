@@ -2,8 +2,9 @@ import React from "react";
 import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect, FormCheckbox } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
-import { editforum, getforum, signout } from '../../api/api';
+import { editforum, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
+import Languagelist from '../../common/LanguageList';
 import Close from '../../images/Close.svg';
 import { ToastsStore } from 'react-toasts';
 import moment from 'moment';
@@ -15,45 +16,90 @@ export default class EditLiveForum extends React.Component {
     this.state = {
       loading: false,
       displayday: '',
-      displayfrom: '',
-      displayto: '',
-      foruminfo: {},
+
+      email: localStorage.getItem('email'),
+      title: "",
+      price: null,
+      description: "",
+      day: new Date().toISOString().slice(0, 10),
+      from: "",
+      to: "",
+      language: "English",
       tags: [],
       students: [],
-      selectedTags: [],
-      selectedUsers: [],
       requiremessage: {
         dtitle: '',
         description: '',
       },
       opened: false,
       attachments: [],
-      ageLimitation: "18 and older",
-      price: null,
-
-
-      title: "",
-      description: "",
+      age_limitation: "18 and older",
+      day: "",
+      from_time: "",
+      to_time: "",
     };
   }
 
-  componentWillMount() {
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // if (JSON.stringify(this.props.forumInfo) != JSON.stringify(prevProps.forumInfo)) {
-    //   this.setState({
-    //     foruminfo: this.props.forumInfo
-    //   })
-    // }
-  }
-
   componentWillReceiveProps(nextProps) {
-    // console.log(nextProps.forumInfo, '++++++++++')
     if (JSON.stringify(this.props.forumInfo) != JSON.stringify(nextProps.forumInfo)) {
       if (nextProps.forumInfo !== null) {
+        const {
+          tag_name,
+          student_info,
+          age_limitation,
+          day,
+          description,
+          forum_end,
+          forum_start,
+          from,
+          id,
+          language,
+          opened,
+          price,
+          title,
+          to,
+        } = nextProps.forumInfo;
+
+        // const day = moment(from).format("YYYY-MM-DD");
+        const from_time = moment(from).format("hh:mm a");
+        const to_time = moment(to).format("hh:mm a");
+        const {allTags, allStudents} = this.props;
+        let tags = [];
+        let students = [];
+        
+        for (const idx1 in tag_name) {
+          for (const idx2 in allTags) {
+            if (allTags[idx2].label === tag_name[idx1].name) {
+              tags.push(allTags[idx2]);
+            }
+          }
+        }
+        
+        for (const idx1 in student_info) {
+          for (const idx2 in allStudents) {
+            if (allStudents[idx2].label === student_info[idx1].email) {
+              students.push(allStudents[idx2]);
+            }
+          }
+        }
+        
         this.setState({
-          foruminfo: nextProps.forumInfo
+          age_limitation,
+          day,
+          description,
+          forum_end,
+          forum_start,
+          from,
+          id,
+          language,
+          opened,
+          price,
+          title,
+          to,
+          tags,
+          students,
+          from_time,
+          to_time
         });
       }
     }
@@ -65,81 +111,167 @@ export default class EditLiveForum extends React.Component {
   }
 
   onChangeTitle = (e) => {
-    var array = e.target.value.split("");
-    if (array.length > 30) {
-      return;
-    }
-    let { foruminfo } = this.state;
-    foruminfo.title = e.target.value;
-    this.setState({ foruminfo });
+    this.setState({ title: e.target.value });
   }
 
+  onChangePrice = (e) => {
+    this.setState({ price: e.target.value });
+  }
+  
   onChangeDescription = (e) => {
-    var array = e.target.value.split("");
-    if (array.length > 500) {
-      return;
-    }
-    let { foruminfo } = this.state;
-    foruminfo.description = e.target.value;
-    this.setState({ foruminfo });
+    this.setState({ description: e.target.value });
   }
 
-  setSelectedUsers = (e) => {
-    var temp = e;
-    this.setState({ selectedUsers: temp });
+  onChangeDay = (e) => {
+    let date = new Date(e);
+    let displayday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    this.setState({ day: displayday });
+    this.setState({ displayday: date });
+  };
 
-    if (e.length > 0) {
-      let { foruminfo } = this.state;
-      foruminfo.students = [];
-      for (var i = 0; i < e.length; i++) {
-        foruminfo.students.push(e[i].value);
-      }
-      this.setState({ foruminfo });
-    } else {
-      let { foruminfo } = this.state;
-      foruminfo.students = [];
-      this.setState({ foruminfo });
-    }
+  onChangeFrom = (e) => {
+    this.setState({ from: e.target.value });
+  };
+  
+  onChangeTo = (e) => {
+    this.setState({ to: e.target.value });
+  };
+
+  onChangeLanguage = (e) => {
+    this.setState({ language: e.target.value });
+  };
+
+  setSelectedStudents = (e) => {
+    this.setState({ students:e });
   }
 
   setSelectedTags = (e) => {
-    let temp = e;
-    this.setState({ selectedTags: temp });
+    this.setState({ tags: e });
+  }
 
-    if (e.length > 0) {
-      let { foruminfo } = this.state;
-      foruminfo.tags = [];
-      for (var i = 0; i < e.length; i++) {
-        foruminfo.tags.push(e[i].value);
-      }
-      this.setState({ foruminfo });
-    } else {
-      let { foruminfo } = this.state;
-      foruminfo.tags = [];
-      this.setState({ foruminfo });
+  handleOpenForum = (e) => {
+    this.setState({opened: !this.state.opened});
+  }
+
+  handleFileChange(eve) {
+    const { files } = eve.target;
+    let temp = [...this.state.attachments];
+
+    for( const key in Object.keys(files)) {
+      temp.push(files[key]);
     }
+
+    this.setState({attachments: temp});
+  }
+
+  handleAttachmentsRemove = (eve, idx) => {
+    let { attachments } = this.state;
+
+    attachments.splice(idx, 1);
+    this.setState({attachments});
+  }
+
+  onChangeAgeLimitaton = (eve) => {
+    this.setState({age_limitation: eve.target.value});
   }
 
   actionEdit = async () => {
-    let { requiremessage, foruminfo } = this.state;
-    const { toggle_editsuccess, toggle_editfail } = this.props;
+    const { requiremessage, students, opened, title, description, tags, language, from_time, to_time, day, email, price, attachments, ageLimitation } = this.state;
+    const { toggle_createsuccess, toggle_createfail, toggle_createwarning } = this.props;
+    
     requiremessage.dtitle = '';
     requiremessage.description = '';
     this.setState({
       requiremessage
     });
+    
+    let param = null;
+    const forum_start = day +" "+ from_time;
+    const forum_end = day +" "+ to_time;
+    
     try {
-      this.setState({ loading: true });
-      const forum_start = foruminfo.day +" "+ foruminfo.from;
-      const forum_end = foruminfo.day +" "+ foruminfo.to;
-      
-      foruminfo.forum_start = new Date(forum_start).getTime()/1000;
-      foruminfo.forum_end = new Date(forum_end).getTime()/1000;
-      this.setState({ foruminfo });
-      const result = await editforum(foruminfo);
+      if (!opened) {
+        let t_students = [];
+        let t_tags = [];
+        for (let i = 0; i < students.length; i ++)
+          t_students.push(students[i].value);
+
+        for (let i = 0; i < tags.length; i ++)
+          t_tags.push(tags[i].value);
+        
+        let data = new FormData();
+        data.append("forumInfo", JSON.stringify({
+          email,
+          title,
+          description,
+          tags: t_tags,
+          language,
+          forum_start: new Date(forum_start).getTime()/1000,
+          forum_end: new Date(forum_end).getTime()/1000,
+          students: t_students,
+          opened: false
+        }));
+
+        param = data;
+        console.log({
+          email,
+          title,
+          description,
+          tags: t_tags,
+          language,
+          forum_start: new Date(forum_start).getTime()/1000,
+          forum_end: new Date(forum_end).getTime()/1000,
+          students: t_students,
+          opened: false
+        }, "+++++");
+      } else {
+        let t_students = [];
+        let t_tags = [];
+        for (let i = 0; i < students.length; i ++)
+          t_students.push(students[i].value);
+
+        for (let i = 0; i < tags.length; i ++)
+          t_tags.push(tags[i].value);
+
+        let data = new FormData();
+
+        attachments.forEach(function(file) {
+          data.append("files[]", file)
+        });
+        data.append("forumInfo", JSON.stringify({
+          email,
+          title,
+          description,
+          tags: t_tags,
+          language,
+          forum_start: new Date(forum_start).getTime()/1000,
+          forum_end: new Date(forum_end).getTime()/1000,
+          opened: true,
+          ageLimitation,
+          price
+        }));
+
+        param = data;
+        console.log({
+          email,
+          title,
+          description,
+          tags: t_tags,
+          language,
+          forum_start: new Date(forum_start).getTime()/1000,
+          forum_end: new Date(forum_end).getTime()/1000,
+          opened: true,
+          ageLimitation,
+          price
+        }, "+++++");
+      }
+      return;
+      const result = await editforum(param);
       if (result.data.result === "success") {
         this.toggle();
-        toggle_editsuccess("Edit Forum Success");
+        toggle_createsuccess("Create Forum Success");
+      } else if (result.data.result === "warning") {
+        toggle_createwarning(result.data.message);
       } else {
         if (result.data.type === 'require') {
           let { requiremessage } = this.state;
@@ -154,24 +286,24 @@ export default class EditLiveForum extends React.Component {
           });
         } else {
           if (result.data.message === "Token is Expired") {
-            ToastsStore.error(result.data.message);
+            toggle_createfail(result.data.message);
             this.signout();
           } else if (result.data.message === "Token is Invalid") {
-            ToastsStore.error(result.data.message);
+            toggle_createfail(result.data.message);
             this.signout();
           } else if (result.data.message === "Authorization Token not found") {
-            ToastsStore.error(result.data.message);
+            toggle_createfail(result.data.message);
             this.signout();
           } else {
-            toggle_editfail("Edit Forum Fail");
+            toggle_createfail("Create Forum Fail");
           }
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      toggle_editfail("Edit Forum Fail");
-    };
+      toggle_createfail("Create Forum Fail");
+    }
   }
 
   signout = async () => {
@@ -206,93 +338,29 @@ export default class EditLiveForum extends React.Component {
     //this.props.history.push('/');
   }
 
-  getSession = async (id) => {
-    // return;
-    this.setState({ loading: true });
-    try {
-      const result = await getforum({ id: id });
-      if (result.data.result === "success") {
-        
-      } else if (result.data.result === "warning") {
-        ToastsStore.warning(result.data.message);
-      } else {
-        if (result.data.message === "Token is Expired") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else {
-          ToastsStore.error(result.data.message);
-        }
-      }
-      this.setState({ loading: false });
-    } catch (err) {
-      this.setState({ loading: false });
-      ToastsStore.error("Something Went wrong");
-    }
-  }
-
-  onChangeDay = (e) => {
-    let { foruminfo } = this.state;
-    let date = new Date(e);
-    let displayday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-    foruminfo.day = displayday;
-    this.setState({ foruminfo });
-    this.setState({ displayday: date });
-  };
-
-  onChangeFrom = (e) => {
-    let { foruminfo } = this.state;
-    foruminfo.from = e.target.value;
-    this.setState({ foruminfo });
-  };
-
-  onChangeTo = (e) => {
-    let { foruminfo } = this.state;
-    foruminfo.to = e.target.value;
-    this.setState({ foruminfo });
-  };
-
-  onChangePrice = (e) => {
-    this.setState({price: e.target.value});
-  }
-
-  handleOpenForum = (e) => {
-    this.setState({opened: !this.state.opened});
-  }
-
-  handleFileChange(eve) {
-    const { files } = eve.target;
-    let temp = [...this.state.attachments];
-
-    for( const key in Object.keys(files)) {
-      temp.push(files[key]);
-    }
-
-    this.setState({attachments: temp});
-  }
-
-  handleAttachmentsRemove = (eve, idx) => {
-    let { attachments } = this.state;
-
-    attachments.splice(idx, 1);
-    this.setState({attachments});
-  }
-
-  onChangeAgeLimitaton = (eve) => {
-    this.setState({ageLimitation: eve.target.value});
-  }
-
   render() {
     const { open } = this.props;
-    const { tags, students, selectedTags, selectedUsers, opened, requiremessage, foruminfo, attachments } = this.state;
-    const { title, description } = this.state;
+    const {
+      requiremessage,
+      displayday,
+      loading,
+      opened,
+      attachments,
+      title,
+      description,
+      day, 
+      price,
+      tags,
+      students,
+      age_limitation,
+      language,
+      from_time,
+      to_time,
+
+    } = this.state;
+
     const { allTags, allStudents } = this.props;
-    console.log(foruminfo, "++++++");  
+
     return (
       <div>
         <Modal size="lg" open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
@@ -301,26 +369,26 @@ export default class EditLiveForum extends React.Component {
             <h1 className="cofntent-center modal-header-class">Edit live forum</h1>
             <div style={{float: "left", width: "100%"}}></div>
             <div style={{float: "right"}}>
-              <FormCheckbox toggle onChange={e => this.handleOpenForum(e)} >Make this forum as open</FormCheckbox>
+              <FormCheckbox toggle onChange={e => this.handleOpenForum(e)} checked={opened} >Make this forum as open</FormCheckbox>
             </div>
             <div className="content-center block-content-class modal-input-group-class">
-              <label htmlFor="feEmail" className="profile-detail-important">Forum name</label>
+              <label htmlFor="feEmail" className="profile-detail-important">Title</label>
               {this.state.requiremessage.dtitle !== '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
-              {this.state.requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" invalid onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title} />}
-              {this.state.requiremessage.dtitle === '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={this.state.foruminfo.title} />}
+              {this.state.requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" invalid onChange={(e) => this.onChangeTitle(e)} value={title} />}
+              {this.state.requiremessage.dtitle === '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={title} />}
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Description</label>
               {this.state.requiremessage.description !== '' && <span className="require-message">{this.state.requiremessage.description}</span>}
-              {this.state.requiremessage.description !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
-              {this.state.requiremessage.description === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
+              {this.state.requiremessage.description !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={description} />}
+              {this.state.requiremessage.description === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={description} />}
             </div>
             {opened &&
               <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
                 <label htmlFor="feEmail">Age limitation</label>
                 <FormSelect id="feInputState" onChange={(e) => this.onChangeAgeLimitaton(e)}>
-                  <option value={"18 and older"} >18 and older</option>
-                  <option value={"1-17 years"} >1-17 years</option>
+                  <option value={"18 and older"} selected={age_limitation === "18 and older"}>18 and older</option>
+                  <option value={"1-17 years"} selected={age_limitation === "1-17 years"}>1-17 years</option>
                 </FormSelect>
               </div>
             }
@@ -328,8 +396,8 @@ export default class EditLiveForum extends React.Component {
               <div className="content-center block-content-class modal-input-group-class">
                 <label htmlFor="feEmail" className="profile-detail-important">Price</label>
                 {requiremessage.dtitle !== '' && <span className="require-message">{requiremessage.dtitle}</span>}
-                {requiremessage.dtitle !== '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" invalid autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
-                {requiremessage.dtitle === '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
+                {requiremessage.dtitle !== '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" invalid autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={price} />}
+                {requiremessage.dtitle === '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={price} />}
               </div>
             }
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
@@ -337,7 +405,7 @@ export default class EditLiveForum extends React.Component {
               <MultiSelect
                 hasSelectAll={false}
                 options={allTags}
-                value={selectedTags}
+                value={tags}
                 onChange={(e) => this.setSelectedTags(e)}
                 labelledBy={"Select"}
               />
@@ -348,12 +416,24 @@ export default class EditLiveForum extends React.Component {
                 <MultiSelect
                   hasSelectAll={true}
                   options={allStudents}
-                  value={selectedUsers}
+                  value={students}
                   onChange={(e) => this.setSelectedUsers(e)}
                   labelledBy={"Select"}
                 />
               </div>
             }
+            <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
+              <label htmlFor="feEmail">Language</label>
+              <FormSelect id="feInputState" onChange={(e) => this.onChangeLanguage(e)}>
+                {Languagelist.map((item, idx) => {
+                  return (
+                    item.value === language 
+                    ? <option key={idx} value={item.value} selected>{item.value}</option>
+                    : <option key={idx} value={item.value} >{item.value}</option>
+                  );
+                })}
+              </FormSelect>
+            </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Date</label>
             </div>
@@ -362,7 +442,7 @@ export default class EditLiveForum extends React.Component {
               size="lg"
               selected={this.state.displayday}
               onChange={(e) => this.onChangeDay(e)}
-              value={this.state.foruminfo.day}
+              value={day}
               placeholderText="From"
               dropdownMode="select"
               className="text-center"
@@ -373,14 +453,14 @@ export default class EditLiveForum extends React.Component {
             <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeFrom(e)}>
               {Timelinelist.map((item, idx) => {
                 return (
-                  item.value === this.state.foruminfo.from ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
+                  item.str === from_time ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
                 );
               })}
             </FormSelect>
             <FormSelect id="feInputState" className="col-md-6 available-time-input" onChange={(e) => this.onChangeTo(e)}>
               {Timelinelist.map((item, idx) => {
                 return (
-                  item.value === this.state.foruminfo.to ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
+                  item.str === to_time ? <option key={idx} value={item.value} selected>{item.str}</option> : <option key={idx} value={item.value}>{item.str}</option>
                 );
               })}
             </FormSelect>

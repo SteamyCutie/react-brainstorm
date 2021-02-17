@@ -356,9 +356,12 @@ export default class ScheduleLiveForum extends React.Component {
     }
   }
 
+  handleEditToggle() {
+    this.setState({ModalEditOpen: !this.state.ModalEditOpen});
+  }
+
   render() {
     const { ModalOpen, ModalEditOpen, ModalConfirmOpen, loading, forumInfos, id, user, allTags, allStudents } = this.state;
-
     return (
       <div>
         {loading && <LoadingModal open={true} />}
@@ -376,8 +379,8 @@ export default class ScheduleLiveForum extends React.Component {
           id={id}
           allTags={allTags}
           allStudents={allStudents}
-          forumInfo={id ? forumInfos[id] : null}
-          toggle={() => this.handleEditForum()}
+          forumInfo={((id !== null) || (id !== undefined)) ? forumInfos[id] : null}
+          toggle={() => this.handleEditToggle()}
           toggle_editsuccess={(text) => this.toggle_editsuccess(text)}
           toggle_editfail={(text) => this.toggle_editfail(text)}>
         </EditLiveForum>
