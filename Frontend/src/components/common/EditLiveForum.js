@@ -29,6 +29,7 @@ export default class EditLiveForum extends React.Component {
       opened: false,
       attachments: [],
       ageLimitation: "18 and older",
+      price: null,
 
 
       title: "",
@@ -255,6 +256,10 @@ export default class EditLiveForum extends React.Component {
     foruminfo.to = e.target.value;
     this.setState({ foruminfo });
   };
+
+  onChangePrice = (e) => {
+    this.setState({price: e.target.value});
+  }
 
   handleOpenForum = (e) => {
     this.setState({opened: !this.state.opened});
