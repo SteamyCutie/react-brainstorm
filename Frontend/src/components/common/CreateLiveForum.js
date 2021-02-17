@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect, FormCheckbox } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
-import { createforum, gettags, getsubscribedstudents, getassociatedstudents, signout } from '../../api/api';
+import { createforum, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Languagelist from '../../common/LanguageList';
 import Close from '../../images/Close.svg';
@@ -11,27 +11,16 @@ export default class CreateLiveForum extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedSubscribedUsers: [],
-      selectedAssociatedUsers: [],
-      associated_students: [], 
-      subscribed_students: [], 
-      selectedTags: [],
       loading: false,
       displayday: '',
-      foruminfo: {
-        title: "",
-        description: "",
-        email: "",
-        tags: [],
-        students: [],
-        language: 'English',
-        from: '00:00',
-        to: '00:00',
-        day: new Date().toISOString().slice(0, 10),
-        forum_start: '',
-        forum_end: '',
-        price: null
-      },
+      email: localStorage.getItem('email'),
+      title: "",
+      price: null,
+      description: "",
+      day: new Date().toISOString().slice(0, 10),
+      from: "",
+      to: "",
+      language: "English",
       tags: [],
       students: [],
       requiremessage: {
@@ -45,228 +34,141 @@ export default class CreateLiveForum extends React.Component {
 
   }
 
-  componentWillMount() {    
-    let { foruminfo } = this.state;
-    foruminfo.email = localStorage.getItem('email');
-    this.setState({ foruminfo });
-    this.getAllTags();
-    this.getSubscribedStudents();
-    this.getAssociatedStudents();
-  }
-
   toggle() {
     const { toggle } = this.props;
     toggle();
   }
 
   onChangeTitle = (e) => {
-    var array = e.target.value.split("");
-    if (array.length > 30) {
-      return;
-    }
-    let { foruminfo } = this.state;
-    foruminfo.title = e.target.value;
-    this.setState({ foruminfo });
+    this.setState({ title: e.target.value });
   }
 
   onChangePrice = (e) => {
-    var array = e.target.value.split("");
-    if (array.length > 30) {
-      return;
-    }
-    let { foruminfo } = this.state;
-    foruminfo.price = e.target.value;
-    this.setState({ foruminfo });
+    this.setState({ price: e.target.value });
   }
-
+  
   onChangeDescription = (e) => {
-    var array = e.target.value.split("");
-    if (array.length > 500) {
-      return;
-    }
-    let { foruminfo } = this.state;
-    foruminfo.description = e.target.value;
-    this.setState({ foruminfo });
+    this.setState({ description: e.target.value });
   }
 
-  getAllTags = async () => {
-    const { toggle_createfail } = this.props;
-    try {
-      const result = await gettags();
-      if (result.data.result === "success") {
-        let param = {
-          label: '',
-          value: ''
-        };
+  onChangeDay = (e) => {
+    let date = new Date(e);
+    let displayday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    this.setState({ day: displayday });
+    this.setState({ displayday: date });
+  };
 
-        let params = [];
+  onChangeFrom = (e) => {
+    this.setState({ from: e.target.value });
+  };
+  
+  onChangeTo = (e) => {
+    this.setState({ to: e.target.value });
+  };
 
-        for (var i = 0; i < result.data.data.length; i++) {
-          param.label = result.data.data[i].name;
-          param.value = result.data.data[i].id;
-          params.push(param);
-          param = {};
-        }
-        this.setState({ tags: params });
-      } else {
-        if (result.data.message === "Token is Expired") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else {
-          toggle_createfail(result.data.message);
-        }
-      }
-    } catch (err) {
-      toggle_createfail("Something Went wrong");
-    }
+  onChangeLanguage = (e) => {
+    this.setState({ language: e.target.value });
+  };
+
+  setSelectedStudents = (e) => {
+    this.setState({ students:e });
   }
 
-  getAssociatedStudents = async () => {
-    const { toggle_createfail } = this.props;
-    let param = {
-      email: localStorage.getItem('email')
-    }
-    try {
-      const result = await getassociatedstudents(param);
-      if (result.data.result === "success") {
-        let param = {
-          label: '',
-          value: ''
-        };
-
-        let params = [];
-
-        for (var i = 0; i < result.data.data.length; i++) {
-          param.label = result.data.data[i].email;
-          param.value = result.data.data[i].id;
-          params.push(param);
-          param = {};
-        }
-        this.setState({ associated_students: params });
-      } else {
-        if (result.data.message === "Token is Expired") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token in Invalid") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else {
-          toggle_createfail(result.data.message);
-        }
-      }
-    } catch (err) {
-      toggle_createfail("Something Went wrong");
-    }
+  setSelectedTags = (e) => {
+    this.setState({ tags: e });
   }
 
-  getSubscribedStudents = async () => {
-    const { toggle_createfail } = this.props;
-    let param = {
-      email: localStorage.getItem('email')
-    }
-    try {
-      const result = await getsubscribedstudents(param);
-      if (result.data.result === "success") {
-        let param = {
-          label: '',
-          value: ''
-        };
-
-        let params = [];
-
-        for (var i = 0; i < result.data.data.length; i++) {
-          param.label = result.data.data[i].email;
-          param.value = result.data.data[i].id;
-          params.push(param);
-          param = {};
-        }
-        this.setState({ subscribed_students: params });
-      } else {
-        if (result.data.message === "Token is Expired") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token in Invalid") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          toggle_createfail(result.data.message);
-          this.signout();
-        } else {
-          toggle_createfail(result.data.message);
-        }
-      }
-    } catch (err) {
-      toggle_createfail("Something Went wrong");
-    }
+  handleOpenForum = (e) => {
+    this.setState({opened: !this.state.opened});
   }
 
+  handleFileChange(eve) {
+    const { files } = eve.target;
+    let temp = [...this.state.attachments];
+
+    for( const key in Object.keys(files)) {
+      temp.push(files[key]);
+    }
+
+    this.setState({attachments: temp});
+  }
+
+  handleAttachmentsRemove = (eve, idx) => {
+    let { attachments } = this.state;
+
+    attachments.splice(idx, 1);
+    this.setState({attachments});
+  }
+
+  onChangeAgeLimitaton = (eve) => {
+    this.setState({ageLimitation: eve.target.value});
+  }
+  
   actionSave = async () => {
-    let { requiremessage, foruminfo, selectedSubscribedUsers, selectedAssociatedUsers, opened } = this.state;
+    const { requiremessage, students, opened, title, description, tags, language, from, to, day, email, price, attachments, ageLimitation } = this.state;
     const { toggle_createsuccess, toggle_createfail, toggle_createwarning } = this.props;
+    
     requiremessage.dtitle = '';
     requiremessage.description = '';
     this.setState({
       requiremessage
     });
+    
     let param = null;
+    const forum_start = day +" "+ from;
+    const forum_end = day +" "+ to;
+    
     try {
       if (!opened) {
-        const forum_start = foruminfo.day +" "+ foruminfo.from;
-        const forum_end = foruminfo.day +" "+ foruminfo.to;
-        let temp = foruminfo;
-        temp.forum_start = new Date(forum_start).getTime()/1000;
-        temp.forum_end = new Date(forum_end).getTime()/1000;
-        let students = [];
-        for (let i = 0; i < selectedSubscribedUsers.length; i ++)
-        students.push(selectedSubscribedUsers[i].value);
-        
-        for (let i = 0; i < selectedAssociatedUsers.length; i ++) {
-          for (let j = 0; j < students.length; j++) {
-            if(students[j] !== selectedAssociatedUsers[i].value)
-            students.push(selectedAssociatedUsers[i].value)
-          }
-        }
-        foruminfo.students = students;
-        temp.opened = false;
-        this.setState({ foruminfo: temp });
+        let t_students = [];
+        let t_tags = [];
+        for (let i = 0; i < students.length; i ++)
+          t_students.push(students[i].value);
+
+        for (let i = 0; i < tags.length; i ++)
+          t_tags.push(tags[i].value);
         
         let data = new FormData();
-        data.append("forumInfo", JSON.stringify(temp));
+        data.append("forumInfo", JSON.stringify({
+          email,
+          title,
+          description,
+          tags: t_tags,
+          language,
+          forum_start: new Date(forum_start).getTime()/1000,
+          forum_end: new Date(forum_end).getTime()/1000,
+          students: t_students,
+          opened: false
+        }));
+
         param = data;
       } else {
-        let temp = {};
-        const { title, description, tags, language, from, to, day, email, price} = this.state.foruminfo;
-        const { attachments, ageLimitation } = this.state;
-        const forum_start = day +" "+ from;
-        const forum_end = day +" "+ to;
-        let data = new FormData();
+        let t_students = [];
+        let t_tags = [];
+        for (let i = 0; i < students.length; i ++)
+          t_students.push(students[i].value);
 
-        temp.email = email;
-        temp.title = title;
-        temp.description = description;
-        temp.tags = tags;
-        temp.language = language;
-        temp.from = from;
-        temp.to = to;
-        temp.forum_start = new Date(forum_start).getTime()/1000;
-        temp.forum_end = new Date(forum_end).getTime()/1000;
-        temp.opened = true;
-        temp.ageLimitation = ageLimitation;
-        temp.price = price;
+        for (let i = 0; i < tags.length; i ++)
+          t_tags.push(tags[i].value);
+
+        let data = new FormData();
 
         attachments.forEach(function(file) {
           data.append("files[]", file)
         });
-        data.append("forumInfo", JSON.stringify(temp));
+        data.append("forumInfo", JSON.stringify({
+          email,
+          title,
+          description,
+          tags: t_tags,
+          language,
+          forum_start: new Date(forum_start).getTime()/1000,
+          forum_end: new Date(forum_end).getTime()/1000,
+          opened: true,
+          ageLimitation,
+          price
+        }));
+
         param = data;
       }
 
@@ -342,106 +244,24 @@ export default class CreateLiveForum extends React.Component {
     //this.props.history.push('/');
   }
 
-  onChangeDay = (e) => {
-    let { foruminfo } = this.state;
-    let date = new Date(e);
-    let displayday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-    foruminfo.day = displayday;
-    this.setState({ foruminfo });
-    this.setState({ displayday: date });
-  };
-
-  onChangeFrom = (e) => {
-    let { foruminfo } = this.state;
-    foruminfo.from = e.target.value;
-    this.setState({ foruminfo });
-  };
-
-  onChangeLanguage = (e) => {
-    let { foruminfo } = this.state;
-    foruminfo.language = e.target.value;
-    this.setState({ foruminfo });
-  };
-
-  onChangeTo = (e) => {
-    let { foruminfo } = this.state;
-    foruminfo.to = e.target.value;
-    this.setState({ foruminfo });
-  };
-
-  handleChange = (event) => {
-    let { personName } = this.state;
-    personName.push(event);
-    this.setState({ personName })
-  };
-
-  setSelectedSubscribedUsers = (e) => {
-    this.setState({ selectedSubscribedUsers: e });
-  }
-
-  setSelectedAssociatedUsers = (e) => {
-    this.setState({ selectedAssociatedUsers: e });
-  }
-
-  setSelectedTags = (e) => {
-    this.setState({ selectedTags: e });
-
-    if (e.length > 0) {
-      let { foruminfo } = this.state;
-      foruminfo.tags = [];
-      for (var i = 0; i < e.length; i++) {
-        foruminfo.tags.push(e[i].value);
-      }
-      this.setState({ foruminfo });
-    } else {
-      let { foruminfo } = this.state;
-      foruminfo.tags = [];
-      this.setState({ foruminfo });
-    }
-  }
-
-  handleOpenForum = (e) => {
-    this.setState({opened: !this.state.opened});
-  }
-
-  handleFileChange(eve) {
-    const { files } = eve.target;
-    let temp = [...this.state.attachments];
-
-    for( const key in Object.keys(files)) {
-      temp.push(files[key]);
-    }
-
-    this.setState({attachments: temp});
-  }
-
-  handleAttachmentsRemove = (eve, idx) => {
-    let { attachments } = this.state;
-
-    attachments.splice(idx, 1);
-    this.setState({attachments});
-  }
-
-  onChangeAgeLimitaton = (eve) => {
-    this.setState({ageLimitation: eve.target.value});
-  }
 
   render() {
     const { open } = this.props;
-    const { 
-      selectedAssociatedUsers,
-      selectedSubscribedUsers,
-      selectedTags,
-      tags,
-      subscribed_students,
-      associated_students,
-      foruminfo,
+    const {
       requiremessage,
       displayday,
       loading,
       opened,
-      attachments
+      attachments,
+      title,
+      description,
+      day, 
+      price,
+      tags,
+      students
     } = this.state;
+
+    const { allTags, allStudents } = this.props;
 
     return (
       <div>
@@ -456,14 +276,14 @@ export default class CreateLiveForum extends React.Component {
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Title</label>
               {requiremessage.dtitle !== '' && <span className="require-message">{requiremessage.dtitle}</span>}
-              {requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" placeholder="Title" invalid autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={foruminfo.title} />}
-              {requiremessage.dtitle === '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={foruminfo.title} />}
+              {requiremessage.dtitle !== '' && <FormInput className="profile-detail-input" placeholder="Title" invalid autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={title} />}
+              {requiremessage.dtitle === '' && <FormInput className="profile-detail-input" placeholder="Title" autoFocus="1" onChange={(e) => this.onChangeTitle(e)} value={title} />}
             </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Description</label>
               {requiremessage.description !== '' && <span className="require-message">{requiremessage.description}</span>}
-              {requiremessage.description !== '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
-              {requiremessage.description === '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={foruminfo.description} />}
+              {requiremessage.description !== '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={description} />}
+              {requiremessage.description === '' && <FormTextarea style={{ marginBottom: 20 }} className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={description} />}
             </div>
             {opened &&
               <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
@@ -478,40 +298,28 @@ export default class CreateLiveForum extends React.Component {
               <div className="content-center block-content-class modal-input-group-class">
                 <label htmlFor="feEmail" className="profile-detail-important">Price</label>
                 {requiremessage.dtitle !== '' && <span className="require-message">{requiremessage.dtitle}</span>}
-                {requiremessage.dtitle !== '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" invalid autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
-                {requiremessage.dtitle === '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
+                {requiremessage.dtitle !== '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" invalid autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={price} />}
+                {requiremessage.dtitle === '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={price} />}
               </div>
             }
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
               <label htmlFor="feEmail">Tags</label>
               <MultiSelect
-                hasSelectAll={false}
-                options={tags}
-                value={selectedTags}
+                hasSelectAll={true}
+                options={allTags}
+                value={tags}
                 onChange={(e) => this.setSelectedTags(e)}
                 labelledBy={"Select"}
               />
             </div>
             {!opened &&
               <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
-                <label htmlFor="feEmail">Associated students</label>
+                <label htmlFor="feEmail">Students</label>
                 <MultiSelect
                   hasSelectAll={true}
-                  options={associated_students}
-                  value={selectedAssociatedUsers}
-                  onChange={(e) => this.setSelectedAssociatedUsers(e)}
-                  labelledBy={"Select"}
-                />
-              </div>
-            }
-            {!opened &&
-              <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
-                <label htmlFor="feEmail">Subscribed students</label>
-                <MultiSelect
-                  hasSelectAll={true}
-                  options={subscribed_students}
-                  value={selectedSubscribedUsers}
-                  onChange={(e) => this.setSelectedSubscribedUsers(e)}
+                  options={allStudents}
+                  value={students}
+                  onChange={(e) => this.setSelectedStudents(e)}
                   labelledBy={"Select"}
                 />
               </div>
@@ -534,7 +342,7 @@ export default class CreateLiveForum extends React.Component {
               size="lg"
               selected={displayday}
               onChange={(e) => this.onChangeDay(e)}
-              value={foruminfo.day}
+              value={day}
               placeholderText="Select Date"
               dropdownMode="select"
               className="text-center"
