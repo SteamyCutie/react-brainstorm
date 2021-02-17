@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, ModalBody, ModalFooter, Button, Col, Row, ModalHeader } from "shards-react";
 import LoadingModal from "./LoadingModal";
-import { deleteforum, signout } from '../../api/api';
+import { signout } from '../../api/api';
 import Close from '../../images/Close.svg';
 import { ToastsStore } from 'react-toasts';
 import { withRouter } from 'react-router-dom';
@@ -13,9 +13,6 @@ class AddNewCard extends React.Component {
       loading: false,
       id: 0
     };
-  }
-
-  componentWillMount() {
   }
 
   componentWillReceiveProps(nextProps) {
@@ -32,38 +29,6 @@ class AddNewCard extends React.Component {
   toggle_remove() {
     const { toggle_remove } = this.props;
     toggle_remove();
-  }
-
-  actionRemove = async (id) => {
-    const param = { id: id };
-    try {
-      this.setState({ loading: true });
-      const result = await deleteforum(param);
-      if (result.data.result === "success") {
-        this.toggle_remove();
-        ToastsStore.success("Delete Schedule Success");
-        this.props.history.push('/scheduleLiveForum');
-      } else if (result.data.result === "warning") {
-        ToastsStore.warning(result.data.message);
-      } else {
-        if (result.data.message === "Token is Expired") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else {
-          ToastsStore.error(result.data.message);
-        }
-      }
-      this.setState({ loading: false });
-    } catch (err) {
-      this.setState({ loading: false });
-      ToastsStore.error("Something Went wrong");
-    };
   }
 
   signout = async () => {
@@ -95,12 +60,12 @@ class AddNewCard extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
   }
 
   render() {
     const { open } = this.props;
     const { loading, id } = this.state;
+    const { toggle_remove } = this.props
     return (
       <div>
         <Modal size="md" open={open} type="backdrop" toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
@@ -114,7 +79,7 @@ class AddNewCard extends React.Component {
                 <Button outline size="lg" onClick={() => this.toggle()}>Cancel</Button>
               </Col>
               <Col md="6" className="project-detail-input-group">
-                <Button size="lg" theme="danger" onClick={() => this.actionRemove(id)}>Remove</Button>
+                <Button size="lg" theme="danger" onClick={() =>toggle_remove()}>Remove</Button>
               </Col>
             </Row>
           </ModalFooter>

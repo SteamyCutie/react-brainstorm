@@ -1,8 +1,8 @@
 import React from "react";
-import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect } from "shards-react";
+import { Modal, ModalBody, Button, FormInput, DatePicker, FormTextarea, FormSelect, FormCheckbox } from "shards-react";
 import MultiSelect from "react-multi-select-component";
 import LoadingModal from "./LoadingModal";
-import { gettags, editforum, getforum, getallstudents, signout } from '../../api/api';
+import { editforum, getforum, signout } from '../../api/api';
 import Timelinelist from '../../common/TimelistList';
 import Close from '../../images/Close.svg';
 import { ToastsStore } from 'react-toasts';
@@ -17,18 +17,7 @@ export default class EditLiveForum extends React.Component {
       displayday: '',
       displayfrom: '',
       displayto: '',
-      foruminfo: {
-        id: "",
-        title: "",
-        description: "",
-        tags: [],
-        students: [],
-        from: '',
-        to: '',
-        day: '',
-        forum_start: '',
-        forum_end: ''
-      },
+      foruminfo: {},
       tags: [],
       students: [],
       selectedTags: [],
@@ -37,17 +26,35 @@ export default class EditLiveForum extends React.Component {
         dtitle: '',
         description: '',
       },
+      opened: false,
+      attachments: [],
+      ageLimitation: "18 and older",
+
+
+      title: "",
+      description: "",
     };
   }
 
   componentWillMount() {
-    this.getAllTags();
-    this.getAllStudents();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // if (JSON.stringify(this.props.forumInfo) != JSON.stringify(prevProps.forumInfo)) {
+    //   this.setState({
+    //     foruminfo: this.props.forumInfo
+    //   })
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.id && this.props.id !== nextProps.id) {
-      this.getSession(nextProps.id);
+    // console.log(nextProps.forumInfo, '++++++++++')
+    if (JSON.stringify(this.props.forumInfo) != JSON.stringify(nextProps.forumInfo)) {
+      if (nextProps.forumInfo !== null) {
+        this.setState({
+          foruminfo: nextProps.forumInfo
+        });
+      }
     }
   }
 
@@ -109,85 +116,6 @@ export default class EditLiveForum extends React.Component {
       let { foruminfo } = this.state;
       foruminfo.tags = [];
       this.setState({ foruminfo });
-    }
-  }
-
-  getAllTags = async () => {
-    try {
-      const result = await gettags();
-      if (result.data.result === "success") {
-        let param = {
-          label: '',
-          value: ''
-        };
-
-        let params = [];
-
-        for (var i = 0; i < result.data.data.length; i++) {
-          param.label = result.data.data[i].name;
-          param.value = result.data.data[i].id;
-          params.push(param);
-          param = {};
-        }
-        this.setState({ tags: params });
-      } else if (result.data.result === "warning") {
-        ToastsStore.warning(result.data.message);
-      } else {
-        if (result.data.message === "Token is Expired") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else {
-          ToastsStore.error(result.data.message);
-        }
-      }
-    } catch (err) {
-      ToastsStore.error("Something Went wrong");
-    }
-  }
-
-  getAllStudents = async () => {
-    let param = {
-      email: localStorage.getItem('email')
-    }
-    try {
-      const result = await getallstudents(param);
-      if (result.data.result === "success") {
-        let param = {
-          label: '',
-          value: ''
-        };
-
-        let params = [];
-
-        for (var i = 0; i < result.data.data.length; i++) {
-          param.label = result.data.data[i].email;
-          param.value = result.data.data[i].id;
-          params.push(param);
-          param = {};
-        }
-        this.setState({ students: params });
-      } else {
-        if (result.data.message === "Token is Expired") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token in Invalid") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          ToastsStore.error(result.data.message);
-          this.signout();
-        } else {
-          ToastsStore.error(result.data.message);
-        }
-      }
-    } catch (err) {
-      ToastsStore.error("Something Went wrong");
     }
   }
 
@@ -278,49 +206,12 @@ export default class EditLiveForum extends React.Component {
   }
 
   getSession = async (id) => {
+    // return;
     this.setState({ loading: true });
     try {
       const result = await getforum({ id: id });
       if (result.data.result === "success") {
-        let { foruminfo } = this.state;
-        foruminfo.tags = result.data.data.tags;
-        foruminfo.students = result.data.data.students_id;
-        foruminfo.id = result.data.data.id;
-        foruminfo.title = result.data.data.title;
-        foruminfo.description = result.data.data.description;
-        foruminfo.from = moment(result.data.data.forum_start * 1000).format("H:mm");
-        foruminfo.to = moment(result.data.data.forum_end * 1000).format("H:mm");
-        foruminfo.day =  moment(result.data.data.forum_start * 1000).format("YYYY-MM-DD");        
         
-        this.setState({ foruminfo });
-        let param = {
-          label: '',
-          value: 0
-        };
-
-        let param1 = {
-          label: '',
-          value: 0
-        };
-
-        let params = [], params1 = [];
-        for (var i = 0; i < result.data.data.tags.length; i++) {
-          param.label = result.data.data.tags_name[i].trim();
-          param.value = parseInt(result.data.data.tags[i].trim());
-          params.push(param);
-          param = {};
-        }
-
-        for (var j = 0; j < result.data.data.students.length; j++) {
-          param1.label = result.data.data.students_email[j].trim();
-          param1.value = result.data.data.students_id[j];
-          params1.push(param1);
-          param1 = {};
-        }
-        this.setState({
-          selectedUsers: params1,
-          selectedTags: params
-        });
       } else if (result.data.result === "warning") {
         ToastsStore.warning(result.data.message);
       } else {
@@ -365,15 +256,48 @@ export default class EditLiveForum extends React.Component {
     this.setState({ foruminfo });
   };
 
+  handleOpenForum = (e) => {
+    this.setState({opened: !this.state.opened});
+  }
+
+  handleFileChange(eve) {
+    const { files } = eve.target;
+    let temp = [...this.state.attachments];
+
+    for( const key in Object.keys(files)) {
+      temp.push(files[key]);
+    }
+
+    this.setState({attachments: temp});
+  }
+
+  handleAttachmentsRemove = (eve, idx) => {
+    let { attachments } = this.state;
+
+    attachments.splice(idx, 1);
+    this.setState({attachments});
+  }
+
+  onChangeAgeLimitaton = (eve) => {
+    this.setState({ageLimitation: eve.target.value});
+  }
+
   render() {
     const { open } = this.props;
-    const { tags, students, selectedTags, selectedUsers } = this.state;
+    const { tags, students, selectedTags, selectedUsers, opened, requiremessage, foruminfo, attachments } = this.state;
+    const { title, description } = this.state;
+    const { allTags, allStudents } = this.props;
+    console.log(foruminfo, "++++++");  
     return (
       <div>
         <Modal size="lg" open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
           <Button onClick={() => this.toggle()} className="close-button-class"><img src={Close} alt="Close" /></Button>
           <ModalBody className="modal-content-class">
-            <h1 className="content-center modal-header-class">Edit live forum</h1>
+            <h1 className="cofntent-center modal-header-class">Edit live forum</h1>
+            <div style={{float: "left", width: "100%"}}></div>
+            <div style={{float: "right"}}>
+              <FormCheckbox toggle onChange={e => this.handleOpenForum(e)} >Make this forum as open</FormCheckbox>
+            </div>
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail" className="profile-detail-important">Forum name</label>
               {this.state.requiremessage.dtitle !== '' && <span className="require-message">{this.state.requiremessage.dtitle}</span>}
@@ -386,26 +310,45 @@ export default class EditLiveForum extends React.Component {
               {this.state.requiremessage.description !== '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" invalid onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
               {this.state.requiremessage.description === '' && <FormTextarea className="profile-detail-desc profile-detail-input" placeholder="Description" onChange={(e) => this.onChangeDescription(e)} value={this.state.foruminfo.description} />}
             </div>
+            {opened &&
+              <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
+                <label htmlFor="feEmail">Age limitation</label>
+                <FormSelect id="feInputState" onChange={(e) => this.onChangeAgeLimitaton(e)}>
+                  <option value={"18 and older"} >18 and older</option>
+                  <option value={"1-17 years"} >1-17 years</option>
+                </FormSelect>
+              </div>
+            }
+            {opened &&
+              <div className="content-center block-content-class modal-input-group-class">
+                <label htmlFor="feEmail" className="profile-detail-important">Price</label>
+                {requiremessage.dtitle !== '' && <span className="require-message">{requiremessage.dtitle}</span>}
+                {requiremessage.dtitle !== '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" invalid autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
+                {requiremessage.dtitle === '' && <FormInput type="number" className="profile-detail-input" placeholder="Price" autoFocus="1" onChange={(e) => this.onChangePrice(e)} value={foruminfo.price} />}
+              </div>
+            }
             <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
               <label htmlFor="feEmail">Tags</label>
               <MultiSelect
                 hasSelectAll={false}
-                options={tags}
+                options={allTags}
                 value={selectedTags}
                 onChange={(e) => this.setSelectedTags(e)}
                 labelledBy={"Select"}
               />
             </div>
-            <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
-              <label htmlFor="feEmail">Students</label>
-              <MultiSelect
-                hasSelectAll={true}
-                options={students}
-                value={selectedUsers}
-                onChange={(e) => this.setSelectedUsers(e)}
-                labelledBy={"Select"}
-              />
-            </div>
+            {!opened &&
+              <div className="content-center block-content-class modal-input-group-class" style={{ marginBottom: 20 }}>
+                <label htmlFor="feEmail">Students</label>
+                <MultiSelect
+                  hasSelectAll={true}
+                  options={allStudents}
+                  value={selectedUsers}
+                  onChange={(e) => this.setSelectedUsers(e)}
+                  labelledBy={"Select"}
+                />
+              </div>
+            }
             <div className="content-center block-content-class modal-input-group-class">
               <label htmlFor="feEmail">Date</label>
             </div>
@@ -436,6 +379,27 @@ export default class EditLiveForum extends React.Component {
                 );
               })}
             </FormSelect>
+            {opened &&
+              <>
+                <div className="content-center block-content-class modal-input-group-class" style={{ marginTop: 20 }}>
+                  <label htmlFor="feEmail">Attachments</label>
+                </div>
+                <div>
+                  <label className="custom-file-upload">
+                    <input type="file" multiple onChange={(eve) => this.handleFileChange(eve)}/>
+                    <i className="fa fa-cloud-upload" /> Browse
+                  </label>
+                </div>
+                {attachments.map((file, idx) => {
+                  return (
+                    <div key={idx} style={{padding: "2px 8px", margin: "0px 8px", backgroundColor: "#04B5FA", borderRadius: "10px", display: "inline-block"}}>
+                      <label style={{color: "white",fontSize: "14px", textTransform: "none", margin: "0px"}}>{file.name}</label>
+                      <label value={idx} style={{color: "white", fontSize: "17px", fontWeight: "bold", margin: "0px", padding: "0px 3px"}} onClick={(evt)=>this.handleAttachmentsRemove(evt,idx)}>×</label>
+                    </div>
+                  )
+                })}
+              </>
+            }
             <div className="content-center block-content-class button-text-group-class-mentor">
               <Button onClick={() => this.actionEdit()}>Edit</Button>
             </div>
