@@ -506,19 +506,23 @@ class SetAvailability extends React.Component {
                               return (
                                 <Row key={timeIdx} form>
                                   <Col md="5" xs="4" className="available-time-group" style={{ marginRight: "70px" }}>
-                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)} defaultValue={time.fromTimeStr}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)} >
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          <option key={idx} value={item.id}>{item.str}</option>
+                                          time.fromTimeStr === item.str 
+                                          ? <option key={idx} value={item.id} selected>{item.str}</option>
+                                          : <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
                                   </Col>
                                   <Col md="5" xs="4">
-                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)} defaultValue={time.toTimeStr}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)} >
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          <option key={idx} value={item.id}>{item.str}</option>
+                                          time.toTimeStr === item.str
+                                          ? <option key={idx} value={item.id} selected>{item.str}</option>
+                                          : <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
