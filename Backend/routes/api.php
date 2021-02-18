@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //  return $request->user();
 //});
-/* User Signin and Signup without token*/
+//TODO User Signin and Signup without token
 Route::post('/signin', 'UserController@login');
 Route::post('/signup', 'UserController@signup');
 Route::post('/signout', 'UserController@logout');
@@ -29,26 +29,27 @@ Route::post('/findmentors', 'UserController@findMentors');
 Route::post('/findmentorsbytags', 'UserController@findMentorsByTags');
 Route::post('/featuredmentors', 'UserController@featuredMentors');
 Route::post('/getintroduceinfo', 'UserController@getIntroduceInfo');
-/* Stripe Payment webhook API without token*/
+Route::post('/getopenedforum', 'SessionController@getOpenedForum');
+//TODO Stripe Payment webhook API without token
 Route::post('/webhook', 'TransactionHistoryController@webhook');
 Route::post('/connect', 'TransactionHistoryController@connect');
 Route::get('/registerbankbymentor', 'PaymentController@registerbankbymentor');
-Route::post('/testapi', 'AvailableTimesController@testapi');
-
-/*with token*/
+Route::post('/testapi', 'FileController@testapi');
+Route::post('/getallstudents', 'UserController@getAllStudents');
+//TODO with token
 Route::group(['middleware' => 'jwt.verify'], function () {
-  /*UserController API*/
+  //TODO UserController API
   Route::post('/editprofile', 'UserController@editProfile');
   Route::post('/getuserinfo', 'UserController@getUserInfo');
   Route::post('/getuserinfobyid', 'UserController@getUserInfoById');
   Route::post('/getallmentors', 'UserController@getAllMentors');
-  Route::post('/getallstudents', 'UserController@getAllStudents');
+//  Route::post('/getallstudents', 'UserController@getAllStudents');
   Route::post('/switchuser', 'UserController@switchUser');
   Route::post('/getallparticipants', 'UserController@getAllParticipants');
   Route::post('/findmentorsbytagsorname', 'UserController@findMentorsByTagsOrName');
-  /*MediaController API*/
+  //TODO MediaController API
   Route::post('/createshareinfo', 'MediaController@createShareInfo');
-  /*SessionController API*/
+  //TODO SessionController API
   Route::post('/scheduleliveforum', 'SessionController@getAllScheduleLiveForum');
   Route::post('/createforum', 'SessionController@createForum');
   Route::post('/gethistory', 'SessionController@getHistory');
@@ -60,46 +61,46 @@ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::post('/deleteinviteduser', 'SessionController@deleteInvitedUser');
   Route::post('/inviteparticipanttoroom', 'SessionController@inviteParticipantToRoom');
   Route::post('/booksession', 'SessionController@bookSession');
-  /*DayController API*/
+  //TODO DayController API
   Route::post('/getweekdata', 'DayController@index');
-  /*AvailableTimesController API*/
+  //TODO /*AvailableTimesController API*/
   Route::post('/setavailabletimes', 'AvailableTimesController@setAvailableTimes');
   Route::post('/getavailabletimes', 'AvailableTimesController@getavailableTimes');
   Route::post('/getavailabletimesforstudent', 'AvailableTimesController@getavailableTimesForStudent');
   Route::post('/setbookedtime', 'AvailableTimesController@setBookingTime');
   Route::post('/getavailabletimeslots', 'AvailableTimesController@getAvailableTimeSlots');
-  /*LanguageController API*/
+  //TODO LanguageController API
   Route::post('/getlanguages', 'LanguageController@getlanguages');
-  /*TagController API*/
+  //TODO TagController API
   Route::post('/gettags', 'TagController@gettaglists');
-  /*FileController API*/
+  //TODO FileController API
   Route::post('/uploadimage', 'FileController@uploadImage');
   Route::post('/uploadvideo', 'FileController@uploadVideo');
-  /*SubscriptionController API*/
+  //TODO /*SubscriptionController API*/
   Route::post('/setsubscription', 'SubscriptionController@setSubscription');
   Route::post('/unsubscription', 'SubscriptionController@unSubscription');
   Route::post('/getsubscribedstudents', 'SubscriptionController@getSubscribedStudents');
-  /*ReviewController API*/
+  //TODO /*ReviewController API*/
   Route::post('/setreview', 'ReviewController@setReview');
-  /*LibraryController API*/
+  //TODO /*LibraryController API*/
   Route::post('/addlibrary', 'LibraryController@addLibrary');
   Route::post('/getlibrary', 'LibraryController@getLibrary');
-  /*ReportController API*/
+  //TODO /*ReportController API*/
   Route::post('/addreport', 'ReportController@addReport');
-  /*PostedNotificationController API*/
+  //TODO /*PostedNotificationController API*/
   Route::post('/checkednotification', 'PostedNotificationController@checkedNotification');
   Route::post('/getnotification', 'PostedNotificationController@getNotification');
-  /*TransactionHistoryController API*/
+  //TODO /*TransactionHistoryController API*/
   Route::post('/payforsession', 'TransactionHistoryController@payforsession');
   Route::post('/gettransactionhistorybystudent', 'TransactionHistoryController@gettransactionhistorybystudent');
   Route::post('/gettransactionhistorybymentor', 'TransactionHistoryController@gettransactionhistorybymentor');
-  /*PaymentController API*/
+  //TODO /*PaymentController API*/
   Route::post('/registercardbystudent', 'PaymentController@registercardbystudent');
   Route::post('/getuseridformentor', 'PaymentController@getuseridformentor');
   Route::post('/getusercards', 'PaymentController@getusercards');
   Route::post('/setprimarycard', 'PaymentController@setprimarycard');
   Route::post('/deletestudentcard', 'PaymentController@deletestudentcard');
-  /*AssociateController API*/
+  //TODO /*AssociateController API*/
   Route::post('/associaterequest', 'AssociateController@associateRequest');
   Route::post('/associateaccept', 'AssociateController@associateAccept');
   Route::post('/getassociatedstudents', 'AssociateController@getassociatedStudents');

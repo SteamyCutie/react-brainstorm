@@ -18,6 +18,22 @@ class FileController extends Controller
   
   }
   
+  public function testapi(Request $request) {
+//    $path = 'https://brainshares.s3-us-west-2.amazonaws.com/1.jpg';
+//    $s3 = Storage::disk('s3');
+//    $result = false;
+//    if(Storage::disk('s3')->exists('1.jpg')) {
+//      echo "exist"."\n";
+//      Storage::disk('s3')->delete('1.jpg');
+//    }
+    echo "test = ".basename('');
+//    $mediaInfos = Media::where('session_id', 11)->pluck('origin_name')->all();
+//    foreach ($mediaInfos as $value) {
+//      echo $value;
+//    }
+//    echo \GuzzleHttp\json_encode($mediaInfos);
+  }
+  
   public function uploadImage(Request $request)
   {
     $file = $request['files'];

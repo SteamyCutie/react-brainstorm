@@ -261,54 +261,54 @@ class UserController extends Controller
   public function getUserInfo(Request $request)
   {
     try {
-    $email = $request->email;
-    $temp_names = [];
-    $temp_languages = [];
-    $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
-      'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
-      ->where('email', $email)->first();
-    if (!$user) {
+      $email = $request->email;
+      $temp_names = [];
+      $temp_languages = [];
+      $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
+        ->where('email', $email)->first();
+      if (!$user) {
+        return response()->json([
+          'result' => 'failed',
+          'message' => 'not exist user',
+        ]);
+      }
+      if ($user->dob == null || $user->dob == "") {
+        $currentDate = date('Y-m-d');
+        $user->dob = $currentDate;
+      } else {
+        $newDate = date("Y-m-d", strtotime($user->dob));
+        $user->dob = $newDate;
+      }
+      if (trim($user->tags_id, ',') == null || trim($user->tags_id, ',') == '')
+        $tags_id = [];
+      else
+        $tags_id = explode(',', trim($user->tags_id, ','));
+      $user->tags = $tags_id;
+      if (trim($user->languages_id, ',') == null || trim($user->languages_id, ',') == '')
+        $languages_id = [];
+      else
+        $languages_id = explode(',', trim($user->languages_id, ','));
+      $user->language = $languages_id;
+      if ($user->description == null)
+        $user->description = "";
+      foreach ($tags_id as $tag_key => $tag_id) {
+        if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()) {
+          $temp_names[] = $tag_names->name;
+        }
+      }
+      foreach ($languages_id as $lang_key => $lang_id) {
+        if ($language = Language::select('language')->where('id', $lang_id)->first()) {
+          $temp_languages[] = $language->language;
+        }
+      }
+      $user->tags_name = $temp_names;
+      $user->languages_name = $temp_languages;
       return response()->json([
-        'result' => 'failed',
-        'message' => 'not exist user',
+        'result' => 'success',
+        'data' => $user,
       ]);
-    }
-    if ($user->dob == null || $user->dob == "") {
-      $currentDate = date('Y-m-d');
-      $user->dob = $currentDate;
-    } else {
-      $newDate = date("Y-m-d", strtotime($user->dob));
-      $user->dob = $newDate;
-    }
-    if (trim($user->tags_id, ',') == null || trim($user->tags_id, ',') == '')
-      $tags_id = [];
-    else
-      $tags_id = explode(',', trim($user->tags_id, ','));
-    $user->tags = $tags_id;
-    if (trim($user->languages_id, ',') == null || trim($user->languages_id, ',') == '')
-      $languages_id = [];
-    else
-      $languages_id = explode(',', trim($user->languages_id, ','));
-    $user->language = $languages_id;
-    if ($user->description == null)
-      $user->description = "";
-    foreach ($tags_id as $tag_key => $tag_id) {
-      if ($tag_names = Tag::select('name')->where('id', $tag_id)->first()) {
-        $temp_names[] = $tag_names->name;
-      }
-    }
-    foreach ($languages_id as $lang_key => $lang_id) {
-      if ($language = Language::select('language')->where('id', $lang_id)->first()) {
-        $temp_languages[] = $language->language;
-      }
-    }
-    $user->tags_name = $temp_names;
-    $user->languages_name = $temp_languages;
-    return response()->json([
-      'result' => 'success',
-      'data' => $user,
-    ]);
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
@@ -320,99 +320,99 @@ class UserController extends Controller
   public function getUserInfoById(Request $request)
   {
 //    try {
-      $id = $request->id;
-      $tag_names = [];
-      $res_students = Review::where('mentor_id', $id)->get();
-      $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+    $id = $request->id;
+    $tag_names = [];
+    $res_students = Review::where('mentor_id', $id)->get();
+    $user = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
+      'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+      'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
+      ->where('id', $id)->first();
+    $temp = [];
+    foreach ($res_students as $review_key => $review_value) {
+      $res_student = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
         'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
-        ->where('id', $id)->first();
-      $temp = [];
-      foreach ($res_students as $review_key => $review_value) {
-        $res_student = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'is_mentor', 'hourly_price', 'pay_verified',
-          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')->where('id', $review_value->student_id)->first();
-        $created_at = date('Y-m-d', strtotime($review_value->created_at));
-        $current = date('Y-m-d');
-        $date1 = date_create($created_at);
-        $date2 = date_create($current);
-        $diff = date_diff($date1, $date2);
-        $temp['student'] = $res_student;
-        $temp['review'] = $review_value;
-        $temp['review']['day_diff'] = $diff->format('%a');
-        $res_students[$review_key] = $temp;
-      }
-      $newDate = date("Y-m-d", strtotime($user->dob));
-      $user->dob = $newDate;
-      $tags_id = [];
-      if (trim($user->tags_id, ',') != "") {
-        $tags_id = explode(',', trim($user->tags_id, ','));
-      }
-      foreach ($tags_id as $tag_key => $tag_value) {
-        $tags = Tag::where('id', $tag_value)->first();
-        $tag_names[$tag_key] = $tags->name;
-      }
-      $share_info = Media::where('user_id', $user->id)->where('isForum', false)->get();
-      for ($i = 0; $i < count($share_info); $i++) {
-        $date = $share_info[$i]['created_at'];
-        $share_info[$i]['day'] = date('d/m/y', strtotime($date));
-        $share_info[$i]['time'] = date('h:i a', strtotime($date));
-      }
-      $session_max = Media::where('user_id', $user->id)->where('isForum', true)->max('session_id');
-      $session_min = Media::where('user_id', $user->id)->where('isForum', true)->min('session_id');
-      
-      $forum_infos = [];
-      for ($i = $session_min; $i <= $session_max; $i++) {
-        $attach = [];
-        $forum_info = [];
-        $media_infos = Media::where('user_id', $user->id)->where('isForum', true)->where('session_id', $i)->get();
-        $session_info = Session::where('user_id', $user->id)->where('id', $i)->first();
-        $temp_names = [];
-        if ($session_info) {
-          if ($session_info['tags_id'] == ",,"){
-            $tags_id = [];
-            $session_info['tags_id'] = "";
-          }
-          else {
-            $tags_id = explode(',', trim($session_info['tags_id'], ','));
-          }
-          $session_info['tags'] = $tags_id;
-          foreach ($tags_id as $tag_key=> $tag_id) {
-            $tag_names = Tag::select('name')->where('id', $tag_id)->first();
-            if ($tag_names) {
-              $temp_names[] = $tag_names->name;
-            }
+        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')->where('id', $review_value->student_id)->first();
+      $created_at = date('Y-m-d', strtotime($review_value->created_at));
+      $current = date('Y-m-d');
+      $date1 = date_create($created_at);
+      $date2 = date_create($current);
+      $diff = date_diff($date1, $date2);
+      $temp['student'] = $res_student;
+      $temp['review'] = $review_value;
+      $temp['review']['day_diff'] = $diff->format('%a');
+      $res_students[$review_key] = $temp;
+    }
+    $newDate = date("Y-m-d", strtotime($user->dob));
+    $user->dob = $newDate;
+    $tags_id = [];
+    if (trim($user->tags_id, ',') != "") {
+      $tags_id = explode(',', trim($user->tags_id, ','));
+    }
+    foreach ($tags_id as $tag_key => $tag_value) {
+      $tags = Tag::where('id', $tag_value)->first();
+      $tag_names[$tag_key] = $tags->name;
+    }
+    $share_info = Media::where('user_id', $user->id)->where('isForum', false)->get();
+    for ($i = 0; $i < count($share_info); $i++) {
+      $date = $share_info[$i]['created_at'];
+      $share_info[$i]['day'] = date('d/m/y', strtotime($date));
+      $share_info[$i]['time'] = date('h:i a', strtotime($date));
+    }
+    $session_max = Media::where('user_id', $user->id)->where('isForum', true)->max('session_id');
+    $session_min = Media::where('user_id', $user->id)->where('isForum', true)->min('session_id');
+    
+    $forum_infos = [];
+    for ($i = $session_min; $i <= $session_max; $i++) {
+      $attach = [];
+      $forum_info = [];
+      $media_infos = Media::where('user_id', $user->id)->where('isForum', true)->where('session_id', $i)->get();
+      $session_info = Session::where('user_id', $user->id)->where('id', $i)->first();
+      $temp_names = [];
+      if ($session_info) {
+        if ($session_info['tags_id'] == ",,"){
+          $tags_id = [];
+          $session_info['tags_id'] = "";
+        }
+        else {
+          $tags_id = explode(',', trim($session_info['tags_id'], ','));
+        }
+        $session_info['tags'] = $tags_id;
+        foreach ($tags_id as $tag_key=> $tag_id) {
+          $tag_names = Tag::select('name')->where('id', $tag_id)->first();
+          if ($tag_names) {
+            $temp_names[] = $tag_names->name;
           }
         }
-        if (count($media_infos) > 0) {
-          for ($j = 0; $j < count($media_infos); $j++) {
-            $attach['origin_name'] = $media_infos[$j]->origin_name;
-            $attach['path'] = $media_infos[$j]->media_url;
-            $forum_info['attachments'][] = $attach;
-          }
-          $forum_info['title'] = $media_infos[0]->title;
-          $forum_info['description'] = $media_infos[0]->description;
-          $forum_info['isForum'] = $media_infos[0]->isForum;
-          $forum_info['session_id'] = $media_infos[0]->session_id;
-          $forum_info['language'] = $session_info['language'];
-          $forum_info['forum_start'] = $session_info['forum_start'];
-          $forum_info['forum_end'] = $session_info['forum_end'];
-          $forum_info['age_limitation'] = $session_info['age_limitation'];
-          $forum_info['price'] = $session_info['price'];
-          $forum_info['tags_name'] = $temp_names;
-          $forum_infos[] = $forum_info;
-        }
       }
-      $user->tags = $tag_names;
-      $user->student = $res_students;
-      $user->share_info = $share_info;
-      $user->forum_info = $forum_infos;
-      if ($user->description == null)
-        $user->description = "";
-      return response()->json([
-        'result' => 'success',
-        'data' => $user,
-      ]);
+      if (count($media_infos) > 0) {
+        for ($j = 0; $j < count($media_infos); $j++) {
+          $attach['origin_name'] = $media_infos[$j]->origin_name;
+          $attach['path'] = $media_infos[$j]->media_url;
+          $forum_info['attachments'][] = $attach;
+        }
+        $forum_info['title'] = $media_infos[0]->title;
+        $forum_info['description'] = $media_infos[0]->description;
+        $forum_info['isForum'] = $media_infos[0]->isForum;
+        $forum_info['session_id'] = $media_infos[0]->session_id;
+        $forum_info['language'] = $session_info['language'];
+        $forum_info['forum_start'] = $session_info['forum_start'];
+        $forum_info['forum_end'] = $session_info['forum_end'];
+        $forum_info['age_limitation'] = $session_info['age_limitation'];
+        $forum_info['price'] = $session_info['price'];
+        $forum_info['tags_name'] = $temp_names;
+        $forum_infos[] = $forum_info;
+      }
+    }
+    $user->tags = $tag_names;
+    $user->student = $res_students;
+    $user->share_info = $share_info;
+    $user->forum_info = $forum_infos;
+    if ($user->description == null)
+      $user->description = "";
+    return response()->json([
+      'result' => 'success',
+      'data' => $user,
+    ]);
 //    } catch (Exception $th) {
 //      return response()->json([
 //        'result' => 'failed',
@@ -875,68 +875,55 @@ class UserController extends Controller
   
   public function findMentorsByTagsOrName(Request $request) {
     try {
-    $user_id = $request->user_id;
-    $tag_ids = $request->tags_id;
-    $mentor_name = $request->name;
-    $rowsPerPage = $request->rowsPerPage;
-    $mentor_language = $request->language; //language
-    $mentor_hourlyRate = $request->hourlyRate; //hourlyRate
-    $temp_query = "";
-    $count_tag = 0;
-    
-    if ($tag_ids){
-      $count_tag = count($tag_ids);
-    }
-    for ($i = 0; $i < $count_tag; $i++) {
-      $tag_id = ','.$tag_ids[$i].',';
-      if ($i == $count_tag-1) {
-        $temp_query = $temp_query."tags_id like '%$tag_id%'";
-      } else {
-        $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
-      }
-    }
-    $mentor_lang_id = '';
-    if ( $mentor_language != '')
-      $mentor_lang_id = ','.$mentor_language.',';
-    
-    $min_hourly = 0;
-    $max_hourly = 1000;
-    switch ($mentor_hourlyRate) {
-      case 1:
-        $min_hourly = 0;
-        $max_hourly = 10;
-        break;
-      case 2:
-        $min_hourly = 10;
-        $max_hourly = 30;
-        break;
-      case 3:
-        $min_hourly = 30;
-        $max_hourly = 60;
-        break;
-      case 4:
-        $min_hourly = 60;
-        $max_hourly = 1000;
-        break;
-      default:
-    }
+      $user_id = $request->user_id;
+      $tag_ids = $request->tags_id;
+      $mentor_name = $request->name;
+      $rowsPerPage = $request->rowsPerPage;
+      $mentor_language = $request->language; //language
+      $mentor_hourlyRate = $request->hourlyRate; //hourlyRate
+      $temp_query = "";
+      $count_tag = 0;
       
-    if ($count_tag > 0) {
+      if ($tag_ids){
+        $count_tag = count($tag_ids);
+      }
+      for ($i = 0; $i < $count_tag; $i++) {
+        $tag_id = ','.$tag_ids[$i].',';
+        if ($i == $count_tag-1) {
+          $temp_query = $temp_query."tags_id like '%$tag_id%'";
+        } else {
+          $temp_query = $temp_query."tags_id like '%$tag_id%' and ";
+        }
+      }
+      $mentor_lang_id = '';
+      if ( $mentor_language != '')
+        $mentor_lang_id = ','.$mentor_language.',';
+      
+      $min_hourly = 0;
+      $max_hourly = 1000;
+      switch ($mentor_hourlyRate) {
+        case 1:
+          $min_hourly = 0;
+          $max_hourly = 10;
+          break;
+        case 2:
+          $min_hourly = 10;
+          $max_hourly = 30;
+          break;
+        case 3:
+          $min_hourly = 30;
+          $max_hourly = 60;
+          break;
+        case 4:
+          $min_hourly = 60;
+          $max_hourly = 1000;
+          break;
+        default:
+      }
+      
+      if ($count_tag > 0) {
 //        $mentors = DB::table('users')
-      $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
-        'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-        'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
-        ->where('name', 'LIKE', '%' . $mentor_name . '%')
-        ->where('id', '!=', $user_id)
-        ->where('languages_id', 'LIKE', '%'.$mentor_lang_id.'%')
-        ->whereBetween('hourly_price', [$min_hourly, $max_hourly])
-        ->orderBy('average_mark', 'DESC')
-        ->whereRaw(DB::raw($temp_query))
-        ->paginate($rowsPerPage);
-    } else {
-      if ($mentor_name != "") {
-//        $mentors = DB::table('users')
-        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
+        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id', 'languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
           'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
           'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
           ->where('name', 'LIKE', '%' . $mentor_name . '%')
@@ -944,101 +931,114 @@ class UserController extends Controller
           ->where('languages_id', 'LIKE', '%'.$mentor_lang_id.'%')
           ->whereBetween('hourly_price', [$min_hourly, $max_hourly])
           ->orderBy('average_mark', 'DESC')
+          ->whereRaw(DB::raw($temp_query))
           ->paginate($rowsPerPage);
       } else {
+        if ($mentor_name != "") {
 //        $mentors = DB::table('users')
-        $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
-          'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
-          'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
-          ->where('id', '!=', $user_id)
-          ->where('languages_id', 'LIKE', '%'.$mentor_lang_id.'%')
-          ->whereBetween('hourly_price', [$min_hourly, $max_hourly])
-          ->orderBy('average_mark', 'DESC')
-          ->paginate($rowsPerPage);
+          $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
+            'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+            'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
+            ->where('name', 'LIKE', '%' . $mentor_name . '%')
+            ->where('id', '!=', $user_id)
+            ->where('languages_id', 'LIKE', '%'.$mentor_lang_id.'%')
+            ->whereBetween('hourly_price', [$min_hourly, $max_hourly])
+            ->orderBy('average_mark', 'DESC')
+            ->paginate($rowsPerPage);
+        } else {
+//        $mentors = DB::table('users')
+          $mentors = User::select('id', 'name', 'email', 'channel_name', 'tags_id','languages_id', 'is_mentor', 'hourly_price', 'pay_verified',
+            'instant_call', 'avatar', 'expertise', 'sub_count', 'sub_page_name', 'dob', 'video_url', 'description',
+            'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
+            ->where('id', '!=', $user_id)
+            ->where('languages_id', 'LIKE', '%'.$mentor_lang_id.'%')
+            ->whereBetween('hourly_price', [$min_hourly, $max_hourly])
+            ->orderBy('average_mark', 'DESC')
+            ->paginate($rowsPerPage);
+        }
       }
-    }
-    
-    $result_res = [];
-    if (count($mentors) > 0) {
-      for ($i = 0; $i < count($mentors); $i++) {
-        $temp_tag = [];
-        $tags_id = "";
-        if (trim($mentors[$i]->tags_id, ',') != "") {
-          $tags_id = trim($mentors[$i]->tags_id, ',');
-        }
-        if ($tags_id != "") {
-          $tag_rows = explode(',', $tags_id);
-          for ($j = 0; $j < count($tag_rows); $j++) {
-            $tags_name = Tag::where('id', $tag_rows[$j])->first();
-            $temp_tag[$j] = $tags_name->name;
+      
+      $result_res = [];
+      if (count($mentors) > 0) {
+        for ($i = 0; $i < count($mentors); $i++) {
+          $temp_tag = [];
+          $tags_id = "";
+          if (trim($mentors[$i]->tags_id, ',') != "") {
+            $tags_id = trim($mentors[$i]->tags_id, ',');
           }
-        }
-        if ($mentors[$i]->description == null) {
-          $mentors[$i]->description = "";
-        }
-        $mentors[$i]->tag_name = $temp_tag;
-        
-        $share_info = Media::where('user_id', $mentors[$i]->id)->get();
-        for ($j = 0; $j < count($share_info); $j++) {
-          $date = $share_info[$j]['created_at'];
-          $share_info[$j]['day'] = date('d/m/y', strtotime($date));
-          $share_info[$j]['time'] = date('h:i a', strtotime($date));
-        }
-        
-        $response_id = $mentors[$i]->id;
-        $res_associate = DB::table('associates')
-          ->where('request_id', $user_id)
-          ->where('response_id', $response_id)
-          ->orWhere(function($query) use ($user_id, $response_id){
-            $query->where('request_id', $response_id)
-              ->where('response_id', $user_id);
-          })
-          ->first();
-        $mentors[$i]['associate'] = -1;
-        if ($res_associate) {
-          switch ($res_associate->status) {
-            case 'Pending':
-              $mentors[$i]['associate'] = 0;
-              break;
-            case 'Connected':
-              $mentors[$i]['associate'] = 1;
-              break;
-            case 'Declined':
-              $mentors[$i]['associate'] = 2;
-              break;
-            case 'Cancelled':
-              $mentors[$i]['associate'] = 3;
-              break;
+          if ($tags_id != "") {
+            $tag_rows = explode(',', $tags_id);
+            for ($j = 0; $j < count($tag_rows); $j++) {
+              $tags_name = Tag::where('id', $tag_rows[$j])->first();
+              $temp_tag[$j] = $tags_name->name;
+            }
           }
-          if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->where('status', 'Pending')->first()) {
-            $mentors[$i]['associate'] = 4;
+          if ($mentors[$i]->description == null) {
+            $mentors[$i]->description = "";
           }
-        }
-        $res_sub = Subscription::where('mentor_id', $mentors[$i]->id)
-          ->where('student_id', $user_id)
-          ->first();
-        $mentors[$i]->share_info = [];
-        $mentors[$i]->subscribe = false;
-        if ($res_sub) {
-          $mentors[$i]->share_info = $share_info;
-          $mentors[$i]->subscribe = true;
-        }
-        $temp = [];
-        $sub_id = Subscription::select('student_id')->where('mentor_id', $mentors[$i]->id)->get();
-        if (count($sub_id) > 0) {
-          for ($k = 0; $k < count($sub_id); $k++) {
-            $temp[] = $sub_id[$k]->student_id;
+          $mentors[$i]->tag_name = $temp_tag;
+          
+          $share_info = Media::where('user_id', $mentors[$i]->id)->get();
+          for ($j = 0; $j < count($share_info); $j++) {
+            $date = $share_info[$j]['created_at'];
+            $share_info[$j]['day'] = date('d/m/y', strtotime($date));
+            $share_info[$j]['time'] = date('h:i a', strtotime($date));
           }
+          
+          $response_id = $mentors[$i]->id;
+          $res_associate = DB::table('associates')
+            ->where('request_id', $user_id)
+            ->where('response_id', $response_id)
+            ->orWhere(function($query) use ($user_id, $response_id){
+              $query->where('request_id', $response_id)
+                ->where('response_id', $user_id);
+            })
+            ->first();
+          $mentors[$i]['associate'] = -1;
+          if ($res_associate) {
+            switch ($res_associate->status) {
+              case 'Pending':
+                $mentors[$i]['associate'] = 0;
+                break;
+              case 'Connected':
+                $mentors[$i]['associate'] = 1;
+                break;
+              case 'Declined':
+                $mentors[$i]['associate'] = 2;
+                break;
+              case 'Cancelled':
+                $mentors[$i]['associate'] = 3;
+                break;
+            }
+            if(Associate::where('response_id', $user_id)->where('request_id', $response_id)->where('status', 'Pending')->first()) {
+              $mentors[$i]['associate'] = 4;
+            }
+          }
+          $res_sub = Subscription::where('mentor_id', $mentors[$i]->id)
+            ->where('student_id', $user_id)
+            ->first();
+          $mentors[$i]->share_info = [];
+          $mentors[$i]->subscribe = false;
+          if ($res_sub) {
+            $mentors[$i]->share_info = $share_info;
+            $mentors[$i]->subscribe = true;
+          }
+          $temp = [];
+          $sub_id = Subscription::select('student_id')->where('mentor_id', $mentors[$i]->id)->get();
+          if (count($sub_id) > 0) {
+            for ($k = 0; $k < count($sub_id); $k++) {
+              $temp[] = $sub_id[$k]->student_id;
+            }
+          }
+          $mentors[$i]->sub_id = $temp;
+          $result_res[] = $mentors[$i];
         }
-        $mentors[$i]->sub_id = $temp;
-        $result_res[] = $mentors[$i];
       }
-    }
-    return response()->json([
-      'result' => 'success',
-      'data' => $result_res,
-      'totalRows' => $mentors->total(),
-    ]);
+      return response()->json([
+        'result' => 'success',
+        'data' => $result_res,
+        'totalRows' => $mentors->total(),
+      ]);
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
@@ -1095,7 +1095,7 @@ class UserController extends Controller
         'status', 'timezone', 'alias', 'average_mark', 'sub_plan_fee', 'review_count', 'phone')
         ->orderBy('average_mark', 'DESC')->where('email', '!=', $email)->where('is_mentor', 1)->paginate($rowsPerPage);
       $mentors = [];
-
+      
       for ($i = 0; $i < count($users); $i++) {
         if ($users[$i]['email'] != $email && $users[$i]['is_mentor'] == 1) {
           $mentors[] = $users[$i];
@@ -1150,19 +1150,59 @@ class UserController extends Controller
   function getAllStudents(Request $request)
   {
     try {
-    $email = $request->email;
-    $students = User::select('id', 'email', 'avatar')->where('email', '!=', $email)->get();
-    if (count($students) > 0) {
-      return response()->json([
-        'result' => 'success',
-        'data' => $students,
-      ]);
-    } else {
-      return response()->json([
-        'result' => 'failed',
-        'data' => [],
-      ]);
-    }
+      $email = $request->email;
+      $students = User::select('id', 'email', 'avatar')->where('email', '=', $email)->first();
+      $userID = $students->id;
+      $allStudents = [];
+      //TODO get the subscribed students
+      $subUserInfos = DB::table('subscriptions')
+        ->where('subscriptions.mentor_id','=', $userID)
+        ->join('users', 'subscriptions.student_id', '=', 'users.id')
+        ->select('users.id', 'users.email', 'users.avatar')
+        ->get();
+      //TODO get the assocciated students
+      $temp_associate_id = [];
+      $rest_accept = DB::table('associates')
+        ->where(function($query) use ($userID){
+          $query->where('request_id', $userID)
+            ->orWhere('response_id', $userID);
+        })
+        ->where('status', 'Connected')
+        ->get();
+      foreach ($rest_accept as $key => $value) {
+        if ($value->request_id == $userID) {
+          $user_info = User::select('id', 'email', 'avatar')->where('id', $value->response_id)->first();
+          $temp_associate_id[$key] = $user_info;
+        } else {
+          $user_info = User::select('id', 'email', 'avatar')->where('id', $value->request_id)->first();
+          $temp_associate_id[$key] = $user_info;
+        }
+      }
+      //TODO get all students
+      $allStudents = $subUserInfos;
+      for($i = 0; $i < count($temp_associate_id); $i++) {
+        $flag = false;
+        for($j = 0; $j < count($subUserInfos); $j++) {
+          if ($temp_associate_id[$i]->id == $subUserInfos[$j]->id) {
+            $flag = true;
+            continue;
+          }
+        }
+        if (!$flag) {
+          $allStudents[] = $temp_associate_id[$i];
+        }
+      }
+      if (count($allStudents) > 0) {
+        return response()->json([
+          'result' => 'success',
+          'data' => $allStudents,
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+          'data' => [],
+        ]);
+      }
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',
@@ -1195,18 +1235,18 @@ class UserController extends Controller
   
   public function getAllParticipants(Request $request) {
     try {
-    $user_id = $request->user_id;
-    $allParticipants = User::select('name', 'id', 'email', 'avatar')->where('id', '!=', $user_id)->get();
-    if (count($allParticipants) > 0) {
-      return response()->json([
-        'result' => 'success',
-        'data' => $allParticipants,
-      ]);
-    } else {
-      return response()->json([
-        'result' => 'failed',
-      ]);
-    }
+      $user_id = $request->user_id;
+      $allParticipants = User::select('name', 'id', 'email', 'avatar')->where('id', '!=', $user_id)->get();
+      if (count($allParticipants) > 0) {
+        return response()->json([
+          'result' => 'success',
+          'data' => $allParticipants,
+        ]);
+      } else {
+        return response()->json([
+          'result' => 'failed',
+        ]);
+      }
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',

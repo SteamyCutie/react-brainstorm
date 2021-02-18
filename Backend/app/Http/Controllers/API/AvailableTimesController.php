@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Media;
 use App\Models\PostedNotification;
 use Illuminate\Http\Request;
 use App\Models\AvailableTimes;
@@ -13,6 +14,7 @@ use DateTime;
 use DateTimeZone;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AvailableTimesController extends Controller
 {
@@ -535,11 +537,5 @@ class AvailableTimesController extends Controller
       }
     }
     return $bookingTimeList;
-  }
-  
-  public function testapi(Request $request) {
-    
-    $name = DB::table('specific_dates')->where('user_id', 9)->pluck('timezone')[0];
-    echo $name;
   }
 }

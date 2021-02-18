@@ -39,14 +39,12 @@ class SessionController extends Controller
         ->where('from','>',date('y-m-d h:i:s', strtotime($current_time)))
         ->whereNotIn('id',$pasted_session_id)
         ->get();
-      
       foreach ($session_info as $key => $value) {
         $from_date = $value['from'];
         $to_date = $value['to'];
-        $session_info[$key]['day'] = date('d/m/y', strtotime($from_date));
+        $session_info[$key]['day'] = date('Y-m-d', strtotime($from_date));
         $session_info[$key]['from_time'] = date('h:i a', strtotime($from_date));
         $session_info[$key]['to_time'] = date('h:i a', strtotime($to_date));
-        
         $res_students = Invited::select('student_id')->where('session_id', $value->id)->get();
         $temp_st = [];
         foreach ($res_students as $st_key => $st_value) {
@@ -60,13 +58,36 @@ class SessionController extends Controller
         
         $str_tags = $value['tags_id'];
         $tags_id = explode(',',trim($str_tags, ','));
-        $session_info[$key]['tags'] = $tags_id;
+//        $session_info[$key]['tags'] = $tags_id;
         $tag_names = [];
         foreach ($tags_id as $tag_key => $tag_value) {
           $tags = Tag::select('name')->where('id', $tag_value)->first();
-          $tag_names[$tag_key] = $tags['name'];
+          $tag_names[$tag_key]['id'] = $tag_value;
+          $tag_names[$tag_key]['name'] = $tags['name'];
+        }
+        $attach_infos = Media::where('session_id', $value->id)->get();
+        $temp_attach = [];
+        foreach ($attach_infos as $value) {
+          $temp = [];
+          $temp['name'] = $value->origin_name;
+          $temp['path'] = $value->media_url;
+          $temp_attach[] = $temp;
         }
         $session_info[$key]['tag_name'] = $tag_names;
+        $session_info[$key]['attachments'] = $temp_attach;
+        unset($session_info[$key]['day']);
+        unset($session_info[$key]['from_time']);
+        unset($session_info[$key]['to_time']);
+        unset($session_info[$key]['to']);
+        unset($session_info[$key]['from']);
+        unset($session_info[$key]['tags_id']);
+        unset($session_info[$key]['posted']);
+        unset($session_info[$key]['room_id']);
+        unset($session_info[$key]['status']);
+        unset($session_info[$key]['created_id']);
+        unset($session_info[$key]['tags_id']);
+        unset($session_info[$key]['created_at']);
+        unset($session_info[$key]['updated_at']);
       }
       if ($session_info == null) {
         return response()->json([
@@ -108,18 +129,18 @@ class SessionController extends Controller
         }
       }
       $forum['tags_name'] = $temp_names;
-      if ($forum['from'] == "" || $forum['from'] == null) {
-        $from = "";
-        $day = "";
-      } else {
-        $from = date("h:i", strtotime($forum['from']));
-        $day = date("Y-m-d", strtotime($forum['from']));
-      }
-      
-      if ($forum['to'] == "" || $forum['to'] == null)
-        $to = "";
-      else
-        $to = date("h:i", strtotime($forum['to']));
+//      if ($forum['from'] == "" || $forum['from'] == null) {
+//        $from = "";
+//        $day = "";
+//      } else {
+//        $from = date("h:i", strtotime($forum['from']));
+//        $day = date("Y-m-d", strtotime($forum['from']));
+//      }
+//
+//      if ($forum['to'] == "" || $forum['to'] == null)
+//        $to = "";
+//      else
+//        $to = date("h:i", strtotime($forum['to']));
       
       $temp_email = [];
       $temp_id = [];
@@ -135,9 +156,9 @@ class SessionController extends Controller
         $temp_st[$invited_key] = $st_info;
       }
       
-      $forum['day'] = $day;
-      $forum['from'] = $from;
-      $forum['to'] = $to;
+//      $forum['day'] = $day;
+//      $forum['from'] = $from;
+//      $forum['to'] = $to;
       $forum['students_email'] = $temp_email;
       $forum['students_id'] = $temp_id;
       $forum['students'] = $temp_st;
@@ -149,6 +170,74 @@ class SessionController extends Controller
       return response()->json([
         'result'=> 'failed',
         'message'=> $th->getMessage(),
+      ]);
+    }
+  }
+  
+  function getOpenedForum(Request $request) {
+    try{
+//      $openForums = DB::table('sessions')
+//        ->where('opened', true)
+//        ->join('users', 'sessions.user_id', '=', 'users.id')
+//        ->join('medias', 'sessions.id', '=', 'medias.session_id')
+//        ->select('users.name', 'users.avatar', 'medias.media_url', 'medias.media_type', 'sessions.title', 'sessions.description', 'sessions.tags_id')
+//        ->get();
+      $current_timestamp = Carbon::now()->timestamp;
+      $openForums = Session::where('opened', true)->where('forum_end', '>', $current_timestamp)->get();
+      $openInfo = [];
+      $allowed = array('gif', 'png', 'jpg', 'bmp', 'mp4', 'avi');
+      foreach ($openForums as $forum) {
+        $mediaUrl = '';
+        $mediaType = '';
+        $userInfo = User::where('id', $forum->user_id)->first();
+        $mediaInfo = Media::where('session_id', $forum->id)
+          ->where('isForum', true)
+          ->where(function($query){
+            $query->where('media_type', 'image')
+              ->orWhere('media_type', 'video');
+          })
+          ->first();
+        
+        if ($mediaInfo) {
+          $mediaUrl = $mediaInfo->media_url;
+          $mediaType = $mediaInfo->media_type;
+        } else {
+          $mediaType = 'other';
+        }
+        //TODO filter file extension
+        $ext = pathinfo($mediaUrl, PATHINFO_EXTENSION);
+        if (!in_array($ext, $allowed)) {
+          $mediaType = 'other';
+        }
+        $temp_names = [];
+        if ($forum->tags_id == ",,"){
+          $tags_id = [];
+        } else {
+          $tags_id = explode(',', trim($forum->tags_id, ','));
+        }
+        foreach ($tags_id as $tag_key=> $tag_id) {
+          $tag_names = Tag::select('name')->where('id', $tag_id)->first();
+          if ($tag_names) {
+            $temp_names[] = $tag_names->name;
+          }
+        }
+        $tempOpenInfo['name'] = $userInfo->name;
+        $tempOpenInfo['avatar'] = $userInfo->avatar;
+        $tempOpenInfo['path'] = $mediaUrl;
+        $tempOpenInfo['type'] = $mediaType;
+        $tempOpenInfo['title'] = $forum->title;
+        $tempOpenInfo['description'] = $forum->description;
+        $tempOpenInfo['tags'] = $temp_names;
+        $openInfo[] = $tempOpenInfo;
+      }
+      return response()->json([
+        'result' => 'success',
+        'data' => $openInfo
+      ]);
+    } catch (Exception $th) {
+      return response()->json([
+        'result' => 'failed',
+        'message' => $th->getMessage()
       ]);
     }
   }
@@ -228,28 +317,30 @@ class SessionController extends Controller
             'age_limitation' => $ageLimitation,
             'price' => $forumInfo->price,
           ]);
-          
+          //TODO save attached files
           $file = $request['files'];
-          for ($i = 0; $i < count($file); $i++) {
-            $mimeType = $file[$i]->getClientMimeType();
-            $mediaType = explode("/", $mimeType);
-            $file_origin_name = $file[$i]->getClientOriginalName();
-            $file_name = time().'_'.rand(100000, 999999).'_'.$file_origin_name;
-            $file = $request->file('files');
-            $s3 = Storage::disk('s3');
-            $s3->put($file_name, file_get_contents($file[$i]), 'public');
-            $file_path = $s3->url($file_name);
-            //TODO save attached files
-            Media::create([
-              'title' => $title,
-              'description' => $description,
-              'media_url' => $file_path,
-              'origin_name' => $file_origin_name,
-              'user_id' => $user_id['id'],
-              'session_id' => $sessionInfo->id,
-              'media_type' => $mediaType[$i],
-              'isForum' => true,
-            ]);
+          if ($file != NULL) {
+            for ($i = 0; $i < count($file); $i++) {
+              $mimeType = $file[$i]->getClientMimeType();
+              $mediaType = explode("/", $mimeType);
+              $file_origin_name = $file[$i]->getClientOriginalName();
+              $file_name = time().'_'.rand(100000, 999999).'_'.$file_origin_name;
+              $file = $request->file('files');
+              $s3 = Storage::disk('s3');
+              $s3->put($file_name, file_get_contents($file[$i]), 'public');
+              $file_path = $s3->url($file_name);
+              
+              Media::create([
+                'title' => $title,
+                'description' => $description,
+                'media_url' => $file_path,
+                'origin_name' => $file_origin_name,
+                'user_id' => $user_id['id'],
+                'session_id' => $sessionInfo->id,
+                'media_type' => $mediaType[$i],
+                'isForum' => true,
+              ]);
+            }
           }
           //TODO send Email to mentor in opened Forum
           $send_mail = new Controller;
@@ -276,7 +367,7 @@ class SessionController extends Controller
             ->get();
           $temp_users = [];
           foreach ($associate_users as $value) {
-            if ($value->request_id != $user_id) {
+            if ($value->request_id != $userId) {
               $temp_users[] = $value->request_id;
             } else {
               $temp_users[] = $value->response_id;
@@ -291,7 +382,7 @@ class SessionController extends Controller
           }
           return response()->json([
             'result'=> 'success',
-            'data'=> $file_path,
+            'data'=> [],
           ]);
         } catch (Exception $th) {
           return response()->json([
@@ -380,24 +471,27 @@ class SessionController extends Controller
   function editForum(Request $request)
   {
     try{
-      $id = $request['id'];
-      $title = $request['title'];
-      $students = $request['students'];
-      $description = $request['description'];
-      $tags = ','.implode(",", $request['tags']).',';
-      
-      $from = $request['from'];
-      $to = $request['to'];
-      $day = $request['day'];
-      $from_arr = explode(":", $from);
-      $to_arr = explode(":", $to);
-      
-      $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
-      $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
-      
-      $forum_start = $request['forum_start'];
-      $forum_end = $request['forum_end'];
-      
+      $forumInfo = json_decode($request->forumInfo);
+      $validatorArrays =  (array) $forumInfo;
+      $email = $forumInfo->email;
+      $id = $forumInfo->id;
+      $title = $forumInfo->title;
+      $description = $forumInfo->description;
+      $language = $forumInfo->language;
+      $opened = $forumInfo->opened;
+      $tags = ','.implode(",", $forumInfo->tags).',';
+      $user_id = User::where('email', $email)->pluck('id')->first();
+//      $from = $forumInfo->$request['from'];
+//      $to = $forumInfo->$request['to'];
+//      $day = $forumInfo->$request['day'];
+//      $from_arr = explode(":", $from);
+//      $to_arr = explode(":", $to);
+//
+//      $from_day_str = $day . " " . $from_arr[0] . ":" . $from_arr[1] . ":00";
+//      $to_day_str = $day . " " . $to_arr[0] . ":" . $to_arr[1] . ":00";
+      $forum_start = $forumInfo->forum_start;
+      $forum_end = $forumInfo->forum_end;
+      //TODO Validation Check
       $rules = array(
         'title' => 'required',
         'description' => 'required',
@@ -405,8 +499,7 @@ class SessionController extends Controller
       $messages = array(
         'required' => 'This field is required.',
       );
-      $validator = Validator::make( $request->all(), $rules, $messages );
-      
+      $validator = Validator::make( $validatorArrays, $rules, $messages );
       if ($validator->fails())
       {
         return [
@@ -415,7 +508,82 @@ class SessionController extends Controller
           'message' => $validator->messages()
         ];
       }
+      //TODO existing forum check
       $forum = Session::where('id', $id)->first();
+      if ($forum == null || $forum == "") {
+        return response()->json([
+          'result'=> 'failed',
+          'message'=> 'Current Session Does Not Exist',
+        ]);
+      }
+      //TODO Open Forum
+      if ($opened) {
+        try {
+          $ageLimitation = $forumInfo->ageLimitation;
+          //TODO remove modified files. Media table.
+          $attachments = $forumInfo->attachments;
+          $existInfos = [];
+          foreach ($attachments as $value) {
+            $existInfos[] = $value->path;
+          }
+          $removeInfos = Media::where('session_id', $id)->whereNotIn('media_url', $existInfos)->get();
+          foreach ($removeInfos as $value) {
+            $s3 = Storage::disk('s3');
+            if($s3->exists(basename($value->media_url))) {
+              $s3->delete(basename($value->media_url));
+            }
+            Media::where('media_url', $value->media_url)->delete();
+          }
+          //TODO update Session table.
+          $sessionInfo = Session::where('id', $id)->update(array(
+            'title' => $title,
+            'description' => $description,
+            'tags_id' => $tags,
+            'from' => date('Y-m-d H:i:s', $forum_start),
+            'to' => date('Y-m-d H:i:s', $forum_end),
+            'forum_start' => $forum_start,
+            'forum_end' => $forum_end,
+            'language' => $language,
+            'age_limitation' => $ageLimitation,
+            'price' => $forumInfo->price,
+          ));
+          //TODO save attached files
+          $file = $request['files'];
+          if ($file != NULL) {
+            for ($i = 0; $i < count($file); $i++) {
+              $mimeType = $file[$i]->getClientMimeType();
+              $mediaType = explode("/", $mimeType);
+              $file_origin_name = $file[$i]->getClientOriginalName();
+              $file_name = time().'_'.rand(100000, 999999).'_'.$file_origin_name;
+              $file = $request->file('files');
+              $s3 = Storage::disk('s3');
+              $s3->put($file_name, file_get_contents($file[$i]), 'public');
+              $file_path = $s3->url($file_name);
+              Media::create([
+                'title' => $title,
+                'description' => $description,
+                'media_url' => $file_path,
+                'origin_name' => $file_origin_name,
+                'user_id' => $user_id,
+                'session_id' => $id,
+                'media_type' => $mediaType[$i],
+                'isForum' => true,
+              ]);
+            }
+          }
+          return response()->json([
+            'result'=> 'success',
+            'data'=> [],
+          ]);
+        } catch (Exception $th) {
+          return response()->json([
+            'result'=> 'failed',
+            'message'=> $th->getMessage(),
+          ]);
+        }
+      }
+      //TODO refresh invited students
+      $students = $forumInfo->students;
       Invited::where('session_id', $id)->delete();
       for ($j = 0; $j < count($students); $j++ ){
         Invited::create([
@@ -424,26 +592,20 @@ class SessionController extends Controller
           'student_id' => $students[$j]
         ]);
       }
-      if ($forum == null || $forum == "") {
-        return response()->json([
-          'result'=> 'failed',
-          'message'=> 'Current User Does Not Exist',
-        ]);
-      } else {
-        Session::where('id', $id)->update(array(
-          'title' => $title,
-          'description' => $description,
-          'tags_id' => $tags,
-          'from' => $from_day_str,
-          'to' => $to_day_str,
-          'forum_start' => $forum_start,
-          'forum_end' => $forum_end,
-        ));
-        return response()->json([
-          'result'=> 'success',
-          'data'=> $forum,
-        ]);
-      }
+      Session::where('id', $id)->update(array(
+        'title' => $title,
+        'description' => $description,
+        'tags_id' => $tags,
+        'language' => $language,
+        'from' => date('Y-m-d H:i:s', $forum_start),
+        'to' => date('Y-m-d H:i:s', $forum_end),
+        'forum_start' => $forum_start,
+        'forum_end' => $forum_end,
+      ));
+      return response()->json([
+        'result'=> 'success',
+        'data'=> $forum,
+      ]);
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
@@ -458,6 +620,14 @@ class SessionController extends Controller
       $res = Session::where('id', $session_id)->delete();
       $res_invite = Invited::where('session_id', $session_id)->delete();
       $res_posted = PostedNotification::where('session_id', $session_id)->delete();
+      //TODO delete from s3
+      $s3 = Storage::disk('s3');
+      $mediaInfos = Media::where('session_id', $session_id)->pluck('media_url')->all();
+      foreach ($mediaInfos as $value) {
+        if($s3->exists(basename($value))) {
+          $s3->delete(basename($value));
+        }
+      }
       Media::where('session_id', $session_id)->delete();
       return response()->json([
         'result'=> 'success',

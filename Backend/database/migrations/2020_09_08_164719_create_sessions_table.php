@@ -16,7 +16,6 @@ class CreateSessionsTable extends Migration
     Schema::create('sessions', function (Blueprint $table) {
       $table->id();
       $table->bigInteger("user_id")->unsigned();
-      $table->string('invited_id')->nullable();
       $table->string('tags_id')->nullable();
       $table->integer('posted')->default(0);
       $table->string('title');
