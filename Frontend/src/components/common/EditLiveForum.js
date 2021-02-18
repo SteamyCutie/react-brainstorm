@@ -16,7 +16,7 @@ export default class EditLiveForum extends React.Component {
     this.state = {
       loading: false,
       displayday: '',
-
+      id: null,
       email: localStorage.getItem('email'),
       title: "",
       price: null,
@@ -33,10 +33,12 @@ export default class EditLiveForum extends React.Component {
       },
       opened: false,
       attachments: [],
+      t_attachments: [],
       age_limitation: "18 and older",
       day: "",
       from_time: "",
       to_time: "",
+      tempInfo: {},
     };
   }
 
@@ -58,9 +60,9 @@ export default class EditLiveForum extends React.Component {
           price,
           title,
           to,
+          attachments
         } = nextProps.forumInfo;
-
-        // const day = moment(from).format("YYYY-MM-DD");
+        
         const from_time = moment(from).format("hh:mm a");
         const to_time = moment(to).format("hh:mm a");
         const {allTags, allStudents} = this.props;
@@ -83,7 +85,7 @@ export default class EditLiveForum extends React.Component {
           }
         }
         
-        this.setState({
+        let tempInfo = Object.assign({
           age_limitation,
           day,
           description,
@@ -99,7 +101,29 @@ export default class EditLiveForum extends React.Component {
           tags,
           students,
           from_time,
-          to_time
+          to_time,
+          attachments
+        });
+
+        this.setState({
+          tempInfo,
+          id,
+          age_limitation,
+          day,
+          description,
+          forum_end,
+          forum_start,
+          from,
+          language,
+          opened,
+          price,
+          title,
+          to,
+          tags,
+          students,
+          from_time,
+          to_time,
+          attachments
         });
       }
     }
@@ -107,6 +131,46 @@ export default class EditLiveForum extends React.Component {
 
   toggle() {
     const { toggle } = this.props;
+    const {
+      age_limitation,
+      day,
+      description,
+      forum_end,
+      forum_start,
+      from,
+      id,
+      language,
+      opened,
+      price,
+      title,
+      to,
+      tags,
+      students,
+      from_time,
+      to_time,
+      attachments
+    } = this.state.tempInfo;
+
+    this.setState({
+      age_limitation,
+      day,
+      description,
+      forum_end,
+      forum_start,
+      from,
+      id,
+      language,
+      opened,
+      price,
+      title,
+      to,
+      tags,
+      students,
+      from_time,
+      to_time,
+      attachments
+    });
+
     toggle();
   }
 
@@ -155,13 +219,13 @@ export default class EditLiveForum extends React.Component {
 
   handleFileChange(eve) {
     const { files } = eve.target;
-    let temp = [...this.state.attachments];
+    let temp = [...this.state.t_attachments];
 
     for( const key in Object.keys(files)) {
       temp.push(files[key]);
     }
 
-    this.setState({attachments: temp});
+    this.setState({t_attachments: temp});
   }
 
   handleAttachmentsRemove = (eve, idx) => {
@@ -171,13 +235,20 @@ export default class EditLiveForum extends React.Component {
     this.setState({attachments});
   }
 
+  handleTempAttachmentsRemove = (eve, idx) => {
+    let { t_attachments } = this.state;
+
+    t_attachments.splice(idx, 1);
+    this.setState({t_attachments});
+  }
+
   onChangeAgeLimitaton = (eve) => {
     this.setState({age_limitation: eve.target.value});
   }
 
   actionEdit = async () => {
-    const { requiremessage, students, opened, title, description, tags, language, from_time, to_time, day, email, price, attachments, ageLimitation } = this.state;
-    const { toggle_createsuccess, toggle_createfail, toggle_createwarning } = this.props;
+    const { requiremessage, id, students, opened, title, description, tags, language, from_time, to_time, day, email, price, attachments, t_attachments, age_limitation } = this.state;
+    const { toggle_editsuccess, toggle_editfail } = this.props;
     
     requiremessage.dtitle = '';
     requiremessage.description = '';
@@ -201,6 +272,7 @@ export default class EditLiveForum extends React.Component {
         
         let data = new FormData();
         data.append("forumInfo", JSON.stringify({
+          id,
           email,
           title,
           description,
@@ -213,17 +285,6 @@ export default class EditLiveForum extends React.Component {
         }));
 
         param = data;
-        console.log({
-          email,
-          title,
-          description,
-          tags: t_tags,
-          language,
-          forum_start: new Date(forum_start).getTime()/1000,
-          forum_end: new Date(forum_end).getTime()/1000,
-          students: t_students,
-          opened: false
-        }, "+++++");
       } else {
         let t_students = [];
         let t_tags = [];
@@ -235,43 +296,33 @@ export default class EditLiveForum extends React.Component {
 
         let data = new FormData();
 
-        attachments.forEach(function(file) {
+        t_attachments.forEach(function(file) {
           data.append("files[]", file)
         });
         data.append("forumInfo", JSON.stringify({
+          id,
           email,
           title,
           description,
           tags: t_tags,
+          attachments,
           language,
           forum_start: new Date(forum_start).getTime()/1000,
           forum_end: new Date(forum_end).getTime()/1000,
           opened: true,
-          ageLimitation,
+          ageLimitation: age_limitation,
           price
         }));
 
         param = data;
-        console.log({
-          email,
-          title,
-          description,
-          tags: t_tags,
-          language,
-          forum_start: new Date(forum_start).getTime()/1000,
-          forum_end: new Date(forum_end).getTime()/1000,
-          opened: true,
-          ageLimitation,
-          price
-        }, "+++++");
       }
-      return;
+
       const result = await editforum(param);
       if (result.data.result === "success") {
         this.toggle();
-        toggle_createsuccess("Create Forum Success");
+        toggle_editsuccess("Edit Forum Success");
       } else if (result.data.result === "warning") {
-        toggle_createwarning(result.data.message);
+        toggle_editsuccess(result.data.message);
       } else {
         if (result.data.type === 'require') {
           let { requiremessage } = this.state;
@@ -286,23 +337,23 @@ export default class EditLiveForum extends React.Component {
           });
         } else {
           if (result.data.message === "Token is Expired") {
-            toggle_createfail(result.data.message);
+            toggle_editfail(result.data.message);
             this.signout();
           } else if (result.data.message === "Token is Invalid") {
-            toggle_createfail(result.data.message);
+            toggle_editfail(result.data.message);
             this.signout();
           } else if (result.data.message === "Authorization Token not found") {
-            toggle_createfail(result.data.message);
+            toggle_editfail(result.data.message);
             this.signout();
           } else {
-            toggle_createfail("Create Forum Fail");
+            toggle_editfail("Edit Forum Fail");
           }
         }
       }
       this.setState({ loading: false });
     } catch (err) {
       this.setState({ loading: false });
-      toggle_createfail("Create Forum Fail");
+      toggle_editfail("Edit Forum Fail");
     }
   }
 
@@ -335,7 +386,6 @@ export default class EditLiveForum extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
   }
 
   render() {
@@ -346,6 +396,7 @@ export default class EditLiveForum extends React.Component {
       loading,
       opened,
       attachments,
+      t_attachments,
       title,
       description,
       day, 
@@ -477,9 +528,17 @@ export default class EditLiveForum extends React.Component {
                 </div>
                 {attachments.map((file, idx) => {
                   return (
-                    <div key={idx} style={{padding: "2px 8px", margin: "0px 8px", backgroundColor: "#04B5FA", borderRadius: "10px", display: "inline-block"}}>
+                    <div key={idx} style={{padding: "2px 8px", margin: "2px 8px", backgroundColor: "#04B5FA", borderRadius: "10px", display: "inline-block"}}>
                       <label style={{color: "white",fontSize: "14px", textTransform: "none", margin: "0px"}}>{file.name}</label>
                       <label value={idx} style={{color: "white", fontSize: "17px", fontWeight: "bold", margin: "0px", padding: "0px 3px"}} onClick={(evt)=>this.handleAttachmentsRemove(evt,idx)}>×</label>
+                    </div>
+                  )
+                })}
+                {t_attachments.map((file, idx) => {
+                  return (
+                    <div key={idx} style={{padding: "2px 8px", margin: "2px 8px", backgroundColor: "#04B5FA", borderRadius: "10px", display: "inline-block"}}>
+                      <label style={{color: "white",fontSize: "14px", textTransform: "none", margin: "0px"}}>{file.name}</label>
+                      <label value={idx} style={{color: "white", fontSize: "17px", fontWeight: "bold", margin: "0px", padding: "0px 3px"}} onClick={(evt)=>this.handleTempAttachmentsRemove(evt,idx)}>×</label>
                     </div>
                   )
                 })}

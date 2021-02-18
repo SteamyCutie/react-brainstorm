@@ -181,7 +181,7 @@ export default class ScheduleLiveForum extends React.Component {
         t_forumInfos.forEach(t_forumInfo => {
           t_forumInfo.from = moment(t_forumInfo.forum_start * 1000).format("YYYY-MM-DD h:mm:ss");
           t_forumInfo.to = moment(t_forumInfo.forum_end * 1000).format("YYYY-MM-DD h:mm:ss");
-          t_forumInfo.day = moment(t_forumInfo.forum_start * 1000).format("DD/MM/YY");
+          t_forumInfo.day = moment(t_forumInfo.forum_start * 1000).format("YYYY-MM-DD");
           t_forumInfo.from_time = moment(t_forumInfo.forum_start * 1000).format("h:mm a");
           t_forumInfo.to_time = moment(t_forumInfo.forum_end * 1000).format("h:mm a");
         });              
