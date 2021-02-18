@@ -56,7 +56,7 @@ class SmallCardForum extends React.Component {
   }
 
   render() {
-    const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
+    const {title, tag_name, day, from_time, to_time, id, student_info, opened} = this.props.item;
     const {forumEdit, toggle_confirm, startSession, history} = this.props;
     const { ModalInviteOpen, open } = this.state;
     return (
@@ -137,7 +137,10 @@ class SmallCardForum extends React.Component {
                 })}
                 </label>
             </div>
-            <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
+            {opened
+              ? <div className="open-forum-badge">Open forum</div>
+              : <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
+            }
           </div>
         }
       </div>
