@@ -39,6 +39,7 @@
     "react-phone-input-2": "^2.13.9",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
+    "react-slick": "^0.28.0",
     "react-swipeable-views": "^0.13.9",
     "react-toasts": "^3.0.6",
     "shards-react": "^1.0.0",

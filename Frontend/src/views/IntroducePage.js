@@ -22,7 +22,6 @@ export default class MySharePage extends React.Component {
   }
 
   getuserinfo = async () => {
-    console.log(window.location.pathname);
     let param = {
       alias: window.location.pathname.split("/person/")[1]
     }

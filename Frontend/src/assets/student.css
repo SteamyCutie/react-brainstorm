@@ -726,16 +726,15 @@ body {
 
 .subscription-mentor-detail img{
     width: 206px;
-    /* hei/ */
 }
 
 .mentor-desc-video {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .mentor-desc-video-header {
-    padding: 0px 15px;
+    padding: 0px 5px;
     height: 30px;
     margin-bottom: 10px;
 }
@@ -753,7 +752,7 @@ body {
     font-size: 18px;
     color: #333333;
     width: 100%;
-    padding: 30px 15px;
+    padding: 10px 15px;
     text-align: left;
 }
 
@@ -1304,4 +1303,81 @@ body {
     .calling-avatar {
         text-align: center;
     }
+}
+
+.open-forum {
+    width: 100%;
+    padding: 5px 15px;
+}
+
+.open-forum .tag{
+    height: 25px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #04B5FA;
+    background-color: #D9F2FE;
+    border-radius: 100px;
+    padding: 0px 10px;
+    padding-top: 2px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.open-forum .attachment{
+    height: 25px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000000;
+    text-align: center;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.open-forum .title{
+    width: 100%;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.open-forum .price{
+    margin-left: auto;
+    padding-right: 10px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.open-forum .description{
+    width: 100%;
+}
+
+.open-forum .sperator{
+    width: 100%;
+}
+
+.open-forum .time{
+    width: 50%;
+}
+
+.open-forum .content{
+    font-weight: bold;
+}
+
+.open-forum .sperator{
+    border-bottom: #333333 2px solid;
+}
+
+.open-forum-file-preview {
+    width: 150px;
+    height: 90px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 30px;
+    line-height: 90px;
 }

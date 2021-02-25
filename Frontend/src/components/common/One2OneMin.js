@@ -1,15 +1,12 @@
 import React from "react";
-import { Button, Row } from "shards-react";
+import { Button } from "shards-react";
 import { startMaster, stopMaster } from '../../utils/master';
 import { startViewer, stopViewer } from '../../utils/viewer';
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import "../../assets/landingpage.css"
 
-import Camera from '../../images/call-camera.svg'
-import Phone from '../../images/call-phone.svg'
 import FullScreenImg from '../../images/one2one-min-fullscreen.svg'
 import PosterImg from '../../images/videobackground.png'
-import Mic from '../../images/call-mic.svg'
 
 import MiniEndCall from '../../images/many2many-mini-end.svg'
 import MiniFullScreen from '../../images/maximize.png'
@@ -25,9 +22,7 @@ import MutedVideoImg from '../../images/muted-video.svg'
 import ChatImg from '../../images/room-chat.svg'
 import ScreenshareImg from '../../images/room-screenshare.svg'
 import WhiteboardImg from '../../images/room_whiteboard.svg'
-import AddUserImg from '../../images/room-adduser.svg'
 import DeclineImg from '../../images/call-decline.svg'
-import MiniMutedVideo from '../../images/many2many-mini-muted-video.svg'
 import ChatBell from '../../images/chat-bell.png'
 
 import { Chat, Channel, Thread, Window } from 'stream-chat-react';
@@ -80,6 +75,10 @@ export default class One2OneMin extends React.Component {
   componentDidMount() {
     let avatar = localStorage.getItem("avatar");
     let user_name = localStorage.getItem("user_name").replace(" ", "-");
+    const that = this;
+    this.ws = this.props.ws;
+    this.videoInput = document.getElementById('videoInput');
+    this.videoOutput = document.getElementById('videoOutput');
 
     const userToken = jwt.sign({ user_id: user_name }, ACCESS_TOKEN_SECRET);
     chatClient = new StreamChat(ACCESS_API_KEY, { timeout: 6000 });
@@ -111,8 +110,41 @@ export default class One2OneMin extends React.Component {
         
       }
     });
-  }
 
+    if (this.props.callState === INCOMING_CALL) {
+      this.setState({
+        callState: IN_CALL
+      })
+      const formValues = this.getFormValuesMaster();
+      startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      });
+
+      var response = {
+        id: 'incomingCallResponse',
+        from: that.props.from,
+        callResponse: 'accept',
+        sdpOffer: "offerSdp"
+      };
+      that.sendMessage(response);
+    } else if (this.props.callState === OUTGOING_CALL) {
+      const formValues = this.getFormValuesViewer();
+      startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
+      });
+
+      var message = {
+        id : 'call',
+        from : localStorage.getItem("email"),
+        name: localStorage.getItem('user_name'), 
+        avatarURL: localStorage.getItem("avatar"),
+        to : that.props.to,
+        sdpOffer : "offerSdp",
+        channel_name: this.props.channel_name, 
+        description: this.props.description, 
+      };
+      that.sendMessage(message);
+    }
+  }
+  
   toggle() {
     const { toggle } = this.props;
     // timeout.clearTimeout();
@@ -166,45 +198,6 @@ export default class One2OneMin extends React.Component {
   
   onStatsReport(report) {}
 
-  componentDidMount() {
-    const that = this;
-    this.ws = this.props.ws;
-    this.videoInput = document.getElementById('videoInput');
-    this.videoOutput = document.getElementById('videoOutput');
-
-    if (this.props.callState === INCOMING_CALL) {
-      this.setState({
-        callState: IN_CALL
-      })
-      const formValues = this.getFormValuesMaster();
-      startMaster(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
-      });
-
-      var response = {
-        id: 'incomingCallResponse',
-        from: that.props.from,
-        callResponse: 'accept',
-        sdpOffer: "offerSdp"
-      };
-      that.sendMessage(response);
-    } else if (this.props.callState === OUTGOING_CALL) {
-      const formValues = this.getFormValuesViewer();
-      startViewer(this.videoInput, this.videoOutput, formValues, this.onStatsReport, event => {
-      });
-
-      var message = {
-        id : 'call',
-        from : localStorage.getItem("email"),
-        name: localStorage.getItem('user_name'), 
-        avatarURL: localStorage.getItem("avatar"),
-        to : that.props.to,
-        sdpOffer : "offerSdp",
-        channel_name: this.props.channel_name, 
-        description: this.props.description, 
-      };
-      that.sendMessage(message);
-    }
-  }
 
   sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
@@ -265,7 +258,6 @@ export default class One2OneMin extends React.Component {
       showWhiteBoard: !this.state.showWhiteBoard,
       newChat: false,
     });
-    console.log("+++++++++++++++++++++++++++++++++");
   }
 
   handleOnBrushColorChange(color) {

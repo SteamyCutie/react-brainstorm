@@ -9,6 +9,8 @@ import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
 import defaultAvatar from "../../images/avatar.jpg";
+import SignIn from "../landingpage/SignIn";
+import SignUp from "../landingpage/SignUp";
 import Clock from "../../images/Clock.svg";
 import { featuredmentors } from '../../api/api';
 
@@ -20,12 +22,36 @@ export default class FeaturedMentors extends React.Component {
 
     this.state = {
       more: false,
-      carouselDatas: []
+      carouselDatas: [],
+      signInOpen: false,
+      signUpOpen: false,
     };
   }
 
   componentWillMount() {
     this.getMentors();
+  }
+
+  toggle_signin() {
+    this.setState({
+      signInOpen: !this.state.signInOpen
+    });
+  }
+
+  toggle_signup() {
+    this.setState({
+      signUpOpen: !this.state.signUpOpen
+    });
+    if(!this.state.signUpOpen) {
+      this.is_Mentor = false;
+    }
+  }
+
+  toggle_modal() {
+    this.setState({
+      signInOpen: !this.state.signInOpen,
+      signUpOpen: !this.state.signUpOpen
+    });
   }
 
   getMentors = async() => {
@@ -50,9 +76,11 @@ export default class FeaturedMentors extends React.Component {
   }
 
   render() {
-    const {carouselDatas} = this.state;
+    const {carouselDatas, signInOpen, signUpOpen} = this.state;
     return (
       <div className="featured-mentors">
+        <SignIn open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
+        <SignUp open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} isMentor={this.is_Mentor}/>
         <h1>Featured mentors</h1>
         <AutoplaySlider cssModule={AwesomeSliderStyles} bullets={false} play={true} cancelOnInteraction={false} interval={3000} showTimer={false}>
           {carouselDatas.map((data, idx) => (
@@ -83,11 +111,10 @@ export default class FeaturedMentors extends React.Component {
                 <div className="carousel-component-body-desc-class">
                   {!this.state.more && (data.description.length > 200 ? <p>{data.description.slice(0,200)}...</p> : <p>{data.description}</p>)}
                   {this.state.more && <p>{data.description}</p>}
-                  {data.description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
+                  {data.description.length > 200 && (this.state.more ? <label className="read-more" onClick={() => this.readLess()}>Read less</label> : <label className="read-more" onClick={() => this.readMore()}>Read more</label>)}
                 </div>
                 <div className="carousel-component-body-play-class">
-                   {/* eslint-disable react/jsx-no-target-blank */}
-                  <a href={data.video_url} target="_blank"><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
+                  <label><img src={PlayIcon} alt="play-icon"/>Video presentation</label>
                 </div>
               </div>
               <div className="carousel-component-footer-class">
@@ -97,18 +124,20 @@ export default class FeaturedMentors extends React.Component {
                   </p>
                 </Row>
                 <Row className="center-class">
-                  {data.instant_call ? 
-                  <Button className="carousel-component-footer-instant-class">
-                    <img src={Lightening} alt="Lightening" />
-                    Instant Call
-                  </Button> :
-                  <Button disabled className="carousel-component-footer-instant-class">
-                  <img src={Lightening} alt="Lightening" />
-                  Instant Call
-                </Button>}
+                  {data.instant_call 
+                  ? 
+                    <Button className="carousel-component-footer-instant-class" onClick={() => this.toggle_signin()}>
+                      <img src={Lightening} alt="Lightening" />
+                      Instant Call
+                    </Button>
+                  :
+                    <Button disabled className="carousel-component-footer-instant-class" onClick={() => this.toggle_signin()}>
+                      <img src={Lightening} alt="Lightening" />
+                      Instant Call
+                    </Button>}
                 </Row>
                 <Row className="center-class">
-                  <Button className="carousel-component-footer-book-class">
+                  <Button className="carousel-component-footer-book-class" onClick={() => this.toggle_signin()}>
                     <img src={Clock} alt="Clock" />
                     Book Call
                   </Button>

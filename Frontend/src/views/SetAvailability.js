@@ -81,10 +81,6 @@ class SetAvailability extends React.Component {
     this.getTimeListData();
   }
 
-  componentDidMount() {
-    console.log(this.state.timezone, "++++++++");
-  }
-
   handleAdd(dayIdx) {
     let { availableRecurrenceTimeList } = this.state;
     availableRecurrenceTimeList[dayIdx].timeList.push({ fromTimeStr: "00:00 am", toTimeStr: "00:00 am" });
@@ -151,8 +147,8 @@ class SetAvailability extends React.Component {
 
     for (var i = 0; i < availableRecurrenceTimeList.length; i++) {
       availableRecurrenceTimeList[i].status = dayOfWeekStatus[i];
-    } 
-    console.log(this.state.timezone, "++++++++");
+    }
+
     let param = {
       email: localStorage.getItem('email'),
       timezone: timezone,
@@ -238,8 +234,8 @@ class SetAvailability extends React.Component {
           }
         ];
         let timezone = "";
-        for (var i = 0; i < result.data.data.recurrenceList.length; i++) {
-          for (var j = 0; j < availableRecurrenceTimeListTemp.length; j++) {
+        for (let i = 0; i < result.data.data.recurrenceList.length; i++) {
+          for (let j = 0; j < availableRecurrenceTimeListTemp.length; j++) {
             if (result.data.data.recurrenceList[i].day_of_week === availableRecurrenceTimeListTemp[j].dayOfWeek) {
               availableRecurrenceTimeListTemp[j].timeList.push({
                 fromTimeStr: result.data.data.recurrenceList[i].fromTimeStr,
@@ -292,8 +288,8 @@ class SetAvailability extends React.Component {
           var sp_date = specificTimes[0].sp_date;
           var timeList =[];
           
-          for (var i = 0; i < specificTimes.length; i ++) {
-            if (sp_date == specificTimes[i].sp_date) {
+          for (let i = 0; i < specificTimes.length; i ++) {
+            if (sp_date === specificTimes[i].sp_date) {
               timeList.push({fromTimeStr: specificTimes[i].fromTimeStr, toTimeStr: specificTimes[i].toTimeStr});
             } else {
               availableSpecificTimeListTemp.push({sp_date: sp_date, timeList: timeList})
@@ -435,7 +431,7 @@ class SetAvailability extends React.Component {
       sp_date: date,
       timeList: timeList
     };
-    console.log(timeList);
+
     availableSpecificTimeList.push(buf);
 
     this.setState({
@@ -475,14 +471,10 @@ class SetAvailability extends React.Component {
                   <Row form>
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
-                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
+                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)} defaultValue={timezone}>
                         {TimezoneOptions.map((item, idx) => {
                           return (
-                            item.value === timezone 
-                            ? 
-                              <option key={idx} value={item.value} selected> {item.name}</option>
-                            : 
-                              <option key={idx} value={item.value}> {item.name}</option>
+                            <option key={idx} value={item.value}> {item.name}</option>
                           );
                         })}
                       </FormSelect>
@@ -514,23 +506,23 @@ class SetAvailability extends React.Component {
                               return (
                                 <Row key={timeIdx} form>
                                   <Col md="5" xs="4" className="available-time-group" style={{ marginRight: "70px" }}>
-                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)} >
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          time.fromTimeStr === item.str
-                                            ? <option key={idx} vaule={item.id} selected>{item.str}</option>
-                                            : <option key={idx} value={item.id}>{item.str}</option>
+                                          time.fromTimeStr === item.str 
+                                          ? <option key={idx} value={item.id} selected>{item.str}</option>
+                                          : <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
                                   </Col>
                                   <Col md="5" xs="4">
-                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)} >
                                       {Timelinelist.map((item, idx) => {
                                         return (
                                           time.toTimeStr === item.str
-                                            ? <option key={idx} value={item.id} selected>{item.str}</option>
-                                            : <option key={idx} value={item.id}>{item.str}</option>
+                                          ? <option key={idx} value={item.id} selected>{item.str}</option>
+                                          : <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>

@@ -27,7 +27,6 @@ export default class BookSession2 extends React.Component {
   }
 
   toggle() {
-    console.log(this.props.id, "??????");
     const { toggle } = this.props;
 
     this.setState({
@@ -165,7 +164,7 @@ export default class BookSession2 extends React.Component {
     let currentDate = new Date();
     let startDate = moment(param.activeStartDate);
     let endDate = moment(new Date(startDate.year(), startDate.month() + 1, 0)).format("YYYY-MM-DD");
-    if (currentDate.getMonth() == startDate.month()) {
+    if (currentDate.getMonth() === startDate.month()) {
       startDate = moment(currentDate);
     }
 
@@ -222,7 +221,7 @@ export default class BookSession2 extends React.Component {
   getTimezone(){
     const d = new Date();
     const dtf = Intl.DateTimeFormat(undefined, {timeZoneName: 'long'});
-    const result = dtf.formatToParts(d).find((part) => part.type == 'timeZoneName').value;
+    const result = dtf.formatToParts(d).find((part) => part.type === 'timeZoneName').value;
 
     return result;
   }

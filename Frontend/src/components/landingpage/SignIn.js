@@ -202,7 +202,6 @@ class SignIn extends React.Component {
               <FormInput
                 id="email-input"
                 type="email"
-                // ref={(input) => { this.emailInput = input; }} 
                 placeholder="Username or Email"
                 onChange={(e) => this.onChangeEmail(e)}
                 onKeyDown={(e) => this.handleEmailKeyDown(e)}
@@ -230,7 +229,7 @@ class SignIn extends React.Component {
               <label className="sign-in-err">{this.state.signInError}</label>
               <Button onClick={() => this.handleSignin()}>Sign in</Button>
               <p>Don't have an account?&nbsp;
-                <a href="" onClick={ this.onClick}>Sign up</a>                
+                <label className="login-signup" onClick={this.onClick}>Sign up</label>                
                 </p>
             </div>
             <div className="content-center seperation-line-class">

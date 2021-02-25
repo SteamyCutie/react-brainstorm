@@ -305,7 +305,7 @@ class SignUp extends React.Component {
               <label className="password-validation-err">{this.state.signUpError}</label>
               <Button onClick={() => this.handleSignup()}>Sign up</Button>
               <p>Already have an account?&nbsp;
-                <a href="" onClick={ this.onClick }>Sign in</a>                
+                <label className="login-signup" onClick={ this.onClick }>Sign in</label>                
               </p>
             </div>
             <div className="content-center seperation-line-class">

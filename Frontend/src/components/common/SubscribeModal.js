@@ -174,13 +174,11 @@ export default class SubscribeModal extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    //this.props.history.push('/');
   }
 
   render() {
     const { open, item } = this.props;
     const { loading, paymentCard } = this.state;
-    // console.log(paymentCard);
     return (
       <div>
         <Modal open={open} toggle={() => this.toggle()} className="modal-class" backdrop={true} backdropClassName="backdrop-class">
@@ -205,8 +203,7 @@ export default class SubscribeModal extends React.Component {
                   is_primary={card.is_primary}
                 />
               ))}
-              { /* eslint-disable-next-line */ }
-              <a href="javascript:void(0)" onClick={() => this.toggle_modal()}><h5 style={{ float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA" }}>+ Add new card</h5></a>
+              <label onClick={() => this.toggle_modal()}><h5 style={{ float: "right", fontSize: "16px", fontWeight: "bold", color: "#04B5FA" }}>+ Add new card</h5></label>
             </div>
             <div className="content-center block-content-class button-text-group-class" style={{ marginBottom: "40px" }}>
               <Button className="center" onClick={() => this.handleSubscribe(item.id, item.sub_plan_fee)}>Subscribe</Button>

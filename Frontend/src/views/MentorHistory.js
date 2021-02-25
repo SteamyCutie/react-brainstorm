@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect } from "shards-react";
-import HistoryCard from "../components/common/HistoryCard"
 import SmallCardForum from "../components/common/SmallCardForum";
 import LoadingModal from "../components/common/LoadingModal";
 import ConfirmModal from "../components/common/ConfirmModal";

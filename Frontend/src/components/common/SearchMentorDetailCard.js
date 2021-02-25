@@ -69,7 +69,7 @@ class SearchMentorDetailCard extends React.Component {
           <div className="mentor-detail-myself">
             {!this.state.more && (description.length > 200 ? <p>{description.slice(0,200)}...</p> : <p>{description}</p>)}
             {this.state.more && <p>{description}</p>}
-            {description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
+            {description.length > 200 && (this.state.more ? <label className="read-more" onClick={() => this.readLess()}>Read less</label> : <label className="read-more" onClick={() => this.readMore()}>Read more</label>)}
           </div>
           <div className="mentor-detail-video">
               <a href={video_url} target="_blank" rel="noopener noreferrer" ><img src={PlayIcon} alt="play-icon"/>Video presentation</a>

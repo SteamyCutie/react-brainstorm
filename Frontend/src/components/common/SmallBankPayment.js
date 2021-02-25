@@ -5,6 +5,10 @@ import bank from '../../images/Bank-logo.png';
 class SmallCardPayment extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      
+    }
   }
 
   render() {    

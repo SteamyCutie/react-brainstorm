@@ -85,7 +85,6 @@ class App extends React.Component{
     
     this.ws.onmessage = function(message) {
       var parsedMessage = JSON.parse(message.data);
-      console.info('Received message: ' + message.data);
     
       switch (parsedMessage.id) {
         case 'registerResponse':
@@ -511,8 +510,8 @@ class App extends React.Component{
       roomCall: true, 
       isMaster: false, 
       session: session, 
-    })
-    console.log(session);
+    });
+
     var message = {
       id: "joinRoom", 
       userId: localStorage.getItem("user_id"), 

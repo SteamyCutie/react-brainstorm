@@ -1,8 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Button, FormSelect } from "shards-react";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Pagination from '@material-ui/lab/Pagination';
-import BookSession from "./../components/common/BookSession";
 import BookSession2 from "./../components/common/BookSession2";
 import LoadingModal from "../components/common/LoadingModal";
 import OutcomingCallDesc from "./../components/common/OutcomingCallDesc";
@@ -347,7 +345,7 @@ export default class MentorDashboard extends React.Component {
   }
 
   render() {
-    const { loading, mentors, totalCnt, ModalOpen, id, ModalCallWithDescOpen, participantSelected, participantData, width } = this.state;
+    const { loading, mentors, ModalOpen, id, ModalCallWithDescOpen, participantSelected, participantData, width } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}

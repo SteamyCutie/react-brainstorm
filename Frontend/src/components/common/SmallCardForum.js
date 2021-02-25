@@ -56,8 +56,8 @@ class SmallCardForum extends React.Component {
   }
 
   render() {
-    const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
-    const {toggle_editliveforum, toggle_confirm, startSession, history} = this.props;
+    const {title, tag_name, day, from_time, to_time, id, student_info, opened} = this.props.item;
+    const {forumEdit, toggle_confirm, startSession, history} = this.props;
     const { ModalInviteOpen, open } = this.state;
     return (
       <div className="small-card-forum">
@@ -87,10 +87,7 @@ class SmallCardForum extends React.Component {
                 <DropdownItem onClick={() => startSession(id)}>
                   Start Forum
                 </DropdownItem>
-                <DropdownItem onClick={() => toggle_editliveforum(id)}>
-                  Invite students
-                </DropdownItem>
-                <DropdownItem onClick={() => toggle_editliveforum(id)}>
+                <DropdownItem onClick={() => forumEdit(id)}>
                   Edit
                 </DropdownItem>
                 <DropdownItem onClick={() => toggle_confirm(id)}>
@@ -103,7 +100,7 @@ class SmallCardForum extends React.Component {
         <div style={{display: "flex"}}>
         {tag_name.map((item, idx) => {
           if (idx < 3)
-            return <p key={idx} className="brainsshare-tag" title={item}>{item}</p>;
+            return <p key={idx} className="brainsshare-tag" title={item.name}>{item.name}</p>;
           else if (idx === 3)
             return <p key={idx} >{tag_name.length - 3} more</p>
           else 
@@ -127,8 +124,7 @@ class SmallCardForum extends React.Component {
         {history ? null : 
           <div className="forum-invited-student">
             <div style={{display: "flex"}}>
-              {/* eslint-disable-next-line */}
-              <a href="javascript:void(0)" onClick={() => this.toggle_invite()}>
+              <label onClick={() => this.toggle_invite()}>
                 {student_info.map((item, idx) => {
                   if (idx < 3) {
                     if (item.avatar)
@@ -139,9 +135,12 @@ class SmallCardForum extends React.Component {
                     return <></>;
                   }
                 })}
-                </a>
+                </label>
             </div>
-            <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
+            {opened
+              ? <div className="open-forum-badge">Open forum</div>
+              : <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
+            }
           </div>
         }
       </div>

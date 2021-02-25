@@ -39,13 +39,13 @@ class SidebarMainNavbar extends React.Component {
               />
             </div>
           </NavbarBrand>
-          <a
+          <label
             href=""
             className="toggle-sidebar d-sm-inline d-lg-none"
             onClick={this.handleToggleSidebar}
           >
             <i className="material-icons">&#xE5C4;</i>
-          </a>
+          </label>
         </Navbar>
       </div>
     );

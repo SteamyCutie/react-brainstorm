@@ -226,6 +226,17 @@ export const featuredmentors = (param) => {
     });
 }
 
+export const getopenedforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getopenedforum', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const switchuser = (param) => {
     return new Promise(async(resolve, reject) => {
         try {

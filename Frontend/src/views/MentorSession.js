@@ -203,7 +203,6 @@ export default class MentorSession extends React.Component {
               startAccessor="start"
               endAccessor="end"
               style={{ width: "100%", borderRadius: "10px" }}
-              allDayAccessor={true}
               components={{
                 toolbar: ToolBar({
                   setCurrentDate: this.setCurrentDate,
@@ -504,15 +503,6 @@ const ToolBar = ({ changeMonth, showLoading }) => props => {
       <div className="headerbar-class">
         <div className="headerbar-status center">{getToday()}</div>
         <div className="headerbar-select-group">
-          {/* <div className="toolbar-select-label">
-            <label className="">Sessions:</label>
-            <FormSelect className="profile-detail-input" onChange={(e) => onChangeSession(e)}>
-              {this.state.events.map((item, index) =>
-                <option value={item.id} selected>{item.title}</option>
-              )}
-              <option>All</option>
-            </FormSelect>
-          </div> */}
           <div className="toolbar-select-label">
             <label className="">Tag: {selectedTag}</label>
             <FormSelect id="feInputState" onChange={(e) => onChangeTag(e)}>
@@ -523,12 +513,6 @@ const ToolBar = ({ changeMonth, showLoading }) => props => {
               )}
             </FormSelect>
           </div>
-          {/* <div className="toolbar-select-label">
-            <label className="">Student: </label>
-            <FormSelect className="profile-detail-input">
-              <option>select student</option>
-            </FormSelect>
-          </div> */}
         </div>
       </div>
     </div>
@@ -577,11 +561,11 @@ const CustomMonthDateHeader = ({ events, startSession }) => props => {
       <div className="month-date">
         <Dropdown open={open} toggle={toggle}>
           <DropdownToggle>
-            {calcRecordCound() > 0 && <a href="javascript:void(0)" className="month-date-content"> {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`} </a>}
+            {calcRecordCound() > 0 && <label className="month-date-content"> {`${calcRecordCound()} session${calcRecordCound() > 1 ? "s" : ""}`} </label>}
           </DropdownToggle>
           <DropdownMenu>
-            {roomIds.map((room_id) => {
-              return <DropdownItem onClick={() => startForum(room_id.room_id)}>
+            {roomIds.map((room_id, idx) => {
+              return <DropdownItem onClick={() => startForum(room_id.room_id)} key={idx}>
                 Start Forum ({room_id.time})
             </DropdownItem>
             })}

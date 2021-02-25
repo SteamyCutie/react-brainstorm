@@ -27,7 +27,6 @@ import MiniMutedMic from '../../images/many2many-mini-muted-mic.svg'
 import MiniMuteVideo from '../../images/many2many-mini-mute-video.svg'
 import MiniMutedVideo from '../../images/many2many-mini-muted-video.svg'
 import ChatBell from '../../images/chat-bell.png'
-import StartTimer from '../../images/startTimer.png'
 
 import { Chat, Channel, Thread, Window } from 'stream-chat-react';
 import { MessageList, MessageInput, MessageLivestream  } from 'stream-chat-react';
@@ -165,7 +164,6 @@ async function startViewerMany(index, localView, remoteView, formValues, onStats
           video: formValues.sendVideo ? resolution : false,
           audio: formValues.sendAudio,
         };
-        console.log(switchStream, "#164");
         if (switchStream) {
           viewer[index].localStream = screenStream;
         } else {
@@ -934,8 +932,6 @@ export default class Many2Many extends React.Component {
       whiteBoardFullScreen: !whiteBoardFullScreen,
       width: document.getElementById("room-whiteboard").offsetWidth - 5,
     });
-
-    console.log(document.getElementById("room-whiteboard").offsetWidth, "#956");
   }
 
   whiteboardClose() {
@@ -1190,7 +1186,7 @@ export default class Many2Many extends React.Component {
   }
 
   render() {
-    const { mode, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, newChat, showChat, inviteModal, roomMembers, sessionStarted, sessionTimeLabel } = this.state;
+    const { mode, brushColor, isMuted, isVideoMuted, isFullscreen, showWhiteBoard, newChat, showChat, inviteModal, roomMembers, sessionTimeLabel } = this.state;
 
     return (
       <div id="many2many-call-conatainer" className="video-call-mini-enable">
