@@ -1192,17 +1192,10 @@ class UserController extends Controller
           $allStudents[] = $temp_associate_id[$i];
         }
       }
-      if (count($allStudents) > 0) {
-        return response()->json([
-          'result' => 'success',
-          'data' => $allStudents,
-        ]);
-      } else {
-        return response()->json([
-          'result' => 'failed',
-          'data' => [],
-        ]);
-      }
+      return response()->json([
+        'result' => 'success',
+        'data' => $allStudents,
+      ]);
     } catch (Exception $th) {
       return response()->json([
         'result' => 'failed',

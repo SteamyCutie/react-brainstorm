@@ -32,11 +32,12 @@ class SessionController extends Controller
           'data'=> [],
         ]);
       }
+      $current_timestamp = Carbon::now()->timestamp;
       $current_time = date("y-m-d h:i:s");
       $pasted_session_id = Review::select('session_id')->get();
       $session_info = Session::where('user_id', $user_id['id'])
 //        ->where('created_id', $user_id['id'])
-        ->where('from','>',date('y-m-d h:i:s', strtotime($current_time)))
+        ->where('forum_end', '>', $current_timestamp)
         ->whereNotIn('id',$pasted_session_id)
         ->get();
       foreach ($session_info as $key => $value) {
@@ -82,7 +83,6 @@ class SessionController extends Controller
         unset($session_info[$key]['from']);
         unset($session_info[$key]['tags_id']);
         unset($session_info[$key]['posted']);
-        unset($session_info[$key]['room_id']);
         unset($session_info[$key]['status']);
         unset($session_info[$key]['created_id']);
         unset($session_info[$key]['tags_id']);
@@ -226,6 +226,7 @@ class SessionController extends Controller
         $tempOpenInfo['path'] = $mediaUrl;
         $tempOpenInfo['type'] = $mediaType;
         $tempOpenInfo['title'] = $forum->title;
+        $tempOpenInfo['price'] = $forum->price;
         $tempOpenInfo['description'] = $forum->description;
         $tempOpenInfo['tags'] = $temp_names;
         $openInfo[] = $tempOpenInfo;
@@ -763,8 +764,6 @@ class SessionController extends Controller
         $result_to = $session_info['to'];
         $result_tag = $session_info['tags_id'];
         $tags_id = explode(',', trim($result_tag, ','));
-        $result_invited = $session_info['invited_id'];
-        $invited_id = explode(',', trim($result_invited, ','));
         $temp = [];
         $temp = $session_info;
         $temp['day'] = date('d/m/y', strtotime($result_from));
@@ -773,7 +772,8 @@ class SessionController extends Controller
         $tag_names = [];
         foreach ($tags_id as $tag_key => $tag_value) {
           $tags = Tag::select('name')->where('id', $tag_value)->first();
-          $tag_names[$tag_key] = $tags['name'];
+          $tag_names[$tag_key]['id'] = $tag_value;
+          $tag_names[$tag_key]['name'] = $tags['name'];
         }
         $temp['tag_name'] = $tag_names;
         $mentor_name = User::select('name', 'avatar')->where('id', $session_info['user_id'])->first();
