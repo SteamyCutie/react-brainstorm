@@ -1,15 +1,13 @@
 import React from "react";
 import { Container, Row, Col, Card, CardBody } from "shards-react";
+import moment from "moment";
 import { getuserinfobyid, signout } from '../api/api';
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
+import { ToastsStore } from 'react-toasts';
 import MentorVideo from "../components/common/MentorVideo";
-import avatar from "../images/avatar.jpg"
-
-import SubscriperImg from "../images/Users.svg"
-import LinkImg from "../images/Link.svg"
+import avatar from "../images/avatar.jpg";
+import SubscriperImg from "../images/Users.svg";
+import LinkImg from "../images/Link.svg";
 
 export default class MySharePage extends React.Component {
   constructor(props) {
@@ -24,38 +22,38 @@ export default class MySharePage extends React.Component {
     this.getuserinfo();
   }
 
-  getuserinfo = async() => {
+  getuserinfo = async () => {
     let param = {
       id: localStorage.getItem('user_id')
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getuserinfobyid(param);
       if (result.data.result === "success") {
-        this.setState({userInfo: result.data.data});
-      } else if (result.datat.result === "warning") {
-        this.showWarning(result.data.message);
+        this.setState({ userInfo: result.data.data });
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
-  
+
   copyLink = () => {
     const link = window.location.protocol + '//' + window.location.host + '/person/' + this.state.userInfo.alias;
     var textField = document.createElement('textarea');
@@ -64,79 +62,10 @@ export default class MySharePage extends React.Component {
     textField.select();
     document.execCommand('copy');
     textField.remove();
-
-    this.showAlert("Link Copied");
+    ToastsStore.info("Link Copied");
   };
 
-  showAlert(text) {
-    store.addNotification({
-      title: "Alert",
-      message: text,
-      type: "info",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreeen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -158,22 +87,54 @@ export default class MySharePage extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
+  }
+
+  getExtension(filename) {
+    var parts = filename.split('.');
+    return parts[parts.length - 1];
+  }
+
+  isImage(filename) {
+    var ext = this.getExtension(filename);
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+        //etc
+        return true;
+      default:
+    }
+    return false
+  }
+
+  isVideo(filename) {
+    var ext = this.getExtension(filename);
+    switch (ext.toLowerCase()) {
+      case 'm4v':
+      case 'avi':
+      case 'mpg':
+      case 'mp4':
+        // etc
+        return true;
+      default:
+    }
+    return false
   }
 
   render() {
-    const {userInfo, loading} = this.state;
+    const { userInfo, loading } = this.state;
     return (
-      <>
-      {loading && <LoadingModal open={true} />}
-      <ReactNotification />
+      <div style={{marginTop: "40px"}}>
+        {loading && <LoadingModal open={true} />}
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Row noGutters className="page-header py-4">
             <Col className="page-title">
@@ -185,29 +146,68 @@ export default class MySharePage extends React.Component {
               <Row>
                 <Col xl="3" className="subscription-mentor-detail">
                   <div>
-                    {userInfo.avatar && <img className="avatar" src={userInfo.avatar} alt="avatar"/>}
-                    {!userInfo.avatar && <img className="avatar" src={avatar} alt="avatar"/>}
-                    <div style={{display: "flex", padding: "20px 0px"}}>
-                      <img src={SubscriperImg} style={{width: "22px", marginRight: "10px"}} alt="icon"/>
-                      <h6 className="no-margin" style={{paddingRight: "70px"}}>Subscribers</h6>
-                      <h6 className="no-margin"style={{fontWeight: "bold"}}>{userInfo.sub_count}</h6>
+                    {userInfo.avatar && <img className="avatar" src={userInfo.avatar} alt="avatar" />}
+                    {!userInfo.avatar && <img className="avatar" src={avatar} alt="avatar" />}
+                    <div style={{ display: "flex", padding: "20px 0px" }}>
+                      <img src={SubscriperImg} style={{ width: "22px", marginRight: "10px" }} alt="icon" />
+                      <h6 className="no-margin" style={{ paddingRight: "70px" }}>Subscribers</h6>
+                      <h6 className="no-margin" style={{ fontWeight: "bold" }}>{userInfo.sub_count}</h6>
                     </div>
                   </div>
                 </Col>
                 <Col xl="9" lg="12" className="subscription-mentor-videos">
                   <h6 className="profile-link-url">
-                    <a href="javascript:void(0)" onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></a>
-                    <a href="javascript:void(0)" style={{color: '#018ac0'}}>www.Brainsshare.com/{localStorage.getItem("user_name")}</a>
+                    <label onClick={() => this.copyLink()} title="Copy Link"><img src={LinkImg} alt="link" className="profile-link-image" /></label>
+                    <label style={{ color: '#018ac0' }}>www.Brainsshare.com/{localStorage.getItem("user_name")}</label>
                   </h6>
-                  {userInfo.share_info && userInfo.share_info.map((item, idx) => 
+                  {userInfo.share_info && userInfo.share_info.map((item, idx) =>
                     <MentorVideo key={idx} item={item} />
                   )}
+                  {userInfo.forum_info && userInfo.forum_info.map((item, idx) => {
+                    return (
+                      <div key={idx} className="open-forum">
+                        <div style={{display: "flex"}}>
+                          <label className="title">{item.title}</label>
+                          <label className="price">{item.price <= 0 ? "free" : `$${item.price}`}</label>
+                        </div>
+                        <div style={{paddingLeft: "10px"}}>
+                          <label className="description">{item.description}</label>
+                          <label>Age Limitation: <label className="content">{item.age_limitation}</label></label>
+                          <div>
+                            <label className="time">From: <label className="content">{moment.unix(parseInt(item.forum_start)).format("YYYY-MM-DD hh:mm")}</label></label>
+                            <label className="time">To: <label className="content">{moment.unix(parseInt(item.forum_end)).format("YYYY-MM-DD hh:mm")}</label></label>
+                          </div>
+                          <label>Language: <label className="content">{item.language}</label></label>
+                          <div style={{display: "flex"}}>
+                            <label style={{marginRight: "15px"}}>Categories: </label>
+                            {item.tags_name.map((tag, idx) => {
+                              return <p key={idx} className="tag content" title={tag}>{tag}</p>;
+                            })}
+                          </div>
+                          <div style={{display: "flex"}}>
+                            <label style={{marginRight: "15px"}}>Files: </label>
+                            {item.attachments.map((attachment, idx) => {
+                              return (
+                                <div style={{display: "grid", margin: "2px 5px"}} key={idx}>
+                                  {this.isImage(attachment.origin_name) && <img src={attachment.path} alt={attachment.origin_name} className="open-forum-file-preview"/>}
+                                  {this.isVideo(attachment.origin_name) && <video src={attachment.path}  className="open-forum-file-preview" loop autoPlay/>}
+                                  {(!this.isImage(attachment.origin_name) && !this.isVideo(attachment.origin_name)) && <div className="open-forum-file-preview">{this.getExtension(attachment.origin_name)}</div>}
+                                  <a download href={attachment.path} key={idx} className="attachment" title={attachment.origin_name}>{attachment.origin_name}</a>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div className="sperator"/>
+                      </div>
+                    );
+                  })}
                 </Col>
               </Row>
             </CardBody>
-          </Card>    
+          </Card>
         </Container>
-      </>
+      </div>
     )
   }
 };

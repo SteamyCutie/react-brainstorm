@@ -3,8 +3,9 @@ import AWS from 'aws-sdk';
 import GoogleLogin from 'react-google-login';
 import { GOOGLE_KEY, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
+import { withRouter } from 'react-router-dom';
 
-export class Loginbygoogle extends Component {
+class Loginbygoogle extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,7 +14,11 @@ export class Loginbygoogle extends Component {
     };
   }
 
-  signup = async(res) => {
+  componentWillMount() {
+    localStorage.clear();
+  }
+
+  signup = async (res) => {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   
@@ -31,7 +36,7 @@ export class Loginbygoogle extends Component {
       provider: 'Google',
       channel_name: text
     };
-
+    
     try {
       const result = await signbysocial(googleresponse);
       if (result.data.result === "success") {
@@ -46,10 +51,11 @@ export class Loginbygoogle extends Component {
           localStorage.setItem('pay_verified', result.data.user.pay_verified);
           localStorage.setItem('channel_name', result.data.user.channel_name);
           localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
+          localStorage.setItem('token', result.data.token);
           if (result.data.user.is_mentor === 1)
-            window.location.href = "/mentordashboard";
+            this.props.history.push('/mentordashboard');
           else
-            window.location.href = "/studentdashboard";
+            this.props.history.push('/studentdashboard');
         }
       } else {
         errorOccur(result.data.message);
@@ -70,6 +76,7 @@ export class Loginbygoogle extends Component {
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
     });
+    var self = this;
     kinesisvideo.createSignalingChannel(params, function (err, data) {
       if (err) {
         console.log(err, err.stack);
@@ -81,27 +88,28 @@ export class Loginbygoogle extends Component {
         localStorage.setItem('pay_verified', user.pay_verified);
         localStorage.setItem('channel_name', user.channel_name);
         localStorage.setItem('user-type', (user.is_mentor === 1 ? true : false));
-        if (user.is_mentor === 1)
-          window.location.href = "/mentordashboard";
+        if (user.is_mentor === 1)          
+          self.props.history.push('/mentordashboard');
         else
-          window.location.href = "/studentdashboard";
+          self.props.history.push('/studentdashboard');
       } 
     });
   }
 
   render() {
-    const responseGoogle = (response) => {
+    const responseGoogleSuccess = (response) => {
       this.signup(response);  
     }
-
+    const responseGoogleFailure = (response) => {
+    }
     return (
       <GoogleLogin clientId={GOOGLE_KEY}
         buttonText="Login with Google"
-        onSuccess={responseGoogle}
-        onFailure={responseGoogle}>
+        onSuccess={responseGoogleSuccess}
+        onFailure={responseGoogleFailure}>
       </GoogleLogin>
     )
   }
 }
 
-export default Loginbygoogle;
+export default withRouter(Loginbygoogle);

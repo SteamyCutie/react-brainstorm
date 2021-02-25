@@ -22,6 +22,8 @@ class MediaController extends Controller
       $title = $request['title'];
       $description = $request['description'];
       $media_url = $request['media_url'];
+      $fileName = basename($media_url);
+      $media_type = $request['media_type'];
   
       $user = User::where('email', $email)->first();
   
@@ -49,7 +51,10 @@ class MediaController extends Controller
         'title' => $title,
         'description' => $description,
         'media_url' => $media_url,
-        'user_id' => $user[0]['id']
+        'user_id' => $user[0]['id'],
+        'media_type' => $media_type,
+        'isForum' => 0,
+        'origin_name' => $fileName,
       ]);
   
       return response()->json([
@@ -59,7 +64,7 @@ class MediaController extends Controller
     } catch (Exception $th) {
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }

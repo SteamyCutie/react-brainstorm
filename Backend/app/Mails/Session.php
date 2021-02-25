@@ -74,7 +74,12 @@ return ["
         </div>
         <div class='block'>
             <span>
-                Forum will start from $from.
+                Forum will start from $from (UTC Time).
+            </span>
+        </div>
+        <div class='block'>
+            <span>
+                <img src='$mentor_avatar' alt='$mentor_name' style='width:50px; height: 50px; border-radius:25px;'/>
             </span>
         </div>
         <div class='block'>
@@ -85,6 +90,16 @@ return ["
         <div class='block'>
             <span>
                 Forum Title : $title.
+            </span>
+        </div>
+        <div class='block'>
+            <span>
+                Forum Description : $description.
+            </span>
+        </div>
+        <div class='block'>
+            <span>
+                Forum Language : $language.
             </span>
         </div>
         <div class='block'>

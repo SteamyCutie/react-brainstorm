@@ -5,8 +5,8 @@ import NavbarSearch from "./NavbarSearch";
 import NavbarDropdown from "./NavbarDropdown";
 import SignIn from "../../landingpage/SignIn";
 import SignUp from "../../landingpage/SignUp";
-
-import projectLogo from '../../../images/logo.svg'
+import projectLogo from '../../../images/logo.svg';
+import { withRouter } from 'react-router-dom';
 
 const classes = classNames(
   "main-navbar",
@@ -14,12 +14,10 @@ const classes = classNames(
   "sticky-top"
 );
 
-export default class MainNavbar extends React.Component{
+class MainNavbar extends React.Component{
 
   constructor(props) {
     super(props);
-    this.signInElement = React.createRef();
-    this.signUpElement = React.createRef();
     this.state = {
       signInOpen: false,
       signUpOpen: false,
@@ -30,9 +28,6 @@ export default class MainNavbar extends React.Component{
     this.setState({
       signInOpen: !this.state.signInOpen
     });
-    if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
-    }
   }
 
   toggle_signup() {
@@ -40,7 +35,6 @@ export default class MainNavbar extends React.Component{
       signUpOpen: !this.state.signUpOpen
     });
     if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
       this.is_Mentor = false;
     }
   }
@@ -50,12 +44,6 @@ export default class MainNavbar extends React.Component{
       signInOpen: !this.state.signInOpen,
       signUpOpen: !this.state.signUpOpen
     });
-    if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
-    }
-    if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
-    }
   }
 
   becomeMentor() {
@@ -64,28 +52,23 @@ export default class MainNavbar extends React.Component{
       // isMentor: true, 
     });
     this.is_Mentor = true;
-    
-    if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
-    }
   }
 
   findMentor() {
-    window.location.href = '/findmentor';
+    this.props.history.push('/findmentor');
   }
 
   toggle_search(searchText) {
-    window.location.href = '/findmentor';
+    this.props.history.push('/findmentor');
   }
 
   render() {
-
     const { signInOpen, signUpOpen } = this.state;
 
     return (
       <div className={classes}>
-        <SignIn ref={this.signInElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
-        <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} isMentor={this.is_Mentor}/>
+        <SignIn open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
+        <SignUp open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} isMentor={this.is_Mentor}/>
         <Container className="p-0 fix-position">
           <Navbar type="light" className="align-items-stretch flex-md-nowrap p-0">
             <img
@@ -117,3 +100,5 @@ export default class MainNavbar extends React.Component{
     );
   }
 };
+
+export default withRouter(MainNavbar);

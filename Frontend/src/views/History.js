@@ -2,15 +2,15 @@ import React from "react";
 import { Container, Row, Col, Card, CardBody, CardHeader, FormSelect } from "shards-react";
 import HistoryCard from "../components/common/HistoryCard"
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
-import { getHistory, getweekdata, gettags, getallmentors, signout } from '../api/api';
+import { getHistory, getweekdata, gettags, signout } from '../api/api';
+import { ToastsStore } from 'react-toasts';
+import moment from 'moment';
+moment.locale('en');
 
 export default class History extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       loading: false,
       historyData: [],
@@ -30,91 +30,98 @@ export default class History extends React.Component {
     this.getHistoryList();
     this.getWeekData();
     this.getTags();
-    // this.getMentors();
+    // this.getMentors();    
   }
 
-  getHistoryList = async() => {
+  getHistoryList = async () => {
     let { param } = this.state;
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getHistory(param);
-      if(result.data.result === "success") {
-        var historyTemp = result.data.data;
+      if (result.data.result === "success") {
+        var historyTemps = result.data.data;
+        historyTemps.forEach(historyTemp => {
+          historyTemp.from = moment(historyTemp.forum_start * 1000).format("YYYY-MM-DD h:mm:ss");
+          historyTemp.to = moment(historyTemp.forum_end * 1000).format("YYYY-MM-DD h:mm:ss");
+          historyTemp.day = moment(historyTemp.forum_start * 1000).format("DD/MM/YY");
+          historyTemp.from_time = moment(historyTemp.forum_start * 1000).format("h:mm a");          
+          historyTemp.to_time = moment(historyTemp.forum_end * 1000).format("h:mm a");
+        });
         this.setState({
-          historyData: historyTemp
+          historyData: historyTemps
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
-        }  else {
-          this.showFail(result.data.message);
+        } else {
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     }
   }
 
-  getWeekData = async() => {
+  getWeekData = async () => {
     try {
       const result = await getweekdata();
       if (result.data.result === "success") {
-        this.setState({weekList: result.data.data});
+        this.setState({ weekList: result.data.data });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-    } catch(err) {
-      this.showFail("Something Went wrong");
+    } catch (err) {
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  getTags = async() => {
+  getTags = async () => {
     try {
       const result = await gettags();
       if (result.data.result === "success") {
-        this.setState({tags: result.data.data});
+        this.setState({ tags: result.data.data });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-    } catch(err) {
-      this.showFail("Something Went wrong");
+    } catch (err) {
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -131,25 +138,25 @@ export default class History extends React.Component {
   //         mentors: result.data.data,
   //       });
   //     } else if (result.data.result === "warning") {
-  //       this.showWarning(result.data.message);
+  //       ToastsStore.warning(result.data.message);
   //     } else {
   //       if (result.data.message === "Token is Expired") {
-  //         this.showFail(result.data.message);
+  //         ToastsStore.error(result.data.message);
   //         this.signout();
   //       } else if (result.data.message === "Token is Invalid") {
-  //         this.showFail(result.data.message);
+  //         ToastsStore.error(result.data.message);
   //         this.signout();
   //       } else if (result.data.message === "Authorization Token not found") {
-  //         this.showFail(result.data.message);
+  //         ToastsStore.error(result.data.message);
   //         this.signout();
   //       } else {
-  //         this.showFail(result.data.message);
+  //         ToastsStore.error(result.data.message);
   //       }
   //     }
   //     this.setState({loading: false});
   //   } catch(err) {
   //     this.setState({loading: false});
-  //     this.showFail("Something Went wrong");
+  //     ToastsStore.error("Something Went wrong");
   //   };
   // }
 
@@ -158,30 +165,27 @@ export default class History extends React.Component {
   // }
 
   onChangeMentor(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.mentor_id = e.target.value;
-    this.setState({param: temp});
+    let { param } = this.state;
+    param.mentor_id = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 
   onChangeCategory(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.tag_id = e.target.value;
-    this.setState({param: temp});
+    let { param } = this.state;
+    param.tag_id = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 
   onChangeDate(e) {
-    const { param } = this.state;
-    let temp = param;
-    temp.time = e.target.value;
-    this.setState({param: temp});
+    let { param } = this.state;
+    param.time = e.target.value;
+    this.setState({ param });
     this.getHistoryList();
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -203,73 +207,21 @@ export default class History extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    this.props.history.push('/');
   }
 
   render() {
-    const {loading, historyData, weekList, tags, mentors} = this.state;
+    const { loading, historyData, weekList, tags } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
@@ -280,10 +232,10 @@ export default class History extends React.Component {
             <CardHeader className="history-card-header">
               <h5 className="history-card-header-title no-margin">Filter by:</h5>
               <div className="filter-items-group">
-                <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+                <label style={{ paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px" }}>
                   Date:
                 </label>
-                <FormSelect style={{height: "30px", width: "180px", marginRight: "10px"}} onChange={(e) => this.onChangeDate(e)}>
+                <FormSelect style={{ height: "30px", width: "180px", marginRight: "10px" }} onChange={(e) => this.onChangeDate(e)}>
                   <option>Select Date</option>
                   {weekList.map((item, idx) =>
                     <option key={idx}>{item}</option>
@@ -296,10 +248,10 @@ export default class History extends React.Component {
                   <option>All</option>
                   <option>...</option>
                 </FormSelect> */}
-                <label style={{paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px"}}>
+                <label style={{ paddingTop: "5px", fontSize: "14px", color: "#333333", paddingRight: "10px" }}>
                   Category:
                 </label>
-                <FormSelect style={{height: "30px", width: "130px", marginRight: "10px"}} onChange={(e) => this.onChangeCategory(e)}>
+                <FormSelect style={{ height: "30px", width: "130px", marginRight: "10px" }} onChange={(e) => this.onChangeCategory(e)}>
                   <option>Select category</option>
                   {tags && tags.map((item, idx) =>
                     <option key={idx}>{item.name}</option>
@@ -327,7 +279,7 @@ export default class History extends React.Component {
                 })}
               </Row>
             </CardBody>
-          </Card>    
+          </Card>
         </Container>
       </>
     )

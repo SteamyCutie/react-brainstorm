@@ -39,8 +39,9 @@ class RunNotificaionPosts extends Command
    */
   public function handle()
   {
+    //Begin delete Post a week ago
     // Carbon::now()->subMonth()->delete() , subWeekdays(7);
-    PostedNotification::where('from', '<=', Carbon::now()->subWeekdays(7))->delete();
+    PostedNotification::where('from', '<=', Carbon::now()->subWeekdays(10))->delete();
     return 0;
   }
 }

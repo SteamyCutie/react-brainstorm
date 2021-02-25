@@ -21,8 +21,9 @@ class User extends Authenticatable implements JWTSubject
     'description', 'instant_call', 'status', 'is_active','timezone', 'expertise', 'origin_password',
     'provider', 'provider_id', 'sub_count', 'tags_id', 'channel_name', 'alias',
     'customer_id', 'connected_account', 'sub_product_id', 'sub_plan_id', 'sub_plan_fee',
-    'life_time_earnings', 'pending_balance', 'available_balance',
-    'primary_card', 'primary_plan_card'
+    'life_time_earnings', 'pending_balance', 'available_balance', 'category',
+    'primary_card', 'primary_plan_card', 'review_count', 'phone', 'subcategory', 'minimum_age',
+    'languages_id'
   ];
   
   /**

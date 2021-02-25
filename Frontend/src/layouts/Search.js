@@ -5,20 +5,18 @@ import MainSidebar from "../components/layout/SearchSidebar/MainSidebar";
 import MainFooter from "../components/layout/MainFooter";
 import SearchResult from "../views/SearchResult";
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
 import { findmentors, signout } from '../api/api';
-
 import { Store } from "../flux";
 import { Dispatcher, Constants } from "../flux";
+import { ToastsStore } from 'react-toasts';
+import { withRouter } from 'react-router-dom';
 
-export default class SearchLayout extends React.Component {
+class SearchLayout extends React.Component {
   constructor(props) {
     super(props);
 
     this.outcomingRef = React.createRef();
-    
+
     this.state = {
       name: '',
       id: 1,
@@ -65,14 +63,14 @@ export default class SearchLayout extends React.Component {
 
     const { filterType, mentorUrl, studentUrl } = this.state;
 
-    if ( !filterType ) 
+    if (!filterType)
       this.props.history.push(mentorUrl);
-    else 
+    else
       this.props.history.push(studentUrl);
   }
 
-  menuClicked = async(id, pageNo) => {
-    this.setState({id: id});
+  menuClicked = async (id, pageNo) => {
+    this.setState({ id: id });
     let { name, search_level, search_hourly } = this.state;
     let param = {
       tag_id: id,
@@ -83,7 +81,7 @@ export default class SearchLayout extends React.Component {
       filterbyhourly: search_hourly
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await findmentors(param);
       if (result.data.result === "success") {
         this.setState({
@@ -92,31 +90,31 @@ export default class SearchLayout extends React.Component {
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
+      this.setState({ loading: false });
+    } catch (err) {
       console.log(err);
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  onSearch = async(searchKey) => {
-    this.setState({name: searchKey});
+  onSearch = async (searchKey) => {
+    this.setState({ name: searchKey });
     let { id, pageNo, search_level, search_hourly } = this.state;
     let param = {
       tag_id: id,
@@ -127,7 +125,7 @@ export default class SearchLayout extends React.Component {
       filterbyhourly: search_hourly
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await findmentors(param);
       if (result.data.result === "success") {
         this.setState({
@@ -137,35 +135,35 @@ export default class SearchLayout extends React.Component {
         });
         // this.showInformation("Please Login");
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
   onChangePagination(pageNo) {
-    this.setState({pageNo: pageNo});
-    const {id} = this.state;
+    this.setState({ pageNo: pageNo });
+    const { id } = this.state;
     this.menuClicked(id, pageNo);
   }
 
-  onSearchFilter = async(mentor_level, mentor_hourly) => {
+  onSearchFilter = async (mentor_level, mentor_hourly) => {
     this.setState({
       search_hourly: mentor_hourly,
       search_level: mentor_level
@@ -181,7 +179,7 @@ export default class SearchLayout extends React.Component {
       filterbyhourly: mentor_hourly
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await findmentors(param);
       if (result.data.result === "success") {
         this.setState({
@@ -191,29 +189,29 @@ export default class SearchLayout extends React.Component {
         });
         // this.showInformation("Please Login");
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -235,82 +233,18 @@ export default class SearchLayout extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    this.props.history.push('/');
   }
 
   showInformation(text) {
-    store.addNotification({
-      title: "Alert",
-      message: text,
-      type: "info",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 50000,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    ToastsStore.info(text);
   }
 
   render() {
@@ -319,15 +253,14 @@ export default class SearchLayout extends React.Component {
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <Container fluid>
           <Row>
-            <MainSidebar menuClicked={(id) => this.menuClicked(id, pageNo)} filterType={filterType}/>
+            <MainSidebar menuClicked={(id) => this.menuClicked(id, pageNo)} filterType={filterType} />
             <Col
               className="main-content p-0 main-content-class"
               tag="main"
             >
-              <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} onSearch={(searchKey) => this.onSearch(searchKey)}/>
+              <MainNavbar filterType={filterType} toggleType={() => this.handleClick()} onSearch={(searchKey) => this.onSearch(searchKey)} />
               <SearchResult item={mentors} count={totalCnt} pagination={(pageNo) => this.onChangePagination(pageNo)} showInfomation={(text) => this.showInformation(text)} searchFilter={(level, hourly) => this.onSearchFilter(level, hourly)}></SearchResult>
               {!noFooter && <MainFooter />}
             </Col>
@@ -337,3 +270,5 @@ export default class SearchLayout extends React.Component {
     );
   }
 }
+
+export default withRouter(SearchLayout);

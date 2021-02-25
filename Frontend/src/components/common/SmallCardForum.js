@@ -51,18 +51,19 @@ class SmallCardForum extends React.Component {
   }
 
   toggle_startliveforum() {
-    // window.open("/room-call");
     const { startSession } = this.props;
     startSession("1234");
   }
 
   render() {
-    const {title, tag_name, day, from_time, to_time, id, student_info} = this.props.item;
-    const {toggle_editliveforum, toggle_confirm, startSession} = this.props;
+    const {title, tag_name, day, from_time, to_time, id, student_info, opened} = this.props.item;
+    const {forumEdit, toggle_confirm, startSession, history} = this.props;
     const { ModalInviteOpen, open } = this.state;
     return (
       <div className="small-card-forum">
-        <InvitedStudent open={ModalInviteOpen} id={id} students={student_info} toggle={() => this.toggle_invite()} toggle_invitemore={(id) => this.toggle_invitemore(id)}></InvitedStudent>
+        {history ? null : 
+          <InvitedStudent open={ModalInviteOpen} id={id} students={student_info} toggle={() => this.toggle_invite()} toggle_invitemore={(id) => this.toggle_invitemore(id)}></InvitedStudent>
+        }
         <div className="small-card-forum-desc">
           <h6 className="forum-titile">{title}</h6>
           <Dropdown open={open} toggle={this.toggle}>
@@ -75,26 +76,31 @@ class SmallCardForum extends React.Component {
                 />{" "}
               </div>
             </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem onClick={() => startSession(id)}>
-                Start Forum
-              </DropdownItem>
-              <DropdownItem onClick={() => toggle_editliveforum(id)}>
-                Invite students
-              </DropdownItem>
-              <DropdownItem onClick={() => toggle_editliveforum(id)}>
-                Edit
-              </DropdownItem>
-              <DropdownItem onClick={() => toggle_confirm(id)}>
-                Delete
-              </DropdownItem>
-            </DropdownMenu>
+            {history ? 
+              <DropdownMenu>
+                <DropdownItem onClick={() => toggle_confirm(id)}>
+                  Delete
+                </DropdownItem>
+              </DropdownMenu>
+            : 
+              <DropdownMenu>
+                <DropdownItem onClick={() => startSession(id)}>
+                  Start Forum
+                </DropdownItem>
+                <DropdownItem onClick={() => forumEdit(id)}>
+                  Edit
+                </DropdownItem>
+                <DropdownItem onClick={() => toggle_confirm(id)}>
+                  Delete
+                </DropdownItem>
+              </DropdownMenu>
+            }
           </Dropdown>
         </div>
         <div style={{display: "flex"}}>
         {tag_name.map((item, idx) => {
           if (idx < 3)
-            return <p key={idx} className="brainsshare-tag" title={item}>{item}</p>;
+            return <p key={idx} className="brainsshare-tag" title={item.name}>{item.name}</p>;
           else if (idx === 3)
             return <p key={idx} >{tag_name.length - 3} more</p>
           else 
@@ -115,23 +121,28 @@ class SmallCardForum extends React.Component {
             </h6>
           </div>
         </div>
-        <div className="forum-invited-student">
-          <div style={{display: "flex"}}>
-            <a href="javascript:void(0)" onClick={() => this.toggle_invite()}>
-              {student_info.map((item, idx) => {
-                if (idx < 3) {
-                  if (item.avatar)
-                    return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
-                  else
-                    return <img key={idx} src={defaultAvatar} alt="avatar" className="forum-student-avatar"/>;
-                } else {
-                  return <></>;
-                }
-              })}
-              </a>
+        {history ? null : 
+          <div className="forum-invited-student">
+            <div style={{display: "flex"}}>
+              <label onClick={() => this.toggle_invite()}>
+                {student_info.map((item, idx) => {
+                  if (idx < 3) {
+                    if (item.avatar)
+                      return <img key={idx} src={item.avatar} alt="avatar" className="forum-student-avatar"/>;
+                    else
+                      return <img key={idx} src={defaultAvatar} alt="avatar" className="forum-student-avatar"/>;
+                  } else {
+                    return <></>;
+                  }
+                })}
+                </label>
+            </div>
+            {opened
+              ? <div className="open-forum-badge">Open forum</div>
+              : <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
+            }
           </div>
-          <h6 className="forum-student-number no-margin">{student_info.length} invited</h6>
-        </div>
+        }
       </div>
     );
   }

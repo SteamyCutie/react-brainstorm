@@ -1,14 +1,14 @@
 import React from "react";
 import { Container, Card, CardBody, CardHeader, CardFooter, Button } from "shards-react";
+import { withRouter } from 'react-router-dom';
 
-export default class EmailSent extends React.Component {
+class EmailSent extends React.Component {
 
-  componentWillMount() {
-    
+  componentWillMount() {    
   }
 
   handleGoBack() {
-    window.location.href = '/';
+    this.props.history.push('/');
   }
 
   render() {
@@ -34,3 +34,5 @@ export default class EmailSent extends React.Component {
     )
   }
 }
+
+export default withRouter(EmailSent);

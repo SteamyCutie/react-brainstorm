@@ -19,12 +19,13 @@ import Subscribe from "./views/Subscribe";
 import SearchResult from "./views/SearchResult";
 import Library from "./views/Library";
 import History from "./views/History";
+import MentorHistory from "./views/MentorHistory";
 import Recommended from "./views/Recommended";
 import EmailVerify from "./views/EmailVerify"
 import ForgetPassword from "./views/ForgetPassword"
 import ResetPassword from "./views/ResetPassword"
 import EmailSent from "./views/EmailSent"
-import RoomCall from "./views/RoomCall"
+import Association from "./views/Association"
 
 export default [
   {
@@ -119,9 +120,24 @@ export default [
     component: History
   },
   {
+    path: "/mentorhistory",
+    layout: DefaultLayout,
+    component: MentorHistory
+  },
+  {
     path: "/recommended",
     layout: DefaultLayout,
     component: Recommended
+  },
+  {
+    path: "/mentorassociations",
+    layout: DefaultLayout,
+    component: Association
+  },
+  {
+    path: "/studentassociations",
+    layout: DefaultLayout,
+    component: Association
   },
   {
     path: "/verification",
@@ -147,10 +163,5 @@ export default [
     path: "/findmentor",
     layout: SearchLayout,
     component: SearchResult
-  },
-  {
-    path: "/room-call",
-    layout: ExtraPageLayout,
-    component: RoomCall
   },
 ];

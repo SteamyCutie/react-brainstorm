@@ -1,10 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
 import { getuserinfo, signout } from '../../../../api/api';
-import defaultAvatar from "../../../../images/avatar.jpg"
+import defaultAvatar from "../../../../images/avatar.jpg";
+import { ToastsStore } from 'react-toasts';
+import { withRouter } from 'react-router-dom';
 import {
   Dropdown,
   DropdownToggle,
@@ -12,7 +11,7 @@ import {
   DropdownItem,
 } from "shards-react";
 
-export default class UserActions extends React.Component {
+class UserActions extends React.Component {
   constructor(props) {
     super(props);
 
@@ -29,29 +28,29 @@ export default class UserActions extends React.Component {
     // this.setState({avatar: localStorage.getItem('avatar')});
   }
 
-  getUserInformation = async() => {
+  getUserInformation = async () => {
     try {
-      const result = await getuserinfo({email: localStorage.getItem('email')});
+      const result = await getuserinfo({ email: localStorage.getItem('email') });
       if (result.data.result === "success") {
-        this.setState({avatar: result.data.data.avatar});
+        this.setState({ avatar: result.data.data.avatar });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.messasge);
+          ToastsStore.error(result.data.messasge);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-    } catch(err) {
-      this.showFail("Something Went wrong");
+    } catch (err) {
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -61,7 +60,7 @@ export default class UserActions extends React.Component {
     });
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -83,59 +82,24 @@ export default class UserActions extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    this.props.history.push('/');
   }
 
   render() {
     const { avatar, open } = this.state;
     return (
       <>
-        <ReactNotification />
         <Dropdown open={open} toggle={this.toggle}>
           <DropdownToggle>
-            {avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{height: '2.5rem'}} />}
-            {!avatar && <img className="user-avatar rounded-circle mr-2" src={defaultAvatar} alt="User Avatar" style={{height: '2.5rem'}} />}
+            {avatar && <img className="user-avatar rounded-circle mr-2" src={avatar} alt="User Avatar" style={{ height: '2.5rem' }} />}
+            {!avatar && <img className="user-avatar rounded-circle mr-2" src={defaultAvatar} alt="User Avatar" style={{ height: '2.5rem' }} />}
             {" "}</DropdownToggle>
           <DropdownMenu>
             <DropdownItem tag={Link} to="profile">
@@ -151,3 +115,5 @@ export default class UserActions extends React.Component {
     );
   }
 }
+
+export default withRouter(UserActions);

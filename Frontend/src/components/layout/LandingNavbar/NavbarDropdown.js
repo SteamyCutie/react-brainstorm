@@ -8,12 +8,12 @@ import {
 
 import SignIn from "../../landingpage/SignIn";
 import SignUp from "../../landingpage/SignUp";
+import { withRouter } from 'react-router-dom';
+
 
 class NavbarDropdown extends React.Component {
   constructor(props) {
     super(props);
-    this.signInElement = React.createRef();
-    this.signUpElement = React.createRef();
     this.toggle = this.toggle.bind(this);
 
     this.state = {
@@ -35,9 +35,6 @@ class NavbarDropdown extends React.Component {
     this.setState({
       signInOpen: !this.state.signInOpen
     });
-    if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
-    }
   }
 
   toggle_signup() {
@@ -45,7 +42,6 @@ class NavbarDropdown extends React.Component {
       signUpOpen: !this.state.signUpOpen
     });
     if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
       this.is_Mentor = false;
     }
   }
@@ -55,16 +51,10 @@ class NavbarDropdown extends React.Component {
       signInOpen: !this.state.signInOpen,
       signUpOpen: !this.state.signUpOpen
     });
-    if(!this.state.signInOpen) {
-      this.signInElement.current.clearValidationErrors();
-    }
-    if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
-    }
   }
 
   findMentor() {
-    window.location.href = "/findmentor";
+    this.props.history.push('/findmentor');
   }
 
   becomeMentor() {
@@ -73,18 +63,14 @@ class NavbarDropdown extends React.Component {
       // isMentor: true, 
     });
     this.is_Mentor = true;
-    
-    if(!this.state.signUpOpen) {
-      this.signUpElement.current.clearValidationErrors();
-    }
   }
 
   render() {
     const { signInOpen, signUpOpen } = this.state;
     return (
       <div>
-        <SignIn ref={this.signInElement} open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
-        <SignUp ref={this.signUpElement} open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} isMentor={this.is_Mentor}/>
+        <SignIn open={signInOpen} toggle={() => this.toggle_signin()} toggle_modal={() => this.toggle_modal()}/>
+        <SignUp open={signUpOpen} toggle={() => this.toggle_signup()} toggle_modal={() => this.toggle_modal()} isMentor={this.is_Mentor}/>
         <Dropdown
         open={this.state.dropdown1}
         toggle={() => this.toggle("dropdown1")}
@@ -103,4 +89,4 @@ class NavbarDropdown extends React.Component {
   }
 }
 
-export default NavbarDropdown;
+export default withRouter(NavbarDropdown);

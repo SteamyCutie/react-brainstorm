@@ -3,8 +3,9 @@ import AWS from 'aws-sdk';
 import FacebookLogin from 'react-facebook-login';
 import { FACEBOOK_KEY, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../../common/config';
 import { signbysocial } from '../../api/api';
+import { withRouter } from 'react-router-dom';
 
-export class Loginbyfacebook extends Component {
+class Loginbyfacebook extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,9 +48,9 @@ export class Loginbyfacebook extends Component {
           localStorage.setItem('channel_name', result.data.user.channel_name);
           localStorage.setItem('user-type', (result.data.user.is_mentor === 1 ? true : false));
           if (result.data.user.is_mentor === 1)
-            window.location.href = "/mentordashboard";
+            this.props.history.push('/mentordashboard');
           else
-            window.location.href = "/studentdashboard";
+            this.props.history.push('/studentdashboard');
         }
       } else {
         errorOccur(result.data.message);
@@ -70,6 +71,7 @@ export class Loginbyfacebook extends Component {
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
     });
+    var self = this;
     kinesisvideo.createSignalingChannel(params, function (err, data) {
       if (err) {
         console.log(err, err.stack);
@@ -82,9 +84,9 @@ export class Loginbyfacebook extends Component {
         localStorage.setItem('channel_name', user.channel_name);
         localStorage.setItem('user-type', (user.is_mentor === 1 ? true : false));
         if (user.is_mentor === 1)
-          window.location.href = "/mentordashboard";
+          self.props.history.push('/mentordashboard');
         else
-          window.location.href = "/studentdashboard";
+          self.props.history.push('/studentdashboard');
       } 
     });
   }
@@ -105,4 +107,4 @@ export class Loginbyfacebook extends Component {
   }
 }
 
-export default Loginbyfacebook;
+export default withRouter(Loginbyfacebook);

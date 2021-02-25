@@ -6,13 +6,11 @@ import SmallCardPayment from "../components/common/SmallCardPayment";
 import CustomDataTable from "../components/common/CustomDataTable";
 import AddNewCard from "../components/common/AddNewCard";
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
-import { getusercards, payforsession, signout, setprimarycard, gettransactionhistorybystudent } from '../api/api';
+import { ToastsStore } from 'react-toasts';
+import { getusercards, signout, setprimarycard, gettransactionhistorybystudent, deletestudentcard } from '../api/api';
 import { Badge } from "shards-react";
 
-export default class StudentWallet extends React.Component {
+export default class StudentWallet extends React.Component {  
   constructor(props) {
     super(props);
     this.state = {
@@ -75,7 +73,7 @@ export default class StudentWallet extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount() {    
     this.getHistory(1);
     this.getUserCards();
   }
@@ -86,50 +84,14 @@ export default class StudentWallet extends React.Component {
     });
   }
 
-  pay = async() => {
-    let param = {
-      mentor_id: 4,
-      student_id: '2',
-      conference_time: '34',
-      session_id: '1'
-    }
-
-    try {
-      this.setState({loading: true});
-      const result = await payforsession(param);
-      if (result.data.result === "success") {
-        this.showSuccess(result.data.result);
-      } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
-      } else {
-        if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
-          this.signout();
-        } else {
-          this.showFail(result.data.message);
-        }
-      }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
-    };
-  }
-
-  getHistory = async(pageNo) => {
+  getHistory = async (pageNo) => {
     let param = {
       user_id: localStorage.getItem('user_id'),
       page: pageNo,
       rowsPerPage: 10
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await gettransactionhistorybystudent(param);
       if (result.data.result === "success") {
         this.setState({
@@ -138,34 +100,34 @@ export default class StudentWallet extends React.Component {
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  getUserCards = async() => {
+  getUserCards = async () => {
     let param = {
       user_id: localStorage.getItem('user_id')
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getusercards(param);
       if (result.data.result === "success") {
         let param = {
@@ -178,7 +140,7 @@ export default class StudentWallet extends React.Component {
         }
 
         let params = [];
-        for (var i = 0; i < result.data.data.length; i ++) {
+        for (var i = 0; i < result.data.data.length; i++) {
           param.card_type = result.data.data[i].card_type;
           param.card_name = result.data.data[i].card_name;
           param.is_primary = result.data.data[i].is_primary;
@@ -186,8 +148,12 @@ export default class StudentWallet extends React.Component {
           param.id = result.data.data[i].id;
           if (param.card_type === 4) {
             param.image = require("../images/VisaCard-logo.png");
-          } else if (param.card_type === 3) {
+          } else if (param.card_type === 5) {
             param.image = require("../images/Mastercard-logo.png");
+          } else if (param.card_type === 3) {
+            param.image = require("../images/Travelcard-logo.jpg");
+          } else if (param.card_type === 6) {
+            param.image = require("../images/Discovercard-logo.jpg");
           }
           params.push(param);
           param = {};
@@ -197,59 +163,95 @@ export default class StudentWallet extends React.Component {
           paymentCard: params
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  setAsDefault = async(id) => {
+  setAsDefault = async (id) => {
     let param = {
       user_id: localStorage.getItem("user_id"),
       payment_id: id
     }
 
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await setprimarycard(param);
       if (result.data.result === "success") {
         this.getUserCards();
+        ToastsStore.success("Successfully set primary card")
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
+    };
+  }
+
+  deleteStudentCard = async (id) => {
+    let param = {
+      user_id: localStorage.getItem("user_id"),
+      payment_id: id
+    }
+
+    try {
+      this.setState({ loading: true });
+      const result = await deletestudentcard(param);
+      if (result.data.result === "success") {
+        this.getUserCards();
+        ToastsStore.success('Successfully delete card');
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
+      }
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -257,7 +259,7 @@ export default class StudentWallet extends React.Component {
     this.getHistory(value);
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -279,76 +281,40 @@ export default class StudentWallet extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
-
+  
   showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
+    this.setState({
+      ModalOpen: !this.state.ModalOpen
+    });    
+    this.getUserCards();
+    ToastsStore.success(text);
   }
 
   showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    ToastsStore.error(text);
   }
 
   showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    ToastsStore.warning(text);
   }
 
   render() {
-    const {paymentCard, tHistory, columns, ModalOpen, loading, totalCnt} = this.state;
+    const { paymentCard, tHistory, columns, ModalOpen, loading, totalCnt } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
-        <AddNewCard 
-          open={ModalOpen} 
-          toggle={() => this.toggle_add()} 
+        <AddNewCard
+          open={ModalOpen}
+          toggle={() => this.toggle_add()}
           toggle_success={(text) => this.showSuccess(text)}
           toggle_fail={(text) => this.showFail(text)}
           toggle_warning={(text) => this.showWarning(text)}>
@@ -358,13 +324,11 @@ export default class StudentWallet extends React.Component {
             <Col className="page-title">
               <h3>Wallet</h3>
             </Col>
-            <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>
-            <Button className="btn-add-payment" onClick={() => this.pay()}>Test Pay</Button>
+            <Button className="btn-add-payment" onClick={() => this.toggle_add()}>Add new card</Button>            
           </Row>
-
           <Row>
             <div className="card-container">
-            {paymentCard.map((card, idx) => (
+              {paymentCard.map((card, idx) => (
                 <SmallCardPayment
                   key={idx}
                   title={card.card_name}
@@ -372,15 +336,15 @@ export default class StudentWallet extends React.Component {
                   type={card.card_type}
                   isPrimary={card.is_primary}
                   id={card.id}
-                  setAsDefault={(id)=>this.setAsDefault(id)}
+                  setAsDefault={(id) => this.setAsDefault(id)}
+                  deleteStudentCard={(id) => this.deleteStudentCard(id)}
                 />
-            ))}
+              ))}
             </div>
           </Row>
-
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">
-              <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
+              <CustomDataTable title="Transaction history" data={tHistory} header={columns} />
             </Col>
           </Row>
           {tHistory.length > 0 && <Row className="pagination-center">

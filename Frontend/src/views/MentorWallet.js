@@ -2,15 +2,13 @@ import React from "react";
 import { Container, Row, Col, Button } from "shards-react";
 import Pagination from '@material-ui/lab/Pagination';
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
+import { ToastsStore } from 'react-toasts';
 import SmallCard from "../components/common/SmallCard";
-import AddNewBank from "../components/common/AddNewBank";
+import SmallBankPayment from "../components/common/SmallBankPayment";
 import CustomDataTable from "../components/common/CustomDataTable";
 import { Badge } from "shards-react";
-import { signout, getuseridformentor } from '../api/api';
-import { REACT_APP_STRIPE_CLIENT_ID } from '../common/config'
+import { signout, getuseridformentor, gettransactionhistorybymentor } from '../api/api';
+import { REACT_APP_STRIPE_CLIENT_ID, REACT_APP_STRIPE_EXPRESS, REACT_APP_STRIPE_SCOPE } from '../common/config'
 
 export default class MentorWallet extends React.Component {
   constructor(props) {
@@ -18,6 +16,7 @@ export default class MentorWallet extends React.Component {
     this.state = {
       // ModalOpen: false,
       loading: false,
+      bank_status: false,
       totalCnt: 0,
       smallCards: [
         {
@@ -96,114 +95,62 @@ export default class MentorWallet extends React.Component {
   componentDidMount() {
   }
 
-  toggle_add = async() => {
+  toggle_add = async () => {
     let param = {
       user_id: localStorage.getItem('user_id')
     }
-    
+
     try {
       const result = await getuseridformentor(param);
       if (result.data.result === "success") {
-        window.open(
-          'https://dashboard.stripe.com/express/oauth/authorize?response_type=code&client_id=' + REACT_APP_STRIPE_CLIENT_ID + '&scope=read_write',
-          '_blank'
-        );
+        window.open(REACT_APP_STRIPE_EXPRESS + REACT_APP_STRIPE_CLIENT_ID + REACT_APP_STRIPE_SCOPE,'_blank');
       } else if (result.data.result === "warning") {
-      } else {}
-    } catch(err) {
+      } else { }
+    } catch (err) {
     };
   }
 
-  getHistory = async(pageNo) => {
-    // let param = {
-    //   email: localStorage.getItem('email'),
-    //   page: pageNo,
-    //   rowsPerPage: 10
-    // }
-    // try {
-    //   this.setState({loading: true});
-    //   const result = await getwallets(param);
-    //   if (result.data.result === "success") {
-    //     this.setState({
-    //       loading: false,
-    //       tHistory: result.data.data,
-    //       totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
-    //     });
-    //   } else if (result.data.result === "warning") {
-    //     this.showWarning(result.data.message);
-    //   } else {
-    //     if (result.data.message === "Token is Expired") {
-    //       this.showFail(result.data.message);
-    //       this.signout();
-    //     } else if (result.data.message === "Token is Invalid") {
-    //       this.showFail(result.data.message);
-    //       this.signout();
-    //     } else if (result.data.message === "Authorization Token not found") {
-    //       this.showFail(result.data.message);
-    //       this.signout();
-    //     } else {
-    //       this.showFail(result.data.message);
-    //     }
-    //   }
-    //   this.setState({loading: false});
-    // } catch(err) {
-    //   this.setState({loading: false});
-    //   this.showFail("Something Went wrong");
-    // };
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
+  getHistory = async (pageNo) => {
+    let param = {
+      user_id: localStorage.getItem('user_id'),
+      page: pageNo,
+      rowsPerPage: 10
+    }
+    try {
+      this.setState({ loading: true });
+      const result = await gettransactionhistorybymentor(param);
+      if (result.data.result === "success") {        
+        this.setState({
+          loading: false,
+          bank_status: result.data.bank_status === null || result.data.bank_status === ""? false: true,
+          smallCards: result.data.balance,
+          tHistory: result.data.data,
+          totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
+        });
+      } else if (result.data.result === "warning") {
+        ToastsStore.warning(result.data.message);
+      } else {
+        if (result.data.message === "Token is Expired") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Token is Invalid") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else if (result.data.message === "Authorization Token not found") {
+          ToastsStore.error(result.data.message);
+          this.signout();
+        } else {
+          ToastsStore.error(result.data.message);
+        }
       }
-    });
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
+    };
   }
 
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -225,28 +172,27 @@ export default class MentorWallet extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
 
   render() {
-    const {loading, tHistory, columns, smallCards, totalCnt, ModalOpen} = this.state;
+    const { loading, tHistory, columns, smallCards, totalCnt, bank_status } = this.state;
     return (
-      <>
+      <div style={{marginTop: "40px"}}>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         {/* <AddNewBank 
           open={ModalOpen} 
           toggle={() => this.toggle_add()} 
           toggle_success={(text) => this.showSuccess(text)}
-          toggle_fail={(text) => this.showFail(text)}
-          toggle_warning={(text) => this.showWarning(text)}>
+          toggle_fail={(text) => ToastsStore.error(text)}
+          toggle_warning={(text) => ToastsStore.warning(text)}>
         </AddNewBank> */}
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
@@ -254,7 +200,7 @@ export default class MentorWallet extends React.Component {
             {/* <WalletHeader title="Wallet" className="text-sm-left mb-3" flag={true}/> */}
             <Button className="btn-add-payment-mentor" onClick={() => this.toggle_add()}>Add payment method</Button>
           </Row>
-
+          {bank_status && <SmallBankPayment />}
           <Row>
             {smallCards.map((card, idx) => (
               <Col className="col-lg mb-4" key={idx} lg="3" md="4" sm="4">
@@ -269,14 +215,14 @@ export default class MentorWallet extends React.Component {
 
           <Row className="wallet-data-table-class">
             <Col lg="12" md="12" sm="12">
-              <CustomDataTable title="Transaction history" data={tHistory} header={columns}/>
+              <CustomDataTable title="Transaction history" data={tHistory} header={columns} />
             </Col>
           </Row>
           {tHistory.length > 0 && <Row className="pagination-center">
             <Pagination count={totalCnt} onChange={(e, v) => this.onChangePagination(e, v)} color="primary" />
           </Row>}
         </Container>
-      </>
+      </div>
     )
   }
 };

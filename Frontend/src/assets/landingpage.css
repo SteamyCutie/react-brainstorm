@@ -581,7 +581,8 @@ body {
 }
 
 .img-discover-detail-content {
-    width: 80%;
+    /* width: 80%; */
+    height: 15vw;
     padding-bottom: 20px;
 }
 
@@ -589,7 +590,7 @@ body {
     width: 36px;
     height: 36px;
     margin-right: 20px;
-    /* border-radius: 10px; */
+    border-radius: 5px;
 }
 
 .btn-learn-more {
@@ -801,14 +802,6 @@ body {
 .awssld__timer {
     opacity: 0;
     pointer-events: none; /* prevent events (mouse clicking etc.) */
-}
-
-.modal-content-class {
-    align-items: center;
-    justify-content: center;
-    display: block;
-    padding: 0px !important;
-    width: 65%;
 }
 
 .modal-class {

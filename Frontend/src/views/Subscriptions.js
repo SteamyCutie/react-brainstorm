@@ -4,10 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import SubscriptionTable from "./../components/common/SubscriptionTable";
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
-
+import { ToastsStore } from 'react-toasts';
 import { getallmentors, signout } from '../api/api';
 
 export default class Subscriptions extends React.Component {
@@ -26,12 +23,11 @@ export default class Subscriptions extends React.Component {
           style: {
             fontSize: "16px"
           },
-          cell: row => 
-          <div>
-            <img style={{height: '36px'}} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
-              {/* <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{color: 'black'}}>{row.mentorName}</a> */}
+          cell: row =>
+            <div>
+              <img style={{ height: '36px' }} src={row.avatar} className="subscription-mentor-avatar" alt="User avatar" />
               <span>{row.mentorName}</span>
-          </div>,
+            </div>,
         },
         {
           name: 'Subscription page name',
@@ -64,9 +60,9 @@ export default class Subscriptions extends React.Component {
           selector: 'edit',
           sortable: false,
           center: true,
-          cell: row => 
-            <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe" }>
-              {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <a href="javascript:void(0)" onClick={() => this.handleSub(row.id)} style={{color: '#999999'}}>Subscripbe</a> : <a href="javascript:void(0)" onClick={() => this.handleUnsub(row.id)}>Unsubscribe</a>}
+          cell: row =>
+            <div className={row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? "subscription-edit-resubscribe" : "subscription-edit-unsubscribe"}>
+              {row.sub_id.indexOf(parseInt(localStorage.getItem('user_id'))) === -1 ? <label onClick={() => this.handleSub(row.id)} style={{ color: '#999999' }}>Subscripbe</label> : <label onClick={() => this.handleUnsub(row.id)}>Unsubscribe</label>}
             </div>,
         }
       ]
@@ -74,7 +70,7 @@ export default class Subscriptions extends React.Component {
   }
 
   componentWillMount() {
-   this.getMentors(1);
+    this.getMentors(1);
   }
 
   handleSub(id) {
@@ -87,14 +83,14 @@ export default class Subscriptions extends React.Component {
     history.push('/unsubscription-specific/' + id);
   }
 
-  getMentors = async(pageNo) => {
+  getMentors = async (pageNo) => {
     let param = {
       email: localStorage.getItem('email'),
       page: pageNo,
       rowsPerPage: 10
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getallmentors(param);
       if (result.data.result === "success") {
         var data_arr = [];
@@ -109,11 +105,11 @@ export default class Subscriptions extends React.Component {
           subscribe: false,
           sub_id: []
         };
-        for (var i = 0; i < result.data.data.length; i ++) {
+        for (var i = 0; i < result.data.data.length; i++) {
           arr.id = result.data.data[i].id;
           if (result.data.data[i].avatar === undefined || result.data.data[i].avatar === "" || result.data.data[i].avatar == null)
             arr.avatar = require("../images/avatar.jpg");
-          else 
+          else
             arr.avatar = result.data.data[i].avatar;
           arr.mentorName = result.data.data[i].name;
           arr.pageName = result.data.data[i].sub_page_name;
@@ -131,25 +127,25 @@ export default class Subscriptions extends React.Component {
         });
 
       } else if (result.data.result === "warning") {
-          this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -157,58 +153,7 @@ export default class Subscriptions extends React.Component {
     this.getMentors(value);
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -230,26 +175,25 @@ export default class Subscriptions extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
 
   render() {
-    const {loading, mentors, columns, totalCnt} = this.state;
+    const { loading, mentors, columns, totalCnt } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row className="wallet-data-table-class py-4">
             <Col lg="12" md="12" sm="12">
-              <SubscriptionTable data={mentors} header={columns}/>
+              <SubscriptionTable data={mentors} header={columns} />
             </Col>
           </Row>
           {mentors.length > 0 && <Row className="pagination-center">

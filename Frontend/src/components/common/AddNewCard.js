@@ -4,9 +4,10 @@ import Cleave from 'cleave.js/react';
 import LoadingModal from "./LoadingModal";
 import { registercardbystudent, signout } from '../../api/api';
 import { REACT_APP_STRIPE_KEY } from '../../common/config';
-import Close from '../../images/Close.svg'
+import Close from '../../images/Close.svg';
+import { withRouter } from 'react-router-dom';
 
-export default class AddNewCard extends React.Component {
+class AddNewCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,7 +15,7 @@ export default class AddNewCard extends React.Component {
       expiry: '',
       name: '',
       number: '',
-      loading: false,
+      loading: false,      
       cardinfo: {
         name: '',
         number: '',
@@ -43,24 +44,21 @@ export default class AddNewCard extends React.Component {
     if (array.length > 500) {
       return;
     }
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.name = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.name = e.target.value;
+    this.setState({cardinfo});
   }
 
   onChangeNumber = (e) => {
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.number = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.number = e.target.value;
+    this.setState({cardinfo});
   }
 
   onChangeDate = (e) => {
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.date = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.date = e.target.value;
+    this.setState({cardinfo});
   }
 
   onChangeCode = (e) => {
@@ -68,21 +66,19 @@ export default class AddNewCard extends React.Component {
     if (array.length > 3) {
       return;
     }
-    const {cardinfo} = this.state;
-    let temp = cardinfo;
-    temp.code = e.target.value;
-    this.setState({cardinfo: temp});
+    let {cardinfo} = this.state;
+    cardinfo.code = e.target.value;
+    this.setState({cardinfo});
   }
 
   actionAdd = async() => {
-    const { cardinfo, requiremessage } = this.state;
+    let { cardinfo, requiremessage } = this.state;
     const { toggle_success, toggle_fail, toggle_warning} = this.props;
 
-    let temp = requiremessage;
-    temp.dname = '';
-    temp.dnumber = '';
-    temp.ddate = '';
-    temp.dcode = '';
+    requiremessage.dname = '';
+    requiremessage.dnumber = '';
+    requiremessage.ddate = '';
+    requiremessage.dcode = '';
     let param = {
       user_id: localStorage.getItem('user_id'),
       card_name: cardinfo.name,
@@ -120,28 +116,27 @@ export default class AddNewCard extends React.Component {
               loading: false,
             });
             toggle_success("Add Payment Success");
-            window.location.href = "/studentWallet";
+            this.props.history.push('/studentWallet');
           } else if (result.data.result === "warning") {
             toggle_warning(result.data.message);
           } else {
             if (result.data.type === "require") {
-              const {requiremessage} = this.state;
-              let temp = requiremessage;
+              let {requiremessage} = this.state;
               if (result.data.message.card_name) {
-                temp.dname = result.data.message.card_name[0];
+                requiremessage.dname = result.data.message.card_name[0];
               }
               if (result.data.message.card_number) {
-                temp.dnumber = result.data.message.card_number[0];
+                requiremessage.dnumber = result.data.message.card_number[0];
               }
               if (result.data.message.cvc_code) {
-                temp.dcode = result.data.message.cvc_code[0];
+                requiremessage.dcode = result.data.message.cvc_code[0];
               }
               if (result.data.message.card_expiration) {
-                temp.ddate = result.data.message.card_expiration[0];
+                requiremessage.ddate = result.data.message.card_expiration[0];
               }
               
               this.setState({
-                requiremessage: temp
+                requiremessage
               });
             } else {
               if (result.data.message === "Token is Expired") {
@@ -196,7 +191,7 @@ export default class AddNewCard extends React.Component {
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    //this.props.history.push('/');
   }
 
   render() {
@@ -246,3 +241,5 @@ export default class AddNewCard extends React.Component {
     );
   }
 }
+
+export default withRouter(AddNewCard);

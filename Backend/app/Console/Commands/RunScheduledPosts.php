@@ -53,10 +53,10 @@ class RunScheduledPosts extends Command
       event(new StatusLiked($notifications));
     }
     //Begin not register email_verify delete
-    User::where('email_verified_at', null)->delete();
+    User::where('email_verified_at', null)->where('created_at', '<=', Carbon::now()->subMinutes(60))->delete();
     //End not register email_verify delete
     $send_mail = new Controller;
-    $subject = "Welcome to BrainsShare!";
+    $subject = "You have been invited for Forum!";
     $fronturl = env("APP_URL");
     
     $sessions = Session::where('posted',0)->where('from', '<=', Carbon::now()->addMinutes(15))->get();
@@ -65,8 +65,13 @@ class RunScheduledPosts extends Command
         $posted_session = [];
         $from = $sn_value->from;
         $title = $sn_value->title;
-        $mentor = User::select('id', 'name', 'email')->where('id', $sn_value->user_id)->first();
+        $description = $sn_value->description;
+        $language = $sn_value->language;
+        $mentor = User::select('id', 'name', 'email', 'avatar')->where('id', $sn_value->user_id)->first();
         $mentor_name = $mentor->name;
+        $mentor_avatar = $mentor->avatar;
+//        if ($mentor_avatar == "" || $mentor_avatar == null)
+//          $mentor_avatar = "https://brainshares.s3-us-west-2.amazonaws.com/avatar.jpg";
         $name = $mentor_name;
         $toEmail = $mentor->email;
         $app_path = app_path();
@@ -88,7 +93,11 @@ class RunScheduledPosts extends Command
           'session_title' => $sn_value->title,
           'from' => $sn_value->from,
           'to' => $sn_value->to,
+          'forum_start' => $sn_value->forum_start,
+          'forum_end' => $sn_value->forum_end,
           'is_mentor' => true,
+          'avatar' => $mentor_avatar,
+          'type' => 'Session',
         ]);
         $posted_data[] = $posted_session;
 //        event(new StatusLiked($posted_data));
@@ -107,7 +116,11 @@ class RunScheduledPosts extends Command
               'session_title' => $sn_value->title,
               'from' => $sn_value->from,
               'to' => $sn_value->to,
+              'forum_start' => $sn_value->forum_start,
+              'forum_end' => $sn_value->forum_end,
               'is_mentor' => false,
+              'avatar' => $mentor_avatar,
+              'type' => 'Booking',
             ]);
             $posted_data[] = $posted_session;
 //            event(new StatusLiked($posted_data));

@@ -1,16 +1,16 @@
 import React from "react";
 import { Container, Row, Col, Button, Card, CardBody, FormCheckbox, FormSelect, Form } from "shards-react";
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
-
-import DeleteButtonImage from "../images/Delete.svg"
-import AddButtonImage from "../images/Add.svg"
-
+import AddSpecificDate from "../components/common/AddSpecificDate";
+import { ToastsStore } from 'react-toasts';
+import DeleteButtonImage from "../images/Delete.svg";
+import AddButtonImage from "../images/Add.svg";
 import { getAvailableTimes, setAvailableTimes, signout } from '../api/api';
 import TimezoneOptions from '../common/TimezoneOptions';
 import Timelinelist from '../common/TimelistList';
+import moment from 'moment';
+
+moment.locale('en');
 
 class SetAvailability extends React.Component {
   constructor(props) {
@@ -18,9 +18,10 @@ class SetAvailability extends React.Component {
 
     this.state = {
       loading: false,
-      timezone: '',
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       currentUserId: '',
-      availableTimeList: [
+      availableSpecificTimeList: [],
+      availableRecurrenceTimeList: [
         {
           dayOfWeek: "Sunday",
           timeList: [],
@@ -65,7 +66,8 @@ class SetAvailability extends React.Component {
         false,
         false,
         false
-      ]
+      ],
+      addSpecificDateModal: false, 
     }
 
     this.handleAdd = this.handleAdd.bind(this);
@@ -80,65 +82,59 @@ class SetAvailability extends React.Component {
   }
 
   handleAdd(dayIdx) {
-      const {availableTimeList} = this.state;
-      let list = availableTimeList;
-      list[dayIdx].timeList.push({from: 0, to: 0});
-  
-      this.setState({
-        availableTimeList: list,
-      });
+    let { availableRecurrenceTimeList } = this.state;
+    availableRecurrenceTimeList[dayIdx].timeList.push({ fromTimeStr: "00:00 am", toTimeStr: "00:00 am" });
+    availableRecurrenceTimeList[dayIdx].status = true;
+
+    this.setState({
+      availableRecurrenceTimeList,
+    });
   }
 
   handleDelete(dayIdx, idx) {
-    const {availableTimeList} = this.state;
-    let list = availableTimeList;
-
-    if (list[dayIdx].timeList.length === 1) {
-      list[dayIdx].timeList.splice(idx, 1);
+    let { availableRecurrenceTimeList } = this.state;
+    
+    if (availableRecurrenceTimeList[dayIdx].timeList.length === 1) {
+      availableRecurrenceTimeList[dayIdx].timeList.splice(idx, 1);
     } else {
-      list[dayIdx].timeList.splice(idx, 1);
+      availableRecurrenceTimeList[dayIdx].timeList.splice(idx, 1);
     }
 
+    if (!availableRecurrenceTimeList[dayIdx].timeList.length)
+      availableRecurrenceTimeList[dayIdx].status = false;
+
     this.setState({
-      availableTimeList: list,
+      availableRecurrenceTimeList,
     });
   }
 
   handleUpdateto(dayIdx, timeIdx, e) {
-    const {availableTimeList} = this.state;
-    let list = availableTimeList;
-    let timeId = 1;
+    let { availableRecurrenceTimeList } = this.state;
     let timeStr = "";
-    for(var i = 0; i < Timelinelist.length; i ++) {
-      if(parseInt(e.target.value) === Timelinelist[i].id) {
-        timeId = i;
-        timeStr = Timelinelist[i].str;
-      }
-    }
-
-    list[dayIdx].timeList[timeIdx].to = timeId;
-    list[dayIdx].timeList[timeIdx].toStr = timeStr;
-    this.setState({
-      availableTimeList: list,
-    });
-  }
-
-  handleUpdatefrom(dayIdx, timeIdx, e) {
-    const {availableTimeList} = this.state;
-    let list = availableTimeList;
-    let timeId = 1;
-    let timeStr = "";
-    for(var i = 0; i < Timelinelist.length; i ++) {
-      if(parseInt(e.target.value) === Timelinelist[i].id) {
-        timeId = i;
+    for (var i = 0; i < Timelinelist.length; i++) {
+      if (parseInt(e.target.value) === Timelinelist[i].id) {
         timeStr = Timelinelist[i].str;
       }
     }
     
-    list[dayIdx].timeList[timeIdx].from = timeId;
-    list[dayIdx].timeList[timeIdx].fromStr = timeStr;
+    availableRecurrenceTimeList[dayIdx].timeList[timeIdx].toTimeStr = timeStr;
     this.setState({
-      availableTimeList: list,
+      availableRecurrenceTimeList,
+    });
+  }
+
+  handleUpdatefrom(dayIdx, timeIdx, e) {
+    let { availableRecurrenceTimeList } = this.state;
+    let timeStr = "";
+    for (var i = 0; i < Timelinelist.length; i++) {
+      if (parseInt(e.target.value) === Timelinelist[i].id) {
+        timeStr = Timelinelist[i].str;
+      }
+    }
+    
+    availableRecurrenceTimeList[dayIdx].timeList[timeIdx].fromTimeStr = timeStr;
+    this.setState({
+      availableRecurrenceTimeList: availableRecurrenceTimeList,
     });
   }
 
@@ -146,59 +142,61 @@ class SetAvailability extends React.Component {
 
   }
 
-  handleSave = async() => {
-    const {availableTimeList, dayOfWeekStatus, timezone} = this.state;
-    for (var i = 0; i < availableTimeList.length; i ++) {
-      availableTimeList[i].status = dayOfWeekStatus[i];
+  handleSave = async () => {
+    const { availableRecurrenceTimeList, dayOfWeekStatus, timezone, availableSpecificTimeList } = this.state;
+
+    for (var i = 0; i < availableRecurrenceTimeList.length; i++) {
+      availableRecurrenceTimeList[i].status = dayOfWeekStatus[i];
     }
 
     let param = {
       email: localStorage.getItem('email'),
-      data: this.state.availableTimeList,
-      timezone: timezone
+      timezone: timezone,
+      recurrence: availableRecurrenceTimeList,
+      specific_date: availableSpecificTimeList
     }
 
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       this.makeParam();
       const result = await setAvailableTimes(param);
 
       if (result.data.result === "success") {
         this.getTimeListData();
-        this.showSuccess("Set Availability Success");
+        ToastsStore.success("Set Availability Success");
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
-  
-  getTimeListData = async() => {
+
+  getTimeListData = async () => {
     let param = {
       email: localStorage.getItem('email')
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getAvailableTimes(param);
-      
       if (result.data.result === "success") {
-        var availableTimeListTemp = [
+        var availableSpecificTimeListTemp = [];
+        var availableRecurrenceTimeListTemp = [
           {
             dayOfWeek: "Sunday",
             timeList: [],
@@ -236,189 +234,156 @@ class SetAvailability extends React.Component {
           }
         ];
         let timezone = "";
-        for(var i = 0; i < result.data.data.length; i ++) {
-          for (var j = 0; j < availableTimeListTemp.length; j ++){
-            if(result.data.data[i].day_of_week === availableTimeListTemp[j].dayOfWeek) {
-              availableTimeListTemp[j].timeList.push({
-                from: result.data.data[i].fromTime, 
-                to: result.data.data[i].toTime, 
-                fromStr: result.data.data[i].fromTimeStr, 
-                toStr: result.data.data[i].toTimeStr,
-                status: result.data.data[i].status === 1 ? true : false
+        for (let i = 0; i < result.data.data.recurrenceList.length; i++) {
+          for (let j = 0; j < availableRecurrenceTimeListTemp.length; j++) {
+            if (result.data.data.recurrenceList[i].day_of_week === availableRecurrenceTimeListTemp[j].dayOfWeek) {
+              availableRecurrenceTimeListTemp[j].timeList.push({
+                fromTimeStr: result.data.data.recurrenceList[i].fromTimeStr,
+                toTimeStr: result.data.data.recurrenceList[i].toTimeStr,
+                status: result.data.data.recurrenceList[i].status === 1 ? true : false
               });
-              availableTimeListTemp[j].status = result.data.data[i].status === 1 ? true : false;
-              // availableTimeListTemp[j].timeList[i].fromStr = result.data.data[i].fromStr;
-              // availableTimeListTemp[j].timeList[i].toStr = result.data.data[i].toStr;
+              availableRecurrenceTimeListTemp[j].status = result.data.data.recurrenceList[i].status === 1 ? true : false;
             }
           }
-          if (result.data.data[i].day_of_week === "Sunday") {
-            let {dayOfWeekStatus} = this.state;
+          if (result.data.data.recurrenceList[i].day_of_week === "Sunday") {
+            let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[0] = result.data.data[i].status === 1 ? true : false;
-            this.setState({dayOfWeekStatus: temp});
-          } else if (result.data.data[i].day_of_week === "Monday") {
-            let {dayOfWeekStatus} = this.state;
+            temp[0] = result.data.data.recurrenceList[i].status === 1 ? true : false;
+            this.setState({ dayOfWeekStatus: temp });
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Monday") {
+            let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[1] = result.data.data[i].status === 1 ? true : false;
-            this.setState({dayOfWeekStatus: temp});
-          } else if (result.data.data[i].day_of_week === "Tuesday") {
-            let {dayOfWeekStatus} = this.state;
+            temp[1] = result.data.data.recurrenceList[i].status === 1 ? true : false;
+            this.setState({ dayOfWeekStatus: temp });
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Tuesday") {
+            let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[2] = result.data.data[i].status === 1 ? true : false;
-            this.setState({dayOfWeekStatus: temp});
-          } else if (result.data.data[i].day_of_week === "Wednesday") {
-            let {dayOfWeekStatus} = this.state;
+            temp[2] = result.data.data.recurrenceList[i].status === 1 ? true : false;
+            this.setState({ dayOfWeekStatus: temp });
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Wednesday") {
+            let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[3] = result.data.data[i].status === 1 ? true : false;
-            this.setState({dayOfWeekStatus: temp});
-          } else if (result.data.data[i].day_of_week === "Thursday") {
-            let {dayOfWeekStatus} = this.state;
+            temp[3] = result.data.data.recurrenceList[i].status === 1 ? true : false;
+            this.setState({ dayOfWeekStatus: temp });
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Thursday") {
+            let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[4] = result.data.data[i].status === 1 ? true : false;
-            this.setState({dayOfWeekStatus: temp});
-          } else if (result.data.data[i].day_of_week === "Friday") {
-            let {dayOfWeekStatus} = this.state;
+            temp[4] = result.data.data.recurrenceList[i].status === 1 ? true : false;
+            this.setState({ dayOfWeekStatus: temp });
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Friday") {
+            let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[5] = result.data.data[i].status === 1 ? true : false;
-            this.setState({dayOfWeekStatus: temp});
-          } else if (result.data.data[i].day_of_week === "Saturday") {
-            let {dayOfWeekStatus} = this.state;
+            temp[5] = result.data.data.recurrenceList[i].status === 1 ? true : false;
+            this.setState({ dayOfWeekStatus: temp });
+          } else if (result.data.data.recurrenceList[i].day_of_week === "Saturday") {
+            let { dayOfWeekStatus } = this.state;
             let temp = dayOfWeekStatus;
-            temp[6] = result.data.data[i].status === 1 ? true : false;
-            this.setState({dayOfWeekStatus: temp});
+            temp[6] = result.data.data.recurrenceList[i].status === 1 ? true : false;
+            this.setState({ dayOfWeekStatus: temp });
           }
-          timezone = result.data.data[i].timezone;
         }
+        
+        var specificTimes = result.data.data.specificList;
+        if (specificTimes.length) {
+          var sp_date = specificTimes[0].sp_date;
+          var timeList =[];
+          
+          for (let i = 0; i < specificTimes.length; i ++) {
+            if (sp_date === specificTimes[i].sp_date) {
+              timeList.push({fromTimeStr: specificTimes[i].fromTimeStr, toTimeStr: specificTimes[i].toTimeStr});
+            } else {
+              availableSpecificTimeListTemp.push({sp_date: sp_date, timeList: timeList})
+              sp_date = specificTimes[i].sp_date;
+              timeList = [];
+              timeList.push({fromTimeStr: specificTimes[i].fromTimeStr, toTimeStr: specificTimes[i].toTimeStr});
+            }
+          }
+          availableSpecificTimeListTemp.push({sp_date: sp_date, timeList: timeList});
+        }
+        
+        if (result.data.data.timezone)
+          timezone = result.data.data.timezone;
+        else
+          timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
         this.setState({
-          availableTimeList: availableTimeListTemp,
+          availableRecurrenceTimeList: availableRecurrenceTimeListTemp,
+          availableSpecificTimeList: availableSpecificTimeListTemp,
           timezone: timezone
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
-        this.showFail(result.data.message);
+        ToastsStore.error(result.data.message);
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
   onChangeTimeZone = (e) => {
-    this.setState({timezone: e.target.value});
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
+    this.setState({ timezone: e.target.value });
   }
 
   handleChange(e, dayIdx, dayOfWeek) {
-    const {dayOfWeekStatus} = this.state;
-    let temp = dayOfWeekStatus;
-    // if(this.state.dayOfWeekStatus[dayOfWeek]) {
-    if(this.state.availableTimeList[dayOfWeek].status) { 
-      if(this.state.availableTimeList[dayOfWeek].timeList.length) {
+    let { dayOfWeekStatus } = this.state;
+    if (this.state.availableRecurrenceTimeList[dayOfWeek].status) {
+      if (this.state.availableRecurrenceTimeList[dayOfWeek].timeList.length) {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        for (var i = 0; i < y.length; i ++) {
+        for (var i = 0; i < y.length; i++) {
           y[i].setAttribute("disabled", true);
           y[i].classList.add("disable-event");
         }
       } else {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
-        for (var j = 0; j < y.length; j ++) {
+        for (var j = 0; j < y.length; j++) {
           y[j].setAttribute("disabled", true);
           y[j].classList.add("disable-event");
         }
       }
     } else {
-      if(this.state.availableTimeList[dayOfWeek].timeList.length) {
+      if (this.state.availableRecurrenceTimeList[dayOfWeek].timeList.length) {
         const elements = document.getElementById(dayIdx).getElementsByTagName("*");
         let y = [...elements];
 
-        for (var k = 0; k < y.length; k ++) {
+        for (var k = 0; k < y.length; k++) {
           y[k].removeAttribute("disabled");
           y[k].classList.remove("disable-event");
         }
       } else {
         const elements = document.getElementById(dayIdx).getElementsByClassName("btn-available-time-add-delete");
         let y = [...elements];
-        
-        for (var l = 0; l < y.length; l ++) {
+
+        for (var l = 0; l < y.length; l++) {
           y[l].removeAttribute("disabled");
           y[l].classList.remove("disable-event");
         }
       }
     }
-    temp[dayOfWeek] = !this.state.availableTimeList[dayOfWeek].status;
+    dayOfWeekStatus[dayOfWeek] = !this.state.availableRecurrenceTimeList[dayOfWeek].status;
     this.setState({
-      dayOfWeekStatus: temp
+      dayOfWeekStatus
     });
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -440,108 +405,147 @@ class SetAvailability extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
-  
-  render () {
-    const {loading, availableTimeList, dayOfWeekStatus, timezone} = this.state;
-    return(
+
+  handleAddSpecificDate() {
+    this.toggle_AddSpecificDate();
+  }
+
+  toggle_AddSpecificDate() {
+    this.setState({
+      addSpecificDateModal: !this.state.addSpecificDateModal
+    });
+  }
+
+  addSpecificDate(date, timeList) {
+    let { availableSpecificTimeList } = this.state;
+    const buf = {
+      sp_date: date,
+      timeList: timeList
+    };
+
+    availableSpecificTimeList.push(buf);
+
+    this.setState({
+      availableSpecificTimeList
+    });
+  }
+
+  handleSpecificDelete(idx_date) {
+    let {availableSpecificTimeList} = this.state;
+    availableSpecificTimeList.splice(idx_date, 1);
+    if (!availableSpecificTimeList.length)
+    availableSpecificTimeList.splice(idx_date, 1);
+
+    this.setState({
+      availableSpecificTimeList
+    });
+  }
+
+  render() {
+    const { loading, availableRecurrenceTimeList, dayOfWeekStatus, timezone, availableSpecificTimeList, addSpecificDateModal } = this.state;
+    return (
       <>
-      {loading && <LoadingModal open={true} />}
-      <ReactNotification />
+        {loading && <LoadingModal open={true} />}
+        <AddSpecificDate 
+          open={addSpecificDateModal} 
+          toggle={() => this.toggle_AddSpecificDate()}
+          addSpecificDate={(date, timeList) => this.addSpecificDate(date, timeList)}
+        />
         <Container fluid className="main-content-container px-4 pb-4 main-content-container-class">
-          <Card small className="profile-setting-card">
+          <Card small className="set-available-card">
             <CardBody>
               <Row className="center">
                 <h2 className="availability-title">Set availability</h2>
               </Row>
               <Row className="availability-items center no-margin">
-                <Form style={{width: "80%"}}>
+                <Form style={{ width: "80%" }}>
                   <Row form>
                     <Col className="project-detail-input-group">
                       <label htmlFor="feInputState" >Choose your timezone</label>
-                      <FormSelect id="feInputState" className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)}>
-                        {TimezoneOptions.map((item, idx)  => {
+                      <FormSelect className="profile-detail-input" onChange={(e) => this.onChangeTimeZone(e)} defaultValue={timezone}>
+                        {TimezoneOptions.map((item, idx) => {
                           return (
-                            item.value === timezone ? <option key={idx} value={item.value} selected> {item.name}</option> : <option key={idx} value={item.value}> {item.name}</option>
+                            <option key={idx} value={item.value}> {item.name}</option>
                           );
                         })}
                       </FormSelect>
                     </Col>
                   </Row>
-                  {availableTimeList.map((day, dayIdx) => {
+                  {availableRecurrenceTimeList.map((day, dayIdx) => {
                     return (
                       <div key={dayIdx}>
-                        <Row style={{paddingLeft: "15px"}}>
-                          {day.status ? 
-                          <FormCheckbox 
-                            toggle
-                            small 
-                            checked
-                            onChange={e => this.handleChange(e, 'day_' + dayIdx, dayIdx)}
-                          >
-                          {day.dayOfWeek}
-                          </FormCheckbox> : <FormCheckbox 
-                            toggle
-                            small 
-                            onChange={e => this.handleChange(e, 'day_' + dayIdx, dayIdx)}
-                          >
-                          {day.dayOfWeek}
-                          </FormCheckbox>}
+                        <Row style={{ paddingLeft: "15px" }}>
+                          {day.status ?
+                            <FormCheckbox
+                              toggle
+                              small
+                              checked
+                              onChange={e => this.handleChange(e, 'day_' + dayIdx, dayIdx)}
+                            >
+                              {day.dayOfWeek}
+                            </FormCheckbox> : <FormCheckbox
+                              toggle
+                              small
+                              onChange={e => this.handleChange(e, 'day_' + dayIdx, dayIdx)}
+                            >
+                              {day.dayOfWeek}
+                            </FormCheckbox>}
                         </Row>
                         <div id={'day_' + dayIdx}>
                           {day.timeList.length ?
                             day.timeList.map((time, timeIdx) => {
                               return (
                                 <Row key={timeIdx} form>
-                                  <Col md="5" xs="4" className="available-time-group" style={{marginRight: "70px"}}>
-                                    <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)}>
+                                  <Col md="5" xs="4" className="available-time-group" style={{ marginRight: "70px" }}>
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdatefrom(dayIdx, timeIdx, e)} >
                                       {Timelinelist.map((item, idx) => {
                                         return (
-                                          time.from === item.id
-                                          ? <option key={idx} vaule={item.id} selected>{item.str}</option>
-                                          : <option key={idx} value={item.id}>{item.str}</option>
-                                        );
-                                      })}
-                                    </FormSelect>
-                                  </Col>
-                                  <Col md="5" xs="4">
-                                    <FormSelect id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)}>
-                                      {Timelinelist.map((item, idx) => {
-                                        return (
-                                          time.to === item.id 
+                                          time.fromTimeStr === item.str 
                                           ? <option key={idx} value={item.id} selected>{item.str}</option>
                                           : <option key={idx} value={item.id}>{item.str}</option>
                                         );
                                       })}
                                     </FormSelect>
                                   </Col>
-                                  <Col style={{marginTop: "10px", marginBottom: "10px"}}>
-                                  {day.timeList.length !== 0 && 
-                                    <Button className="btn-available-time-add-delete no-padding"
-                                      onClick={() => this.handleDelete(dayIdx, timeIdx)}>
-                                      <img src={DeleteButtonImage} alt="Delete" />
-                                    </Button>}
-                                  {day.timeList.length - 1 === timeIdx && 
-                                    <Button className="btn-available-time-add-delete no-padding"
-                                      onClick={() => this.handleAdd(dayIdx)}>
-                                      <img src={AddButtonImage} alt="Add" />
-                                    </Button>}
+                                  <Col md="5" xs="4">
+                                    <FormSelect className="available-time-input" onChange={(e) => this.handleUpdateto(dayIdx, timeIdx, e)} >
+                                      {Timelinelist.map((item, idx) => {
+                                        return (
+                                          time.toTimeStr === item.str
+                                          ? <option key={idx} value={item.id} selected>{item.str}</option>
+                                          : <option key={idx} value={item.id}>{item.str}</option>
+                                        );
+                                      })}
+                                    </FormSelect>
+                                  </Col>
+                                  <Col style={{ marginTop: "10px", marginBottom: "10px" }}>
+                                    {day.timeList.length !== 0 &&
+                                      <Button className="btn-available-time-add-delete no-padding"
+                                        onClick={() => this.handleDelete(dayIdx, timeIdx)}>
+                                        <img src={DeleteButtonImage} alt="Delete" />
+                                      </Button>}
+                                    {day.timeList.length - 1 === timeIdx &&
+                                      <Button className="btn-available-time-add-delete no-padding"
+                                        onClick={() => this.handleAdd(dayIdx)}>
+                                        <img src={AddButtonImage} alt="Add" />
+                                      </Button>}
                                   </Col>
                                 </Row>
                               )
                             })
                             // : null
-                            :<Row form>
+                            : <Row form>
                               <Col md="5" xs="4" className="available-time-group">
-                                <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)}>
+                                <FormSelect disabled className="available-time-input" onChange={(e) => this.handleUpdatefrom(0, 0, e)} defaultValue="(GMT-12:00) International Date Line West">
                                   {Timelinelist.map((item, idx) => {
                                     return (
                                       <option key={idx} >{item.str}</option>
@@ -550,7 +554,7 @@ class SetAvailability extends React.Component {
                                 </FormSelect>
                               </Col>
                               <Col md="5" xs="4">
-                                <FormSelect disabled id="feInputState" className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
+                                <FormSelect disabled className="available-time-input" onChange={(e) => this.handleUpdateto(0, 0, e)}>
                                   {Timelinelist.map((item, idx) => {
                                     return (
                                       <option key={idx} >{item.str}</option>
@@ -558,8 +562,8 @@ class SetAvailability extends React.Component {
                                   })}
                                 </FormSelect>
                               </Col>
-                              <Col style={{marginTop: "10px", marginBottom: "10px"}}>
-                              {!dayOfWeekStatus[dayIdx]}
+                              <Col style={{ marginTop: "10px", marginBottom: "10px" }}>
+                                {!dayOfWeekStatus[dayIdx]}
                                 <Button className="btn-available-time-add-delete no-padding"
                                   disabled={!dayOfWeekStatus[dayIdx]}
                                   onClick={() => this.handleAdd(dayIdx)}>
@@ -572,13 +576,40 @@ class SetAvailability extends React.Component {
                       </div>
                     )
                   })}
-                  <Row className="profile-detail-save center">
-                    <Button className="btn-profile-detail-save" onClick={() => this.handleSave()}>Save</Button>
-                  </Row>
+
                 </Form>
               </Row>
+              <Row id="hours-specific-dates" className="center">
+                <Row style={{ width: "80%", marginTop: "20px" }}>
+                  <h2 className="availability-specific-dates">Add hours for specific dates.</h2>
+                  <Button className="btn-add-specific-date" onClick={() => this.handleAddSpecificDate()}>+</Button>
+                </Row>
+                <Row className="specific-date-table-header">
+                  <div style={{width: "150px"}}>Dates</div>
+                  <div style={{width: "calc(100% - 150px)"}}>AVAILABILITY</div>
+                </Row>
+                {availableSpecificTimeList.map((item, idx_date) => {
+                  return(
+                    item.timeList.map((time, idx_time) => {
+                      return (
+                        <Row className="specific-date-table-content">
+                          <div style={{width: "150px"}}>{item.sp_date}</div>
+                          <div style={{width: "calc(100% - 200px)"}}>{time.fromTimeStr} - {time.toTimeStr}</div>
+                          <Button className="btn-available-time-add-delete no-padding"
+                            onClick={() => this.handleSpecificDelete(idx_date, idx_time)}>
+                            <img src={DeleteButtonImage} alt="Delete" />
+                          </Button>
+                        </Row>
+                      )
+                    })
+                  )
+                })}
+              </Row>
+              <Row className="profile-detail-save center">
+                <Button className="btn-profile-detail-save" onClick={() => this.handleSave()}>Save</Button>
+              </Row>
             </CardBody>
-          </Card>    
+          </Card>
         </Container>
       </>
     );

@@ -19,9 +19,13 @@ class CreatePostedNotificationsTable extends Migration
       $table->integer('session_id')->nullable();
       $table->integer('notification_posted')->default(0);
       $table->string('session_title')->nullable();
+      $table->string('avatar')->nullable();
+      $table->string('forum_start')->nullable();
+      $table->string('forum_end')->nullable();
       $table->boolean('is_mentor')->nullable();
       $table->timestamp('from')->nullable();
       $table->timestamp('to')->nullable();
+      $table->enum('type', ['Session', 'Booking'])->nullable();
       $table->timestamps();
     });
   }

@@ -8,9 +8,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { Container, Row, Col, Card, CardBody } from "shards-react";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
+import { ToastsStore } from 'react-toasts';
 import LoadingModal from "../components/common/LoadingModal";
 import { getlibrary } from '../api/api';
 import LibrarySavedContent from "../components/common/LibrarySavedContent"
@@ -73,23 +71,23 @@ export default function Library() {
         if (result.data.result === "success") {
           setLibrary(result.data.data);
         } else if (result.data.result === "warning") {
-          showWarning(result.data.message);
+          ToastsStore.warning(result.data.message);
         } else {
           if (result.data.message === "Token is Expired") {
-            showFail(result.data.message);
+            ToastsStore.error(result.data.message);
             signout();
           } else if (result.data.message === "Token is Invalid") {
-            showFail(result.data.message);
+            ToastsStore.error(result.data.message);
             signout();
           } else if (result.data.message === "Authorization Token not found") {
-            showFail(result.data.message);
+            ToastsStore.error(result.data.message);
             signout();
           } else {
-            showFail(result.data.message);
+            ToastsStore.error(result.data.message);
           }
-        } 
+        }
         setLoading(false);
-      } catch(err) {
+      } catch (err) {
         setLoading(false);
       }
     };
@@ -104,7 +102,7 @@ export default function Library() {
     setValue(index);
   };
 
-  const signout = async() => {
+  const signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -126,54 +124,19 @@ export default function Library() {
           removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       removeSession();
     }
   }
 
-  const showFail = (text) => {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  const showWarning = (text) => {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    })
-  }
-
   const removeSession = () => {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
 
   return (
     <>
       {loading && <LoadingModal open={true} />}
-      <ReactNotification />
       <Container fluid className="main-content-container px-4 pb-4 main-content-container-class page-basic-margin">
         <Row noGutters className="page-header py-4">
           <Col xs="12" sm="12" className="page-title">
@@ -188,7 +151,7 @@ export default function Library() {
                 onChange={handleChange}
                 indicatorColor="primary"
                 textColor="primary"
-                // centered
+              // centered
               >
                 <Tab label="Saved content" {...a11yProps(0)} />
                 <Tab label="Upcoming events" {...a11yProps(1)} />
@@ -200,38 +163,13 @@ export default function Library() {
               onChangeIndex={handleChangeIndex}
             >
               <TabPanel value={value} index={0} dir={theme.direction}>
-                <Row>
-                  {library.map((item, idx) =>
-                    <Col xl="4" lg="4" sm="6">
-                      <LibrarySavedContent item={item} />
-                    </Col>
-                  )}
-                </Row>
+                {library.map((item, idx) =>
+                  <Col xl="4" lg="4" sm="6">
+                    <LibrarySavedContent item={item} />
+                  </Col>
+                )}
               </TabPanel>
               <TabPanel value={value} index={1} dir={theme.direction}>
-                {/* <Row> */}
-                  {/* <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col>
-                  <Col xl="4" lg="4" sm="6">
-                    <SmallCard3 />
-                  </Col> */}
-                {/* </Row> */}
               </TabPanel>
             </SwipeableViews>
           </CardBody>

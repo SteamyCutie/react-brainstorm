@@ -163,6 +163,36 @@ export const getallstudents = (param) => {
     });
 }
 
+export const getsubscribedstudents = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getsubscribedstudents', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const getassociatedstudents = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getassociatedstudents', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const findmentors = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -189,6 +219,17 @@ export const featuredmentors = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
             const response = await axios.post(SERVER_URL+'/api/featuredmentors', param);
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const getopenedforum = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const response = await axios.post(SERVER_URL+'/api/getopenedforum', param);
             resolve(response);
         } catch(error) {
             reject(error);
@@ -274,6 +315,21 @@ export const setAvailableTimes = (param) => {
     })
 }
 
+export const getavailabletimeslots = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getavailabletimeslots', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export const getavailabletimesforstudent = (param) => {
     return new Promise(async(resolve, reject) => {
         try {
@@ -324,6 +380,22 @@ export const gettransactionhistorybystudent = (param) => {
         }
     });
 };
+
+export const gettransactionhistorybymentor = (param) => {
+  return new Promise(async(resolve, reject) => {
+      try {
+          const token = localStorage.getItem('token');
+          const header = {
+              'Authorization': 'bearer ' + token
+          }
+          const response = await axios.post(SERVER_URL+'/api/gettransactionhistorybymentor', param, {headers: header});
+          resolve(response);
+      } catch(error) {
+          reject(error);
+      }
+  });
+};
+
 // ------------WalletController-----------------
 
 
@@ -477,6 +549,156 @@ export const booksession = (param) => {
         }
     });
 }
+
+export const setbookedtime = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/setbookedtime', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const getAssociatedUsers = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getassociatedusers', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+export const accociateUser = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associaterequest', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const accociateAccept = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associateaccept', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const associateDecline = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associatedecline', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const associateUnassociate = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associateunassociate', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const associateReassociate = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associatereassociate', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const associateWithdraw = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/associatewithdraw', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const getassociationstatus = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/getassociationstatus', param, {headers: header});
+            resolve(response);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+export const inviteParticipantToRoom = (param) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const token = localStorage.getItem('token');
+            const header = {
+                'Authorization': 'bearer ' + token
+            }
+            const response = await axios.post(SERVER_URL+'/api/inviteparticipanttoroom', param, {headers: header});
+            resolve(response)
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
 //------------SessionController--------------
 
 
@@ -497,6 +719,22 @@ export const gettags = (param) => {
 };
 //----------TagController--------------
 
+//LanguageController
+export const getlanguages = (param) => {
+  return new Promise(async(resolve, reject) => {
+      try {
+          const token = localStorage.getItem('token');
+          const header = {
+              'Authorization': 'bearer ' + token
+          }
+          const response = await axios.post(SERVER_URL+'/api/getlanguages', param, {headers: header});
+          resolve(response);
+      } catch(error) {
+          reject(error);
+      }
+  });
+};
+//----------LanguageController--------------
 
 //FileController
 export const uploadimage = (param) => {
@@ -682,20 +920,20 @@ export const setprimarycard = (param) => {
     });
 }
 
-export const payforsession = (param) => {
-    const token = localStorage.getItem('token');
-    const header = {
-        'Authorization': 'bearer ' + token,
-    }
+export const deletestudentcard = (param) => {
+  const token = localStorage.getItem('token');
+  const header = {
+      'Authorization': 'bearer ' + token,
+  }
 
-    return new Promise(async(resolve, reject) => {
-        try {
-            const response = await axios.post(SERVER_URL+'/api/payforsession', param, {headers: header});
-            resolve(response);
-        } catch (error) {
-            reject(error);
-        }
-    });
+  return new Promise(async(resolve, reject) => {
+      try {
+          const response = await axios.post(SERVER_URL+'/api/deletestudentcard', param, {headers: header});
+          resolve(response);
+      } catch (error) {
+          reject(error);
+      }
+  });
 }
 
 export const getuseridformentor = (param) => {

@@ -9,6 +9,7 @@ use App\Models\Session;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Log;
+
 class TransactionHistoryController extends Controller
 {
   function payforsession(Request $request) {
@@ -67,6 +68,7 @@ class TransactionHistoryController extends Controller
       'session_id' => $session_id,
       'conference_time' => $conference_time,
       'amount' => round($st_amount * 0.8, 2),
+      'st_amount' => round($st_amount, 2),
     ]);
     //End Transfer money from student to platform.
     //Begin Transfer money from platform to mentor.
@@ -87,7 +89,7 @@ class TransactionHistoryController extends Controller
     } catch (Exception $th){
       return response()->json([
         'result'=> 'failed',
-        'data'=> $th,
+        'message'=> $th->getMessage(),
       ]);
     }
   }
@@ -99,7 +101,7 @@ class TransactionHistoryController extends Controller
       $rowsPerPage = $request->rowsPerPage;
       $result = [];
       //transaction
-      $student_transactions = TransactionHistory::select('session_id', 'session_date', 'mentor_name', 'conference_time', 'amount', 'status')
+      $student_transactions = TransactionHistory::select('session_id', 'session_date', 'mentor_name', 'conference_time', 'st_amount', 'status')
         ->where('student_id', $user_id)
         ->orderBy('created_at', 'DESC')
         ->paginate($rowsPerPage);
@@ -116,7 +118,7 @@ class TransactionHistoryController extends Controller
         $result[$key]['lDate'] = date('y/m/d', strtotime($value->session_date));
         $result[$key]['sName'] = $value->mentor_name;
         $result[$key]['conferenceTime'] = $value->conference_time;
-        $result[$key]['amount'] = $value->amount;
+        $result[$key]['amount'] = $value->st_amount;
         $result[$key]['status'] = $status;
       }
       return response()->json([
@@ -127,12 +129,13 @@ class TransactionHistoryController extends Controller
     } catch (Exception $th){
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
   
   function gettransactionhistorybymentor(Request $request) {
+    
     try{
       $user_id = $request->user_id;
       $rowsPerPage = $request->rowsPerPage;
@@ -157,26 +160,25 @@ class TransactionHistoryController extends Controller
         $result[$key]['status'] = $status;
       }
       $mentor_info = User::select('available_balance', 'pending_balance', 'life_time_earnings', 'connected_account')->where('id', $user_id)->first();
-      if ($mentor_info->connected_account != "") {
-        \Stripe\Stripe::setApiKey(env('SK_LIVE'));
-        $balance = \Stripe\Balance::retrieve(
-          ['stripe_account' => $mentor_info->connected_account]
-        );
-        $available_balance = $balance->available[0]->amount / 100;
-        $pending_balance = $balance->pending[0]->amount / 100;
-      }
-      $result[]['available_balance'] = $available_balance;
-      $result[]['pending_balance'] = $pending_balance;
-      $result[]['life_time_earnings'] = $mentor_info->life_time_earnings;
+      
+      $result_balance = [];
+      $result_balance[0]['value'] = '$'.$mentor_info->available_balance;
+      $result_balance[0]['label'] = "Available Balance";
+      $result_balance[1]['value'] = '$'.$mentor_info->pending_balance;
+      $result_balance[1]['label'] = "Pending Balance";
+      $result_balance[2]['value'] = '$'.$mentor_info->life_time_earnings;
+      $result_balance[2]['label'] = "Life time Earnings";
       return response()->json([
         'result' => 'success',
         'data' => $result,
+        'balance' => $result_balance,
+        'bank_status' => $mentor_info->connected_account,
         'totalRows' => $mentor_transactions->total(),
       ]);
     } catch (Exception $th){
       return response()->json([
         'result' => 'failed',
-        'data' => $th,
+        'message' => $th->getMessage(),
       ]);
     }
   }
@@ -200,28 +202,35 @@ class TransactionHistoryController extends Controller
     switch ($event->type) {
       case 'transfer.created':
         $payment_event = $event->data->object;
-        $user_info = User::select('life_time_earnings')->where('connected_account', $payment_event->destination)->first();
-        Log::info(["++++++++ transfer.created +++ life =  $user_info->life_time_earnings +++ amount =  $payment_event->amount  ++++"]);
-        TransactionHistory::where('transfer_id', $payment_event->id)->update(['status' => 'Confirmed', 'check_confirmed_sum' => true]);
-        $balance = \Stripe\Balance::retrieve(
-          ['stripe_account' => $payment_event->destination]
-        );
-        $available_balance = $balance->available[0]->amount / 100;
-        $pending_balance = $balance->pending[0]->amount / 100;
-        User::where('connected_account', $payment_event->destination)
-          ->update(['life_time_earnings' => $user_info->life_time_earnings + $payment_event->amount / 100,
-                    'pending_balance' => $pending_balance,
-                    'available_balance' => $available_balance
-                  ]);
+        Log::info(["++++++++ transfer.created +++ transfer_id = $payment_event->id  ++++"]);
+        $trans_info = TransactionHistory::select('mentor_id')->where('transfer_id', $payment_event->id)->first();
+        $mentor_info = User::where('id', $trans_info->mentor_id)->first();
+        $available_balance = 0;
+        $pending_balance = 0;
+        if ($mentor_info->connected_account != "") {
+          $balance = \Stripe\Balance::retrieve(
+            ['stripe_account' => $mentor_info->connected_account]
+          );
+          $available_balance = $balance->available[0]->amount / 100;
+          $pending_balance = $balance->pending[0]->amount / 100;
+        }
+        TransactionHistory::where('transfer_id', $payment_event->id)->update(['status' => 'Pending', 'check_confirmed_sum' => true]);
+        $life_time_earnings = TransactionHistory::where('mentor_id', $mentor_info->id)->where('check_confirmed_sum', true)->sum('amount');
+        User::where('id', $trans_info->mentor_id)->update(['available_balance' => $available_balance, 'pending_balance' => $pending_balance, 'life_time_earnings' => $life_time_earnings]);
         break;
       case 'transfer.failed':
         $payment_event = $event->data->object;
         $trans_info = TransactionHistory::where('transfer_id', $payment_event->id)->first();
-        Log::info(["++++++++ transfer.failed +++ $trans_info->charge_id ++", $payment_event->id]);
+        Log::info(["++++++++ transfer.failed ++++++ refund charge =  $trans_info->charge_id ++++++ transfer_id = ", $payment_event->id]);
         $stripe->refunds->create([
           'charge' => $trans_info->charge_id * 1.25,
         ]);
-        TransactionHistory::where('transfer_id', $payment_event->id)->update(['status' => 'Failed']);
+        TransactionHistory::where('transfer_id', $payment_event->id)->update(['status' => 'Failed', 'check_confirmed_sum' => false]);
+        break;
+      case 'transfer.paid':
+        $payment_event = $event->data->object;
+        Log::info(["++++++++ transfer.paid +++ transfer_id = $payment_event->id  ++++"]);
+        TransactionHistory::where('transfer_id', $payment_event->id)->update(['status' => 'Confirmed', 'check_confirmed_sum' => true]);
         break;
       default:
         echo 'Received unknown event type ' . $event->type;
@@ -244,21 +253,17 @@ class TransactionHistoryController extends Controller
     }
     // Handle the event
     switch ($event->type) {
-      case 'balance.available':
-        $payment_event = $event->data->object; 
-        Log::info(["++++++++ balance.available +++++", $payment_event->id]);
-        break;
       case 'payout.created':
         $payment_event = $event->data->object;
-        Log::info(["++++++++ payout.created +++++", $payment_event->id]);
+        Log::info(["++++++++ payout.created +++++ payout_id = ", $payment_event->id]);
         break;
       case 'payout.failed':
         $payment_event = $event->data->object;
-        Log::info(["++++++++ payout.failed +++++", $payment_event->id]);
+        Log::info(["++++++++ payout.failed +++++ payout_id = ", $payment_event->id]);
         break;
       case 'payout.paid':
         $payment_event = $event->data->object;
-        Log::info(["++++++++ payout.paid +++++", $payment_event->id]); // $payment_event->destination
+        Log::info(["++++++++ payout.paid +++++ payout_id = ", $payment_event->id]); // $payment_event->destination
         break;
       default:
         echo 'Received unknown event type ' . $event->type;

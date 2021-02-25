@@ -1,13 +1,11 @@
 import React from "react";
 import { Button, Row, } from "shards-react";
-
-import MentorReview from "../common/MentorReview";
-
 import StarIcon from "../../images/star_icon.svg";
 import PlayIcon from "../../images/Play_icon.svg";
 import Lightening from "../../images/Lightening.svg";
 import Clock from "../../images/Clock.svg";
-import defaultavatar from "../../images/avatar.jpg"
+import defaultavatar from "../../images/avatar.jpg";
+import { withRouter } from 'react-router-dom';
 
 class SearchMentorDetailCard extends React.Component {
   constructor(props) {
@@ -40,12 +38,11 @@ class SearchMentorDetailCard extends React.Component {
   }
 
   render() {
-    const {id, name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
-    const {ModalOpenReview} = this.state;
+    const {name, avatar, tag_name, status, description, hourly_price, instant_call, video_url, average_mark} = this.props.mentorData;
 
     return (
       <div className="mentor-detail-card">
-        <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview>
+        {/* <MentorReview mentorid={id} mentorname={name} open={ModalOpenReview} toggle={() => this.toggle_openmodalreview()}></MentorReview> */}
         <div style={{position: "relative"}} className="mentor-detail-avatar">
           {avatar && <img src={avatar} alt={name} className="mentor-detail-avatar-img" />}
           {!avatar && <img src={defaultavatar} alt={name} className="mentor-detail-avatar-img" />}
@@ -72,7 +69,7 @@ class SearchMentorDetailCard extends React.Component {
           <div className="mentor-detail-myself">
             {!this.state.more && (description.length > 200 ? <p>{description.slice(0,200)}...</p> : <p>{description}</p>)}
             {this.state.more && <p>{description}</p>}
-            {description.length > 200 && (this.state.more ? <a href="javascript:void(0)" className="read-more" onClick={() => this.readLess()}>Read less</a> : <a href="javascript:void(0)" className="read-more" onClick={() => this.readMore()}>Read more</a>)}
+            {description.length > 200 && (this.state.more ? <label className="read-more" onClick={() => this.readLess()}>Read less</label> : <label className="read-more" onClick={() => this.readMore()}>Read more</label>)}
           </div>
           <div className="mentor-detail-video">
               <a href={video_url} target="_blank" rel="noopener noreferrer" ><img src={PlayIcon} alt="play-icon"/>Video presentation</a>
@@ -102,4 +99,4 @@ class SearchMentorDetailCard extends React.Component {
   }
 }
 
-export default SearchMentorDetailCard;
+export default withRouter(SearchMentorDetailCard);

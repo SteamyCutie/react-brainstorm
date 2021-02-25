@@ -5,13 +5,11 @@ import BookmarkBorder from '@material-ui/icons/BookmarkBorder';
 import OutlinedFlag from '@material-ui/icons/OutlinedFlag';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "shards-react";
 import LoadingModal from "../../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
 import "video-react/dist/video-react.css";
 import { addlibrary, addreport, signout } from '../../api/api';
-import background from "../../images/background.jpeg"
-import MoreButtonImage from "../../images/more.svg"
+import background from "../../images/background.jpeg";
+import MoreButtonImage from "../../images/more.svg";
+import { ToastsStore } from 'react-toasts';
 
 class MentorVideo extends React.Component {
   constructor(props) {
@@ -32,75 +30,75 @@ class MentorVideo extends React.Component {
     });
   }
 
-  actionSave = async(mentor_id, media_url) => {
+  actionSave = async (mentor_id, media_url) => {
     let param = {
       mentor_id: mentor_id,
       media_url: media_url,
       student_id: parseInt(localStorage.getItem('user_id'))
     };
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await addlibrary(param);
       if (result.data.result === "success") {
-        this.showSuccess("Add Library Successful");
+        ToastsStore.success("Add Library Successful");
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  actionReport = async(mentor_id, media_url) => {
+  actionReport = async (mentor_id, media_url) => {
     let param = {
       mentor_id: mentor_id,
       media_url: media_url,
       student_id: parseInt(localStorage.getItem('user_id'))
     };
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await addreport(param);
       if (result.data.result === "success") {
-        this.showSuccess("Post Library Successful");
+        ToastsStore.success("Post Library Successful");
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -122,74 +120,21 @@ class MentorVideo extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
-  }
-
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
   }
 
   render() {
-    const { description, media_url, day, time, user_id } = this.props.item;
+    const { description, media_url, day, time, user_id, media_type } = this.props.item;
     const { open, loading } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <div className="mentor-desc-video">
           <div className="mentor-desc-video-header">
             <h6 className="video-upload-time no-margin">{day} at {time}</h6>
@@ -219,11 +164,8 @@ class MentorVideo extends React.Component {
             </h6>
           </div>
           <div>
-            <Player
-                playsInline
-                poster={background}
-                src={media_url}
-              />
+            {media_type === 'video' && <Player playsInline poster={background} src={media_url} />}
+            {media_type === 'image' && <img src={media_url} alt="mentor" style={{width: "100%"}}/>}
           </div>
         </div>
       </>

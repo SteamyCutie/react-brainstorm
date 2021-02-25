@@ -4,10 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import MentorDetailCard from "./../components/common/MentorDetailCard"
 import LoadingModal from "../components/common/LoadingModal";
-import ReactNotification from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
-import { store } from 'react-notifications-component';
-
+import { ToastsStore } from 'react-toasts';
 import { getallmentors, signout } from '../api/api';
 
 export default class Recommended extends React.Component {
@@ -22,17 +19,17 @@ export default class Recommended extends React.Component {
   }
 
   componentWillMount() {
-   this.getMentors(1);
+    this.getMentors(1);
   }
 
-  getMentors = async(pageNo) => {
-    let param  = {
+  getMentors = async (pageNo) => {
+    let param = {
       email: localStorage.getItem('email'),
       page: pageNo,
       rowsPerPage: 10
     }
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const result = await getallmentors(param);
       if (result.data.result === "success") {
         this.setState({
@@ -41,25 +38,25 @@ export default class Recommended extends React.Component {
           totalCnt: result.data.totalRows % 10 === 0 ? result.data.totalRows / 10 : parseInt(result.data.totalRows / 10) + 1
         });
       } else if (result.data.result === "warning") {
-        this.showWarning(result.data.message);
+        ToastsStore.warning(result.data.message);
       } else {
         if (result.data.message === "Token is Expired") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Token is Invalid") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else if (result.data.message === "Authorization Token not found") {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
           this.signout();
         } else {
-          this.showFail(result.data.message);
+          ToastsStore.error(result.data.message);
         }
       }
-      this.setState({loading: false});
-    } catch(err) {
-      this.setState({loading: false});
-      this.showFail("Something Went wrong");
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      ToastsStore.error("Something Went wrong");
     };
   }
 
@@ -67,58 +64,7 @@ export default class Recommended extends React.Component {
     this.getMentors(value);
   }
 
-  showSuccess(text) {
-    store.addNotification({
-      title: "Success",
-      message: text,
-      type: "success",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      },
-    });
-  }
-
-  showFail(text) {
-    store.addNotification({
-      title: "Fail",
-      message: text,
-      type: "danger",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  showWarning(text) {
-    store.addNotification({
-      title: "Warning",
-      message: text,
-      type: "warning",
-      insert: "top",
-      container: "top-right",
-      dismiss: {
-        duration: 500,
-        onScreen: false,
-        waitForAnimation: false,
-        showIcon: false,
-        pauseOnHover: false
-      }
-    });
-  }
-
-  signout = async() => {
+  signout = async () => {
     const param = {
       email: localStorage.getItem('email')
     }
@@ -140,22 +86,21 @@ export default class Recommended extends React.Component {
           this.removeSession();
         }
       }
-    } catch(error) {
+    } catch (error) {
       this.removeSession();
     }
   }
 
   removeSession() {
     localStorage.clear();
-    window.location.href = "/";
+    this.props.history.push('/');
   }
 
   render() {
-    const {mentors, loading, totalCnt} = this.state;
+    const { mentors, loading, totalCnt } = this.state;
     return (
       <>
         {loading && <LoadingModal open={true} />}
-        <ReactNotification />
         <Container fluid className="main-content-container px-4 main-content-container-class">
           <Row noGutters className="page-header py-4">
             <Col xs="12" sm="12" className="page-title">
@@ -165,8 +110,8 @@ export default class Recommended extends React.Component {
 
           <Row className="no-padding">
             <Col lg="12" md="12" sm="12">
-              {mentors.map((data, idx) =>(
-                <MentorDetailCard mentorData={data} key={idx}/>
+              {mentors.map((data, idx) => (
+                <MentorDetailCard mentorData={data} key={idx} />
               ))}
             </Col>
           </Row>

@@ -37,7 +37,6 @@ class SidebarNavItems extends React.Component {
 
   render() {
     const { navSearchItems: items } = this.state;
-    // const { filterType } = this.props;
     return (
       <div className="nav-wrapper">
         <ul className="search-category" style={{paddingLeft: 65}}>
@@ -48,7 +47,7 @@ class SidebarNavItems extends React.Component {
         <ul style={{paddingLeft: 65}}>
           {items.map((item, idx) => (
             <li key={idx} className="search-item-list">
-              <a href="javascript:void(0)" onClick={() => this.onMenuClick(item.id)} className="category-item">{item.title}</a>
+              <label onClick={() => this.onMenuClick(item.id)} className="category-item">{item.title}</label>
             </li>
           ))}
         </ul>
